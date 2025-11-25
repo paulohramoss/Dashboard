@@ -136,6 +136,10 @@ const Layout = ({ children }) => {
         <div className="flex-1 overflow-auto p-6 lg:p-8">
           <div className="max-w-7xl mx-auto">{children}</div>
         </div>
+
+        <footer className="border-t bg-card/50 p-4 text-center text-xs text-muted-foreground">
+          v1.0.0
+        </footer>
       </main>
     </div>
   );
