@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Papa from "papaparse";
 import * as XLSX from "xlsx";
+import { parse } from "ofx-js";
 import { cn } from "@/lib/utils";
 
 const FileUploader = ({ onUpload }) => {
@@ -52,9 +53,11 @@ const FileUploader = ({ onUpload }) => {
         parseCSV(file);
       } else if (["xlsx", "xls"].includes(extension)) {
         parseExcel(file);
+      } else if (extension === "ofx") {
+        parseOFX(file);
       } else {
         throw new Error(
-          "Unsupported file format. Please use .csv, .xlsx, or .xls"
+          "Unsupported file format. Please use .csv, .xlsx, .xls, or .ofx"
         );
       }
     } catch (error) {
@@ -185,6 +188,65 @@ const FileUploader = ({ onUpload }) => {
     }, 3000);
   };
 
+  const parseOFX = (file) => {
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      try {
+        const text = e.target.result;
+        const data = await parse(text);
+
+        // Navigate through OFX structure to find transactions
+        // Structure varies but usually: OFX -> BANKMSGSRSV1 -> STMTTRNRS -> STMTRS -> BANKTRANLIST -> STMTTRN
+        const bankMsgs = data.OFX.BANKMSGSRSV1 || data.OFX.CREDITCARDMSGSRSV1;
+        const stmtTrnRs = bankMsgs.STMTTRNRS || bankMsgs.CCSTMTTRNRS;
+        const stmtRs = stmtTrnRs.STMTRS || stmtTrnRs.CCSTMTRS;
+        const bankTranList = stmtRs.BANKTRANLIST;
+        const stmtTrn = bankTranList.STMTTRN;
+
+        // Ensure array
+        const transactionsList = Array.isArray(stmtTrn) ? stmtTrn : [stmtTrn];
+
+        const transactions = transactionsList.map((trn) => {
+          const amount = parseFloat(trn.TRNAMT);
+          const dateStr = trn.DTPOSTED.substring(0, 8); // YYYYMMDD
+          const date = `${dateStr.substring(0, 4)}-${dateStr.substring(
+            4,
+            6
+          )}-${dateStr.substring(6, 8)}`;
+
+          return {
+            description: trn.MEMO || trn.NAME || "OFX Transaction",
+            amount: Math.abs(amount),
+            type: amount < 0 ? "expense" : "income",
+            category: "General",
+            date: date,
+          };
+        });
+
+        if (transactions.length === 0) {
+          throw new Error("No transactions found in OFX file");
+        }
+
+        onUpload(transactions);
+        setStatus("success");
+        setMessage(
+          `Successfully imported ${transactions.length} transactions from OFX`
+        );
+
+        setTimeout(() => {
+          setStatus("idle");
+          setMessage("");
+          if (fileInputRef.current) fileInputRef.current.value = "";
+        }, 3000);
+      } catch (error) {
+        console.error(error);
+        setStatus("error");
+        setMessage("Error parsing OFX file. Ensure it is a valid bank export.");
+      }
+    };
+    reader.readAsText(file);
+  };
+
   const normalizeData = (data) => {
     // Attempt to map common column names to our schema
     // Schema: description, amount, type, category, date
@@ -282,7 +344,7 @@ const FileUploader = ({ onUpload }) => {
             type="file"
             ref={fileInputRef}
             className="hidden"
-            accept=".csv,.xlsx,.xls"
+            accept=".csv,.xlsx,.xls,.ofx"
             onChange={handleFileChange}
           />
 
@@ -296,7 +358,7 @@ const FileUploader = ({ onUpload }) => {
                   Click to upload or drag and drop
                 </h3>
                 <p className="text-sm text-muted-foreground">
-                  CSV, Excel (.xlsx, .xls)
+                  CSV, Excel, OFX (Bank Export)
                 </p>
               </>
             )}
