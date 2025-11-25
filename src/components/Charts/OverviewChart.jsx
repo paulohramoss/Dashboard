@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import {
   Area,
   AreaChart,
@@ -12,6 +13,8 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const OverviewChart = ({ transactions }) => {
+  const { t } = useTranslation();
+
   const data = React.useMemo(() => {
     const grouped = transactions.reduce((acc, curr) => {
       const date = curr.date;
@@ -34,7 +37,7 @@ const OverviewChart = ({ transactions }) => {
   return (
     <Card className="col-span-4 shadow-sm hover:shadow-md transition-shadow duration-200">
       <CardHeader>
-        <CardTitle>Financial Overview</CardTitle>
+        <CardTitle>{t("charts.financialOverview")}</CardTitle>
       </CardHeader>
       <CardContent className="pl-2">
         <ResponsiveContainer width="100%" height={350}>
@@ -91,7 +94,7 @@ const OverviewChart = ({ transactions }) => {
               strokeWidth={2}
               fillOpacity={1}
               fill="url(#colorIncome)"
-              name="Income"
+              name={t("charts.income")}
             />
             <Area
               type="monotone"
@@ -100,7 +103,7 @@ const OverviewChart = ({ transactions }) => {
               strokeWidth={2}
               fillOpacity={1}
               fill="url(#colorExpense)"
-              name="Expense"
+              name={t("charts.expense")}
             />
           </AreaChart>
         </ResponsiveContainer>

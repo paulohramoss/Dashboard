@@ -1,4 +1,6 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
+import { useCategories } from "@/hooks/useCategories";
 import {
   PieChart,
   Pie,
@@ -9,38 +11,39 @@ import {
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-const COLORS = [
-  "#3b82f6", // Blue
-  "#10b981", // Emerald
-  "#f59e0b", // Amber
-  "#ef4444", // Red
-  "#8b5cf6", // Violet
-  "#ec4899", // Pink
-  "#6366f1", // Indigo
-  "#14b8a6", // Teal
-];
-
 const CategoryChart = ({ transactions }) => {
+  const { t } = useTranslation();
+  const { categories } = useCategories();
+
   const data = React.useMemo(() => {
     const expenses = transactions.filter((t) => t.type === "expense");
     const grouped = expenses.reduce((acc, curr) => {
-      const category = curr.category || "Other";
-      if (!acc[category]) {
-        acc[category] = 0;
+      const categoryName = curr.category || "Other";
+      if (!acc[categoryName]) {
+        acc[categoryName] = 0;
       }
-      acc[category] += curr.amount;
+      acc[categoryName] += curr.amount;
       return acc;
     }, {});
 
     return Object.entries(grouped)
-      .map(([name, value]) => ({ name, value }))
+      .map(([name, value]) => {
+        const category = categories.find((c) => c.name === name);
+        return {
+          name: category?.isDefault
+            ? t(`categories.${name.toLowerCase()}`)
+            : name,
+          value,
+          color: category?.color || "#94a3b8", // Default color if not found
+        };
+      })
       .sort((a, b) => b.value - a.value);
-  }, [transactions]);
+  }, [transactions, t, categories]);
 
   return (
     <Card className="col-span-3 shadow-sm hover:shadow-md transition-shadow duration-200">
       <CardHeader>
-        <CardTitle>Expenses by Category</CardTitle>
+        <CardTitle>{t("charts.expensesByCategory")}</CardTitle>
       </CardHeader>
       <CardContent>
         <ResponsiveContainer width="100%" height={350}>
@@ -57,10 +60,7 @@ const CategoryChart = ({ transactions }) => {
               stroke="#fff"
             >
               {data.map((entry, index) => (
-                <Cell
-                  key={`cell-${index}`}
-                  fill={COLORS[index % COLORS.length]}
-                />
+                <Cell key={`cell-${index}`} fill={entry.color} />
               ))}
             </Pie>
             <Tooltip

@@ -41,6 +41,9 @@ export const useTransactions = () => {
 
       setTransactions(docs);
       setLoading(false);
+
+      // Check for recurring transactions
+      checkRecurringTransactions(docs);
     });
 
     return () => unsubscribe();
@@ -49,12 +52,22 @@ export const useTransactions = () => {
   const addTransaction = async (transaction) => {
     if (!user?.id) return;
     try {
-      await addDoc(collection(db, "transactions"), {
+      const transactionData = {
         ...transaction,
         userId: user.id,
         date: transaction.date || new Date().toISOString(),
         createdAt: new Date().toISOString(),
-      });
+        accountId: transaction.accountId || null,
+      };
+
+      if (transaction.isRecurring) {
+        transactionData.nextDueDate = calculateNextDueDate(
+          transactionData.date,
+          transaction.frequency
+        );
+      }
+
+      await addDoc(collection(db, "transactions"), transactionData);
     } catch (error) {
       console.error("Error adding transaction:", error);
     }
@@ -126,4 +139,64 @@ export const useTransactions = () => {
     stats,
     loading,
   };
+};
+
+const calculateNextDueDate = (date, frequency) => {
+  const d = new Date(date);
+  switch (frequency) {
+    case "daily":
+      d.setDate(d.getDate() + 1);
+      break;
+    case "weekly":
+      d.setDate(d.getDate() + 7);
+      break;
+    case "monthly":
+      d.setMonth(d.getMonth() + 1);
+      break;
+    case "yearly":
+      d.setFullYear(d.getFullYear() + 1);
+      break;
+    default:
+      break;
+  }
+  return d.toISOString().split("T")[0];
+};
+
+const checkRecurringTransactions = async (currentTransactions) => {
+  const today = new Date().toISOString().split("T")[0];
+  const batch = writeBatch(db);
+  let hasUpdates = false;
+
+  currentTransactions.forEach((t) => {
+    if (t.isRecurring && t.nextDueDate && t.nextDueDate <= today) {
+      // Create new transaction
+      const newTransactionRef = doc(collection(db, "transactions"));
+      batch.set(newTransactionRef, {
+        ...t,
+        date: t.nextDueDate,
+        isRecurring: false, // Generated transaction is not recurring itself
+        createdAt: new Date().toISOString(),
+        originalTransactionId: t.id,
+        nextDueDate: null,
+      });
+
+      // Update original transaction's next due date
+      const originalTransactionRef = doc(db, "transactions", t.id);
+      const nextDate = calculateNextDueDate(t.nextDueDate, t.frequency);
+      batch.update(originalTransactionRef, {
+        nextDueDate: nextDate,
+      });
+
+      hasUpdates = true;
+    }
+  });
+
+  if (hasUpdates) {
+    try {
+      await batch.commit();
+      console.log("Recurring transactions processed.");
+    } catch (error) {
+      console.error("Error processing recurring transactions:", error);
+    }
+  }
 };

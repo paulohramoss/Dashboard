@@ -6,6 +6,7 @@
     "dashboard": "Painel",
     "transactions": "Transações",
     "reports": "Relatórios",
+    "budgets": "Metas",
     "settings": "Configurações",
     "logout": "Sair",
     "confirmLogout": "Confirmar Saída?"
@@ -29,14 +30,24 @@
     "dragDrop": "Clique para enviar ou arraste e solte",
     "supports": "Suporta .csv, .xlsx, .ofx",
     "form": {
+      "title": "Adicionar Transação",
       "description": "Descrição",
+      "descriptionPlaceholder": "ex: Compras do mês",
       "amount": "Valor",
       "type": "Tipo",
-      "category": "Categoria",
-      "date": "Data",
       "income": "Receita",
       "expense": "Despesa",
-      "add": "Adicionar"
+      "category": "Categoria",
+      "selectCategory": "Selecione uma categoria",
+      "selectAccount": "Selecione uma conta",
+      "date": "Data",
+      "submit": "Adicionar Transação",
+      "recurring": "Transação Recorrente",
+      "frequency": "Frequência",
+      "daily": "Diário",
+      "weekly": "Semanal",
+      "monthly": "Mensal",
+      "yearly": "Anual"
     },
     "table": {
       "description": "Descrição",
@@ -45,7 +56,13 @@
       "amount": "Valor",
       "actions": "Ações"
     },
-    "noTransactions": "Nenhuma transação encontrada. Adicione manualmente ou importe um arquivo."
+    "noTransactions": "Nenhuma transação encontrada. Adicione manualmente ou importe um arquivo.",
+    "search": "Buscar",
+    "searchPlaceholder": "Buscar por descrição...",
+    "allTypes": "Todos os Tipos",
+    "allCategories": "Todas as Categorias",
+    "dateRange": "Período",
+    "clearFilters": "Limpar Filtros"
   },
   "reports": {
     "title": "Relatórios",
@@ -73,7 +90,34 @@
     "notificationsDesc": "Escolha como você deseja ser notificado.",
     "emailNotifsDesc": "Receba resumos diários e alertas.",
     "pushNotifsDesc": "Receba alertas em tempo real no seu dispositivo.",
-    "securityDesc": "Gerencie sua senha e segurança da conta."
+    "securityDesc": "Gerencie sua senha e segurança da conta.",
+    "categories": "Categorias",
+    "categoriesDesc": "Gerencie suas categorias de transações.",
+    "addCategory": "Adicionar Categoria",
+    "categoryName": "Nome da Categoria",
+    "categoryType": "Tipo",
+    "categoryColor": "Cor",
+    "income": "Receita",
+    "expense": "Despesa",
+    "delete": "Excluir"
+  },
+  "budgets": {
+    "title": "Metas",
+    "subtitle": "Gerencie seus limites de gastos mensais."
+  },
+  "accounts": {
+    "title": "Contas",
+    "subtitle": "Gerencie suas carteiras e contas bancárias.",
+    "addAccount": "Adicionar Conta",
+    "newAccount": "Nova Conta",
+    "name": "Nome da Conta",
+    "type": "Tipo",
+    "initialBalance": "Saldo Inicial",
+    "color": "Cor",
+    "checking": "Corrente",
+    "savings": "Poupança",
+    "credit": "Cartão de Crédito",
+    "cash": "Dinheiro"
   },
   "auth": {
     "welcome": "Bem-vindo de volta",
@@ -91,6 +135,24 @@
   "common": {
     "loading": "Carregando...",
     "success": "Sucesso",
-    "error": "Erro"
+    "error": "Erro",
+    "save": "Salvar"
+  },
+  "charts": {
+    "financialOverview": "Visão Geral Financeira",
+    "expensesByCategory": "Despesas por Categoria",
+    "income": "Receitas",
+    "expense": "Despesas",
+    "other": "Outros"
+  },
+  "categories": {
+    "general": "Geral",
+    "food": "Alimentação",
+    "transport": "Transporte",
+    "utilities": "Contas",
+    "entertainment": "Lazer",
+    "salary": "Salário",
+    "freelance": "Freelance",
+    "other": "Outros"
   }
 }

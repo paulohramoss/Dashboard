@@ -1,20 +1,72 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useTransactions } from "@/hooks/useTransactions";
+import { useAccounts } from "@/hooks/useAccounts";
 import SummaryCards from "@/components/SummaryCards";
 import OverviewChart from "@/components/Charts/OverviewChart";
 import CategoryChart from "@/components/Charts/CategoryChart";
 import TransactionHistory from "@/components/TransactionHistory";
 import { Button } from "@/components/ui/button";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
-import { Trash2, FileSpreadsheet, FileText } from "lucide-react";
+import {
+  Trash2,
+  FileSpreadsheet,
+  FileText,
+  Wallet,
+  CreditCard,
+  Banknote,
+  Building2,
+} from "lucide-react";
 import * as XLSX from "xlsx";
 
 const Dashboard = () => {
   const { transactions, deleteTransaction, clearTransactions, stats } =
     useTransactions();
+  const { accounts } = useAccounts();
   const { t } = useTranslation();
+
+  const accountBalances = useMemo(() => {
+    return accounts.map((account) => {
+      const accountTransactions = transactions.filter(
+        (t) => t.accountId === account.id
+      );
+      const income = accountTransactions
+        .filter((t) => t.type === "income")
+        .reduce((acc, t) => acc + parseFloat(t.amount), 0);
+      const expense = accountTransactions
+        .filter((t) => t.type === "expense")
+        .reduce((acc, t) => acc + parseFloat(t.amount), 0);
+
+      return {
+        ...account,
+        currentBalance: (account.initialBalance || 0) + income - expense,
+      };
+    });
+  }, [accounts, transactions]);
+
+  const getIcon = (type) => {
+    switch (type) {
+      case "checking":
+        return <Building2 className="h-5 w-5" />;
+      case "savings":
+        return <Wallet className="h-5 w-5" />;
+      case "credit":
+        return <CreditCard className="h-5 w-5" />;
+      case "cash":
+        return <Banknote className="h-5 w-5" />;
+      default:
+        return <Wallet className="h-5 w-5" />;
+    }
+  };
+
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    }).format(amount);
+  };
 
   const handleExportExcel = () => {
     const ws = XLSX.utils.json_to_sheet(transactions);
@@ -88,6 +140,34 @@ const Dashboard = () => {
       </div>
 
       <SummaryCards stats={stats} />
+
+      {/* Accounts Overview */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        {accountBalances.map((account) => (
+          <Card key={account.id} className="relative overflow-hidden">
+            <div
+              className="absolute top-0 left-0 w-1 h-full"
+              style={{ backgroundColor: account.color }}
+            />
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">
+                {account.name}
+              </CardTitle>
+              <div className="text-muted-foreground">
+                {getIcon(account.type)}
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">
+                {formatCurrency(account.currentBalance)}
+              </div>
+              <p className="text-xs text-muted-foreground capitalize">
+                {t(`accounts.${account.type}`)}
+              </p>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
         <OverviewChart transactions={transactions} />

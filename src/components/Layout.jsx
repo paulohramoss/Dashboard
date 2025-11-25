@@ -9,6 +9,7 @@ import {
   Menu,
   X,
   LogOut,
+  Target,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -26,10 +27,12 @@ const Layout = ({ children }) => {
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
   const navItems = [
-    { icon: LayoutDashboard, label: t("nav.dashboard"), href: "/" },
-    { icon: Wallet, label: t("nav.transactions"), href: "/transactions" },
-    { icon: PieChart, label: t("nav.reports"), href: "/reports" },
-    { icon: Settings, label: t("nav.settings"), href: "/settings" },
+    { icon: LayoutDashboard, label: t("nav.dashboard"), path: "/" },
+    { icon: Wallet, label: t("nav.transactions"), path: "/transactions" },
+    { icon: Target, label: t("nav.budgets"), path: "/budgets" },
+    { icon: Wallet, label: t("accounts.title"), path: "/accounts" },
+    { icon: PieChart, label: t("nav.reports"), path: "/reports" },
+    { icon: Settings, label: t("nav.settings"), path: "/settings" },
   ];
 
   return (
@@ -65,10 +68,10 @@ const Layout = ({ children }) => {
           {navItems.map((item, index) => (
             <Link
               key={index}
-              to={item.href}
+              to={item.path}
               className={cn(
                 "flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-md transition-colors",
-                location.pathname === item.href
+                location.pathname === item.path
                   ? "bg-primary text-primary-foreground"
                   : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
               )}

@@ -15,6 +15,8 @@ import ReportsPage from "@/pages/ReportsPage";
 import SettingsPage from "@/pages/SettingsPage";
 import LoginPage from "@/pages/LoginPage";
 import RegisterPage from "@/pages/RegisterPage";
+import BudgetsPage from "@/pages/BudgetsPage";
+import AccountsPage from "@/pages/AccountsPage";
 
 const ProtectedRoute = ({ children }) => {
   const { user } = useAuth();
@@ -57,6 +59,8 @@ function App() {
                         path="/transactions"
                         element={<TransactionsPage />}
                       />
+                      <Route path="/budgets" element={<BudgetsPage />} />
+                      <Route path="/accounts" element={<AccountsPage />} />
                       <Route path="/reports" element={<ReportsPage />} />
                       <Route path="/settings" element={<SettingsPage />} />
                     </Routes>

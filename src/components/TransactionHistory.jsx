@@ -1,12 +1,14 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { Trash2, ArrowUpCircle, ArrowDownCircle } from "lucide-react";
+import { Trash2, ArrowUpCircle, ArrowDownCircle, Repeat } from "lucide-react";
+import { useCategories } from "@/hooks/useCategories";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
 const TransactionHistory = ({ transactions, onDelete }) => {
   const { t } = useTranslation();
+  const { categories } = useCategories();
 
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat("pt-BR", {
@@ -17,6 +19,14 @@ const TransactionHistory = ({ transactions, onDelete }) => {
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString("pt-BR");
+  };
+
+  const getCategoryLabel = (categoryName) => {
+    const category = categories.find((c) => c.name === categoryName);
+    if (category?.isDefault) {
+      return t(`categories.${categoryName.toLowerCase()}`);
+    }
+    return categoryName;
   };
 
   return (
@@ -56,7 +66,10 @@ const TransactionHistory = ({ transactions, onDelete }) => {
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
                       <span>{formatDate(transaction.date)}</span>
                       <span>•</span>
-                      <span>{transaction.category}</span>
+                      <span>{getCategoryLabel(transaction.category)}</span>
+                      {transaction.isRecurring && (
+                        <Repeat className="h-3 w-3 ml-1 text-blue-500" />
+                      )}
                     </div>
                   </div>
                 </div>

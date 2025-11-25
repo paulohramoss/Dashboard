@@ -6,6 +6,7 @@
     "dashboard": "Dashboard",
     "transactions": "Transactions",
     "reports": "Reports",
+    "budgets": "Budgets",
     "settings": "Settings",
     "logout": "Logout",
     "confirmLogout": "Confirm Logout?"
@@ -29,14 +30,24 @@
     "dragDrop": "Click to upload or drag and drop",
     "supports": "Supports .csv, .xlsx, .ofx",
     "form": {
+      "title": "Add Transaction",
       "description": "Description",
+      "descriptionPlaceholder": "e.g. Grocery shopping",
       "amount": "Amount",
       "type": "Type",
-      "category": "Category",
-      "date": "Date",
       "income": "Income",
       "expense": "Expense",
-      "add": "Add Transaction"
+      "category": "Category",
+      "selectCategory": "Select a category",
+      "selectAccount": "Select an account",
+      "date": "Date",
+      "submit": "Add Transaction",
+      "recurring": "Recurring Transaction",
+      "frequency": "Frequency",
+      "daily": "Daily",
+      "weekly": "Weekly",
+      "monthly": "Monthly",
+      "yearly": "Yearly"
     },
     "table": {
       "description": "Description",
@@ -45,7 +56,13 @@
       "amount": "Amount",
       "actions": "Actions"
     },
-    "noTransactions": "No transactions found. Add one manually or import a file."
+    "noTransactions": "No transactions found. Add one manually or import a file.",
+    "search": "Search",
+    "searchPlaceholder": "Search by description...",
+    "allTypes": "All Types",
+    "allCategories": "All Categories",
+    "dateRange": "Date Range",
+    "clearFilters": "Clear Filters"
   },
   "reports": {
     "title": "Reports",
@@ -73,7 +90,34 @@
     "notificationsDesc": "Choose how you want to be notified.",
     "emailNotifsDesc": "Receive daily summaries and alerts.",
     "pushNotifsDesc": "Receive real-time alerts on your device.",
-    "securityDesc": "Manage your password and account security."
+    "securityDesc": "Manage your password and account security.",
+    "categories": "Categories",
+    "categoriesDesc": "Manage your transaction categories.",
+    "addCategory": "Add Category",
+    "categoryName": "Category Name",
+    "categoryType": "Type",
+    "categoryColor": "Color",
+    "income": "Income",
+    "expense": "Expense",
+    "delete": "Delete"
+  },
+  "budgets": {
+    "title": "Budgets",
+    "subtitle": "Manage your monthly spending limits."
+  },
+  "accounts": {
+    "title": "Accounts",
+    "subtitle": "Manage your wallets and bank accounts.",
+    "addAccount": "Add Account",
+    "newAccount": "New Account",
+    "name": "Account Name",
+    "type": "Type",
+    "initialBalance": "Initial Balance",
+    "color": "Color",
+    "checking": "Checking",
+    "savings": "Savings",
+    "credit": "Credit Card",
+    "cash": "Cash"
   },
   "auth": {
     "welcome": "Welcome back",
@@ -91,6 +135,24 @@
   "common": {
     "loading": "Loading...",
     "success": "Success",
-    "error": "Error"
+    "error": "Error",
+    "save": "Save"
+  },
+  "charts": {
+    "financialOverview": "Financial Overview",
+    "expensesByCategory": "Expenses by Category",
+    "income": "Income",
+    "expense": "Expense",
+    "other": "Other"
+  },
+  "categories": {
+    "general": "General",
+    "food": "Food",
+    "transport": "Transport",
+    "utilities": "Utilities",
+    "entertainment": "Entertainment",
+    "salary": "Salary",
+    "freelance": "Freelance",
+    "other": "Other"
   }
 }
