@@ -10,7 +10,6 @@ import {
   where,
   onSnapshot,
   writeBatch,
-  orderBy,
 } from "firebase/firestore";
 
 export const useTransactions = () => {
@@ -28,8 +27,7 @@ export const useTransactions = () => {
 
     const q = query(
       collection(db, "transactions"),
-      where("userId", "==", user.id),
-      orderBy("date", "desc")
+      where("userId", "==", user.id)
     );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -37,6 +35,10 @@ export const useTransactions = () => {
         id: doc.id,
         ...doc.data(),
       }));
+
+      // Sort client-side to avoid needing a composite index in Firestore
+      docs.sort((a, b) => new Date(b.date) - new Date(a.date));
+
       setTransactions(docs);
       setLoading(false);
     });
