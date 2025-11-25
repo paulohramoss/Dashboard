@@ -47,7 +47,8 @@
       "daily": "Diário",
       "weekly": "Semanal",
       "monthly": "Mensal",
-      "yearly": "Anual"
+      "yearly": "Anual",
+      "add": "Adicionar Transação"
     },
     "table": {
       "description": "Descrição",
@@ -137,7 +138,12 @@
     "noAccount": "Não tem uma conta?",
     "fullName": "Nome Completo",
     "password": "Senha",
-    "confirmPassword": "Confirmar Senha"
+    "confirmPassword": "Confirmar Senha",
+    "invalidCredentials": "Email ou senha inválidos",
+    "emailInUse": "E-mail já cadastrado",
+    "passwordMismatch": "As senhas não coincidem",
+    "passwordLength": "A senha deve ter pelo menos 6 caracteres",
+    "createAccountError": "Falha ao criar conta. Tente novamente."
   },
   "common": {
     "loading": "Carregando...",

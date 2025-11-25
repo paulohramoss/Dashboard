@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,6 +15,7 @@ import { Label } from "@/components/ui/label";
 import { Lock } from "lucide-react";
 
 const LoginPage = () => {
+  const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -28,7 +30,7 @@ const LoginPage = () => {
       await login(email, password);
       navigate("/");
     } catch {
-      setError("Invalid email or password");
+      setError(t("auth.invalidCredentials"));
     }
   };
 
@@ -42,10 +44,10 @@ const LoginPage = () => {
             </div>
           </div>
           <CardTitle className="text-2xl font-bold text-center">
-            Welcome back
+            {t("auth.welcome")}
           </CardTitle>
           <CardDescription className="text-center">
-            Enter your credentials to access your dashboard
+            {t("auth.loginSubtitle")}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -56,7 +58,7 @@ const LoginPage = () => {
               </div>
             )}
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">{t("settings.email")}</Label>
               <Input
                 id="email"
                 type="email"
@@ -67,7 +69,7 @@ const LoginPage = () => {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">{t("auth.password")}</Label>
               <Input
                 id="password"
                 type="password"
@@ -77,14 +79,14 @@ const LoginPage = () => {
               />
             </div>
             <Button type="submit" className="w-full">
-              Sign In
+              {t("auth.signIn")}
             </Button>
           </form>
           <div className="mt-4 text-center text-sm text-muted-foreground">
             <p>
-              Don't have an account?{" "}
+              {t("auth.noAccount")}{" "}
               <Link to="/register" className="text-primary hover:underline">
-                Sign up
+                {t("auth.signUp")}
               </Link>
             </p>
           </div>

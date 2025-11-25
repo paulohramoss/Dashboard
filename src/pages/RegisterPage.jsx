@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,6 +16,7 @@ import { Label } from "@/components/ui/label";
 import { UserPlus } from "lucide-react";
 
 const RegisterPage = () => {
+  const { t } = useTranslation();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -28,12 +30,12 @@ const RegisterPage = () => {
     setError("");
 
     if (password !== confirmPassword) {
-      setError("Passwords do not match");
+      setError(t("auth.passwordMismatch"));
       return;
     }
 
     if (password.length < 6) {
-      setError("Password must be at least 6 characters");
+      setError(t("auth.passwordLength"));
       return;
     }
 
@@ -42,9 +44,9 @@ const RegisterPage = () => {
       navigate("/");
     } catch (err) {
       if (err.code === "auth/email-already-in-use") {
-        setError("Email already registered");
+        setError(t("auth.emailInUse"));
       } else {
-        setError("Failed to create account. Please try again.");
+        setError(t("auth.createAccountError"));
       }
     }
   };
@@ -59,10 +61,10 @@ const RegisterPage = () => {
             </div>
           </div>
           <CardTitle className="text-2xl font-bold text-center">
-            Create an account
+            {t("auth.createAccount")}
           </CardTitle>
           <CardDescription className="text-center">
-            Enter your details to get started
+            {t("auth.registerSubtitle")}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -73,7 +75,7 @@ const RegisterPage = () => {
               </div>
             )}
             <div className="space-y-2">
-              <Label htmlFor="name">Full Name</Label>
+              <Label htmlFor="name">{t("auth.fullName")}</Label>
               <Input
                 id="name"
                 placeholder="John Doe"
@@ -83,7 +85,7 @@ const RegisterPage = () => {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">{t("settings.email")}</Label>
               <Input
                 id="email"
                 type="email"
@@ -94,7 +96,7 @@ const RegisterPage = () => {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">{t("auth.password")}</Label>
               <Input
                 id="password"
                 type="password"
@@ -104,7 +106,9 @@ const RegisterPage = () => {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="confirm-password">Confirm Password</Label>
+              <Label htmlFor="confirm-password">
+                {t("auth.confirmPassword")}
+              </Label>
               <Input
                 id="confirm-password"
                 type="password"
@@ -114,15 +118,15 @@ const RegisterPage = () => {
               />
             </div>
             <Button type="submit" className="w-full">
-              Sign Up
+              {t("auth.signUp")}
             </Button>
           </form>
         </CardContent>
         <CardFooter className="justify-center">
           <div className="text-sm text-muted-foreground">
-            Already have an account?{" "}
+            {t("auth.haveAccount")}{" "}
             <Link to="/login" className="text-primary hover:underline">
-              Sign in
+              {t("auth.signIn")}
             </Link>
           </div>
         </CardFooter>

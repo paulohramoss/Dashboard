@@ -47,7 +47,8 @@
       "daily": "Daily",
       "weekly": "Weekly",
       "monthly": "Monthly",
-      "yearly": "Yearly"
+      "yearly": "Yearly",
+      "add": "Add Transaction"
     },
     "table": {
       "description": "Description",
@@ -137,7 +138,12 @@
     "noAccount": "Don't have an account?",
     "fullName": "Full Name",
     "password": "Password",
-    "confirmPassword": "Confirm Password"
+    "confirmPassword": "Confirm Password",
+    "invalidCredentials": "Invalid email or password",
+    "emailInUse": "Email already registered",
+    "passwordMismatch": "Passwords do not match",
+    "passwordLength": "Password must be at least 6 characters",
+    "createAccountError": "Failed to create account. Please try again."
   },
   "common": {
     "loading": "Loading...",
