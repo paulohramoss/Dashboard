@@ -20,13 +20,14 @@ const LoginPage = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
-    if (login(email, password)) {
+    try {
+      await login(email, password);
       navigate("/");
-    } else {
+    } catch {
       setError("Invalid email or password");
     }
   };

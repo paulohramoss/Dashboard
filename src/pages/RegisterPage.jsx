@@ -23,7 +23,7 @@ const RegisterPage = () => {
   const { register } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
@@ -37,11 +37,15 @@ const RegisterPage = () => {
       return;
     }
 
-    const success = register(name, email, password);
-    if (success) {
+    try {
+      await register(name, email, password);
       navigate("/");
-    } else {
-      setError("Email already registered");
+    } catch (err) {
+      if (err.code === "auth/email-already-in-use") {
+        setError("Email already registered");
+      } else {
+        setError("Failed to create account. Please try again.");
+      }
     }
   };
 

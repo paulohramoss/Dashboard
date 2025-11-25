@@ -23,10 +23,15 @@ const SettingsPage = () => {
     push: false,
   });
 
-  const handleProfileUpdate = (e) => {
+  const handleProfileUpdate = async (e) => {
     e.preventDefault();
-    updateUser({ name, email });
-    // In a real app, show success toast
+    try {
+      await updateUser({ name });
+      // In a real app, show success toast
+      alert("Profile updated successfully!");
+    } catch {
+      alert("Failed to update profile.");
+    }
   };
 
   return (
@@ -82,6 +87,7 @@ const SettingsPage = () => {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    disabled
                   />
                 </div>
                 <Button type="submit">

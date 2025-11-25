@@ -1,54 +1,103 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { db } from "@/lib/firebase";
+import {
+  collection,
+  addDoc,
+  deleteDoc,
+  doc,
+  query,
+  where,
+  onSnapshot,
+  writeBatch,
+  orderBy,
+} from "firebase/firestore";
 
 export const useTransactions = () => {
   const { user } = useAuth();
+  const [transactions, setTransactions] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Lazy initialization of state
-  const [transactions, setTransactions] = useState(() => {
-    if (user?.id) {
-      const saved = localStorage.getItem(`transactions_${user.id}`);
-      return saved ? JSON.parse(saved) : [];
-    }
-    return [];
-  });
-
-  // Save transactions when they change
   useEffect(() => {
-    if (user?.id) {
-      localStorage.setItem(
-        `transactions_${user.id}`,
-        JSON.stringify(transactions)
-      );
+    if (!user?.id) {
+      // eslint-disable-next-line
+      setTransactions([]);
+      setLoading(false);
+      return;
     }
-  }, [transactions, user?.id]);
 
-  const addTransaction = (transaction) => {
-    setTransactions((prev) => [
-      {
+    const q = query(
+      collection(db, "transactions"),
+      where("userId", "==", user.id),
+      orderBy("date", "desc")
+    );
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const docs = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setTransactions(docs);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, [user?.id]);
+
+  const addTransaction = async (transaction) => {
+    if (!user?.id) return;
+    try {
+      await addDoc(collection(db, "transactions"), {
         ...transaction,
-        id: crypto.randomUUID(),
+        userId: user.id,
         date: transaction.date || new Date().toISOString(),
-      },
-      ...prev,
-    ]);
+        createdAt: new Date().toISOString(),
+      });
+    } catch (error) {
+      console.error("Error adding transaction:", error);
+    }
   };
 
-  const addTransactions = (newTransactions) => {
-    const formatted = newTransactions.map((t) => ({
-      ...t,
-      id: crypto.randomUUID(),
-      date: t.date || new Date().toISOString(),
-    }));
-    setTransactions((prev) => [...formatted, ...prev]);
+  const addTransactions = async (newTransactions) => {
+    if (!user?.id) return;
+    try {
+      const batch = writeBatch(db);
+      newTransactions.forEach((t) => {
+        const docRef = doc(collection(db, "transactions"));
+        batch.set(docRef, {
+          ...t,
+          userId: user.id,
+          date: t.date || new Date().toISOString(),
+          createdAt: new Date().toISOString(),
+        });
+      });
+      await batch.commit();
+    } catch (error) {
+      console.error("Error adding transactions:", error);
+    }
   };
 
-  const deleteTransaction = (id) => {
-    setTransactions((prev) => prev.filter((t) => t.id !== id));
+  const deleteTransaction = async (id) => {
+    if (!user?.id) return;
+    try {
+      await deleteDoc(doc(db, "transactions", id));
+    } catch (error) {
+      console.error("Error deleting transaction:", error);
+    }
   };
 
-  const clearTransactions = () => {
-    setTransactions([]);
+  const clearTransactions = async () => {
+    if (!user?.id) return;
+    try {
+      const batch = writeBatch(db);
+      transactions.forEach((t) => {
+        const docRef = doc(db, "transactions", t.id);
+        batch.delete(docRef);
+      });
+      await batch.commit();
+    } catch (error) {
+      console.error("Error clearing transactions:", error);
+    }
   };
 
   const stats = transactions.reduce(
@@ -73,5 +122,6 @@ export const useTransactions = () => {
     deleteTransaction,
     clearTransactions,
     stats,
+    loading,
   };
 };
