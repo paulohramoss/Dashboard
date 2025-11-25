@@ -40,6 +40,10 @@ const LayoutWithKey = () => {
   );
 };
 
+import { Toaster } from "sonner";
+
+// ... existing imports
+
 function App() {
   return (
     <AuthProvider>
@@ -70,6 +74,7 @@ function App() {
             />
           </Routes>
         </Router>
+        <Toaster />
       </ThemeProvider>
     </AuthProvider>
   );

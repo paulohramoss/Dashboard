@@ -4,6 +4,7 @@ import { useTransactions } from "@/hooks/useTransactions";
 import SummaryCards from "@/components/SummaryCards";
 import OverviewChart from "@/components/Charts/OverviewChart";
 import CategoryChart from "@/components/Charts/CategoryChart";
+import MonthlyEvolutionChart from "@/components/Charts/MonthlyEvolutionChart";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const ReportsPage = () => {
@@ -24,6 +25,7 @@ const ReportsPage = () => {
       <div className="grid gap-4 md:grid-cols-2">
         <OverviewChart transactions={transactions} />
         <CategoryChart transactions={transactions} />
+        <MonthlyEvolutionChart transactions={transactions} />
       </div>
 
       <Card>

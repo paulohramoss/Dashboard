@@ -3,12 +3,14 @@ import { useTranslation } from "react-i18next";
 import { Plus } from "lucide-react";
 import { useCategories } from "@/hooks/useCategories";
 import { useAccounts } from "@/hooks/useAccounts";
+import { useTransactions } from "@/hooks/useTransactions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { toast } from "sonner";
 
 import CurrencyInput from "@/components/ui/currency-input";
 
@@ -16,6 +18,7 @@ const TransactionForm = ({ onAddTransaction }) => {
   const { t } = useTranslation();
   const { categories } = useCategories();
   const { accounts } = useAccounts();
+  const { transactions } = useTransactions();
   const [formData, setFormData] = useState({
     description: "",
     amount: "",
@@ -58,11 +61,44 @@ const TransactionForm = ({ onAddTransaction }) => {
 
     const categoryToSubmit =
       formData.category || availableCategories[0]?.name || "";
+    const amountValue = parseFloat(formData.amount);
+
+    // Check for budget overflow
+    if (formData.type === "expense") {
+      const category = categories.find(
+        (c) => c.name === categoryToSubmit && c.type === "expense"
+      );
+
+      if (category && category.budget > 0) {
+        const transactionDate = new Date(formData.date);
+        const currentMonth = transactionDate.getMonth();
+        const currentYear = transactionDate.getFullYear();
+
+        const spent = transactions
+          .filter(
+            (t) =>
+              t.type === "expense" &&
+              t.category === categoryToSubmit &&
+              new Date(t.date).getMonth() === currentMonth &&
+              new Date(t.date).getFullYear() === currentYear
+          )
+          .reduce((acc, curr) => acc + parseFloat(curr.amount), 0);
+
+        if (spent + amountValue > category.budget) {
+          toast.warning(t("budgets.budgetAlert"), {
+            description: t("budgets.budgetExceeded", {
+              category: categoryToSubmit,
+            }),
+            duration: 5000,
+          });
+        }
+      }
+    }
 
     onAddTransaction({
       ...formData,
       category: categoryToSubmit,
-      amount: parseFloat(formData.amount),
+      amount: amountValue,
     });
 
     setFormData({

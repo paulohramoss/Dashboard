@@ -15,12 +15,23 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
 // Removed unused Select imports
-import { Bell, Shield, User, Save, Tag, Trash2, Plus } from "lucide-react";
+import {
+  Bell,
+  Shield,
+  User,
+  Save,
+  Tag,
+  Trash2,
+  Plus,
+  Pencil,
+  X,
+} from "lucide-react";
 
 const SettingsPage = () => {
   const { t } = useTranslation();
   const { user, updateUser } = useAuth();
-  const { categories, addCategory, deleteCategory } = useCategories();
+  const { categories, addCategory, deleteCategory, updateCategory } =
+    useCategories();
 
   const [name, setName] = useState(user?.name || "");
   const [email, setEmail] = useState(user?.email || "");
@@ -34,6 +45,7 @@ const SettingsPage = () => {
     type: "expense",
     color: "#000000",
   });
+  const [editingId, setEditingId] = useState(null);
 
   const handleProfileUpdate = async (e) => {
     e.preventDefault();
@@ -46,12 +58,31 @@ const SettingsPage = () => {
     }
   };
 
-  const handleAddCategory = async (e) => {
+  const handleSaveCategory = async (e) => {
     e.preventDefault();
     if (!newCategory.name) return;
 
-    await addCategory(newCategory);
+    if (editingId) {
+      await updateCategory(editingId, newCategory);
+      setEditingId(null);
+    } else {
+      await addCategory(newCategory);
+    }
     setNewCategory({ name: "", type: "expense", color: "#000000" });
+  };
+
+  const handleEdit = (category) => {
+    setNewCategory({
+      name: category.name,
+      type: category.type,
+      color: category.color,
+    });
+    setEditingId(category.id);
+  };
+
+  const handleCancelEdit = () => {
+    setNewCategory({ name: "", type: "expense", color: "#000000" });
+    setEditingId(null);
   };
 
   return (
@@ -129,7 +160,7 @@ const SettingsPage = () => {
             </CardHeader>
             <CardContent className="space-y-6">
               <form
-                onSubmit={handleAddCategory}
+                onSubmit={handleSaveCategory}
                 className="flex gap-4 items-end"
               >
                 <div className="space-y-2 flex-1">
@@ -166,10 +197,31 @@ const SettingsPage = () => {
                     }
                   />
                 </div>
-                <Button type="submit">
-                  <Plus className="h-4 w-4 mr-2" />
-                  {t("settings.addCategory")}
-                </Button>
+                <div className="flex gap-2">
+                  {editingId && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={handleCancelEdit}
+                    >
+                      <X className="h-4 w-4 mr-2" />
+                      {t("settings.cancel")}
+                    </Button>
+                  )}
+                  <Button type="submit">
+                    {editingId ? (
+                      <>
+                        <Save className="h-4 w-4 mr-2" />
+                        {t("settings.updateCategory")}
+                      </>
+                    ) : (
+                      <>
+                        <Plus className="h-4 w-4 mr-2" />
+                        {t("settings.addCategory")}
+                      </>
+                    )}
+                  </Button>
+                </div>
               </form>
 
               <div className="space-y-2">
@@ -194,7 +246,14 @@ const SettingsPage = () => {
                           : t("settings.expense")}
                       </span>
                     </div>
-                    {!category.isDefault && (
+                    <div className="flex gap-2">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleEdit(category)}
+                      >
+                        <Pencil className="h-4 w-4" />
+                      </Button>
                       <Button
                         variant="ghost"
                         size="icon"
@@ -203,7 +262,7 @@ const SettingsPage = () => {
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>
-                    )}
+                    </div>
                   </div>
                 ))}
               </div>

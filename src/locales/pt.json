@@ -95,6 +95,9 @@
     "categories": "Categorias",
     "categoriesDesc": "Gerencie suas categorias de transações.",
     "addCategory": "Adicionar Categoria",
+    "updateCategory": "Atualizar Categoria",
+    "cancel": "Cancelar",
+    "edit": "Editar",
     "categoryName": "Nome da Categoria",
     "categoryType": "Tipo",
     "categoryColor": "Cor",
@@ -111,7 +114,9 @@
     "amount": "Valor",
     "selectCategory": "Selecione uma categoria",
     "noBudgetableCategories": "Todas as categorias já possuem metas.",
-    "confirmDelete": "Tem certeza que deseja excluir esta meta?"
+    "confirmDelete": "Tem certeza que deseja excluir esta meta?",
+    "budgetAlert": "Alerta de Orçamento",
+    "budgetExceeded": "Atenção: Esta transação excede o orçamento da categoria {{category}}!"
   },
   "accounts": {
     "title": "Contas",
@@ -157,7 +162,8 @@
     "expensesByCategory": "Despesas por Categoria",
     "income": "Receitas",
     "expense": "Despesas",
-    "other": "Outros"
+    "other": "Outros",
+    "monthlyEvolution": "Evolução Mensal"
   },
   "categories": {
     "general": "Geral",

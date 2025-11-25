@@ -95,6 +95,9 @@
     "categories": "Categories",
     "categoriesDesc": "Manage your transaction categories.",
     "addCategory": "Add Category",
+    "updateCategory": "Update Category",
+    "cancel": "Cancel",
+    "edit": "Edit",
     "categoryName": "Category Name",
     "categoryType": "Type",
     "categoryColor": "Color",
@@ -111,7 +114,9 @@
     "amount": "Amount",
     "selectCategory": "Select a category",
     "noBudgetableCategories": "All categories already have budgets.",
-    "confirmDelete": "Are you sure you want to delete this budget?"
+    "confirmDelete": "Are you sure you want to delete this budget?",
+    "budgetAlert": "Budget Alert",
+    "budgetExceeded": "Warning: This transaction exceeds the budget for {{category}}!"
   },
   "accounts": {
     "title": "Accounts",
@@ -150,20 +155,6 @@
     "loading": "Loading...",
     "success": "Success",
     "error": "Error",
-    "save": "Save"
-  },
-  "charts": {
-    "financialOverview": "Financial Overview",
-    "expensesByCategory": "Expenses by Category",
-    "income": "Income",
-    "expense": "Expense",
-    "other": "Other"
-  },
-  "categories": {
-    "general": "General",
-    "food": "Food",
-    "transport": "Transport",
-    "utilities": "Utilities",
     "entertainment": "Entertainment",
     "salary": "Salary",
     "freelance": "Freelance",
