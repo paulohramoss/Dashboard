@@ -103,7 +103,14 @@
   },
   "budgets": {
     "title": "Metas",
-    "subtitle": "Gerencie seus limites de gastos mensais."
+    "subtitle": "Gerencie seus limites de gastos mensais.",
+    "addBudget": "Adicionar Meta",
+    "newBudget": "Nova Meta",
+    "category": "Categoria",
+    "amount": "Valor",
+    "selectCategory": "Selecione uma categoria",
+    "noBudgetableCategories": "Todas as categorias já possuem metas.",
+    "confirmDelete": "Tem certeza que deseja excluir esta meta?"
   },
   "accounts": {
     "title": "Contas",

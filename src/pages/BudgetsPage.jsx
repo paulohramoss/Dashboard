@@ -8,11 +8,13 @@ import {
   CardHeader,
   CardTitle,
   CardDescription,
+  CardFooter,
 } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Edit2, Save, X } from "lucide-react";
+import { Select } from "@/components/ui/select";
+import { Edit2, Save, X, Plus, Trash2 } from "lucide-react";
 
 const BudgetsPage = () => {
   const { t } = useTranslation();
@@ -20,8 +22,24 @@ const BudgetsPage = () => {
   const { transactions } = useTransactions();
   const [editingId, setEditingId] = useState(null);
   const [editValue, setEditValue] = useState("");
+  const [isAdding, setIsAdding] = useState(false);
+  const [newBudget, setNewBudget] = useState({ categoryId: "", amount: "" });
 
+  // Only show expense categories
   const expenseCategories = categories.filter((c) => c.type === "expense");
+
+  // Active budgets are those with budget > 0
+  const activeBudgets = expenseCategories.filter((c) => c.budget > 0);
+
+  // Available categories for new budget are those with budget <= 0
+  const availableCategories = expenseCategories.filter(
+    (c) => !c.budget || c.budget <= 0
+  );
+
+  // Deduplicate available categories by name to prevent duplicates in dropdown
+  const uniqueAvailableCategories = availableCategories.filter(
+    (cat, index, self) => index === self.findIndex((t) => t.name === cat.name)
+  );
 
   const getSpentAmount = (categoryName) => {
     return transactions
@@ -45,6 +63,24 @@ const BudgetsPage = () => {
     setEditingId(null);
   };
 
+  const handleDelete = async (id) => {
+    if (window.confirm(t("budgets.confirmDelete"))) {
+      await updateCategory(id, { budget: 0 });
+    }
+  };
+
+  const handleAddBudget = async (e) => {
+    e.preventDefault();
+    if (!newBudget.categoryId || !newBudget.amount) return;
+
+    await updateCategory(newBudget.categoryId, {
+      budget: parseFloat(newBudget.amount),
+    });
+
+    setNewBudget({ categoryId: "", amount: "" });
+    setIsAdding(false);
+  };
+
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat("pt-BR", {
       style: "currency",
@@ -54,15 +90,80 @@ const BudgetsPage = () => {
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
-      <div>
-        <h2 className="text-3xl font-bold tracking-tight">
-          {t("budgets.title")}
-        </h2>
-        <p className="text-muted-foreground">{t("budgets.subtitle")}</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-3xl font-bold tracking-tight">
+            {t("budgets.title")}
+          </h2>
+          <p className="text-muted-foreground">{t("budgets.subtitle")}</p>
+        </div>
+        <Button onClick={() => setIsAdding(!isAdding)}>
+          <Plus className="mr-2 h-4 w-4" /> {t("budgets.addBudget")}
+        </Button>
       </div>
 
+      {isAdding && (
+        <Card className="max-w-md mx-auto animate-in slide-in-from-top-5">
+          <CardHeader>
+            <CardTitle>{t("budgets.newBudget")}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleAddBudget} className="space-y-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium">
+                  {t("budgets.category")}
+                </label>
+                <Select
+                  value={newBudget.categoryId}
+                  onChange={(e) =>
+                    setNewBudget({ ...newBudget, categoryId: e.target.value })
+                  }
+                  required
+                >
+                  <option value="">{t("budgets.selectCategory")}</option>
+                  {uniqueAvailableCategories.map((cat) => (
+                    <option key={cat.id} value={cat.id}>
+                      {cat.isDefault
+                        ? t(`categories.${cat.name.toLowerCase()}`)
+                        : cat.name}
+                    </option>
+                  ))}
+                </Select>
+                {uniqueAvailableCategories.length === 0 && (
+                  <p className="text-xs text-muted-foreground">
+                    {t("budgets.noBudgetableCategories")}
+                  </p>
+                )}
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">
+                  {t("budgets.amount")}
+                </label>
+                <Input
+                  type="number"
+                  step="0.01"
+                  value={newBudget.amount}
+                  onChange={(e) =>
+                    setNewBudget({ ...newBudget, amount: e.target.value })
+                  }
+                  placeholder="0.00"
+                  required
+                />
+              </div>
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={uniqueAvailableCategories.length === 0}
+              >
+                {t("common.save")}
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+      )}
+
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {expenseCategories.map((category) => {
+        {activeBudgets.map((category) => {
           const spent = getSpentAmount(category.name);
           const budget = category.budget || 0;
           const percentage = budget > 0 ? (spent / budget) * 100 : 0;
@@ -80,63 +181,80 @@ const BudgetsPage = () => {
                       ? t(`categories.${category.name.toLowerCase()}`)
                       : category.name}
                   </CardTitle>
-                  {editingId === category.id ? (
-                    <div className="flex items-center gap-2">
-                      <Input
-                        type="number"
-                        className="w-24 h-8"
-                        value={editValue}
-                        onChange={(e) => setEditValue(e.target.value)}
-                      />
-                      <Button
-                        size="icon"
-                        variant="ghost"
-                        className="h-8 w-8 text-green-600"
-                        onClick={() => handleSave(category.id)}
-                      >
-                        <Save className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        size="icon"
-                        variant="ghost"
-                        className="h-8 w-8 text-red-600"
-                        onClick={() => setEditingId(null)}
-                      >
-                        <X className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  ) : (
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      className="h-8 w-8 text-muted-foreground"
-                      onClick={() => handleEdit(category)}
-                    >
-                      <Edit2 className="h-4 w-4" />
-                    </Button>
-                  )}
+                  <div className="flex items-center gap-1">
+                    {editingId === category.id ? (
+                      <>
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          className="h-8 w-8 text-green-600"
+                          onClick={() => handleSave(category.id)}
+                        >
+                          <Save className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          className="h-8 w-8 text-red-600"
+                          onClick={() => setEditingId(null)}
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </>
+                    ) : (
+                      <>
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          className="h-8 w-8 text-muted-foreground"
+                          onClick={() => handleEdit(category)}
+                        >
+                          <Edit2 className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                          onClick={() => handleDelete(category.id)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </>
+                    )}
+                  </div>
                 </div>
                 <CardDescription>
                   {formatCurrency(spent)} / {formatCurrency(budget)}
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <Progress
-                  value={Math.min(percentage, 100)}
-                  className={`h-2 ${
-                    isOverBudget ? "bg-red-100" : "bg-secondary"
-                  }`}
-                  indicatorClassName={
-                    isOverBudget
-                      ? "bg-red-500"
-                      : percentage > 80
-                      ? "bg-yellow-500"
-                      : "bg-green-500"
-                  }
-                />
-                <p className="text-xs text-muted-foreground mt-2 text-right">
-                  {percentage.toFixed(0)}%
-                </p>
+                {editingId === category.id ? (
+                  <Input
+                    type="number"
+                    className="mb-4"
+                    value={editValue}
+                    onChange={(e) => setEditValue(e.target.value)}
+                  />
+                ) : (
+                  <>
+                    <Progress
+                      value={Math.min(percentage, 100)}
+                      className={`h-2 ${
+                        isOverBudget ? "bg-red-100" : "bg-secondary"
+                      }`}
+                      indicatorClassName={
+                        isOverBudget
+                          ? "bg-red-500"
+                          : percentage > 80
+                          ? "bg-yellow-500"
+                          : "bg-green-500"
+                      }
+                    />
+                    <p className="text-xs text-muted-foreground mt-2 text-right">
+                      {percentage.toFixed(0)}%
+                    </p>
+                  </>
+                )}
               </CardContent>
             </Card>
           );

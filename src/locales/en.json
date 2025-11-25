@@ -103,7 +103,14 @@
   },
   "budgets": {
     "title": "Budgets",
-    "subtitle": "Manage your monthly spending limits."
+    "subtitle": "Manage your monthly spending limits.",
+    "addBudget": "Add Budget",
+    "newBudget": "New Budget",
+    "category": "Category",
+    "amount": "Amount",
+    "selectCategory": "Select a category",
+    "noBudgetableCategories": "All categories already have budgets.",
+    "confirmDelete": "Are you sure you want to delete this budget?"
   },
   "accounts": {
     "title": "Accounts",
