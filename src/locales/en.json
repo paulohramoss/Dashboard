@@ -63,7 +63,19 @@
     "allTypes": "All Types",
     "allCategories": "All Categories",
     "dateRange": "Date Range",
-    "clearFilters": "Clear Filters"
+    "clearFilters": "Clear Filters",
+    "import": {
+      "processing": "Processing...",
+      "unsupportedFormat": "Unsupported file format. Please use .csv, .xlsx, .xls, or .ofx",
+      "csvError": "Error parsing CSV file",
+      "excelError": "Error parsing Excel file",
+      "numbersError": "No valid transactions found in Numbers export",
+      "success": "Successfully imported {{count}} transactions",
+      "ofxError": "Error parsing OFX file. Ensure it is a valid bank export.",
+      "noTransactions": "No valid transactions found",
+      "defaultDescription": "Imported Transaction",
+      "ofxNoTransactions": "No transactions found in OFX file"
+    }
   },
   "reports": {
     "title": "Reports",

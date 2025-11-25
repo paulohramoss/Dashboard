@@ -46,7 +46,7 @@ const FileUploader = ({ onUpload }) => {
 
   const processFile = async (file) => {
     setStatus("uploading");
-    setMessage(t("common.loading"));
+    setMessage(t("transactions.import.processing"));
 
     try {
       const extension = file.name.split(".").pop().toLowerCase();
@@ -58,9 +58,7 @@ const FileUploader = ({ onUpload }) => {
       } else if (extension === "ofx") {
         parseOFX(file);
       } else {
-        throw new Error(
-          "Unsupported file format. Please use .csv, .xlsx, .xls, or .ofx"
-        );
+        throw new Error(t("transactions.import.unsupportedFormat"));
       }
     } catch (error) {
       setStatus("error");
@@ -75,7 +73,7 @@ const FileUploader = ({ onUpload }) => {
       complete: (results) => {
         if (results.errors.length > 0) {
           setStatus("error");
-          setMessage("Error parsing CSV file");
+          setMessage(t("transactions.import.csvError"));
           return;
         }
         normalizeData(results.data);
@@ -109,7 +107,7 @@ const FileUploader = ({ onUpload }) => {
         }
       } catch {
         setStatus("error");
-        setMessage("Error parsing Excel file");
+        setMessage(t("transactions.import.excelError"));
       }
     };
     reader.readAsArrayBuffer(file);
@@ -175,13 +173,15 @@ const FileUploader = ({ onUpload }) => {
 
     if (transactions.length === 0) {
       setStatus("error");
-      setMessage("No valid transactions found in Numbers export");
+      setMessage(t("transactions.import.numbersError"));
       return;
     }
 
     onUpload(transactions);
     setStatus("success");
-    setMessage(`Successfully imported ${transactions.length} transactions`);
+    setMessage(
+      t("transactions.import.success", { count: transactions.length })
+    );
 
     setTimeout(() => {
       setStatus("idle");
@@ -226,13 +226,13 @@ const FileUploader = ({ onUpload }) => {
         });
 
         if (transactions.length === 0) {
-          throw new Error("No transactions found in OFX file");
+          throw new Error(t("transactions.import.ofxNoTransactions"));
         }
 
         onUpload(transactions);
         setStatus("success");
         setMessage(
-          `Successfully imported ${transactions.length} transactions from OFX`
+          t("transactions.import.success", { count: transactions.length })
         );
 
         setTimeout(() => {
@@ -243,7 +243,7 @@ const FileUploader = ({ onUpload }) => {
       } catch (error) {
         console.error(error);
         setStatus("error");
-        setMessage("Error parsing OFX file. Ensure it is a valid bank export.");
+        setMessage(t("transactions.import.ofxError"));
       }
     };
     reader.readAsText(file);
@@ -260,7 +260,9 @@ const FileUploader = ({ onUpload }) => {
           Object.keys(row).find((k) => k.toLowerCase().includes(key));
 
         const description =
-          row[getKey("desc")] || row[getKey("name")] || "Imported Transaction";
+          row[getKey("desc")] ||
+          row[getKey("name")] ||
+          t("transactions.import.defaultDescription");
         const amount = parseFloat(
           row[getKey("amount")] ||
             row[getKey("value")] ||
@@ -309,13 +311,13 @@ const FileUploader = ({ onUpload }) => {
 
     if (normalized.length === 0) {
       setStatus("error");
-      setMessage("No valid transactions found");
+      setMessage(t("transactions.import.noTransactions"));
       return;
     }
 
     onUpload(normalized);
     setStatus("success");
-    setMessage(`Successfully imported ${normalized.length} transactions`);
+    setMessage(t("transactions.import.success", { count: normalized.length }));
 
     // Reset after 3 seconds
     setTimeout(() => {
@@ -366,7 +368,9 @@ const FileUploader = ({ onUpload }) => {
             {status === "uploading" && (
               <>
                 <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full mb-2" />
-                <p className="font-medium">Processing...</p>
+                <p className="font-medium">
+                  {t("transactions.import.processing")}
+                </p>
               </>
             )}
 

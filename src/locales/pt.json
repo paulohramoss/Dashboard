@@ -63,7 +63,19 @@
     "allTypes": "Todos os Tipos",
     "allCategories": "Todas as Categorias",
     "dateRange": "Período",
-    "clearFilters": "Limpar Filtros"
+    "clearFilters": "Limpar Filtros",
+    "import": {
+      "processing": "Processando...",
+      "unsupportedFormat": "Formato de arquivo não suportado. Por favor use .csv, .xlsx, .xls ou .ofx",
+      "csvError": "Erro ao ler arquivo CSV",
+      "excelError": "Erro ao ler arquivo Excel",
+      "numbersError": "Nenhuma transação válida encontrada na exportação do Numbers",
+      "success": "Sucesso ao importar {{count}} transações",
+      "ofxError": "Erro ao ler arquivo OFX. Verifique se é uma exportação bancária válida.",
+      "noTransactions": "Nenhuma transação válida encontrada",
+      "defaultDescription": "Transação Importada",
+      "ofxNoTransactions": "Nenhuma transação encontrada no arquivo OFX"
+    }
   },
   "reports": {
     "title": "Relatórios",
