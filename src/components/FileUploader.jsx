@@ -1,4 +1,5 @@
 import React, { useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Upload,
   FileSpreadsheet,
@@ -13,6 +14,7 @@ import { parse } from "ofx-js";
 import { cn } from "@/lib/utils";
 
 const FileUploader = ({ onUpload }) => {
+  const { t } = useTranslation();
   const fileInputRef = useRef(null);
   const [isDragging, setIsDragging] = useState(false);
   const [status, setStatus] = useState("idle"); // idle, uploading, success, error
@@ -44,7 +46,7 @@ const FileUploader = ({ onUpload }) => {
 
   const processFile = async (file) => {
     setStatus("uploading");
-    setMessage("Processing file...");
+    setMessage(t("common.loading"));
 
     try {
       const extension = file.name.split(".").pop().toLowerCase();
@@ -354,11 +356,9 @@ const FileUploader = ({ onUpload }) => {
                 <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-2">
                   <Upload className="h-5 w-5" />
                 </div>
-                <h3 className="font-semibold">
-                  Click to upload or drag and drop
-                </h3>
+                <h3 className="font-semibold">{t("transactions.dragDrop")}</h3>
                 <p className="text-sm text-muted-foreground">
-                  CSV, Excel, OFX (Bank Export)
+                  {t("transactions.supports")}
                 </p>
               </>
             )}

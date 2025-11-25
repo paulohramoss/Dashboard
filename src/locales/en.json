@@ -1,0 +1,96 @@
+{
+  "app": {
+    "title": "FinanceDash"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "transactions": "Transactions",
+    "reports": "Reports",
+    "settings": "Settings",
+    "logout": "Logout",
+    "confirmLogout": "Confirm Logout?"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "subtitle": "Overview of your financial status and recent activity.",
+    "clearData": "Clear Data",
+    "exportExcel": "Excel",
+    "exportPDF": "PDF",
+    "totalBalance": "Total Balance",
+    "income": "Income",
+    "expenses": "Expenses"
+  },
+  "transactions": {
+    "title": "Transactions",
+    "subtitle": "View and manage your transaction history.",
+    "allTransactions": "All Transactions",
+    "addTransaction": "Add Transaction",
+    "uploadFile": "Upload File",
+    "dragDrop": "Click to upload or drag and drop",
+    "supports": "Supports .csv, .xlsx, .ofx",
+    "form": {
+      "description": "Description",
+      "amount": "Amount",
+      "type": "Type",
+      "category": "Category",
+      "date": "Date",
+      "income": "Income",
+      "expense": "Expense",
+      "add": "Add Transaction"
+    },
+    "table": {
+      "description": "Description",
+      "category": "Category",
+      "date": "Date",
+      "amount": "Amount",
+      "actions": "Actions"
+    },
+    "noTransactions": "No transactions found. Add one manually or import a file."
+  },
+  "reports": {
+    "title": "Reports",
+    "subtitle": "Detailed analysis of your finances.",
+    "transactionSummary": "Transaction Summary",
+    "totalTransactionsPart1": "You have a total of",
+    "totalTransactionsPart2": "transactions recorded. Your current balance is"
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Manage your account settings and preferences.",
+    "profile": "Profile",
+    "notifications": "Notifications",
+    "security": "Security",
+    "save": "Save Changes",
+    "name": "Name",
+    "email": "Email",
+    "emailNotifs": "Email Notifications",
+    "pushNotifs": "Push Notifications",
+    "currentPassword": "Current Password",
+    "newPassword": "New Password",
+    "confirmPassword": "Confirm Password",
+    "updatePassword": "Update Password",
+    "profileDesc": "Update your personal details here.",
+    "notificationsDesc": "Choose how you want to be notified.",
+    "emailNotifsDesc": "Receive daily summaries and alerts.",
+    "pushNotifsDesc": "Receive real-time alerts on your device.",
+    "securityDesc": "Manage your password and account security."
+  },
+  "auth": {
+    "welcome": "Welcome back",
+    "loginSubtitle": "Enter your credentials to access your dashboard",
+    "createAccount": "Create an account",
+    "registerSubtitle": "Enter your details to get started",
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "haveAccount": "Already have an account?",
+    "noAccount": "Don't have an account?",
+    "fullName": "Full Name",
+    "password": "Password",
+    "confirmPassword": "Confirm Password"
+  },
+  "common": {
+    "loading": "Loading...",
+    "success": "Success",
+    "error": "Error"
+  }
+}

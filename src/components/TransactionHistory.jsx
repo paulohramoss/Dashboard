@@ -1,10 +1,13 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Trash2, ArrowUpCircle, ArrowDownCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
 const TransactionHistory = ({ transactions, onDelete }) => {
+  const { t } = useTranslation();
+
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat("pt-BR", {
       style: "currency",
@@ -19,13 +22,13 @@ const TransactionHistory = ({ transactions, onDelete }) => {
   return (
     <Card className="col-span-4 lg:col-span-3">
       <CardHeader>
-        <CardTitle>Recent Transactions</CardTitle>
+        <CardTitle>{t("transactions.title")}</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
           {transactions.length === 0 ? (
             <p className="text-center text-muted-foreground py-8">
-              No transactions found. Add one manually or import a file.
+              {t("transactions.noTransactions")}
             </p>
           ) : (
             transactions.slice(0, 10).map((transaction) => (

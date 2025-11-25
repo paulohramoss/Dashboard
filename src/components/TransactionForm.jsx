@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,6 +7,7 @@ import { Select } from "@/components/ui/select";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
 const TransactionForm = ({ onAddTransaction }) => {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     description: "",
     amount: "",
@@ -35,13 +37,15 @@ const TransactionForm = ({ onAddTransaction }) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Add Transaction</CardTitle>
+        <CardTitle>{t("transactions.addTransaction")}</CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <label className="text-sm font-medium">Description</label>
+              <label className="text-sm font-medium">
+                {t("transactions.form.description")}
+              </label>
               <Input
                 placeholder="e.g. Grocery Shopping"
                 value={formData.description}
@@ -52,7 +56,9 @@ const TransactionForm = ({ onAddTransaction }) => {
               />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium">Amount</label>
+              <label className="text-sm font-medium">
+                {t("transactions.form.amount")}
+              </label>
               <Input
                 type="number"
                 placeholder="0.00"
@@ -66,19 +72,25 @@ const TransactionForm = ({ onAddTransaction }) => {
               />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium">Type</label>
+              <label className="text-sm font-medium">
+                {t("transactions.form.type")}
+              </label>
               <Select
                 value={formData.type}
                 onChange={(e) =>
                   setFormData({ ...formData, type: e.target.value })
                 }
               >
-                <option value="expense">Expense</option>
-                <option value="income">Income</option>
+                <option value="expense">
+                  {t("transactions.form.expense")}
+                </option>
+                <option value="income">{t("transactions.form.income")}</option>
               </Select>
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium">Category</label>
+              <label className="text-sm font-medium">
+                {t("transactions.form.category")}
+              </label>
               <Select
                 value={formData.category}
                 onChange={(e) =>
@@ -96,7 +108,9 @@ const TransactionForm = ({ onAddTransaction }) => {
               </Select>
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium">Date</label>
+              <label className="text-sm font-medium">
+                {t("transactions.form.date")}
+              </label>
               <Input
                 type="date"
                 value={formData.date}
@@ -108,7 +122,7 @@ const TransactionForm = ({ onAddTransaction }) => {
             </div>
           </div>
           <Button type="submit" className="w-full">
-            <Plus className="mr-2 h-4 w-4" /> Add Transaction
+            <Plus className="mr-2 h-4 w-4" /> {t("transactions.form.add")}
           </Button>
         </form>
       </CardContent>

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import {
   LayoutDashboard,
   PieChart,
@@ -12,20 +13,23 @@ import {
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import { LanguageToggle } from "@/components/LanguageToggle";
 
 const Layout = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isConfirmingLogout, setIsConfirmingLogout] = useState(false);
   const location = useLocation();
   const { user, logout } = useAuth();
+  const { t } = useTranslation();
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
   const navItems = [
-    { icon: LayoutDashboard, label: "Dashboard", href: "/" },
-    { icon: Wallet, label: "Transactions", href: "/transactions" },
-    { icon: PieChart, label: "Reports", href: "/reports" },
-    { icon: Settings, label: "Settings", href: "/settings" },
+    { icon: LayoutDashboard, label: t("nav.dashboard"), href: "/" },
+    { icon: Wallet, label: t("nav.transactions"), href: "/transactions" },
+    { icon: PieChart, label: t("nav.reports"), href: "/reports" },
+    { icon: Settings, label: t("nav.settings"), href: "/settings" },
   ];
 
   return (
@@ -46,7 +50,7 @@ const Layout = ({ children }) => {
         )}
       >
         <div className="h-16 flex items-center px-6 border-b">
-          <h1 className="text-xl font-bold text-primary">FinanceDash</h1>
+          <h1 className="text-xl font-bold text-primary">{t("app.title")}</h1>
           <Button
             variant="ghost"
             size="icon"
@@ -96,7 +100,7 @@ const Layout = ({ children }) => {
                 isConfirmingLogout && "rotate-180"
               )}
             />
-            {isConfirmingLogout ? "Confirm Logout?" : "Logout"}
+            {isConfirmingLogout ? t("nav.confirmLogout") : t("nav.logout")}
           </button>
         </nav>
       </aside>
@@ -114,6 +118,8 @@ const Layout = ({ children }) => {
             <Menu className="h-6 w-6" />
           </Button>
           <div className="flex items-center gap-4 ml-auto">
+            <LanguageToggle />
+            <ThemeToggle />
             <span className="text-sm font-medium hidden md:block">
               {user?.name}
             </span>

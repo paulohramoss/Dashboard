@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "@/hooks/useAuth";
 import {
   Card,
@@ -15,6 +16,7 @@ import { Switch } from "@/components/ui/switch";
 import { Bell, Shield, User, Save } from "lucide-react";
 
 const SettingsPage = () => {
+  const { t } = useTranslation();
   const { user, updateUser } = useAuth();
   const [name, setName] = useState(user?.name || "");
   const [email, setEmail] = useState(user?.email || "");
@@ -37,43 +39,41 @@ const SettingsPage = () => {
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
       <div>
-        <h2 className="text-3xl font-bold tracking-tight">Settings</h2>
-        <p className="text-muted-foreground">
-          Manage your account settings and preferences.
-        </p>
+        <h2 className="text-3xl font-bold tracking-tight">
+          {t("settings.title")}
+        </h2>
+        <p className="text-muted-foreground">{t("settings.subtitle")}</p>
       </div>
 
       <Tabs defaultValue="profile" className="space-y-4">
         <TabsList>
           <TabsTrigger value="profile" className="flex items-center gap-2">
             <User className="h-4 w-4" />
-            Profile
+            {t("settings.profile")}
           </TabsTrigger>
           <TabsTrigger
             value="notifications"
             className="flex items-center gap-2"
           >
             <Bell className="h-4 w-4" />
-            Notifications
+            {t("settings.notifications")}
           </TabsTrigger>
           <TabsTrigger value="security" className="flex items-center gap-2">
             <Shield className="h-4 w-4" />
-            Security
+            {t("settings.security")}
           </TabsTrigger>
         </TabsList>
 
         <TabsContent value="profile">
           <Card>
             <CardHeader>
-              <CardTitle>Profile Information</CardTitle>
-              <CardDescription>
-                Update your personal details here.
-              </CardDescription>
+              <CardTitle>{t("settings.profile")}</CardTitle>
+              <CardDescription>{t("settings.profileDesc")}</CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleProfileUpdate} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="name">Name</Label>
+                  <Label htmlFor="name">{t("settings.name")}</Label>
                   <Input
                     id="name"
                     value={name}
@@ -81,7 +81,7 @@ const SettingsPage = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="email">{t("settings.email")}</Label>
                   <Input
                     id="email"
                     type="email"
@@ -92,7 +92,7 @@ const SettingsPage = () => {
                 </div>
                 <Button type="submit">
                   <Save className="mr-2 h-4 w-4" />
-                  Save Changes
+                  {t("settings.save")}
                 </Button>
               </form>
             </CardContent>
@@ -102,9 +102,9 @@ const SettingsPage = () => {
         <TabsContent value="notifications">
           <Card>
             <CardHeader>
-              <CardTitle>Notification Preferences</CardTitle>
+              <CardTitle>{t("settings.notifications")}</CardTitle>
               <CardDescription>
-                Choose how you want to be notified.
+                {t("settings.notificationsDesc")}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -113,9 +113,9 @@ const SettingsPage = () => {
                   htmlFor="email-notifs"
                   className="flex flex-col space-y-1"
                 >
-                  <span>Email Notifications</span>
+                  <span>{t("settings.emailNotifs")}</span>
                   <span className="font-normal text-sm text-muted-foreground">
-                    Receive daily summaries and alerts.
+                    {t("settings.emailNotifsDesc")}
                   </span>
                 </Label>
                 <Switch
@@ -131,9 +131,9 @@ const SettingsPage = () => {
                   htmlFor="push-notifs"
                   className="flex flex-col space-y-1"
                 >
-                  <span>Push Notifications</span>
+                  <span>{t("settings.pushNotifs")}</span>
                   <span className="font-normal text-sm text-muted-foreground">
-                    Receive real-time alerts on your device.
+                    {t("settings.pushNotifsDesc")}
                   </span>
                 </Label>
                 <Switch
@@ -151,25 +151,29 @@ const SettingsPage = () => {
         <TabsContent value="security">
           <Card>
             <CardHeader>
-              <CardTitle>Security Settings</CardTitle>
-              <CardDescription>
-                Manage your password and account security.
-              </CardDescription>
+              <CardTitle>{t("settings.security")}</CardTitle>
+              <CardDescription>{t("settings.securityDesc")}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="current-password">Current Password</Label>
+                <Label htmlFor="current-password">
+                  {t("settings.currentPassword")}
+                </Label>
                 <Input id="current-password" type="password" />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="new-password">New Password</Label>
+                <Label htmlFor="new-password">
+                  {t("settings.newPassword")}
+                </Label>
                 <Input id="new-password" type="password" />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="confirm-password">Confirm Password</Label>
+                <Label htmlFor="confirm-password">
+                  {t("settings.confirmPassword")}
+                </Label>
                 <Input id="confirm-password" type="password" />
               </div>
-              <Button>Update Password</Button>
+              <Button>{t("settings.updatePassword")}</Button>
             </CardContent>
           </Card>
         </TabsContent>

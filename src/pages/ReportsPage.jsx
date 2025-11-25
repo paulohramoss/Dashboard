@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { useTransactions } from "@/hooks/useTransactions";
 import SummaryCards from "@/components/SummaryCards";
 import OverviewChart from "@/components/Charts/OverviewChart";
@@ -7,14 +8,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const ReportsPage = () => {
   const { transactions, stats } = useTransactions();
+  const { t } = useTranslation();
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
       <div>
-        <h2 className="text-3xl font-bold tracking-tight">Reports</h2>
-        <p className="text-muted-foreground">
-          Detailed financial analysis and insights.
-        </p>
+        <h2 className="text-3xl font-bold tracking-tight">
+          {t("reports.title")}
+        </h2>
+        <p className="text-muted-foreground">{t("reports.subtitle")}</p>
       </div>
 
       <SummaryCards stats={stats} />
@@ -26,15 +28,15 @@ const ReportsPage = () => {
 
       <Card>
         <CardHeader>
-          <CardTitle>Transaction Summary</CardTitle>
+          <CardTitle>{t("reports.transactionSummary")}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-sm text-muted-foreground">
-            You have a total of{" "}
+            {t("reports.totalTransactionsPart1")}{" "}
             <span className="font-bold text-foreground">
               {transactions.length}
             </span>{" "}
-            transactions recorded. Your current balance is{" "}
+            {t("reports.totalTransactionsPart2")}{" "}
             <span
               className={
                 stats.balance >= 0

@@ -1,0 +1,96 @@
+{
+  "app": {
+    "title": "FinanceDash"
+  },
+  "nav": {
+    "dashboard": "Painel",
+    "transactions": "Transações",
+    "reports": "Relatórios",
+    "settings": "Configurações",
+    "logout": "Sair",
+    "confirmLogout": "Confirmar Saída?"
+  },
+  "dashboard": {
+    "title": "Painel",
+    "subtitle": "Visão geral do seu status financeiro e atividades recentes.",
+    "clearData": "Limpar Dados",
+    "exportExcel": "Excel",
+    "exportPDF": "PDF",
+    "totalBalance": "Saldo Total",
+    "income": "Receitas",
+    "expenses": "Despesas"
+  },
+  "transactions": {
+    "title": "Transações",
+    "subtitle": "Visualize e gerencie seu histórico de transações.",
+    "allTransactions": "Todas as Transações",
+    "addTransaction": "Adicionar Transação",
+    "uploadFile": "Enviar Arquivo",
+    "dragDrop": "Clique para enviar ou arraste e solte",
+    "supports": "Suporta .csv, .xlsx, .ofx",
+    "form": {
+      "description": "Descrição",
+      "amount": "Valor",
+      "type": "Tipo",
+      "category": "Categoria",
+      "date": "Data",
+      "income": "Receita",
+      "expense": "Despesa",
+      "add": "Adicionar"
+    },
+    "table": {
+      "description": "Descrição",
+      "category": "Categoria",
+      "date": "Data",
+      "amount": "Valor",
+      "actions": "Ações"
+    },
+    "noTransactions": "Nenhuma transação encontrada. Adicione manualmente ou importe um arquivo."
+  },
+  "reports": {
+    "title": "Relatórios",
+    "subtitle": "Análise detalhada das suas finanças.",
+    "transactionSummary": "Resumo de Transações",
+    "totalTransactionsPart1": "Você tem um total de",
+    "totalTransactionsPart2": "transações registradas. Seu saldo atual é"
+  },
+  "settings": {
+    "title": "Configurações",
+    "subtitle": "Gerencie as configurações da sua conta e preferências.",
+    "profile": "Perfil",
+    "notifications": "Notificações",
+    "security": "Segurança",
+    "save": "Salvar Alterações",
+    "name": "Nome",
+    "email": "E-mail",
+    "emailNotifs": "Notificações por E-mail",
+    "pushNotifs": "Notificações Push",
+    "currentPassword": "Senha Atual",
+    "newPassword": "Nova Senha",
+    "confirmPassword": "Confirmar Senha",
+    "updatePassword": "Atualizar Senha",
+    "profileDesc": "Atualize seus dados pessoais aqui.",
+    "notificationsDesc": "Escolha como você deseja ser notificado.",
+    "emailNotifsDesc": "Receba resumos diários e alertas.",
+    "pushNotifsDesc": "Receba alertas em tempo real no seu dispositivo.",
+    "securityDesc": "Gerencie sua senha e segurança da conta."
+  },
+  "auth": {
+    "welcome": "Bem-vindo de volta",
+    "loginSubtitle": "Insira suas credenciais para acessar o painel",
+    "createAccount": "Criar uma conta",
+    "registerSubtitle": "Insira seus dados para começar",
+    "signIn": "Entrar",
+    "signUp": "Cadastrar",
+    "haveAccount": "Já tem uma conta?",
+    "noAccount": "Não tem uma conta?",
+    "fullName": "Nome Completo",
+    "password": "Senha",
+    "confirmPassword": "Confirmar Senha"
+  },
+  "common": {
+    "loading": "Carregando...",
+    "success": "Sucesso",
+    "error": "Erro"
+  }
+}
