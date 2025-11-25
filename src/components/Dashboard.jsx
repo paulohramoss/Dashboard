@@ -7,7 +7,9 @@ import TransactionHistory from "@/components/TransactionHistory";
 import TransactionForm from "@/components/TransactionForm";
 import FileUploader from "@/components/FileUploader";
 import { Button } from "@/components/ui/button";
-import { Download, Trash2 } from "lucide-react";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
+import { Download, Trash2, FileSpreadsheet, FileText } from "lucide-react";
 import * as XLSX from "xlsx";
 
 const Dashboard = () => {
@@ -20,11 +22,46 @@ const Dashboard = () => {
     stats,
   } = useTransactions();
 
-  const handleExport = () => {
+  const handleExportExcel = () => {
     const ws = XLSX.utils.json_to_sheet(transactions);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Transactions");
     XLSX.writeFile(wb, "financial-dashboard-export.xlsx");
+  };
+
+  const handleExportPDF = () => {
+    const doc = new jsPDF();
+
+    doc.setFontSize(18);
+    doc.text("Financial Dashboard Report", 14, 22);
+
+    doc.setFontSize(11);
+    doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 30);
+
+    const tableColumn = ["Date", "Description", "Category", "Type", "Amount"];
+    const tableRows = [];
+
+    transactions.forEach((transaction) => {
+      const transactionData = [
+        new Date(transaction.date).toLocaleDateString(),
+        transaction.description,
+        transaction.category,
+        transaction.type,
+        `$${parseFloat(transaction.amount).toFixed(2)}`,
+      ];
+      tableRows.push(transactionData);
+    });
+
+    autoTable(doc, {
+      head: [tableColumn],
+      body: tableRows,
+      startY: 40,
+      theme: "grid",
+      styles: { fontSize: 8 },
+      headStyles: { fillColor: [37, 99, 235] }, // Primary blue color
+    });
+
+    doc.save("financial-dashboard-report.pdf");
   };
 
   return (
@@ -45,9 +82,13 @@ const Dashboard = () => {
             <Trash2 className="mr-2 h-4 w-4" />
             Clear Data
           </Button>
-          <Button variant="outline" onClick={handleExport}>
-            <Download className="mr-2 h-4 w-4" />
-            Export Data
+          <Button variant="outline" onClick={handleExportExcel}>
+            <FileSpreadsheet className="mr-2 h-4 w-4" />
+            Excel
+          </Button>
+          <Button variant="outline" onClick={handleExportPDF}>
+            <FileText className="mr-2 h-4 w-4" />
+            PDF
           </Button>
         </div>
       </div>
