@@ -16,6 +16,8 @@ import { Button } from "@/components/ui/button";
 import { Select } from "@/components/ui/select";
 import { Edit2, Save, X, Plus, Trash2 } from "lucide-react";
 
+import CurrencyInput from "@/components/ui/currency-input";
+
 const BudgetsPage = () => {
   const { t } = useTranslation();
   const { categories, updateCategory } = useCategories();
@@ -28,12 +30,14 @@ const BudgetsPage = () => {
   // Only show expense categories
   const expenseCategories = categories.filter((c) => c.type === "expense");
 
-  // Active budgets are those with budget > 0
-  const activeBudgets = expenseCategories.filter((c) => c.budget > 0);
+  // Active budgets are those with budget defined (not null/undefined)
+  const activeBudgets = expenseCategories.filter(
+    (c) => c.budget !== null && c.budget !== undefined
+  );
 
-  // Available categories for new budget are those with budget <= 0
+  // Available categories for new budget are those with no budget defined
   const availableCategories = expenseCategories.filter(
-    (c) => !c.budget || c.budget <= 0
+    (c) => c.budget === null || c.budget === undefined
   );
 
   // Deduplicate available categories by name to prevent duplicates in dropdown
@@ -65,13 +69,13 @@ const BudgetsPage = () => {
 
   const handleDelete = async (id) => {
     if (window.confirm(t("budgets.confirmDelete"))) {
-      await updateCategory(id, { budget: 0 });
+      await updateCategory(id, { budget: null });
     }
   };
 
   const handleAddBudget = async (e) => {
     e.preventDefault();
-    if (!newBudget.categoryId || !newBudget.amount) return;
+    if (!newBudget.categoryId || newBudget.amount === "") return;
 
     await updateCategory(newBudget.categoryId, {
       budget: parseFloat(newBudget.amount),
@@ -139,14 +143,12 @@ const BudgetsPage = () => {
                 <label className="text-sm font-medium">
                   {t("budgets.amount")}
                 </label>
-                <Input
-                  type="number"
-                  step="0.01"
+                <CurrencyInput
                   value={newBudget.amount}
-                  onChange={(e) =>
-                    setNewBudget({ ...newBudget, amount: e.target.value })
+                  onChange={(val) =>
+                    setNewBudget({ ...newBudget, amount: val })
                   }
-                  placeholder="0.00"
+                  placeholder="R$ 0,00"
                   required
                 />
               </div>
@@ -229,11 +231,10 @@ const BudgetsPage = () => {
               </CardHeader>
               <CardContent>
                 {editingId === category.id ? (
-                  <Input
-                    type="number"
+                  <CurrencyInput
                     className="mb-4"
                     value={editValue}
-                    onChange={(e) => setEditValue(e.target.value)}
+                    onChange={(val) => setEditValue(val)}
                   />
                 ) : (
                   <>

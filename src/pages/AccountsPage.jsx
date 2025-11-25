@@ -21,6 +21,8 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+import CurrencyInput from "@/components/ui/currency-input";
+
 const AccountsPage = () => {
   const { t } = useTranslation();
   const { accounts, addAccount, deleteAccount } = useAccounts();
@@ -126,14 +128,12 @@ const AccountsPage = () => {
                 <label className="text-sm font-medium">
                   {t("accounts.initialBalance")}
                 </label>
-                <Input
-                  type="number"
-                  step="0.01"
+                <CurrencyInput
                   value={formData.initialBalance}
-                  onChange={(e) =>
-                    setFormData({ ...formData, initialBalance: e.target.value })
+                  onChange={(val) =>
+                    setFormData({ ...formData, initialBalance: val })
                   }
-                  placeholder="0.00"
+                  placeholder="R$ 0,00"
                 />
               </div>
               <div className="space-y-2">
@@ -199,7 +199,11 @@ const AccountsPage = () => {
                 variant="ghost"
                 size="icon"
                 className="text-muted-foreground hover:text-destructive"
-                onClick={() => deleteAccount(account.id)}
+                onClick={() => {
+                  if (window.confirm(t("accounts.confirmDelete"))) {
+                    deleteAccount(account.id);
+                  }
+                }}
               >
                 <Trash2 className="h-4 w-4" />
               </Button>

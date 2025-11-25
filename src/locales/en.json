@@ -125,7 +125,8 @@
     "checking": "Checking",
     "savings": "Savings",
     "credit": "Credit Card",
-    "cash": "Cash"
+    "cash": "Cash",
+    "confirmDelete": "Are you sure you want to delete this account?"
   },
   "auth": {
     "welcome": "Welcome back",

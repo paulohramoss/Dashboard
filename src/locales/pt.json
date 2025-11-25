@@ -125,7 +125,8 @@
     "checking": "Corrente",
     "savings": "Poupança",
     "credit": "Cartão de Crédito",
-    "cash": "Dinheiro"
+    "cash": "Dinheiro",
+    "confirmDelete": "Tem certeza que deseja excluir esta conta?"
   },
   "auth": {
     "welcome": "Bem-vindo de volta",

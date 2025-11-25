@@ -10,6 +10,8 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
+import CurrencyInput from "@/components/ui/currency-input";
+
 const TransactionForm = ({ onAddTransaction }) => {
   const { t } = useTranslation();
   const { categories } = useCategories();
@@ -25,16 +27,22 @@ const TransactionForm = ({ onAddTransaction }) => {
     accountId: "",
   });
 
-  // Filter categories based on selected type
+  // Filter categories based on selected type and deduplicate by name
   const availableCategories = useMemo(() => {
-    return categories.filter((cat) => cat.type === formData.type);
+    const filtered = categories.filter((cat) => cat.type === formData.type);
+    return filtered.filter(
+      (cat, index, self) => index === self.findIndex((t) => t.name === cat.name)
+    );
   }, [categories, formData.type]);
 
   const handleTypeChange = (e) => {
     const newType = e.target.value;
-    const newAvailableCategories = categories.filter(
-      (cat) => cat.type === newType
-    );
+    const newAvailableCategories = categories
+      .filter((cat) => cat.type === newType)
+      .filter(
+        (cat, index, self) =>
+          index === self.findIndex((t) => t.name === cat.name)
+      );
 
     setFormData({
       ...formData,
@@ -94,15 +102,10 @@ const TransactionForm = ({ onAddTransaction }) => {
               <label className="text-sm font-medium">
                 {t("transactions.form.amount")}
               </label>
-              <Input
-                type="number"
-                placeholder="0.00"
-                step="0.01"
-                min="0"
+              <CurrencyInput
                 value={formData.amount}
-                onChange={(e) =>
-                  setFormData({ ...formData, amount: e.target.value })
-                }
+                onChange={(val) => setFormData({ ...formData, amount: val })}
+                placeholder="R$ 0,00"
                 required
               />
             </div>
@@ -194,7 +197,7 @@ const TransactionForm = ({ onAddTransaction }) => {
                   onChange={(e) =>
                     setFormData({ ...formData, frequency: e.target.value })
                   }
-                  className="w-32 h-8"
+                  className="w-auto h-8 min-w-[120px]"
                 >
                   <option value="daily">{t("transactions.form.daily")}</option>
                   <option value="weekly">
