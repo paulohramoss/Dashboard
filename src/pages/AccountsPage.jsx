@@ -1,82 +1,90 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useAccounts } from "@/hooks/useAccounts";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
 import {
   Card,
+  CardContent,
   CardHeader,
   CardTitle,
-  CardContent,
   CardFooter,
 } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Plus,
+  Trash2,
   Wallet,
   CreditCard,
+  Landmark,
   Banknote,
-  Building2,
-  Trash2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-
 import CurrencyInput from "@/components/ui/currency-input";
+import ConfirmDialog from "@/components/ui/confirm-dialog";
 
 const AccountsPage = () => {
   const { t } = useTranslation();
   const { accounts, addAccount, deleteAccount } = useAccounts();
   const [isAdding, setIsAdding] = useState(false);
-  const [formData, setFormData] = useState({
+  const [newAccount, setNewAccount] = useState({
     name: "",
     type: "checking",
-    color: "#3b82f6",
     initialBalance: "",
+    color: "#000000",
   });
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!formData.name) return;
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [accountToDelete, setAccountToDelete] = useState(null);
 
-    addAccount({
-      ...formData,
-      initialBalance: parseFloat(formData.initialBalance) || 0,
+  const handleAddAccount = async (e) => {
+    e.preventDefault();
+    if (!newAccount.name || newAccount.initialBalance === "") return;
+
+    await addAccount({
+      ...newAccount,
+      initialBalance: parseFloat(newAccount.initialBalance),
     });
 
-    setFormData({
+    setNewAccount({
       name: "",
       type: "checking",
-      color: "#3b82f6",
       initialBalance: "",
+      color: "#000000",
     });
     setIsAdding(false);
+  };
+
+  const confirmDelete = (account) => {
+    setAccountToDelete(account);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDelete = async () => {
+    if (accountToDelete) {
+      await deleteAccount(accountToDelete.id);
+      setAccountToDelete(null);
+    }
   };
 
   const getIcon = (type) => {
     switch (type) {
       case "checking":
-        return <Building2 className="h-6 w-6" />;
+        return <Landmark className="h-4 w-4" />;
       case "savings":
-        return <Wallet className="h-6 w-6" />;
+        return <Wallet className="h-4 w-4" />;
       case "credit":
-        return <CreditCard className="h-6 w-6" />;
+        return <CreditCard className="h-4 w-4" />;
       case "cash":
-        return <Banknote className="h-6 w-6" />;
+        return <Banknote className="h-4 w-4" />;
       default:
-        return <Wallet className="h-6 w-6" />;
+        return <Wallet className="h-4 w-4" />;
     }
-  };
-
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-    }).format(amount);
   };
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
-      <div className="flex items-center justify-between">
+      <div className="flex justify-between items-center">
         <div>
           <h2 className="text-3xl font-bold tracking-tight">
             {t("accounts.title")}
@@ -84,88 +92,63 @@ const AccountsPage = () => {
           <p className="text-muted-foreground">{t("accounts.subtitle")}</p>
         </div>
         <Button onClick={() => setIsAdding(!isAdding)}>
-          <Plus className="mr-2 h-4 w-4" /> {t("accounts.addAccount")}
+          <Plus className="mr-2 h-4 w-4" />
+          {t("accounts.addAccount")}
         </Button>
       </div>
 
       {isAdding && (
-        <Card className="max-w-md mx-auto animate-in slide-in-from-top-5">
-          <CardHeader>
-            <CardTitle>{t("accounts.newAccount")}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-2">
-                <label className="text-sm font-medium">
-                  {t("accounts.name")}
-                </label>
+        <Card className="animate-in slide-in-from-top-5">
+          <CardContent className="pt-6">
+            <form onSubmit={handleAddAccount} className="flex gap-4 items-end">
+              <div className="flex-1 space-y-2">
+                <Label>{t("accounts.name")}</Label>
                 <Input
-                  value={formData.name}
+                  value={newAccount.name}
                   onChange={(e) =>
-                    setFormData({ ...formData, name: e.target.value })
+                    setNewAccount({ ...newAccount, name: e.target.value })
                   }
-                  placeholder="e.g. Nubank"
                   required
                 />
               </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium">
-                  {t("accounts.type")}
-                </label>
-                <Select
-                  value={formData.type}
+              <div className="w-[150px] space-y-2">
+                <Label>{t("accounts.type")}</Label>
+                <select
+                  className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  value={newAccount.type}
                   onChange={(e) =>
-                    setFormData({ ...formData, type: e.target.value })
+                    setNewAccount({ ...newAccount, type: e.target.value })
                   }
                 >
                   <option value="checking">{t("accounts.checking")}</option>
                   <option value="savings">{t("accounts.savings")}</option>
                   <option value="credit">{t("accounts.credit")}</option>
                   <option value="cash">{t("accounts.cash")}</option>
-                </Select>
+                </select>
               </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium">
-                  {t("accounts.initialBalance")}
-                </label>
+              <div className="w-[150px] space-y-2">
+                <Label>{t("accounts.initialBalance")}</Label>
                 <CurrencyInput
-                  value={formData.initialBalance}
+                  value={newAccount.initialBalance}
                   onChange={(val) =>
-                    setFormData({ ...formData, initialBalance: val })
+                    setNewAccount({ ...newAccount, initialBalance: val })
                   }
                   placeholder="R$ 0,00"
+                  required
                 />
               </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium">
-                  {t("accounts.color")}
-                </label>
-                <div className="flex gap-2">
-                  {[
-                    "#3b82f6",
-                    "#ef4444",
-                    "#10b981",
-                    "#f59e0b",
-                    "#8b5cf6",
-                    "#ec4899",
-                  ].map((color) => (
-                    <div
-                      key={color}
-                      className={cn(
-                        "w-8 h-8 rounded-full cursor-pointer border-2",
-                        formData.color === color
-                          ? "border-primary"
-                          : "border-transparent"
-                      )}
-                      style={{ backgroundColor: color }}
-                      onClick={() => setFormData({ ...formData, color })}
-                    />
-                  ))}
-                </div>
+              <div className="w-[80px] space-y-2">
+                <Label>{t("accounts.color")}</Label>
+                <Input
+                  type="color"
+                  className="h-10 p-1 cursor-pointer"
+                  value={newAccount.color}
+                  onChange={(e) =>
+                    setNewAccount({ ...newAccount, color: e.target.value })
+                  }
+                />
               </div>
-              <Button type="submit" className="w-full">
-                {t("common.save")}
-              </Button>
+              <Button type="submit">{t("common.save")}</Button>
             </form>
           </CardContent>
         </Card>
@@ -173,44 +156,54 @@ const AccountsPage = () => {
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {accounts.map((account) => (
-          <Card key={account.id} className="relative overflow-hidden">
-            <div
-              className="absolute top-0 left-0 w-1 h-full"
-              style={{ backgroundColor: account.color }}
-            />
+          <Card key={account.id}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">
                 {account.name}
               </CardTitle>
-              <div className={cn("text-muted-foreground")}>
+              <div className="flex items-center gap-2">
                 {getIcon(account.type)}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                  onClick={() => confirmDelete(account)}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
               </div>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                {formatCurrency(account.initialBalance)}
+                {new Intl.NumberFormat("pt-BR", {
+                  style: "currency",
+                  currency: "BRL",
+                }).format(account.initialBalance)}
               </div>
-              <p className="text-xs text-muted-foreground capitalize">
-                {t(`accounts.${account.type}`)}
-              </p>
+              <div className="flex items-center gap-2 mt-2">
+                <div
+                  className="w-2 h-2 rounded-full"
+                  style={{ backgroundColor: account.color }}
+                />
+                <p className="text-xs text-muted-foreground capitalize">
+                  {t(`accounts.${account.type}`)}
+                </p>
+              </div>
             </CardContent>
-            <CardFooter className="flex justify-end">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="text-muted-foreground hover:text-destructive"
-                onClick={() => {
-                  if (window.confirm(t("accounts.confirmDelete"))) {
-                    deleteAccount(account.id);
-                  }
-                }}
-              >
-                <Trash2 className="h-4 w-4" />
-              </Button>
-            </CardFooter>
           </Card>
         ))}
       </div>
+
+      <ConfirmDialog
+        isOpen={deleteDialogOpen}
+        onClose={() => setDeleteDialogOpen(false)}
+        onConfirm={handleDelete}
+        title={t("accounts.deleteTitle")}
+        description={t("accounts.deleteDescription")}
+        confirmText={t("common.delete")}
+        cancelText={t("common.cancel")}
+        variant="destructive"
+      />
     </div>
   );
 };

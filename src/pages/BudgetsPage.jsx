@@ -1,100 +1,95 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useCategories } from "@/hooks/useCategories";
 import { useTransactions } from "@/hooks/useTransactions";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardFooter,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Select } from "@/components/ui/select";
-import { Edit2, Save, X, Plus, Trash2 } from "lucide-react";
-
+import { Plus, Trash2 } from "lucide-react";
 import CurrencyInput from "@/components/ui/currency-input";
+import ConfirmDialog from "@/components/ui/confirm-dialog";
 
 const BudgetsPage = () => {
   const { t } = useTranslation();
   const { categories, updateCategory } = useCategories();
   const { transactions } = useTransactions();
-  const [editingId, setEditingId] = useState(null);
-  const [editValue, setEditValue] = useState("");
   const [isAdding, setIsAdding] = useState(false);
   const [newBudget, setNewBudget] = useState({ categoryId: "", amount: "" });
 
-  // Only show expense categories
-  const expenseCategories = categories.filter((c) => c.type === "expense");
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [budgetToDelete, setBudgetToDelete] = useState(null);
 
-  // Active budgets are those with budget defined (not null/undefined)
-  const activeBudgets = expenseCategories.filter(
-    (c) => c.budget !== null && c.budget !== undefined
-  );
+  const activeBudgets = useMemo(() => {
+    const budgets = categories.filter((c) => c.budget > 0);
+    return budgets.filter(
+      (budget, index, self) =>
+        index === self.findIndex((b) => b.name === budget.name)
+    );
+  }, [categories]);
 
-  // Available categories for new budget are those with no budget defined
-  const availableCategories = expenseCategories.filter(
-    (c) => c.budget === null || c.budget === undefined
-  );
+  const availableCategories = useMemo(() => {
+    // Filter categories that don't have a budget set (or budget is 0)
+    // Also deduplicate by name to avoid showing same category multiple times if it exists
+    const uniqueCategories = categories.filter(
+      (cat, index, self) => index === self.findIndex((c) => c.name === cat.name)
+    );
+    return uniqueCategories.filter((c) => !c.budget || c.budget <= 0);
+  }, [categories]);
 
-  // Deduplicate available categories by name to prevent duplicates in dropdown
-  const uniqueAvailableCategories = availableCategories.filter(
-    (cat, index, self) => index === self.findIndex((t) => t.name === cat.name)
-  );
+  const calculateProgress = (categoryName, budget) => {
+    const currentMonth = new Date().getMonth();
+    const currentYear = new Date().getFullYear();
 
-  const getSpentAmount = (categoryName) => {
-    return transactions
+    const spent = transactions
       .filter(
         (t) =>
           t.type === "expense" &&
           t.category === categoryName &&
-          new Date(t.date).getMonth() === new Date().getMonth() &&
-          new Date(t.date).getFullYear() === new Date().getFullYear()
+          new Date(t.date).getMonth() === currentMonth &&
+          new Date(t.date).getFullYear() === currentYear
       )
-      .reduce((acc, curr) => acc + curr.amount, 0);
-  };
+      .reduce((acc, curr) => acc + parseFloat(curr.amount), 0);
 
-  const handleEdit = (category) => {
-    setEditingId(category.id);
-    setEditValue(category.budget || 0);
-  };
-
-  const handleSave = async (id) => {
-    await updateCategory(id, { budget: parseFloat(editValue) });
-    setEditingId(null);
-  };
-
-  const handleDelete = async (id) => {
-    if (window.confirm(t("budgets.confirmDelete"))) {
-      await updateCategory(id, { budget: null });
-    }
+    return {
+      spent,
+      percentage: Math.min((spent / budget) * 100, 100),
+      remaining: Math.max(budget - spent, 0),
+    };
   };
 
   const handleAddBudget = async (e) => {
     e.preventDefault();
-    if (!newBudget.categoryId || newBudget.amount === "") return;
+    if (!newBudget.categoryId || !newBudget.amount) return;
 
-    await updateCategory(newBudget.categoryId, {
-      budget: parseFloat(newBudget.amount),
-    });
-
-    setNewBudget({ categoryId: "", amount: "" });
-    setIsAdding(false);
+    const category = categories.find((c) => c.id === newBudget.categoryId);
+    if (category) {
+      await updateCategory(category.id, {
+        ...category,
+        budget: parseFloat(newBudget.amount),
+      });
+      setIsAdding(false);
+      setNewBudget({ categoryId: "", amount: "" });
+    }
   };
 
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-    }).format(amount);
+  const confirmDelete = (category) => {
+    setBudgetToDelete(category);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDelete = async () => {
+    if (budgetToDelete) {
+      await updateCategory(budgetToDelete.id, {
+        ...budgetToDelete,
+        budget: 0, // Set to 0 to "remove" the budget but keep category
+      });
+      setBudgetToDelete(null);
+    }
   };
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
-      <div className="flex items-center justify-between">
+      <div className="flex justify-between items-center">
         <div>
           <h2 className="text-3xl font-bold tracking-tight">
             {t("budgets.title")}
@@ -102,46 +97,42 @@ const BudgetsPage = () => {
           <p className="text-muted-foreground">{t("budgets.subtitle")}</p>
         </div>
         <Button onClick={() => setIsAdding(!isAdding)}>
-          <Plus className="mr-2 h-4 w-4" /> {t("budgets.addBudget")}
+          <Plus className="mr-2 h-4 w-4" />
+          {t("budgets.addBudget")}
         </Button>
       </div>
 
       {isAdding && (
-        <Card className="max-w-md mx-auto animate-in slide-in-from-top-5">
-          <CardHeader>
-            <CardTitle>{t("budgets.newBudget")}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleAddBudget} className="space-y-4">
-              <div className="space-y-2">
+        <Card className="animate-in slide-in-from-top-5">
+          <CardContent className="pt-6">
+            <form onSubmit={handleAddBudget} className="flex gap-4 items-end">
+              <div className="flex-1 space-y-2">
                 <label className="text-sm font-medium">
-                  {t("budgets.category")}
+                  {t("transactions.form.category")}
                 </label>
-                <Select
+                <select
+                  className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                   value={newBudget.categoryId}
                   onChange={(e) =>
                     setNewBudget({ ...newBudget, categoryId: e.target.value })
                   }
                   required
                 >
-                  <option value="">{t("budgets.selectCategory")}</option>
-                  {uniqueAvailableCategories.map((cat) => (
+                  <option value="">
+                    {t("transactions.form.selectCategory")}
+                  </option>
+                  {availableCategories.map((cat) => (
                     <option key={cat.id} value={cat.id}>
                       {cat.isDefault
                         ? t(`categories.${cat.name.toLowerCase()}`)
                         : cat.name}
                     </option>
                   ))}
-                </Select>
-                {uniqueAvailableCategories.length === 0 && (
-                  <p className="text-xs text-muted-foreground">
-                    {t("budgets.noBudgetableCategories")}
-                  </p>
-                )}
+                </select>
               </div>
-              <div className="space-y-2">
+              <div className="w-[200px] space-y-2">
                 <label className="text-sm font-medium">
-                  {t("budgets.amount")}
+                  {t("transactions.form.amount")}
                 </label>
                 <CurrencyInput
                   value={newBudget.amount}
@@ -152,115 +143,91 @@ const BudgetsPage = () => {
                   required
                 />
               </div>
-              <Button
-                type="submit"
-                className="w-full"
-                disabled={uniqueAvailableCategories.length === 0}
-              >
-                {t("common.save")}
-              </Button>
+              <Button type="submit">{t("common.save")}</Button>
             </form>
           </CardContent>
         </Card>
       )}
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-6">
         {activeBudgets.map((category) => {
-          const spent = getSpentAmount(category.name);
-          const budget = category.budget || 0;
-          const percentage = budget > 0 ? (spent / budget) * 100 : 0;
-          const isOverBudget = spent > budget && budget > 0;
+          const { spent, percentage, remaining } = calculateProgress(
+            category.name,
+            category.budget
+          );
 
           return (
-            <Card
-              key={category.id}
-              className={isOverBudget ? "border-red-500" : ""}
-            >
-              <CardHeader className="pb-2">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-lg font-medium">
-                    {category.isDefault
-                      ? t(`categories.${category.name.toLowerCase()}`)
-                      : category.name}
-                  </CardTitle>
-                  <div className="flex items-center gap-1">
-                    {editingId === category.id ? (
-                      <>
-                        <Button
-                          size="icon"
-                          variant="ghost"
-                          className="h-8 w-8 text-green-600"
-                          onClick={() => handleSave(category.id)}
-                        >
-                          <Save className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          size="icon"
-                          variant="ghost"
-                          className="h-8 w-8 text-red-600"
-                          onClick={() => setEditingId(null)}
-                        >
-                          <X className="h-4 w-4" />
-                        </Button>
-                      </>
-                    ) : (
-                      <>
-                        <Button
-                          size="icon"
-                          variant="ghost"
-                          className="h-8 w-8 text-muted-foreground"
-                          onClick={() => handleEdit(category)}
-                        >
-                          <Edit2 className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          size="icon"
-                          variant="ghost"
-                          className="h-8 w-8 text-muted-foreground hover:text-destructive"
-                          onClick={() => handleDelete(category.id)}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </>
-                    )}
-                  </div>
-                </div>
-                <CardDescription>
-                  {formatCurrency(spent)} / {formatCurrency(budget)}
-                </CardDescription>
+            <Card key={category.id}>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-base font-medium">
+                  {category.isDefault
+                    ? t(`categories.${category.name.toLowerCase()}`)
+                    : category.name}
+                </CardTitle>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-muted-foreground hover:text-destructive"
+                  onClick={() => confirmDelete(category)}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
               </CardHeader>
               <CardContent>
-                {editingId === category.id ? (
-                  <CurrencyInput
-                    className="mb-4"
-                    value={editValue}
-                    onChange={(val) => setEditValue(val)}
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">
+                      {new Intl.NumberFormat("pt-BR", {
+                        style: "currency",
+                        currency: "BRL",
+                      }).format(spent)}{" "}
+                      {t("budgets.spent")}
+                    </span>
+                    <span className="font-medium">
+                      {new Intl.NumberFormat("pt-BR", {
+                        style: "currency",
+                        currency: "BRL",
+                      }).format(remaining)}{" "}
+                      {t("budgets.remaining")}
+                    </span>
+                  </div>
+                  <Progress
+                    value={percentage}
+                    className={percentage >= 100 ? "bg-destructive/20" : ""}
+                    indicatorClassName={
+                      percentage >= 100 ? "bg-destructive" : ""
+                    }
                   />
-                ) : (
-                  <>
-                    <Progress
-                      value={Math.min(percentage, 100)}
-                      className={`h-2 ${
-                        isOverBudget ? "bg-red-100" : "bg-secondary"
-                      }`}
-                      indicatorClassName={
-                        isOverBudget
-                          ? "bg-red-500"
-                          : percentage > 80
-                          ? "bg-yellow-500"
-                          : "bg-green-500"
-                      }
-                    />
-                    <p className="text-xs text-muted-foreground mt-2 text-right">
-                      {percentage.toFixed(0)}%
-                    </p>
-                  </>
-                )}
+                  <p className="text-xs text-muted-foreground text-right">
+                    {t("budgets.total")}:{" "}
+                    {new Intl.NumberFormat("pt-BR", {
+                      style: "currency",
+                      currency: "BRL",
+                    }).format(category.budget)}
+                  </p>
+                </div>
               </CardContent>
             </Card>
           );
         })}
+
+        {activeBudgets.length === 0 && !isAdding && (
+          <div className="text-center py-10 text-muted-foreground">
+            {t("budgets.noBudgets")}
+          </div>
+        )}
       </div>
+
+      <ConfirmDialog
+        isOpen={deleteDialogOpen}
+        onClose={() => setDeleteDialogOpen(false)}
+        onConfirm={handleDelete}
+        title={t("budgets.deleteTitle")}
+        description={t("budgets.deleteDescription")}
+        confirmText={t("common.delete")}
+        cancelText={t("common.cancel")}
+        variant="destructive"
+      />
     </div>
   );
 };

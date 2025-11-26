@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/hooks/useAuth";
 import { useCategories } from "@/hooks/useCategories";
@@ -14,7 +14,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
-// Removed unused Select imports
 import {
   Bell,
   Shield,
@@ -26,6 +25,7 @@ import {
   Pencil,
   X,
 } from "lucide-react";
+import { toast } from "sonner";
 
 const SettingsPage = () => {
   const { t } = useTranslation();
@@ -51,10 +51,9 @@ const SettingsPage = () => {
     e.preventDefault();
     try {
       await updateUser({ name });
-      // In a real app, show success toast
-      alert("Profile updated successfully!");
+      toast.success(t("settings.profileUpdated"));
     } catch {
-      alert("Failed to update profile.");
+      toast.error(t("settings.profileUpdateError"));
     }
   };
 
@@ -84,6 +83,12 @@ const SettingsPage = () => {
     setNewCategory({ name: "", type: "expense", color: "#000000" });
     setEditingId(null);
   };
+
+  const uniqueCategories = useMemo(() => {
+    return categories.filter(
+      (cat, index, self) => index === self.findIndex((c) => c.name === cat.name)
+    );
+  }, [categories]);
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
@@ -225,7 +230,7 @@ const SettingsPage = () => {
               </form>
 
               <div className="space-y-2">
-                {categories.map((category) => (
+                {uniqueCategories.map((category) => (
                   <div
                     key={category.id}
                     className="flex items-center justify-between p-3 border rounded-lg bg-card"

@@ -115,7 +115,9 @@
     "categoryColor": "Cor",
     "income": "Receita",
     "expense": "Despesa",
-    "delete": "Excluir"
+    "delete": "Excluir",
+    "profileUpdated": "Perfil atualizado com sucesso!",
+    "profileUpdateError": "Falha ao atualizar perfil."
   },
   "budgets": {
     "title": "Metas",
@@ -128,7 +130,13 @@
     "noBudgetableCategories": "Todas as categorias já possuem metas.",
     "confirmDelete": "Tem certeza que deseja excluir esta meta?",
     "budgetAlert": "Alerta de Orçamento",
-    "budgetExceeded": "Atenção: Esta transação excede o orçamento da categoria {{category}}!"
+    "budgetExceeded": "Atenção: Esta transação excede o orçamento da categoria {category}!",
+    "deleteTitle": "Excluir Meta",
+    "deleteDescription": "Tem certeza que deseja remover esta meta? Esta ação não pode ser desfeita.",
+    "spent": "Gasto",
+    "remaining": "Restante",
+    "total": "Total",
+    "noBudgets": "Nenhuma meta definida."
   },
   "accounts": {
     "title": "Contas",
@@ -143,7 +151,9 @@
     "savings": "Poupança",
     "credit": "Cartão de Crédito",
     "cash": "Dinheiro",
-    "confirmDelete": "Tem certeza que deseja excluir esta conta?"
+    "confirmDelete": "Tem certeza que deseja excluir esta conta?",
+    "deleteTitle": "Excluir Conta",
+    "deleteDescription": "Tem certeza que deseja excluir esta conta? Todas as transações associadas serão mantidas, mas sem vínculo com a conta."
   },
   "auth": {
     "welcome": "Bem-vindo de volta",
