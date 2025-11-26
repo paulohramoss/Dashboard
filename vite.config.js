@@ -33,8 +33,41 @@ export default defineConfig({
           },
         ],
       },
+      workbox: {
+        maximumFileSizeToCacheInBytes: 4 * 1024 * 1024, // 4MB
+      },
     }),
   ],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ["react", "react-dom", "react-router-dom"],
+          ui: [
+            "@radix-ui/react-slot",
+            "@radix-ui/react-alert-dialog",
+            "@radix-ui/react-progress",
+            "class-variance-authority",
+            "clsx",
+            "tailwind-merge",
+            "lucide-react",
+            "sonner",
+          ],
+          charts: ["recharts"],
+          firebase: ["firebase/app", "firebase/auth", "firebase/firestore"],
+          utils: [
+            "jspdf",
+            "jspdf-autotable",
+            "xlsx",
+            "papaparse",
+            "ofx-js",
+            "i18next",
+            "react-i18next",
+          ],
+        },
+      },
+    },
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
