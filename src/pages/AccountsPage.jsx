@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useAccounts } from "@/hooks/useAccounts";
+import { useTransactions } from "@/hooks/useTransactions";
 import {
   Card,
   CardContent,
@@ -26,6 +27,7 @@ import ConfirmDialog from "@/components/ui/confirm-dialog";
 const AccountsPage = () => {
   const { t } = useTranslation();
   const { accounts, addAccount, deleteAccount } = useAccounts();
+  const { transactions } = useTransactions();
   const [isAdding, setIsAdding] = useState(false);
   const [newAccount, setNewAccount] = useState({
     name: "",
@@ -36,6 +38,25 @@ const AccountsPage = () => {
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [accountToDelete, setAccountToDelete] = useState(null);
+
+  const accountBalances = useMemo(() => {
+    return accounts.map((account) => {
+      const accountTransactions = transactions.filter(
+        (t) => t.accountId === account.id
+      );
+      const income = accountTransactions
+        .filter((t) => t.type === "income")
+        .reduce((acc, t) => acc + parseFloat(t.amount), 0);
+      const expense = accountTransactions
+        .filter((t) => t.type === "expense")
+        .reduce((acc, t) => acc + parseFloat(t.amount), 0);
+
+      return {
+        ...account,
+        currentBalance: (account.initialBalance || 0) + income - expense,
+      };
+    });
+  }, [accounts, transactions]);
 
   const handleAddAccount = async (e) => {
     e.preventDefault();
@@ -155,7 +176,7 @@ const AccountsPage = () => {
       )}
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {accounts.map((account) => (
+        {accountBalances.map((account) => (
           <Card key={account.id}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">
@@ -178,7 +199,7 @@ const AccountsPage = () => {
                 {new Intl.NumberFormat("pt-BR", {
                   style: "currency",
                   currency: "BRL",
-                }).format(account.initialBalance)}
+                }).format(account.currentBalance)}
               </div>
               <div className="flex items-center gap-2 mt-2">
                 <div
