@@ -117,7 +117,10 @@
     "expense": "Expense",
     "delete": "Delete",
     "profileUpdated": "Profile updated successfully!",
-    "profileUpdateError": "Failed to update profile."
+    "profileUpdateError": "Failed to update profile.",
+    "help": "Help",
+    "helpDesc": "Help and support options.",
+    "restartTutorial": "Restart Tutorial"
   },
   "budgets": {
     "title": "Budgets",
@@ -180,6 +183,19 @@
     "entertainment": "Entertainment",
     "salary": "Salary",
     "freelance": "Freelance",
-    "other": "Other"
+    "other": "Other",
+    "done": "Done",
+    "next": "Next",
+    "previous": "Previous"
+  },
+  "tour": {
+    "welcomeTitle": "Welcome to FinanceDash!",
+    "welcomeDesc": "This is your new financial dashboard. Let's take a quick tour?",
+    "summaryTitle": "Financial Summary",
+    "summaryDesc": "Here you can see your total balance, income, and expenses at a glance.",
+    "addTransactionTitle": "Add Transaction",
+    "addTransactionDesc": "Click here to quickly record your income and expenses.",
+    "navTitle": "Navigation",
+    "navDesc": "Use this menu to access your Transactions, Budgets, Accounts, and Reports."
   }
 }

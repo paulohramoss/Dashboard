@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageToggle } from "@/components/LanguageToggle";
+import TourGuide from "@/components/TourGuide";
 
 const Layout = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -37,6 +38,7 @@ const Layout = ({ children }) => {
 
   return (
     <div className="min-h-screen bg-background flex">
+      <TourGuide />
       {/* Mobile Sidebar Overlay */}
       {isSidebarOpen && (
         <div
@@ -64,11 +66,14 @@ const Layout = ({ children }) => {
           </Button>
         </div>
 
-        <nav className="p-4 space-y-2">
+        <nav id="sidebar-nav" className="p-4 space-y-2">
           {navItems.map((item, index) => (
             <Link
               key={index}
               to={item.path}
+              id={
+                item.path === "/transactions" ? "nav-transactions" : undefined
+              }
               className={cn(
                 "flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-md transition-colors",
                 location.pathname === item.path

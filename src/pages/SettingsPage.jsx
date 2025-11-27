@@ -27,17 +27,20 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 
+import { useNotifications } from "@/hooks/useNotifications";
+
 const SettingsPage = () => {
   const { t } = useTranslation();
   const { user, updateUser } = useAuth();
   const { categories, addCategory, deleteCategory, updateCategory } =
     useCategories();
+  const { enabled: notificationsEnabled, toggleNotifications } =
+    useNotifications();
 
   const [name, setName] = useState(user?.name || "");
   const [email, setEmail] = useState(user?.email || "");
   const [notifications, setNotifications] = useState({
     email: true,
-    push: false,
   });
 
   const [newCategory, setNewCategory] = useState({
@@ -314,10 +317,8 @@ const SettingsPage = () => {
                 </Label>
                 <Switch
                   id="push-notifs"
-                  checked={notifications.push}
-                  onCheckedChange={(checked) =>
-                    setNotifications((prev) => ({ ...prev, push: checked }))
-                  }
+                  checked={notificationsEnabled}
+                  onCheckedChange={toggleNotifications}
                 />
               </div>
             </CardContent>
@@ -350,6 +351,26 @@ const SettingsPage = () => {
                 <Input id="confirm-password" type="password" />
               </div>
               <Button>{t("settings.updatePassword")}</Button>
+            </CardContent>
+          </Card>
+
+          <Card className="mt-6">
+            <CardHeader>
+              <CardTitle>{t("settings.help") || "Ajuda"}</CardTitle>
+              <CardDescription>
+                {t("settings.helpDesc") || "Opções de ajuda e suporte."}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  localStorage.removeItem("tutorialCompleted");
+                  window.location.href = "/";
+                }}
+              >
+                {t("settings.restartTutorial") || "Reiniciar Tutorial"}
+              </Button>
             </CardContent>
           </Card>
         </TabsContent>

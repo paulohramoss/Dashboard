@@ -17,6 +17,7 @@ import LoginPage from "@/pages/LoginPage";
 import RegisterPage from "@/pages/RegisterPage";
 import BudgetsPage from "@/pages/BudgetsPage";
 import AccountsPage from "@/pages/AccountsPage";
+import NotificationManager from "@/components/NotificationManager";
 
 const ProtectedRoute = ({ children }) => {
   const { user } = useAuth();
@@ -57,6 +58,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Layout>
+                    <NotificationManager />
                     <Routes>
                       <Route path="/" element={<Dashboard />} />
                       <Route

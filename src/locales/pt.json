@@ -117,7 +117,10 @@
     "expense": "Despesa",
     "delete": "Excluir",
     "profileUpdated": "Perfil atualizado com sucesso!",
-    "profileUpdateError": "Falha ao atualizar perfil."
+    "profileUpdateError": "Falha ao atualizar perfil.",
+    "help": "Ajuda",
+    "helpDesc": "Opções de ajuda e suporte.",
+    "restartTutorial": "Reiniciar Tutorial"
   },
   "budgets": {
     "title": "Metas",
@@ -177,7 +180,20 @@
     "loading": "Carregando...",
     "success": "Sucesso",
     "error": "Erro",
-    "save": "Salvar"
+    "save": "Salvar",
+    "done": "Concluído",
+    "next": "Próximo",
+    "previous": "Anterior"
+  },
+  "tour": {
+    "welcomeTitle": "Bem-vindo ao FinanceDash!",
+    "welcomeDesc": "Este é o seu novo painel financeiro. Vamos fazer um tour rápido?",
+    "summaryTitle": "Resumo Financeiro",
+    "summaryDesc": "Aqui você vê seu saldo total, receitas e despesas do mês num piscar de olhos.",
+    "addTransactionTitle": "Adicionar Transação",
+    "addTransactionDesc": "Clique aqui para registrar suas receitas e despesas rapidamente.",
+    "navTitle": "Navegação",
+    "navDesc": "Use este menu para acessar suas Transações, Metas, Contas e Relatórios."
   },
   "charts": {
     "financialOverview": "Visão Geral Financeira",

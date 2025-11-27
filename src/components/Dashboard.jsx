@@ -114,7 +114,10 @@ const Dashboard = () => {
     <div className="space-y-8 animate-in fade-in duration-500">
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">
+          <h2
+            id="dashboard-title"
+            className="text-3xl font-bold tracking-tight"
+          >
             {t("dashboard.title")}
           </h2>
           <p className="text-muted-foreground">{t("dashboard.subtitle")}</p>
@@ -139,7 +142,9 @@ const Dashboard = () => {
         </div>
       </div>
 
-      <SummaryCards stats={stats} />
+      <div id="summary-cards">
+        <SummaryCards stats={stats} />
+      </div>
 
       {/* Accounts Overview */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
