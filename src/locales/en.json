@@ -120,7 +120,20 @@
     "profileUpdateError": "Failed to update profile.",
     "help": "Help",
     "helpDesc": "Help and support options.",
-    "restartTutorial": "Restart Tutorial"
+    "restartTutorial": "Restart Tutorial",
+    "feedback": "Feedback",
+    "feedbackDesc": "Send us your suggestions or report bugs.",
+    "feedbackType": "Type",
+    "suggestion": "Suggestion",
+    "bug": "Bug",
+    "compliment": "Compliment",
+    "other": "Other",
+    "message": "Message",
+    "messagePlaceholder": "Tell us what you think...",
+    "sendFeedback": "Send Feedback",
+    "feedbackSent": "Feedback sent successfully! Thank you.",
+    "feedbackError": "Failed to send feedback.",
+    "sendEmail": "Send Email Directly"
   },
   "budgets": {
     "title": "Budgets",

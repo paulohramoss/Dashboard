@@ -1,12 +1,20 @@
 import { useState, useEffect, useCallback } from "react";
 
 export const useNotifications = () => {
-  const [permission, setPermission] = useState(Notification.permission);
+  const [permission, setPermission] = useState(() => {
+    if ("Notification" in window) {
+      return Notification.permission;
+    }
+    return "default";
+  });
+
   const [enabled, setEnabled] = useState(() => {
     return localStorage.getItem("notificationsEnabled") === "true";
   });
 
   useEffect(() => {
+    if (!("Notification" in window)) return;
+
     if (enabled && permission === "default") {
       Notification.requestPermission().then((perm) => {
         setPermission(perm);
@@ -15,15 +23,24 @@ export const useNotifications = () => {
   }, [enabled, permission]);
 
   const requestPermission = async () => {
+    if (!("Notification" in window)) {
+      console.warn("Notifications not supported in this browser");
+      return "denied";
+    }
+
     const perm = await Notification.requestPermission();
     setPermission(perm);
     if (perm === "granted") {
       setEnabled(true);
       localStorage.setItem("notificationsEnabled", "true");
-      new Notification("FinanceDash", {
-        body: "Notificações ativadas com sucesso!",
-        icon: "/pwa-192x192.png",
-      });
+      try {
+        new Notification("FinanceDash", {
+          body: "Notificações ativadas com sucesso!",
+          icon: "/pwa-192x192.png",
+        });
+      } catch (e) {
+        console.error("Error showing notification:", e);
+      }
     } else {
       setEnabled(false);
       localStorage.setItem("notificationsEnabled", "false");
@@ -32,6 +49,8 @@ export const useNotifications = () => {
   };
 
   const toggleNotifications = async () => {
+    if (!("Notification" in window)) return;
+
     if (enabled) {
       setEnabled(false);
       localStorage.setItem("notificationsEnabled", "false");
@@ -47,11 +66,17 @@ export const useNotifications = () => {
 
   const sendNotification = useCallback(
     (title, body) => {
+      if (!("Notification" in window)) return;
+
       if (enabled && permission === "granted") {
-        new Notification(title, {
-          body,
-          icon: "/pwa-192x192.png",
-        });
+        try {
+          new Notification(title, {
+            body,
+            icon: "/pwa-192x192.png",
+          });
+        } catch (e) {
+          console.error("Error sending notification:", e);
+        }
       }
     },
     [enabled, permission]

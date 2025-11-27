@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
@@ -24,8 +25,12 @@ import {
   Plus,
   Pencil,
   X,
+  MessageSquare,
+  Mail,
 } from "lucide-react";
 import { toast } from "sonner";
+import { db } from "@/lib/firebase";
+import { collection, addDoc } from "firebase/firestore";
 
 import { useNotifications } from "@/hooks/useNotifications";
 
@@ -82,6 +87,36 @@ const SettingsPage = () => {
     setEditingId(category.id);
   };
 
+  const [feedback, setFeedback] = useState({
+    type: "suggestion",
+    message: "",
+  });
+  const [sendingFeedback, setSendingFeedback] = useState(false);
+
+  const handleSendFeedback = async (e) => {
+    e.preventDefault();
+    if (!feedback.message.trim()) return;
+
+    setSendingFeedback(true);
+    try {
+      await addDoc(collection(db, "suggestions"), {
+        userId: user?.id,
+        userEmail: user?.email,
+        userName: user?.name,
+        type: feedback.type,
+        message: feedback.message,
+        createdAt: new Date().toISOString(),
+      });
+      toast.success(t("settings.feedbackSent"));
+      setFeedback({ type: "suggestion", message: "" });
+    } catch (error) {
+      console.error("Error sending feedback:", error);
+      toast.error(t("settings.feedbackError"));
+    } finally {
+      setSendingFeedback(false);
+    }
+  };
+
   const handleCancelEdit = () => {
     setNewCategory({ name: "", type: "expense", color: "#000000" });
     setEditingId(null);
@@ -122,6 +157,10 @@ const SettingsPage = () => {
           <TabsTrigger value="security" className="flex items-center gap-2">
             <Shield className="h-4 w-4" />
             {t("settings.security")}
+          </TabsTrigger>
+          <TabsTrigger value="feedback" className="flex items-center gap-2">
+            <MessageSquare className="h-4 w-4" />
+            {t("settings.feedback")}
           </TabsTrigger>
         </TabsList>
 
@@ -371,6 +410,72 @@ const SettingsPage = () => {
               >
                 {t("settings.restartTutorial") || "Reiniciar Tutorial"}
               </Button>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="feedback">
+          <Card>
+            <CardHeader>
+              <CardTitle>{t("settings.feedback")}</CardTitle>
+              <CardDescription>{t("settings.feedbackDesc")}</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <form onSubmit={handleSendFeedback} className="space-y-4">
+                <div className="space-y-2">
+                  <Label>{t("settings.feedbackType")}</Label>
+                  <select
+                    className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    value={feedback.type}
+                    onChange={(e) =>
+                      setFeedback({ ...feedback, type: e.target.value })
+                    }
+                  >
+                    <option value="suggestion">
+                      {t("settings.suggestion")}
+                    </option>
+                    <option value="bug">{t("settings.bug")}</option>
+                    <option value="compliment">
+                      {t("settings.compliment")}
+                    </option>
+                    <option value="other">{t("settings.other")}</option>
+                  </select>
+                </div>
+                <div className="space-y-2">
+                  <Label>{t("settings.message")}</Label>
+                  <textarea
+                    className="flex min-h-[120px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    placeholder={t("settings.messagePlaceholder")}
+                    value={feedback.message}
+                    onChange={(e) =>
+                      setFeedback({ ...feedback, message: e.target.value })
+                    }
+                  />
+                </div>
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <Button type="submit" disabled={sendingFeedback}>
+                    {sendingFeedback ? (
+                      t("common.loading")
+                    ) : (
+                      <>
+                        <MessageSquare className="mr-2 h-4 w-4" />
+                        {t("settings.sendFeedback")}
+                      </>
+                    )}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() =>
+                      (window.location.href =
+                        "mailto:pramosphdr548@gmail.com?subject=Feedback FinanceDash")
+                    }
+                  >
+                    <Mail className="mr-2 h-4 w-4" />
+                    {t("settings.sendEmail")}
+                  </Button>
+                </div>
+              </form>
             </CardContent>
           </Card>
         </TabsContent>

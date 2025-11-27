@@ -120,7 +120,20 @@
     "profileUpdateError": "Falha ao atualizar perfil.",
     "help": "Ajuda",
     "helpDesc": "Opções de ajuda e suporte.",
-    "restartTutorial": "Reiniciar Tutorial"
+    "restartTutorial": "Reiniciar Tutorial",
+    "feedback": "Feedback",
+    "feedbackDesc": "Envie suas sugestões ou reporte erros.",
+    "feedbackType": "Tipo",
+    "suggestion": "Sugestão",
+    "bug": "Erro/Bug",
+    "compliment": "Elogio",
+    "other": "Outro",
+    "message": "Mensagem",
+    "messagePlaceholder": "Conte-nos o que você acha...",
+    "sendFeedback": "Enviar Feedback",
+    "feedbackSent": "Feedback enviado com sucesso! Obrigado.",
+    "feedbackError": "Falha ao enviar feedback.",
+    "sendEmail": "Enviar E-mail Diretamente"
   },
   "budgets": {
     "title": "Metas",
