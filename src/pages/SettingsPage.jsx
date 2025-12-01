@@ -31,6 +31,12 @@ import {
 import { toast } from "sonner";
 import { db } from "@/lib/firebase";
 import { collection, addDoc } from "firebase/firestore";
+import {
+  updatePassword,
+  reauthenticateWithCredential,
+  EmailAuthProvider,
+} from "firebase/auth";
+import { auth } from "@/lib/firebase";
 
 import { useNotifications } from "@/hooks/useNotifications";
 
@@ -47,6 +53,12 @@ const SettingsPage = () => {
   const [notifications, setNotifications] = useState({
     email: true,
   });
+
+  // Password Update State
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [updatingPassword, setUpdatingPassword] = useState(false);
 
   const [newCategory, setNewCategory] = useState({
     name: "",
@@ -114,6 +126,44 @@ const SettingsPage = () => {
       toast.error(t("settings.feedbackError"));
     } finally {
       setSendingFeedback(false);
+    }
+  };
+
+  const handlePasswordUpdate = async (e) => {
+    e.preventDefault();
+    if (newPassword !== confirmPassword) {
+      toast.error(t("auth.passwordMismatch"));
+      return;
+    }
+    if (newPassword.length < 6) {
+      toast.error(t("auth.passwordLength"));
+      return;
+    }
+
+    setUpdatingPassword(true);
+    try {
+      const credential = EmailAuthProvider.credential(
+        user.email,
+        currentPassword
+      );
+      await reauthenticateWithCredential(auth.currentUser, credential);
+      await updatePassword(auth.currentUser, newPassword);
+      toast.success(t("settings.passwordUpdated"));
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+    } catch (error) {
+      console.error("Error updating password:", error);
+      if (
+        error.code === "auth/invalid-credential" ||
+        error.code === "auth/wrong-password"
+      ) {
+        toast.error(t("auth.invalidCredentials"));
+      } else {
+        toast.error(t("settings.passwordUpdateError"));
+      }
+    } finally {
+      setUpdatingPassword(false);
     }
   };
 
@@ -370,26 +420,50 @@ const SettingsPage = () => {
               <CardTitle>{t("settings.security")}</CardTitle>
               <CardDescription>{t("settings.securityDesc")}</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="current-password">
-                  {t("settings.currentPassword")}
-                </Label>
-                <Input id="current-password" type="password" />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="new-password">
-                  {t("settings.newPassword")}
-                </Label>
-                <Input id="new-password" type="password" />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="confirm-password">
-                  {t("settings.confirmPassword")}
-                </Label>
-                <Input id="confirm-password" type="password" />
-              </div>
-              <Button>{t("settings.updatePassword")}</Button>
+            <CardContent>
+              <form onSubmit={handlePasswordUpdate} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="current-password">
+                    {t("settings.currentPassword")}
+                  </Label>
+                  <Input
+                    id="current-password"
+                    type="password"
+                    value={currentPassword}
+                    onChange={(e) => setCurrentPassword(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="new-password">
+                    {t("settings.newPassword")}
+                  </Label>
+                  <Input
+                    id="new-password"
+                    type="password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="confirm-password">
+                    {t("settings.confirmPassword")}
+                  </Label>
+                  <Input
+                    id="confirm-password"
+                    type="password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    required
+                  />
+                </div>
+                <Button type="submit" disabled={updatingPassword}>
+                  {updatingPassword
+                    ? t("common.loading")
+                    : t("settings.updatePassword")}
+                </Button>
+              </form>
             </CardContent>
           </Card>
 
@@ -462,17 +536,6 @@ const SettingsPage = () => {
                         {t("settings.sendFeedback")}
                       </>
                     )}
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() =>
-                      (window.location.href =
-                        "mailto:pramosphdr548@gmail.com?subject=Feedback FinanceDash")
-                    }
-                  >
-                    <Mail className="mr-2 h-4 w-4" />
-                    {t("settings.sendEmail")}
                   </Button>
                 </div>
               </form>

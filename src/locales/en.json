@@ -99,6 +99,8 @@
     "newPassword": "New Password",
     "confirmPassword": "Confirm Password",
     "updatePassword": "Update Password",
+    "passwordUpdated": "Password updated successfully!",
+    "passwordUpdateError": "Failed to update password. Please check your current password.",
     "profileDesc": "Update your personal details here.",
     "notificationsDesc": "Choose how you want to be notified.",
     "emailNotifsDesc": "Receive daily summaries and alerts.",

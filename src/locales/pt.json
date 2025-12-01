@@ -99,6 +99,8 @@
     "newPassword": "Nova Senha",
     "confirmPassword": "Confirmar Senha",
     "updatePassword": "Atualizar Senha",
+    "passwordUpdated": "Senha atualizada com sucesso!",
+    "passwordUpdateError": "Falha ao atualizar senha. Verifique sua senha atual.",
     "profileDesc": "Atualize seus dados pessoais aqui.",
     "notificationsDesc": "Escolha como você deseja ser notificado.",
     "emailNotifsDesc": "Receba resumos diários e alertas.",
