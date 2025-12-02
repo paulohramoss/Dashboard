@@ -27,6 +27,8 @@ import {
   X,
   MessageSquare,
   Mail,
+  Eye,
+  EyeOff,
 } from "lucide-react";
 import { toast } from "sonner";
 import { db } from "@/lib/firebase";
@@ -35,8 +37,10 @@ import {
   updatePassword,
   reauthenticateWithCredential,
   EmailAuthProvider,
+  deleteUser,
 } from "firebase/auth";
 import { auth } from "@/lib/firebase";
+import ConfirmDialog from "@/components/ui/confirm-dialog";
 
 import { useNotifications } from "@/hooks/useNotifications";
 
@@ -59,6 +63,11 @@ const SettingsPage = () => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [updatingPassword, setUpdatingPassword] = useState(false);
+
+  // Password Visibility State
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const [newCategory, setNewCategory] = useState({
     name: "",
@@ -104,6 +113,22 @@ const SettingsPage = () => {
     message: "",
   });
   const [sendingFeedback, setSendingFeedback] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
+  const handleDeleteAccount = async () => {
+    try {
+      await deleteUser(auth.currentUser);
+      toast.success(t("settings.accountDeleted"));
+      // AuthContext will handle the redirect to login
+    } catch (error) {
+      console.error("Error deleting account:", error);
+      if (error.code === "auth/requires-recent-login") {
+        toast.error(t("settings.deleteAccountError"));
+      } else {
+        toast.error(t("common.error"));
+      }
+    }
+  };
 
   const handleSendFeedback = async (e) => {
     e.preventDefault();
@@ -426,37 +451,89 @@ const SettingsPage = () => {
                   <Label htmlFor="current-password">
                     {t("settings.currentPassword")}
                   </Label>
-                  <Input
-                    id="current-password"
-                    type="password"
-                    value={currentPassword}
-                    onChange={(e) => setCurrentPassword(e.target.value)}
-                    required
-                  />
+                  <div className="relative">
+                    <Input
+                      id="current-password"
+                      type={showCurrentPassword ? "text" : "password"}
+                      value={currentPassword}
+                      onChange={(e) => setCurrentPassword(e.target.value)}
+                      required
+                      className="pr-10"
+                    />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="absolute right-0 top-0 h-10 w-10 text-muted-foreground hover:text-foreground"
+                      onClick={() =>
+                        setShowCurrentPassword(!showCurrentPassword)
+                      }
+                    >
+                      {showCurrentPassword ? (
+                        <EyeOff className="h-4 w-4" />
+                      ) : (
+                        <Eye className="h-4 w-4" />
+                      )}
+                    </Button>
+                  </div>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="new-password">
                     {t("settings.newPassword")}
                   </Label>
-                  <Input
-                    id="new-password"
-                    type="password"
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    required
-                  />
+                  <div className="relative">
+                    <Input
+                      id="new-password"
+                      type={showNewPassword ? "text" : "password"}
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      required
+                      className="pr-10"
+                    />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="absolute right-0 top-0 h-10 w-10 text-muted-foreground hover:text-foreground"
+                      onClick={() => setShowNewPassword(!showNewPassword)}
+                    >
+                      {showNewPassword ? (
+                        <EyeOff className="h-4 w-4" />
+                      ) : (
+                        <Eye className="h-4 w-4" />
+                      )}
+                    </Button>
+                  </div>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="confirm-password">
                     {t("settings.confirmPassword")}
                   </Label>
-                  <Input
-                    id="confirm-password"
-                    type="password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    required
-                  />
+                  <div className="relative">
+                    <Input
+                      id="confirm-password"
+                      type={showConfirmPassword ? "text" : "password"}
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      required
+                      className="pr-10"
+                    />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="absolute right-0 top-0 h-10 w-10 text-muted-foreground hover:text-foreground"
+                      onClick={() =>
+                        setShowConfirmPassword(!showConfirmPassword)
+                      }
+                    >
+                      {showConfirmPassword ? (
+                        <EyeOff className="h-4 w-4" />
+                      ) : (
+                        <Eye className="h-4 w-4" />
+                      )}
+                    </Button>
+                  </div>
                 </div>
                 <Button type="submit" disabled={updatingPassword}>
                   {updatingPassword
@@ -464,6 +541,26 @@ const SettingsPage = () => {
                     : t("settings.updatePassword")}
                 </Button>
               </form>
+            </CardContent>
+          </Card>
+
+          <Card className="mt-6 border-destructive/50">
+            <CardHeader>
+              <CardTitle className="text-destructive">
+                {t("settings.dangerZone")}
+              </CardTitle>
+              <CardDescription>
+                {t("settings.deleteAccountDesc")}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button
+                variant="destructive"
+                onClick={() => setDeleteDialogOpen(true)}
+              >
+                <Trash2 className="mr-2 h-4 w-4" />
+                {t("settings.deleteAccountButton")}
+              </Button>
             </CardContent>
           </Card>
 
@@ -543,6 +640,17 @@ const SettingsPage = () => {
           </Card>
         </TabsContent>
       </Tabs>
+
+      <ConfirmDialog
+        isOpen={deleteDialogOpen}
+        onClose={() => setDeleteDialogOpen(false)}
+        onConfirm={handleDeleteAccount}
+        title={t("settings.deleteAccountConfirmTitle")}
+        description={t("settings.deleteAccountConfirmDesc")}
+        confirmText={t("settings.deleteAccountButton")}
+        cancelText={t("common.cancel")}
+        variant="destructive"
+      />
     </div>
   );
 };
