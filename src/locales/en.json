@@ -6,6 +6,7 @@
     "dashboard": "Dashboard",
     "transactions": "Transactions",
     "reports": "Reports",
+    "calendar": "Calendar",
     "budgets": "Budgets",
     "settings": "Settings",
     "logout": "Logout",
@@ -172,6 +173,14 @@
     "rollover": "Rollover Budget",
     "rolloverDesc": "Unspent budget carries over to next month",
     "noBudgets": "No budgets set."
+  },
+  "calendar": {
+    "title": "Financial Calendar",
+    "subtitle": "Visualize your income and expenses by date.",
+    "income": "Income",
+    "expense": "Expense",
+    "balance": "Daily Balance",
+    "today": "Today"
   },
   "accounts": {
     "title": "Accounts",

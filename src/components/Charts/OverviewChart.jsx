@@ -23,7 +23,7 @@ const OverviewChart = ({ transactions }) => {
       }
       if (curr.type === "income") {
         acc[date].income += curr.amount;
-      } else {
+      } else if (curr.type === "expense") {
         acc[date].expense += curr.amount;
       }
       return acc;

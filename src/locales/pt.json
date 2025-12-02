@@ -6,6 +6,7 @@
     "dashboard": "Painel",
     "transactions": "Transações",
     "reports": "Relatórios",
+    "calendar": "Calendário",
     "budgets": "Metas",
     "settings": "Configurações",
     "logout": "Sair",
@@ -172,6 +173,14 @@
     "rollover": "Orçamento Acumulativo",
     "rolloverDesc": "O valor não gasto soma ao próximo mês",
     "noBudgets": "Nenhuma meta definida."
+  },
+  "calendar": {
+    "title": "Calendário Financeiro",
+    "subtitle": "Visualize suas receitas e despesas por data.",
+    "income": "Receita",
+    "expense": "Despesa",
+    "balance": "Saldo do Dia",
+    "today": "Hoje"
   },
   "accounts": {
     "title": "Contas",

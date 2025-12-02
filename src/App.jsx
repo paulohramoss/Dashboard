@@ -17,6 +17,7 @@ import LoginPage from "@/pages/LoginPage";
 import RegisterPage from "@/pages/RegisterPage";
 import BudgetsPage from "@/pages/BudgetsPage";
 import AccountsPage from "@/pages/AccountsPage";
+import CalendarPage from "@/pages/CalendarPage";
 import NotificationManager from "@/components/NotificationManager";
 import TermsPage from "@/pages/TermsPage";
 import PrivacyPage from "@/pages/PrivacyPage";
@@ -72,6 +73,7 @@ const App = () => {
                         path="/transactions"
                         element={<TransactionsPage />}
                       />
+                      <Route path="/calendar" element={<CalendarPage />} />
                       <Route path="/budgets" element={<BudgetsPage />} />
                       <Route path="/accounts" element={<AccountsPage />} />
                       <Route path="/reports" element={<ReportsPage />} />

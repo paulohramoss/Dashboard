@@ -12,6 +12,7 @@ import {
   Target,
   Pin,
   PinOff,
+  Calendar,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -63,6 +64,7 @@ const Layout = ({ children }) => {
   const navItems = [
     { icon: LayoutDashboard, label: t("nav.dashboard"), path: "/" },
     { icon: Wallet, label: t("nav.transactions"), path: "/transactions" },
+    { icon: Calendar, label: t("nav.calendar"), path: "/calendar" },
     { icon: Target, label: t("nav.budgets"), path: "/budgets" },
     { icon: Wallet, label: t("accounts.title"), path: "/accounts" },
     { icon: PieChart, label: t("nav.reports"), path: "/reports" },
