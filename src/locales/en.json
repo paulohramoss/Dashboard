@@ -297,5 +297,23 @@
       "lgpdTitle": "4. LGPD Compliance",
       "lgpdText": "We are fully compliant with the Lei Geral de Proteção de Dados (LGPD). You have the right to access, correct, delete, and port your personal data."
     }
+  },
+  "charts": {
+    "financialOverview": "Financial Overview",
+    "expensesByCategory": "Expenses by Category",
+    "income": "Income",
+    "expense": "Expenses",
+    "other": "Other",
+    "monthlyEvolution": "Monthly Evolution"
+  },
+  "categories": {
+    "general": "General",
+    "food": "Food",
+    "transport": "Transport",
+    "utilities": "Utilities",
+    "entertainment": "Entertainment",
+    "salary": "Salary",
+    "freelance": "Freelance",
+    "other": "Other"
   }
 }
