@@ -92,7 +92,9 @@
       "noTransactions": "Nenhuma transação válida encontrada",
       "defaultDescription": "Transação Importada",
       "ofxNoTransactions": "Nenhuma transação encontrada no arquivo OFX"
-    }
+    },
+    "confirmDeleteTitle": "Excluir Transação",
+    "confirmDeleteDescription": "Tem certeza que deseja excluir esta transação? Esta ação não pode ser desfeita."
   },
   "reports": {
     "title": "Relatórios",

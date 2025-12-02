@@ -1,14 +1,29 @@
-import React from "react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Trash2, ArrowUpCircle, ArrowDownCircle, Repeat } from "lucide-react";
 import { useCategories } from "@/hooks/useCategories";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import ConfirmDialog from "@/components/ui/confirm-dialog";
 import { cn } from "@/lib/utils";
 
 const TransactionHistory = ({ transactions, onDelete }) => {
   const { t } = useTranslation();
   const { categories } = useCategories();
+  const [deleteId, setDeleteId] = useState(null);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+
+  const handleDeleteClick = (id) => {
+    setDeleteId(id);
+    setIsConfirmOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (deleteId) {
+      onDelete(deleteId);
+      setDeleteId(null);
+    }
+  };
 
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat("pt-BR", {
@@ -89,7 +104,7 @@ const TransactionHistory = ({ transactions, onDelete }) => {
                     variant="ghost"
                     size="icon"
                     className="text-muted-foreground hover:text-destructive"
-                    onClick={() => onDelete(transaction.id)}
+                    onClick={() => handleDeleteClick(transaction.id)}
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>
@@ -99,6 +114,17 @@ const TransactionHistory = ({ transactions, onDelete }) => {
           )}
         </div>
       </CardContent>
+
+      <ConfirmDialog
+        isOpen={isConfirmOpen}
+        onClose={() => setIsConfirmOpen(false)}
+        onConfirm={handleConfirmDelete}
+        title={t("transactions.confirmDeleteTitle")}
+        description={t("transactions.confirmDeleteDescription")}
+        confirmText={t("common.delete")}
+        cancelText={t("common.cancel")}
+        variant="destructive"
+      />
     </Card>
   );
 };
