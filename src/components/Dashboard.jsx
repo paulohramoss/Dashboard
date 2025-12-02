@@ -2,6 +2,7 @@ import React, { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useTransactions } from "@/hooks/useTransactions";
 import { useAccounts } from "@/hooks/useAccounts";
+import { useCategories } from "@/hooks/useCategories";
 import {
   BalanceCard,
   IncomeCard,
@@ -37,7 +38,8 @@ const Dashboard = () => {
   const { transactions, deleteTransaction, clearTransactions, stats } =
     useTransactions();
   const { accounts } = useAccounts();
-  const { t } = useTranslation();
+  const { categories } = useCategories();
+  const { t, i18n } = useTranslation();
   const [isDraggable, setIsDraggable] = useState(false);
 
   // Default Layouts
@@ -133,6 +135,13 @@ const Dashboard = () => {
     }
   };
 
+  const getCategoryLabel = (categoryName) => {
+    const category = categories.find((c) => c.name === categoryName);
+    return category?.isDefault
+      ? t(`categories.${categoryName.toLowerCase()}`)
+      : categoryName;
+  };
+
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat("pt-BR", {
       style: "currency",
@@ -141,7 +150,28 @@ const Dashboard = () => {
   };
 
   const handleExportExcel = () => {
-    const ws = XLSX.utils.json_to_sheet(transactions);
+    const isPt = i18n.language === "pt";
+    const currency = isPt ? "BRL" : "USD";
+    const locale = isPt ? "pt-BR" : "en-US";
+
+    const exportData = transactions.map((transaction) => ({
+      [t("transactions.table.date")]: new Date(
+        transaction.date
+      ).toLocaleDateString(locale),
+      [t("transactions.table.description")]: transaction.description,
+      [t("transactions.table.category")]: getCategoryLabel(
+        transaction.category
+      ),
+      [t("transactions.table.type")]: t(
+        `transactions.form.${transaction.type}`
+      ),
+      [t("transactions.table.amount")]: new Intl.NumberFormat(locale, {
+        style: "currency",
+        currency: currency,
+      }).format(transaction.amount),
+    }));
+
+    const ws = XLSX.utils.json_to_sheet(exportData);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Transactions");
     XLSX.writeFile(wb, "financial-dashboard-export.xlsx");
@@ -149,23 +179,40 @@ const Dashboard = () => {
 
   const handleExportPDF = () => {
     const doc = new jsPDF();
+    const isPt = i18n.language === "pt";
+    const currency = isPt ? "BRL" : "USD";
+    const locale = isPt ? "pt-BR" : "en-US";
 
     doc.setFontSize(18);
-    doc.text("Financial Dashboard Report", 14, 22);
+    doc.text(t("reports.title"), 14, 22);
 
     doc.setFontSize(11);
-    doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 30);
+    doc.text(
+      `${t("legal.lastUpdated")}: ${new Date().toLocaleDateString(locale)}`,
+      14,
+      30
+    );
 
-    const tableColumn = ["Date", "Description", "Category", "Type", "Amount"];
+    const tableColumn = [
+      t("transactions.table.date"),
+      t("transactions.table.description"),
+      t("transactions.table.category"),
+      t("transactions.table.type"),
+      t("transactions.table.amount"),
+    ];
+
     const tableRows = [];
 
     transactions.forEach((transaction) => {
       const transactionData = [
-        new Date(transaction.date).toLocaleDateString(),
+        new Date(transaction.date).toLocaleDateString(locale),
         transaction.description,
-        transaction.category,
-        transaction.type,
-        `$${parseFloat(transaction.amount).toFixed(2)}`,
+        getCategoryLabel(transaction.category),
+        t(`transactions.form.${transaction.type}`),
+        new Intl.NumberFormat(locale, {
+          style: "currency",
+          currency: currency,
+        }).format(transaction.amount),
       ];
       tableRows.push(transactionData);
     });

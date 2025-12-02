@@ -71,6 +71,7 @@
       "category": "Categoria",
       "date": "Data",
       "amount": "Valor",
+      "type": "Tipo",
       "actions": "Ações"
     },
     "noTransactions": "Nenhuma transação encontrada. Adicione manualmente ou importe um arquivo.",
