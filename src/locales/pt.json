@@ -201,7 +201,10 @@
     "investment": "Investimento",
     "confirmDelete": "Tem certeza que deseja excluir esta conta?",
     "deleteTitle": "Excluir Conta",
-    "deleteDescription": "Tem certeza que deseja excluir esta conta? Todas as transações associadas serão mantidas, mas sem vínculo com a conta."
+    "deleteDescription": "Tem certeza que deseja excluir esta conta? Todas as transações associadas serão mantidas, mas sem vínculo com a conta.",
+    "editTitle": "Editar Conta",
+    "creditTypeLocked": "O tipo cartão de crédito não pode ser alterado.",
+    "saveAccount": "Salvar Alterações"
   },
   "auth": {
     "welcome": "Bem-vindo de volta",

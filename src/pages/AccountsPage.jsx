@@ -20,13 +20,21 @@ import {
   Landmark,
   Banknote,
   TrendingUp,
+  Edit,
 } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import CurrencyInput from "@/components/ui/currency-input";
 import ConfirmDialog from "@/components/ui/confirm-dialog";
 
 const AccountsPage = () => {
   const { t } = useTranslation();
-  const { accounts, addAccount, deleteAccount } = useAccounts();
+  const { accounts, addAccount, deleteAccount, updateAccount } = useAccounts();
   const { transactions } = useTransactions();
   const [isAdding, setIsAdding] = useState(false);
   const [newAccount, setNewAccount] = useState({
@@ -38,6 +46,28 @@ const AccountsPage = () => {
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [accountToDelete, setAccountToDelete] = useState(null);
+
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [editingAccount, setEditingAccount] = useState(null);
+
+  const handleEditClick = (account) => {
+    setEditingAccount({ ...account });
+    setIsEditOpen(true);
+  };
+
+  const handleUpdateAccount = async (e) => {
+    e.preventDefault();
+    if (!editingAccount.name) return;
+
+    await updateAccount(editingAccount.id, {
+      name: editingAccount.name,
+      type: editingAccount.type,
+      color: editingAccount.color,
+    });
+
+    setIsEditOpen(false);
+    setEditingAccount(null);
+  };
 
   const accountBalances = useMemo(() => {
     return accounts.map((account) => {
@@ -206,6 +236,14 @@ const AccountsPage = () => {
                 <Button
                   variant="ghost"
                   size="icon"
+                  className="h-8 w-8 text-muted-foreground hover:text-primary"
+                  onClick={() => handleEditClick(account)}
+                >
+                  <Edit className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
                   className="h-8 w-8 text-muted-foreground hover:text-destructive"
                   onClick={() => confirmDelete(account)}
                 >
@@ -233,6 +271,83 @@ const AccountsPage = () => {
           </Card>
         ))}
       </div>
+
+      <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              {t("accounts.editTitle") || "Edit Account"}
+            </DialogTitle>
+          </DialogHeader>
+          {editingAccount && (
+            <form onSubmit={handleUpdateAccount} className="space-y-4">
+              <div className="space-y-2">
+                <Label>{t("accounts.name")}</Label>
+                <Input
+                  value={editingAccount.name}
+                  onChange={(e) =>
+                    setEditingAccount({
+                      ...editingAccount,
+                      name: e.target.value,
+                    })
+                  }
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>{t("accounts.type")}</Label>
+                <select
+                  className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  value={editingAccount.type}
+                  onChange={(e) =>
+                    setEditingAccount({
+                      ...editingAccount,
+                      type: e.target.value,
+                    })
+                  }
+                  disabled={editingAccount.type === "credit"} // Disable if credit card
+                >
+                  <option value="checking">{t("accounts.checking")}</option>
+                  <option value="savings">{t("accounts.savings")}</option>
+                  <option value="credit">{t("accounts.credit")}</option>
+                  <option value="cash">{t("accounts.cash")}</option>
+                  <option value="investment">{t("accounts.investment")}</option>
+                </select>
+                {editingAccount.type === "credit" && (
+                  <p className="text-xs text-muted-foreground">
+                    {t("accounts.creditTypeLocked") ||
+                      "Credit card type cannot be changed."}
+                  </p>
+                )}
+              </div>
+              <div className="space-y-2">
+                <Label>{t("accounts.color")}</Label>
+                <Input
+                  type="color"
+                  className="h-10 p-1 cursor-pointer"
+                  value={editingAccount.color}
+                  onChange={(e) =>
+                    setEditingAccount({
+                      ...editingAccount,
+                      color: e.target.value,
+                    })
+                  }
+                />
+              </div>
+              <DialogFooter>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setIsEditOpen(false)}
+                >
+                  {t("common.cancel")}
+                </Button>
+                <Button type="submit">{t("accounts.saveAccount")}</Button>
+              </DialogFooter>
+            </form>
+          )}
+        </DialogContent>
+      </Dialog>
 
       <ConfirmDialog
         isOpen={deleteDialogOpen}

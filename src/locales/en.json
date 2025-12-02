@@ -201,7 +201,10 @@
     "investment": "Investment",
     "confirmDelete": "Are you sure you want to delete this account?",
     "deleteTitle": "Delete Account",
-    "deleteDescription": "Are you sure you want to delete this account? All associated transactions will be kept but unlinked."
+    "deleteDescription": "Are you sure you want to delete this account? All associated transactions will be kept but unlinked.",
+    "editTitle": "Edit Account",
+    "creditTypeLocked": "Credit card type cannot be changed.",
+    "saveAccount": "Save Changes"
   },
   "auth": {
     "welcome": "Welcome back",
