@@ -26,8 +26,18 @@ import {
   TrendingUp,
   Layout,
   Save,
+  Ghost,
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import TransactionForm from "@/components/TransactionForm";
 import * as XLSX from "xlsx";
 import { Responsive, WidthProvider } from "react-grid-layout";
 import "react-grid-layout/css/styles.css";
@@ -36,8 +46,16 @@ import "react-resizable/css/styles.css";
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
 const Dashboard = () => {
-  const { transactions, deleteTransaction, clearTransactions, stats, loading } =
-    useTransactions();
+  const {
+    transactions,
+    deleteTransaction,
+    clearTransactions,
+    stats,
+    loading,
+    isShadowMode,
+    toggleShadowMode,
+    addShadowTransaction,
+  } = useTransactions();
   const { accounts } = useAccounts();
   const { categories } = useCategories();
   const { t, i18n } = useTranslation();
@@ -230,8 +248,28 @@ const Dashboard = () => {
     doc.save("financial-dashboard-report.pdf");
   };
 
+  const [isSimulateOpen, setIsSimulateOpen] = useState(false);
+
   return (
     <div className="space-y-8 animate-in fade-in duration-500 pb-10">
+      {/* ... header ... */}
+
+      <Dialog open={isSimulateOpen} onOpenChange={setIsSimulateOpen}>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Ghost className="h-5 w-5" />
+              {t("dashboard.simulateTransaction")}
+            </DialogTitle>
+          </DialogHeader>
+          <TransactionForm
+            onAddTransaction={(transaction) => {
+              addShadowTransaction(transaction);
+              setIsSimulateOpen(false);
+            }}
+          />
+        </DialogContent>
+      </Dialog>
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
           <h2
@@ -243,6 +281,31 @@ const Dashboard = () => {
           <p className="text-muted-foreground">{t("dashboard.subtitle")}</p>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
+          <div className="flex items-center space-x-2 mr-4 bg-muted/50 p-2 rounded-lg border">
+            <Switch
+              id="shadow-mode"
+              checked={isShadowMode}
+              onCheckedChange={toggleShadowMode}
+            />
+            <Label
+              htmlFor="shadow-mode"
+              className="flex items-center gap-2 cursor-pointer"
+            >
+              <Ghost className="h-4 w-4" />
+              {t("dashboard.shadowMode")}
+            </Label>
+          </div>
+
+          {isShadowMode && (
+            <Button
+              onClick={() => setIsSimulateOpen(true)}
+              className="bg-purple-600 hover:bg-purple-700 text-white"
+            >
+              <Ghost className="mr-2 h-4 w-4" />
+              {t("dashboard.simulate")}
+            </Button>
+          )}
+
           <Button
             variant={isDraggable ? "default" : "outline"}
             onClick={() => setIsDraggable(!isDraggable)}
@@ -250,12 +313,12 @@ const Dashboard = () => {
             {isDraggable ? (
               <>
                 <Save className="mr-2 h-4 w-4" />
-                {t("common.done") || "Done"}
+                {t("common.done")}
               </>
             ) : (
               <>
                 <Layout className="mr-2 h-4 w-4" />
-                {t("dashboard.customize") || "Customize Layout"}
+                {t("dashboard.customize")}
               </>
             )}
           </Button>

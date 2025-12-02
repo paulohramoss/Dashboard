@@ -163,7 +163,31 @@ export const useTransactions = () => {
     }
   };
 
-  const stats = transactions.reduce(
+  const [shadowTransactions, setShadowTransactions] = useState([]);
+  const [isShadowMode, setIsShadowMode] = useState(false);
+
+  const toggleShadowMode = () => setIsShadowMode(!isShadowMode);
+
+  const addShadowTransaction = (transaction) => {
+    const newShadow = {
+      ...transaction,
+      id: `shadow-${Date.now()}`,
+      isShadow: true,
+      date: transaction.date || new Date().toISOString(),
+      createdAt: new Date().toISOString(),
+    };
+    setShadowTransactions((prev) => [...prev, newShadow]);
+  };
+
+  const clearShadowTransactions = () => setShadowTransactions([]);
+
+  const allTransactions = isShadowMode
+    ? [...transactions, ...shadowTransactions].sort(
+        (a, b) => new Date(b.date) - new Date(a.date)
+      )
+    : transactions;
+
+  const stats = allTransactions.reduce(
     (acc, curr) => {
       const amount = parseFloat(curr.amount);
       if (curr.type === "income") {
@@ -173,20 +197,25 @@ export const useTransactions = () => {
         acc.expense += amount;
         acc.balance -= amount;
       }
-      // Transfers don't affect overall income/expense stats
       return acc;
     },
     { income: 0, expense: 0, balance: 0 }
   );
 
   return {
-    transactions,
+    transactions: allTransactions, // Return merged transactions
+    realTransactions: transactions, // Access to real only if needed
     addTransaction,
     addTransactions,
     deleteTransaction,
     clearTransactions,
     stats,
     loading,
+    isShadowMode,
+    toggleShadowMode,
+    addShadowTransaction,
+    clearShadowTransactions,
+    shadowTransactions,
   };
 };
 

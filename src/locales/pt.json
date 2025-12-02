@@ -26,10 +26,13 @@
     "clearData": "Limpar Dados",
     "exportExcel": "Excel",
     "exportPDF": "PDF",
+    "shadowMode": "Modo Sombra",
+    "simulate": "Simular Transação",
+    "simulateTransaction": "Simular Transação",
+    "customize": "Personalizar Layout",
     "totalBalance": "Saldo Total",
     "income": "Receitas",
-    "expenses": "Despesas",
-    "customize": "Personalizar Layout"
+    "expenses": "Despesas"
   },
   "transactions": {
     "title": "Transações",
