@@ -27,6 +27,8 @@ const TransactionForm = ({ onAddTransaction }) => {
     date: new Date().toISOString().split("T")[0],
     isRecurring: false,
     frequency: "monthly",
+    isInstallment: false,
+    installmentsCount: 2,
     accountId: "",
   });
 
@@ -59,8 +61,15 @@ const TransactionForm = ({ onAddTransaction }) => {
     if (!formData.description || !formData.amount || !formData.accountId)
       return;
 
+    if (formData.type === "transfer" && !formData.destinationAccountId) {
+      toast.error(t("transactions.errors.missingDestination"));
+      return;
+    }
+
     const categoryToSubmit =
-      formData.category || availableCategories[0]?.name || "";
+      formData.type === "transfer"
+        ? "Transfer"
+        : formData.category || availableCategories[0]?.name || "";
     const amountValue = parseFloat(formData.amount);
 
     // Check for budget overflow
@@ -109,7 +118,10 @@ const TransactionForm = ({ onAddTransaction }) => {
       date: new Date().toISOString().split("T")[0],
       isRecurring: false,
       frequency: "monthly",
+      isInstallment: false,
+      installmentsCount: 2,
       accountId: "",
+      destinationAccountId: "",
     });
   };
 
@@ -154,30 +166,41 @@ const TransactionForm = ({ onAddTransaction }) => {
                   {t("transactions.form.expense")}
                 </option>
                 <option value="income">{t("transactions.form.income")}</option>
+                <option value="transfer">
+                  {t("transactions.form.transfer")}
+                </option>
               </Select>
             </div>
+
+            {formData.type !== "transfer" && (
+              <div className="space-y-2">
+                <label className="text-sm font-medium">
+                  {t("transactions.form.category")}
+                </label>
+                <Select
+                  value={
+                    formData.category || availableCategories[0]?.name || ""
+                  }
+                  onChange={(e) =>
+                    setFormData({ ...formData, category: e.target.value })
+                  }
+                >
+                  {availableCategories.map((cat) => (
+                    <option key={cat.id} value={cat.name}>
+                      {cat.isDefault
+                        ? t(`categories.${cat.name.toLowerCase()}`)
+                        : cat.name}
+                    </option>
+                  ))}
+                </Select>
+              </div>
+            )}
+
             <div className="space-y-2">
               <label className="text-sm font-medium">
-                {t("transactions.form.category")}
-              </label>
-              <Select
-                value={formData.category || availableCategories[0]?.name || ""}
-                onChange={(e) =>
-                  setFormData({ ...formData, category: e.target.value })
-                }
-              >
-                {availableCategories.map((cat) => (
-                  <option key={cat.id} value={cat.name}>
-                    {cat.isDefault
-                      ? t(`categories.${cat.name.toLowerCase()}`)
-                      : cat.name}
-                  </option>
-                ))}
-              </Select>
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium">
-                {t("accounts.title")}
+                {formData.type === "transfer"
+                  ? t("transactions.form.sourceAccount")
+                  : t("accounts.title")}
               </label>
               <Select
                 value={formData.accountId}
@@ -194,6 +217,36 @@ const TransactionForm = ({ onAddTransaction }) => {
                 ))}
               </Select>
             </div>
+
+            {formData.type === "transfer" && (
+              <div className="space-y-2">
+                <label className="text-sm font-medium">
+                  {t("transactions.form.destinationAccount")}
+                </label>
+                <Select
+                  value={formData.destinationAccountId || ""}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      destinationAccountId: e.target.value,
+                    })
+                  }
+                  required
+                >
+                  <option value="">
+                    {t("transactions.form.selectAccount")}
+                  </option>
+                  {accounts
+                    .filter((acc) => acc.id !== formData.accountId)
+                    .map((acc) => (
+                      <option key={acc.id} value={acc.id}>
+                        {acc.name}
+                      </option>
+                    ))}
+                </Select>
+              </div>
+            )}
+
             <div className="space-y-2">
               <label className="text-sm font-medium">
                 {t("transactions.form.date")}
@@ -209,22 +262,45 @@ const TransactionForm = ({ onAddTransaction }) => {
             </div>
           </div>
 
-          <div className="flex items-center space-x-4 p-4 border rounded-lg bg-muted/50">
-            <div className="flex items-center space-x-2">
-              <Switch
-                id="recurring"
-                checked={formData.isRecurring}
-                onCheckedChange={(checked) =>
-                  setFormData({ ...formData, isRecurring: checked })
-                }
-              />
-              <Label htmlFor="recurring">
-                {t("transactions.form.recurring")}
-              </Label>
+          <div className="flex flex-col space-y-4 p-4 border rounded-lg bg-muted/50">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <Switch
+                  id="recurring"
+                  checked={formData.isRecurring}
+                  onCheckedChange={(checked) =>
+                    setFormData({
+                      ...formData,
+                      isRecurring: checked,
+                      isInstallment: checked ? false : formData.isInstallment,
+                    })
+                  }
+                />
+                <Label htmlFor="recurring">
+                  {t("transactions.form.recurring")}
+                </Label>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <Switch
+                  id="installment"
+                  checked={formData.isInstallment}
+                  onCheckedChange={(checked) =>
+                    setFormData({
+                      ...formData,
+                      isInstallment: checked,
+                      isRecurring: checked ? false : formData.isRecurring,
+                    })
+                  }
+                />
+                <Label htmlFor="installment">
+                  {t("transactions.form.isInstallment")}
+                </Label>
+              </div>
             </div>
 
             {formData.isRecurring && (
-              <div className="flex-1 flex items-center space-x-2 animate-in fade-in slide-in-from-left-5">
+              <div className="flex items-center space-x-2 animate-in fade-in slide-in-from-top-2">
                 <Label htmlFor="frequency">
                   {t("transactions.form.frequency")}:
                 </Label>
@@ -246,6 +322,28 @@ const TransactionForm = ({ onAddTransaction }) => {
                     {t("transactions.form.yearly")}
                   </option>
                 </Select>
+              </div>
+            )}
+
+            {formData.isInstallment && (
+              <div className="flex items-center space-x-2 animate-in fade-in slide-in-from-top-2">
+                <Label htmlFor="installments">
+                  {t("transactions.form.installments")}:
+                </Label>
+                <Input
+                  type="number"
+                  id="installments"
+                  min="2"
+                  max="99"
+                  value={formData.installmentsCount}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      installmentsCount: parseInt(e.target.value) || 2,
+                    })
+                  }
+                  className="w-20 h-8"
+                />
               </div>
             )}
           </div>

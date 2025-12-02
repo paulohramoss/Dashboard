@@ -18,6 +18,7 @@ import {
   CreditCard,
   Banknote,
   Building2,
+  TrendingUp,
 } from "lucide-react";
 import * as XLSX from "xlsx";
 
@@ -39,9 +40,25 @@ const Dashboard = () => {
         .filter((t) => t.type === "expense")
         .reduce((acc, t) => acc + parseFloat(t.amount), 0);
 
+      // Calculate transfers
+      const transfersOut = transactions
+        .filter((t) => t.type === "transfer" && t.accountId === account.id)
+        .reduce((acc, t) => acc + parseFloat(t.amount), 0);
+
+      const transfersIn = transactions
+        .filter(
+          (t) => t.type === "transfer" && t.destinationAccountId === account.id
+        )
+        .reduce((acc, t) => acc + parseFloat(t.amount), 0);
+
       return {
         ...account,
-        currentBalance: (account.initialBalance || 0) + income - expense,
+        currentBalance:
+          (account.initialBalance || 0) +
+          income -
+          expense -
+          transfersOut +
+          transfersIn,
       };
     });
   }, [accounts, transactions]);
@@ -56,6 +73,8 @@ const Dashboard = () => {
         return <CreditCard className="h-5 w-5" />;
       case "cash":
         return <Banknote className="h-5 w-5" />;
+      case "investment":
+        return <TrendingUp className="h-5 w-5" />;
       default:
         return <Wallet className="h-5 w-5" />;
     }

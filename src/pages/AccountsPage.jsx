@@ -19,6 +19,7 @@ import {
   CreditCard,
   Landmark,
   Banknote,
+  TrendingUp,
 } from "lucide-react";
 import CurrencyInput from "@/components/ui/currency-input";
 import ConfirmDialog from "@/components/ui/confirm-dialog";
@@ -50,9 +51,25 @@ const AccountsPage = () => {
         .filter((t) => t.type === "expense")
         .reduce((acc, t) => acc + parseFloat(t.amount), 0);
 
+      // Calculate transfers
+      const transfersOut = transactions
+        .filter((t) => t.type === "transfer" && t.accountId === account.id)
+        .reduce((acc, t) => acc + parseFloat(t.amount), 0);
+
+      const transfersIn = transactions
+        .filter(
+          (t) => t.type === "transfer" && t.destinationAccountId === account.id
+        )
+        .reduce((acc, t) => acc + parseFloat(t.amount), 0);
+
       return {
         ...account,
-        currentBalance: (account.initialBalance || 0) + income - expense,
+        currentBalance:
+          (account.initialBalance || 0) +
+          income -
+          expense -
+          transfersOut +
+          transfersIn,
       };
     });
   }, [accounts, transactions]);
@@ -97,6 +114,8 @@ const AccountsPage = () => {
         return <CreditCard className="h-4 w-4" />;
       case "cash":
         return <Banknote className="h-4 w-4" />;
+      case "investment":
+        return <TrendingUp className="h-4 w-4" />;
       default:
         return <Wallet className="h-4 w-4" />;
     }
@@ -144,6 +163,7 @@ const AccountsPage = () => {
                   <option value="savings">{t("accounts.savings")}</option>
                   <option value="credit">{t("accounts.credit")}</option>
                   <option value="cash">{t("accounts.cash")}</option>
+                  <option value="investment">{t("accounts.investment")}</option>
                 </select>
               </div>
               <div className="w-[150px] space-y-2">

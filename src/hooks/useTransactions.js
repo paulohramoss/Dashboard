@@ -52,6 +52,38 @@ export const useTransactions = () => {
   const addTransaction = async (transaction) => {
     if (!user?.id) return;
     try {
+      // Handle Installments
+      if (transaction.isInstallment && transaction.installmentsCount > 1) {
+        const batch = writeBatch(db);
+        const amountPerInstallment =
+          parseFloat(transaction.amount) / transaction.installmentsCount;
+        const startDate = new Date(transaction.date);
+
+        for (let i = 0; i < transaction.installmentsCount; i++) {
+          const docRef = doc(collection(db, "transactions"));
+          const installmentDate = new Date(startDate);
+          installmentDate.setMonth(startDate.getMonth() + i);
+
+          batch.set(docRef, {
+            ...transaction,
+            userId: user.id,
+            description: `${transaction.description} (${i + 1}/${
+              transaction.installmentsCount
+            })`,
+            amount: amountPerInstallment,
+            date: installmentDate.toISOString().split("T")[0],
+            createdAt: new Date().toISOString(),
+            accountId: transaction.accountId || null,
+            isInstallment: true,
+            installmentNumber: i + 1,
+            totalInstallments: transaction.installmentsCount,
+          });
+        }
+        await batch.commit();
+        return;
+      }
+
+      // Normal Transaction
       const transactionData = {
         ...transaction,
         userId: user.id,
@@ -121,10 +153,11 @@ export const useTransactions = () => {
       if (curr.type === "income") {
         acc.income += amount;
         acc.balance += amount;
-      } else {
+      } else if (curr.type === "expense") {
         acc.expense += amount;
         acc.balance -= amount;
       }
+      // Transfers don't affect overall income/expense stats
       return acc;
     },
     { income: 0, expense: 0, balance: 0 }

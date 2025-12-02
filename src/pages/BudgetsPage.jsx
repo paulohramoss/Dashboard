@@ -14,7 +14,11 @@ const BudgetsPage = () => {
   const { categories, updateCategory } = useCategories();
   const { transactions } = useTransactions();
   const [isAdding, setIsAdding] = useState(false);
-  const [newBudget, setNewBudget] = useState({ categoryId: "", amount: "" });
+  const [newBudget, setNewBudget] = useState({
+    categoryId: "",
+    amount: "",
+    rollover: false,
+  });
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [budgetToDelete, setBudgetToDelete] = useState(null);
@@ -36,10 +40,12 @@ const BudgetsPage = () => {
     return uniqueCategories.filter((c) => !c.budget || c.budget <= 0);
   }, [categories]);
 
-  const calculateProgress = (categoryName, budget) => {
-    const currentMonth = new Date().getMonth();
-    const currentYear = new Date().getFullYear();
+  const calculateProgress = (categoryName, budget, isRollover) => {
+    const now = new Date();
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
 
+    // Calculate current month spent
     const spent = transactions
       .filter(
         (t) =>
@@ -50,10 +56,35 @@ const BudgetsPage = () => {
       )
       .reduce((acc, curr) => acc + parseFloat(curr.amount), 0);
 
+    let effectiveBudget = budget;
+
+    // Calculate Rollover from previous month
+    if (isRollover) {
+      const prevDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+      const prevMonth = prevDate.getMonth();
+      const prevYear = prevDate.getFullYear();
+
+      const prevSpent = transactions
+        .filter(
+          (t) =>
+            t.type === "expense" &&
+            t.category === categoryName &&
+            new Date(t.date).getMonth() === prevMonth &&
+            new Date(t.date).getFullYear() === prevYear
+        )
+        .reduce((acc, curr) => acc + parseFloat(curr.amount), 0);
+
+      // If we spent less than the budget last month, add the remainder
+      if (prevSpent < budget) {
+        effectiveBudget += budget - prevSpent;
+      }
+    }
+
     return {
       spent,
-      percentage: Math.min((spent / budget) * 100, 100),
-      remaining: Math.max(budget - spent, 0),
+      percentage: Math.min((spent / effectiveBudget) * 100, 100),
+      remaining: Math.max(effectiveBudget - spent, 0),
+      effectiveBudget,
     };
   };
 
@@ -66,9 +97,10 @@ const BudgetsPage = () => {
       await updateCategory(category.id, {
         ...category,
         budget: parseFloat(newBudget.amount),
+        rollover: newBudget.rollover,
       });
       setIsAdding(false);
-      setNewBudget({ categoryId: "", amount: "" });
+      setNewBudget({ categoryId: "", amount: "", rollover: false });
     }
   };
 
@@ -143,6 +175,20 @@ const BudgetsPage = () => {
                   required
                 />
               </div>
+              <div className="flex items-center space-x-2 pb-2">
+                <input
+                  type="checkbox"
+                  id="rollover"
+                  className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                  checked={newBudget.rollover}
+                  onChange={(e) =>
+                    setNewBudget({ ...newBudget, rollover: e.target.checked })
+                  }
+                />
+                <label htmlFor="rollover" className="text-sm font-medium">
+                  {t("budgets.rollover")}
+                </label>
+              </div>
               <Button type="submit">{t("common.save")}</Button>
             </form>
           </CardContent>
@@ -151,10 +197,12 @@ const BudgetsPage = () => {
 
       <div className="grid gap-6">
         {activeBudgets.map((category) => {
-          const { spent, percentage, remaining } = calculateProgress(
-            category.name,
-            category.budget
-          );
+          const { spent, percentage, remaining, effectiveBudget } =
+            calculateProgress(
+              category.name,
+              category.budget,
+              category.rollover
+            );
 
           return (
             <Card key={category.id}>
@@ -203,7 +251,17 @@ const BudgetsPage = () => {
                     {new Intl.NumberFormat("pt-BR", {
                       style: "currency",
                       currency: "BRL",
-                    }).format(category.budget)}
+                    }).format(effectiveBudget)}
+                    {effectiveBudget > category.budget && (
+                      <span className="text-green-500 ml-1 text-[10px]">
+                        (+
+                        {new Intl.NumberFormat("pt-BR", {
+                          style: "currency",
+                          currency: "BRL",
+                        }).format(effectiveBudget - category.budget)}{" "}
+                        rollover)
+                      </span>
+                    )}
                   </p>
                 </div>
               </CardContent>
