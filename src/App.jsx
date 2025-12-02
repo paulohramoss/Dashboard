@@ -18,6 +18,9 @@ import RegisterPage from "@/pages/RegisterPage";
 import BudgetsPage from "@/pages/BudgetsPage";
 import AccountsPage from "@/pages/AccountsPage";
 import NotificationManager from "@/components/NotificationManager";
+import TermsPage from "@/pages/TermsPage";
+import PrivacyPage from "@/pages/PrivacyPage";
+import CookiePolicyPage from "@/pages/CookiePolicyPage";
 
 const ProtectedRoute = ({ children }) => {
   const { user } = useAuth();
@@ -45,14 +48,17 @@ import { Toaster } from "sonner";
 
 // ... existing imports
 
-function App() {
+const App = () => {
   return (
-    <AuthProvider>
-      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-        <Router>
+    <Router>
+      <AuthProvider>
+        <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
           <Routes>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
+            <Route path="/terms" element={<TermsPage />} />
+            <Route path="/privacy" element={<PrivacyPage />} />
+            <Route path="/cookie-policy" element={<CookiePolicyPage />} />
             <Route
               path="/*"
               element={
@@ -75,11 +81,11 @@ function App() {
               }
             />
           </Routes>
-        </Router>
-        <Toaster />
-      </ThemeProvider>
-    </AuthProvider>
+          <Toaster />
+        </ThemeProvider>
+      </AuthProvider>
+    </Router>
   );
-}
+};
 
 export default App;

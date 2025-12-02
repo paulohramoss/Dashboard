@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
@@ -10,6 +10,8 @@ import {
   X,
   LogOut,
   Target,
+  Pin,
+  PinOff,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -17,15 +19,46 @@ import { useAuth } from "@/hooks/useAuth";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import TourGuide from "@/components/TourGuide";
+import { toast } from "sonner";
 
 const Layout = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isConfirmingLogout, setIsConfirmingLogout] = useState(false);
+  const [isPinned, setIsPinned] = useState(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const saved = localStorage.getItem("sidebarPinned");
+        return saved !== null ? JSON.parse(saved) : false; // Default to false
+      } catch {
+        return false;
+      }
+    }
+    return false;
+  });
+  const [isHovered, setIsHovered] = useState(false);
+
   const location = useLocation();
   const { user, logout } = useAuth();
   const { t } = useTranslation();
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
+
+  const togglePin = () => {
+    const newState = !isPinned;
+    setIsPinned(newState);
+    toast.success(newState ? t("sidebar.pinned") : t("sidebar.unpinned"), {
+      description: newState
+        ? t("sidebar.pinnedDesc")
+        : t("sidebar.unpinnedDesc"),
+    });
+  };
+
+  // Desktop: Expanded if pinned OR hovered
+  const isExpanded = isPinned || isHovered;
+
+  useEffect(() => {
+    localStorage.setItem("sidebarPinned", JSON.stringify(isPinned));
+  }, [isPinned]);
 
   const navItems = [
     { icon: LayoutDashboard, label: t("nav.dashboard"), path: "/" },
@@ -49,13 +82,51 @@ const Layout = ({ children }) => {
 
       {/* Sidebar */}
       <aside
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
         className={cn(
-          "fixed lg:static inset-y-0 left-0 z-50 w-64 bg-card border-r transition-transform duration-200 ease-in-out lg:translate-x-0",
-          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+          "fixed inset-y-0 left-0 z-50 bg-card border-r transition-all duration-300 ease-in-out",
+          // Mobile: transform based on state, fixed width
+          "w-64 transform lg:transform-none",
+          isSidebarOpen ? "translate-x-0" : "-translate-x-full",
+          // Desktop: width based on expanded state
+          isExpanded ? "lg:w-64" : "lg:w-20"
         )}
       >
-        <div className="h-16 flex items-center px-6 border-b">
-          <h1 className="text-xl font-bold text-primary">{t("app.title")}</h1>
+        <div
+          className={cn(
+            "h-16 flex items-center border-b transition-all duration-300",
+            isExpanded ? "px-6 justify-between" : "px-0 justify-center"
+          )}
+        >
+          {isExpanded ? (
+            <>
+              <h1 className="text-xl font-bold text-primary truncate">
+                {t("app.title")}
+              </h1>
+              {/* Desktop Pin Button */}
+              <Button
+                variant="ghost"
+                size="icon"
+                className={cn(
+                  "hidden lg:flex h-8 w-8 ml-auto hover:bg-muted",
+                  isPinned && "text-primary bg-primary/10"
+                )}
+                onClick={togglePin}
+                title={isPinned ? t("sidebar.unpin") : t("sidebar.pin")}
+              >
+                {isPinned ? (
+                  <Pin className="h-4 w-4 rotate-45" />
+                ) : (
+                  <PinOff className="h-4 w-4" />
+                )}
+              </Button>
+            </>
+          ) : (
+            <span className="font-bold text-primary text-xl">FD</span>
+          )}
+
+          {/* Mobile Close Button */}
           <Button
             variant="ghost"
             size="icon"
@@ -75,14 +146,22 @@ const Layout = ({ children }) => {
                 item.path === "/transactions" ? "nav-transactions" : undefined
               }
               className={cn(
-                "flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-md transition-colors",
+                "flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-md transition-all duration-200 overflow-hidden whitespace-nowrap",
                 location.pathname === item.path
                   ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                  : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
+                !isExpanded && "justify-center px-2"
               )}
             >
-              <item.icon className="h-5 w-5" />
-              {item.label}
+              <item.icon className={cn("h-5 w-5 flex-shrink-0")} />
+              <span
+                className={cn(
+                  "transition-all duration-300 opacity-100",
+                  !isExpanded && "opacity-0 w-0 hidden"
+                )}
+              >
+                {item.label}
+              </span>
             </Link>
           ))}
 
@@ -96,25 +175,39 @@ const Layout = ({ children }) => {
             }}
             onMouseLeave={() => setIsConfirmingLogout(false)}
             className={cn(
-              "w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-md transition-all duration-300",
+              "w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-md transition-all duration-300 overflow-hidden whitespace-nowrap",
               isConfirmingLogout
                 ? "bg-destructive text-destructive-foreground shadow-lg scale-105"
-                : "text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+                : "text-muted-foreground hover:bg-destructive/10 hover:text-destructive",
+              !isExpanded && "justify-center px-2"
             )}
           >
             <LogOut
               className={cn(
-                "h-5 w-5 transition-transform",
+                "h-5 w-5 transition-transform flex-shrink-0",
                 isConfirmingLogout && "rotate-180"
               )}
             />
-            {isConfirmingLogout ? t("nav.confirmLogout") : t("nav.logout")}
+            <span
+              className={cn(
+                "transition-all duration-300 opacity-100",
+                !isExpanded && "opacity-0 w-0 hidden"
+              )}
+            >
+              {isConfirmingLogout ? t("nav.confirmLogout") : t("nav.logout")}
+            </span>
           </button>
         </nav>
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col min-h-screen overflow-hidden">
+      <main
+        className={cn(
+          "flex-1 flex flex-col min-h-screen overflow-hidden transition-all duration-300 ease-in-out",
+          // Adjust margin based on expanded state (pinned OR hovered)
+          isExpanded ? "lg:ml-64" : "lg:ml-20"
+        )}
+      >
         {/* Header */}
         <header className="h-16 border-b bg-card flex items-center px-6 lg:px-8 justify-between">
           <Button

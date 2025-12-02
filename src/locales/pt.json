@@ -11,6 +11,14 @@
     "logout": "Sair",
     "confirmLogout": "Confirmar Saída?"
   },
+  "sidebar": {
+    "pinned": "Menu Fixado",
+    "unpinned": "Menu Desafixado",
+    "pinnedDesc": "O menu permanecerá aberto.",
+    "unpinnedDesc": "O menu fechará ao sair com o mouse.",
+    "pin": "Fixar Menu",
+    "unpin": "Desafixar Menu"
+  },
   "dashboard": {
     "title": "Painel",
     "subtitle": "Visão geral do seu status financeiro e atividades recentes.",
@@ -189,7 +197,10 @@
     "emailInUse": "E-mail já cadastrado",
     "passwordMismatch": "As senhas não coincidem",
     "passwordLength": "A senha deve ter pelo menos 6 caracteres",
-    "createAccountError": "Falha ao criar conta. Tente novamente."
+    "createAccountError": "Falha ao criar conta. Tente novamente.",
+    "privacyNotice": "Sua privacidade é nossa prioridade.",
+    "noAccess": "Não temos acesso aos seus dados financeiros.",
+    "lgpd": "100% em conformidade com a"
   },
   "common": {
     "loading": "Carregando...",
@@ -198,7 +209,9 @@
     "save": "Salvar",
     "done": "Concluído",
     "next": "Próximo",
-    "previous": "Anterior"
+    "previous": "Anterior",
+    "delete": "Excluir",
+    "cancel": "Cancelar"
   },
   "tour": {
     "welcomeTitle": "Bem-vindo ao FinanceDash!",
@@ -209,6 +222,59 @@
     "addTransactionDesc": "Clique aqui para registrar suas receitas e despesas rapidamente.",
     "navTitle": "Navegação",
     "navDesc": "Use este menu para acessar suas Transações, Metas, Contas e Relatórios."
+  },
+  "cookies": {
+    "message": "Utilizamos cookies para garantir que você tenha a melhor experiência em nosso site. Ao continuar navegando, você concorda com o uso de cookies.",
+    "accept": "Aceitar Todos",
+    "settings": "Preferências",
+    "policy": "Política de Cookies",
+    "preferencesTitle": "Preferências de Cookies",
+    "preferencesDesc": "Gerencie suas configurações de cookies. Você pode ativar ou desativar diferentes tipos de cookies abaixo.",
+    "savePreferences": "Salvar Preferências",
+    "essentialTitle": "Cookies Essenciais",
+    "essentialDesc": "Estes cookies são necessários para o funcionamento do site e não podem ser desativados.",
+    "analyticsTitle": "Cookies Analíticos",
+    "analyticsDesc": "Estes cookies nos permitem contar visitas e fontes de tráfego para que possamos medir e melhorar o desempenho do nosso site.",
+    "marketingTitle": "Cookies de Marketing",
+    "marketingDesc": "Estes cookies podem ser definidos através do nosso site pelos nossos parceiros de publicidade.",
+    "policyContent": {
+      "whatTitle": "1. O Que São Cookies",
+      "whatText": "Cookies são pequenos arquivos de texto que são colocados em seu computador ou dispositivo móvel quando você visita um site. Eles são amplamente utilizados para fazer os sites funcionarem de forma mais eficiente e fornecer informações aos proprietários do site.",
+      "howTitle": "2. Como Usamos Cookies",
+      "howText": "Usamos cookies para entender como você interage com nosso site, para mantê-lo conectado e para salvar suas preferências.",
+      "typesTitle": "3. Tipos de Cookies que Usamos",
+      "typesEssential": "Cookies Essenciais: Necessários para que o site funcione corretamente. Você não pode desativá-los.",
+      "typesAnalytics": "Cookies Analíticos: Ajudam-nos a entender como os visitantes interagem com o site, coletando e relatando informações anonimamente.",
+      "typesMarketing": "Cookies de Marketing: Usados para rastrear visitantes em sites para exibir anúncios relevantes.",
+      "managingTitle": "4. Gerenciando Cookies",
+      "managingText": "Você pode alterar suas preferências de cookies a qualquer momento clicando no botão \"Preferências\" em nosso banner de cookies ou configurações."
+    }
+  },
+  "legal": {
+    "terms": "Termos de Uso",
+    "privacy": "Política de Privacidade",
+    "copyright": "© 2024 FinanceDash. Todos os direitos reservados.",
+    "lastUpdated": "Última atualização: 01 de Dezembro de 2024",
+    "termsContent": {
+      "introTitle": "1. Introdução",
+      "introText": "Bem-vindo ao FinanceDash. Ao acessar ou usar nosso site e serviços, você concorda em ficar vinculado a estes Termos de Uso e a todas as leis e regulamentos aplicáveis.",
+      "licenseTitle": "2. Licença de Uso",
+      "licenseText": "É concedida permissão para baixar temporariamente uma cópia dos materiais (informações ou software) no site do FinanceDash apenas para visualização transitória pessoal e não comercial.",
+      "disclaimerTitle": "3. Isenção de Responsabilidade",
+      "disclaimerText": "Os materiais no site do FinanceDash são fornecidos 'como estão'. O FinanceDash não oferece garantias, expressas ou implícitas, e, por este meio, isenta e nega todas as outras garantias, incluindo, sem limitação, garantias implícitas ou condições de comercialização, adequação a um fim específico ou não violação de propriedade intelectual ou outra violação de direitos.",
+      "limitationsTitle": "4. Limitações",
+      "limitationsText": "Em nenhum caso o FinanceDash ou seus fornecedores serão responsáveis por quaisquer danos (incluindo, sem limitação, danos por perda de dados ou lucro ou devido a interrupção dos negócios) decorrentes do uso ou da incapacidade de usar os materiais no site do FinanceDash."
+    },
+    "privacyContent": {
+      "collectTitle": "1. Informações que Coletamos",
+      "collectText": "Coletamos informações que você nos fornece diretamente, como quando você cria uma conta, atualiza seu perfil ou se comunica conosco. Isso pode incluir seu nome, endereço de e-mail e dados financeiros que você optar por inserir.",
+      "useTitle": "2. Como Usamos Suas Informações",
+      "useText": "Usamos as informações que coletamos para fornecer, manter e melhorar nossos serviços, como processar suas transações, gerar relatórios e enviar informações relacionadas.",
+      "securityTitle": "3. Segurança de Dados",
+      "securityText": "Tomamos medidas razoáveis para ajudar a proteger informações sobre você contra perda, roubo, uso indevido e acesso não autorizado, divulgação, alteração e destruição. Seus dados financeiros são seus e não os acessamos para nenhuma outra finalidade além de fornecer o serviço.",
+      "lgpdTitle": "4. Conformidade com a LGPD",
+      "lgpdText": "Estamos em total conformidade com a Lei Geral de Proteção de Dados (LGPD). Você tem o direito de acessar, corrigir, excluir e portar seus dados pessoais."
+    }
   },
   "charts": {
     "financialOverview": "Visão Geral Financeira",

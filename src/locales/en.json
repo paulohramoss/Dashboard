@@ -11,6 +11,14 @@
     "logout": "Logout",
     "confirmLogout": "Confirm Logout?"
   },
+  "sidebar": {
+    "pinned": "Sidebar Pinned",
+    "unpinned": "Sidebar Unpinned",
+    "pinnedDesc": "Sidebar will remain open.",
+    "unpinnedDesc": "Sidebar will collapse when mouse leaves.",
+    "pin": "Pin Sidebar",
+    "unpin": "Unpin Sidebar"
+  },
   "dashboard": {
     "title": "Dashboard",
     "subtitle": "Overview of your financial status and recent activity.",
@@ -189,7 +197,10 @@
     "emailInUse": "Email already registered",
     "passwordMismatch": "Passwords do not match",
     "passwordLength": "Password must be at least 6 characters",
-    "createAccountError": "Failed to create account. Please try again."
+    "createAccountError": "Failed to create account. Please try again.",
+    "privacyNotice": "Your privacy is our priority.",
+    "noAccess": "We do not have access to your financial data.",
+    "lgpd": "100% compliant with"
   },
   "common": {
     "loading": "Loading...",
@@ -201,7 +212,9 @@
     "other": "Other",
     "done": "Done",
     "next": "Next",
-    "previous": "Previous"
+    "previous": "Previous",
+    "delete": "Delete",
+    "cancel": "Cancel"
   },
   "tour": {
     "welcomeTitle": "Welcome to FinanceDash!",
@@ -212,5 +225,58 @@
     "addTransactionDesc": "Click here to quickly record your income and expenses.",
     "navTitle": "Navigation",
     "navDesc": "Use this menu to access your Transactions, Budgets, Accounts, and Reports."
+  },
+  "cookies": {
+    "message": "We use cookies to ensure you get the best experience on our website. By continuing to use our site, you agree to our use of cookies.",
+    "accept": "Accept All",
+    "settings": "Preferences",
+    "policy": "Cookie Policy",
+    "preferencesTitle": "Cookie Preferences",
+    "preferencesDesc": "Manage your cookie settings. You can enable or disable different types of cookies below.",
+    "savePreferences": "Save Preferences",
+    "essentialTitle": "Essential Cookies",
+    "essentialDesc": "These cookies are necessary for the website to function and cannot be switched off.",
+    "analyticsTitle": "Analytics Cookies",
+    "analyticsDesc": "These cookies allow us to count visits and traffic sources so we can measure and improve the performance of our site.",
+    "marketingTitle": "Marketing Cookies",
+    "marketingDesc": "These cookies may be set through our site by our advertising partners.",
+    "policyContent": {
+      "whatTitle": "1. What Are Cookies",
+      "whatText": "Cookies are small text files that are placed on your computer or mobile device when you visit a website. They are widely used to make websites work more efficiently and provide information to the owners of the site.",
+      "howTitle": "2. How We Use Cookies",
+      "howText": "We use cookies to understand how you interact with our website, to keep you signed in, and to save your preferences.",
+      "typesTitle": "3. Types of Cookies We Use",
+      "typesEssential": "Essential Cookies: Necessary for the website to function properly. You cannot opt-out of these.",
+      "typesAnalytics": "Analytics Cookies: Help us understand how visitors interact with the website by collecting and reporting information anonymously.",
+      "typesMarketing": "Marketing Cookies: Used to track visitors across websites to display relevant ads.",
+      "managingTitle": "4. Managing Cookies",
+      "managingText": "You can change your cookie preferences at any time by clicking on the \"Preferences\" button in our cookie banner or settings."
+    }
+  },
+  "legal": {
+    "terms": "Terms of Service",
+    "privacy": "Privacy Policy",
+    "copyright": "© 2024 FinanceDash. All rights reserved.",
+    "lastUpdated": "Last updated: December 01, 2024",
+    "termsContent": {
+      "introTitle": "1. Introduction",
+      "introText": "Welcome to FinanceDash. By accessing or using our website and services, you agree to be bound by these Terms of Service and all applicable laws and regulations.",
+      "licenseTitle": "2. Use License",
+      "licenseText": "Permission is granted to temporarily download one copy of the materials (information or software) on FinanceDash's website for personal, non-commercial transitory viewing only.",
+      "disclaimerTitle": "3. Disclaimer",
+      "disclaimerText": "The materials on FinanceDash's website are provided on an 'as is' basis. FinanceDash makes no warranties, expressed or implied, and hereby disclaims and negates all other warranties including, without limitation, implied warranties or conditions of merchantability, fitness for a particular purpose, or non-infringement of intellectual property or other violation of rights.",
+      "limitationsTitle": "4. Limitations",
+      "limitationsText": "In no event shall FinanceDash or its suppliers be liable for any damages (including, without limitation, damages for loss of data or profit, or due to business interruption) arising out of the use or inability to use the materials on FinanceDash's website."
+    },
+    "privacyContent": {
+      "collectTitle": "1. Information We Collect",
+      "collectText": "We collect information that you provide directly to us, such as when you create an account, update your profile, or communicate with us. This may include your name, email address, and financial data you choose to input.",
+      "useTitle": "2. How We Use Your Information",
+      "useText": "We use the information we collect to provide, maintain, and improve our services, such as to process your transactions, generate reports, and send you related information.",
+      "securityTitle": "3. Data Security",
+      "securityText": "We take reasonable measures to help protect information about you from loss, theft, misuse and unauthorized access, disclosure, alteration and destruction. Your financial data is yours and we do not access it for any purpose other than providing the service.",
+      "lgpdTitle": "4. LGPD Compliance",
+      "lgpdText": "We are fully compliant with the Lei Geral de Proteção de Dados (LGPD). You have the right to access, correct, delete, and port your personal data."
+    }
   }
 }
