@@ -35,6 +35,13 @@ export default defineConfig({
       },
       workbox: {
         maximumFileSizeToCacheInBytes: 4 * 1024 * 1024, // 4MB
+        navigateFallbackDenylist: [/^\/version.json$/],
+        runtimeCaching: [
+          {
+            urlPattern: /\/version\.json$/,
+            handler: "NetworkOnly",
+          },
+        ],
       },
     }),
   ],

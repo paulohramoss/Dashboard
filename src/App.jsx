@@ -46,12 +46,13 @@ const LayoutWithKey = () => {
 
 import { Toaster } from "sonner";
 
-// ... existing imports
+import VersionChecker from "@/components/VersionChecker";
 
 const App = () => {
   return (
     <Router>
       <AuthProvider>
+        <VersionChecker />
         <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
           <Routes>
             <Route path="/login" element={<LoginPage />} />
