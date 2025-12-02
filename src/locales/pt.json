@@ -27,7 +27,8 @@
     "exportPDF": "PDF",
     "totalBalance": "Saldo Total",
     "income": "Receitas",
-    "expenses": "Despesas"
+    "expenses": "Despesas",
+    "customize": "Personalizar Layout"
   },
   "transactions": {
     "title": "Transações",

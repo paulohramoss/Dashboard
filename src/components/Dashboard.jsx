@@ -1,8 +1,12 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useTransactions } from "@/hooks/useTransactions";
 import { useAccounts } from "@/hooks/useAccounts";
-import SummaryCards from "@/components/SummaryCards";
+import {
+  BalanceCard,
+  IncomeCard,
+  ExpenseCard,
+} from "@/components/SummaryCards";
 import OverviewChart from "@/components/Charts/OverviewChart";
 import CategoryChart from "@/components/Charts/CategoryChart";
 import TransactionHistory from "@/components/TransactionHistory";
@@ -19,14 +23,63 @@ import {
   Banknote,
   Building2,
   TrendingUp,
+  Layout,
+  Save,
 } from "lucide-react";
 import * as XLSX from "xlsx";
+import { Responsive, WidthProvider } from "react-grid-layout";
+import "react-grid-layout/css/styles.css";
+import "react-resizable/css/styles.css";
+
+const ResponsiveGridLayout = WidthProvider(Responsive);
 
 const Dashboard = () => {
   const { transactions, deleteTransaction, clearTransactions, stats } =
     useTransactions();
   const { accounts } = useAccounts();
   const { t } = useTranslation();
+  const [isDraggable, setIsDraggable] = useState(false);
+
+  // Default Layouts
+  const defaultLayouts = {
+    lg: [
+      { i: "balance", x: 0, y: 0, w: 4, h: 2 },
+      { i: "income", x: 4, y: 0, w: 4, h: 2 },
+      { i: "expense", x: 8, y: 0, w: 4, h: 2 },
+      { i: "accounts", x: 0, y: 2, w: 12, h: 2 },
+      { i: "overview", x: 0, y: 4, w: 8, h: 4 },
+      { i: "category", x: 8, y: 4, w: 4, h: 4 },
+      { i: "history", x: 0, y: 8, w: 12, h: 6 },
+    ],
+    md: [
+      { i: "balance", x: 0, y: 0, w: 4, h: 2 },
+      { i: "income", x: 4, y: 0, w: 4, h: 2 },
+      { i: "expense", x: 8, y: 0, w: 4, h: 2 },
+      { i: "accounts", x: 0, y: 2, w: 12, h: 2 },
+      { i: "overview", x: 0, y: 4, w: 12, h: 4 },
+      { i: "category", x: 0, y: 8, w: 12, h: 4 },
+      { i: "history", x: 0, y: 12, w: 12, h: 6 },
+    ],
+    sm: [
+      { i: "balance", x: 0, y: 0, w: 12, h: 2 },
+      { i: "income", x: 0, y: 2, w: 12, h: 2 },
+      { i: "expense", x: 0, y: 4, w: 12, h: 2 },
+      { i: "accounts", x: 0, y: 6, w: 12, h: 2 },
+      { i: "overview", x: 0, y: 8, w: 12, h: 4 },
+      { i: "category", x: 0, y: 12, w: 12, h: 4 },
+      { i: "history", x: 0, y: 16, w: 12, h: 6 },
+    ],
+  };
+
+  const [layouts, setLayouts] = useState(() => {
+    const saved = localStorage.getItem("dashboardLayout");
+    return saved ? JSON.parse(saved) : defaultLayouts;
+  });
+
+  const onLayoutChange = (currentLayout, allLayouts) => {
+    setLayouts(allLayouts);
+    localStorage.setItem("dashboardLayout", JSON.stringify(allLayouts));
+  };
 
   const accountBalances = useMemo(() => {
     return accounts.map((account) => {
@@ -130,7 +183,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500">
+    <div className="space-y-8 animate-in fade-in duration-500 pb-10">
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
           <h2
@@ -141,7 +194,23 @@ const Dashboard = () => {
           </h2>
           <p className="text-muted-foreground">{t("dashboard.subtitle")}</p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
+          <Button
+            variant={isDraggable ? "default" : "outline"}
+            onClick={() => setIsDraggable(!isDraggable)}
+          >
+            {isDraggable ? (
+              <>
+                <Save className="mr-2 h-4 w-4" />
+                {t("common.done") || "Done"}
+              </>
+            ) : (
+              <>
+                <Layout className="mr-2 h-4 w-4" />
+                {t("dashboard.customize") || "Customize Layout"}
+              </>
+            )}
+          </Button>
           <Button
             variant="outline"
             onClick={clearTransactions}
@@ -161,51 +230,171 @@ const Dashboard = () => {
         </div>
       </div>
 
-      <div id="summary-cards">
-        <SummaryCards stats={stats} />
-      </div>
-
-      {/* Accounts Overview */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {accountBalances.map((account) => (
-          <Card key={account.id} className="relative overflow-hidden">
-            <div
-              className="absolute top-0 left-0 w-1 h-full"
-              style={{ backgroundColor: account.color }}
-            />
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                {account.name}
-              </CardTitle>
-              <div className="text-muted-foreground">
-                {getIcon(account.type)}
+      <ResponsiveGridLayout
+        className="layout"
+        layouts={layouts}
+        breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
+        cols={{ lg: 12, md: 12, sm: 12, xs: 12, xxs: 12 }}
+        rowHeight={100}
+        isDraggable={isDraggable}
+        isResizable={isDraggable}
+        onLayoutChange={onLayoutChange}
+        draggableHandle=".drag-handle"
+      >
+        <div
+          key="balance"
+          className={
+            isDraggable
+              ? "border-2 border-dashed border-primary/50 rounded-lg"
+              : ""
+          }
+        >
+          <div className="h-full relative">
+            {isDraggable && (
+              <div className="drag-handle absolute top-0 left-0 right-0 h-6 bg-gray-200/50 cursor-move z-10 rounded-t-lg flex justify-center items-center">
+                <Layout className="h-3 w-3 opacity-50" />
               </div>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                {formatCurrency(account.currentBalance)}
-              </div>
-              <p className="text-xs text-muted-foreground capitalize">
-                {t(`accounts.${account.type}`)}
-              </p>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-        <OverviewChart transactions={transactions} />
-        <CategoryChart transactions={transactions} />
-      </div>
-
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-        <div className="col-span-7 space-y-4">
-          <TransactionHistory
-            transactions={transactions}
-            onDelete={deleteTransaction}
-          />
+            )}
+            <BalanceCard amount={stats.balance} />
+          </div>
         </div>
-      </div>
+        <div
+          key="income"
+          className={
+            isDraggable
+              ? "border-2 border-dashed border-primary/50 rounded-lg"
+              : ""
+          }
+        >
+          <div className="h-full relative">
+            {isDraggable && (
+              <div className="drag-handle absolute top-0 left-0 right-0 h-6 bg-gray-200/50 cursor-move z-10 rounded-t-lg flex justify-center items-center">
+                <Layout className="h-3 w-3 opacity-50" />
+              </div>
+            )}
+            <IncomeCard amount={stats.income} />
+          </div>
+        </div>
+        <div
+          key="expense"
+          className={
+            isDraggable
+              ? "border-2 border-dashed border-primary/50 rounded-lg"
+              : ""
+          }
+        >
+          <div className="h-full relative">
+            {isDraggable && (
+              <div className="drag-handle absolute top-0 left-0 right-0 h-6 bg-gray-200/50 cursor-move z-10 rounded-t-lg flex justify-center items-center">
+                <Layout className="h-3 w-3 opacity-50" />
+              </div>
+            )}
+            <ExpenseCard amount={stats.expense} />
+          </div>
+        </div>
+
+        <div
+          key="accounts"
+          className={
+            isDraggable
+              ? "border-2 border-dashed border-primary/50 rounded-lg"
+              : ""
+          }
+        >
+          <div className="h-full relative overflow-y-auto">
+            {isDraggable && (
+              <div className="drag-handle absolute top-0 left-0 right-0 h-6 bg-gray-200/50 cursor-move z-10 rounded-t-lg flex justify-center items-center">
+                <Layout className="h-3 w-3 opacity-50" />
+              </div>
+            )}
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 h-full p-1">
+              {accountBalances.map((account) => (
+                <Card
+                  key={account.id}
+                  className="relative overflow-hidden h-full"
+                >
+                  <div
+                    className="absolute top-0 left-0 w-1 h-full"
+                    style={{ backgroundColor: account.color }}
+                  />
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">
+                      {account.name}
+                    </CardTitle>
+                    <div className="text-muted-foreground">
+                      {getIcon(account.type)}
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">
+                      {formatCurrency(account.currentBalance)}
+                    </div>
+                    <p className="text-xs text-muted-foreground capitalize">
+                      {t(`accounts.${account.type}`)}
+                    </p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div
+          key="overview"
+          className={
+            isDraggable
+              ? "border-2 border-dashed border-primary/50 rounded-lg"
+              : ""
+          }
+        >
+          <div className="h-full relative">
+            {isDraggable && (
+              <div className="drag-handle absolute top-0 left-0 right-0 h-6 bg-gray-200/50 cursor-move z-10 rounded-t-lg flex justify-center items-center">
+                <Layout className="h-3 w-3 opacity-50" />
+              </div>
+            )}
+            <OverviewChart transactions={transactions} />
+          </div>
+        </div>
+        <div
+          key="category"
+          className={
+            isDraggable
+              ? "border-2 border-dashed border-primary/50 rounded-lg"
+              : ""
+          }
+        >
+          <div className="h-full relative">
+            {isDraggable && (
+              <div className="drag-handle absolute top-0 left-0 right-0 h-6 bg-gray-200/50 cursor-move z-10 rounded-t-lg flex justify-center items-center">
+                <Layout className="h-3 w-3 opacity-50" />
+              </div>
+            )}
+            <CategoryChart transactions={transactions} />
+          </div>
+        </div>
+
+        <div
+          key="history"
+          className={
+            isDraggable
+              ? "border-2 border-dashed border-primary/50 rounded-lg"
+              : ""
+          }
+        >
+          <div className="h-full relative overflow-y-auto">
+            {isDraggable && (
+              <div className="drag-handle absolute top-0 left-0 right-0 h-6 bg-gray-200/50 cursor-move z-10 rounded-t-lg flex justify-center items-center">
+                <Layout className="h-3 w-3 opacity-50" />
+              </div>
+            )}
+            <TransactionHistory
+              transactions={transactions}
+              onDelete={deleteTransaction}
+            />
+          </div>
+        </div>
+      </ResponsiveGridLayout>
     </div>
   );
 };

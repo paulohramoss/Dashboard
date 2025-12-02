@@ -27,7 +27,8 @@
     "exportPDF": "PDF",
     "totalBalance": "Total Balance",
     "income": "Income",
-    "expenses": "Expenses"
+    "expenses": "Expenses",
+    "customize": "Customize Layout"
   },
   "transactions": {
     "title": "Transactions",
