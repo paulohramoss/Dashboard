@@ -55,28 +55,44 @@ export const useTransactions = () => {
       // Handle Installments
       if (transaction.isInstallment && transaction.installmentsCount > 1) {
         const batch = writeBatch(db);
-        const amountPerInstallment =
-          parseFloat(transaction.amount) / transaction.installmentsCount;
+        const totalAmount = parseFloat(transaction.amount);
+        const installmentsCount = parseInt(transaction.installmentsCount);
+
+        // Calculate base amount rounded down to 2 decimal places
+        const baseAmount =
+          Math.floor((totalAmount / installmentsCount) * 100) / 100;
+
+        // Calculate the remainder
+        const remainder = parseFloat(
+          (totalAmount - baseAmount * installmentsCount).toFixed(2)
+        );
+
         const startDate = new Date(transaction.date);
 
-        for (let i = 0; i < transaction.installmentsCount; i++) {
+        for (let i = 0; i < installmentsCount; i++) {
           const docRef = doc(collection(db, "transactions"));
           const installmentDate = new Date(startDate);
           installmentDate.setMonth(startDate.getMonth() + i);
 
+          // Add remainder to the last installment
+          const installmentAmount =
+            i === installmentsCount - 1
+              ? parseFloat((baseAmount + remainder).toFixed(2))
+              : baseAmount;
+
           batch.set(docRef, {
             ...transaction,
             userId: user.id,
-            description: `${transaction.description} (${i + 1}/${
-              transaction.installmentsCount
-            })`,
-            amount: amountPerInstallment,
+            description: `${transaction.description} (${
+              i + 1
+            }/${installmentsCount})`,
+            amount: installmentAmount,
             date: installmentDate.toISOString().split("T")[0],
             createdAt: new Date().toISOString(),
             accountId: transaction.accountId || null,
             isInstallment: true,
             installmentNumber: i + 1,
-            totalInstallments: transaction.installmentsCount,
+            totalInstallments: installmentsCount,
           });
         }
         await batch.commit();

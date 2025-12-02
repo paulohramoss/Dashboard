@@ -2,6 +2,7 @@ import React, { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useCategories } from "@/hooks/useCategories";
 import { useTransactions } from "@/hooks/useTransactions";
+import { useBudgetRollover } from "@/hooks/useBudgetRollover";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
@@ -13,6 +14,10 @@ const BudgetsPage = () => {
   const { t } = useTranslation();
   const { categories, updateCategory } = useCategories();
   const { transactions } = useTransactions();
+
+  // Run rollover logic
+  useBudgetRollover(categories, transactions);
+
   const [isAdding, setIsAdding] = useState(false);
   const [newBudget, setNewBudget] = useState({
     categoryId: "",
@@ -40,7 +45,7 @@ const BudgetsPage = () => {
     return uniqueCategories.filter((c) => !c.budget || c.budget <= 0);
   }, [categories]);
 
-  const calculateProgress = (categoryName, budget, isRollover) => {
+  const calculateProgress = (categoryName, budget, isRollover, category) => {
     const now = new Date();
     const currentMonth = now.getMonth();
     const currentYear = now.getFullYear();
@@ -58,26 +63,9 @@ const BudgetsPage = () => {
 
     let effectiveBudget = budget;
 
-    // Calculate Rollover from previous month
-    if (isRollover) {
-      const prevDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-      const prevMonth = prevDate.getMonth();
-      const prevYear = prevDate.getFullYear();
-
-      const prevSpent = transactions
-        .filter(
-          (t) =>
-            t.type === "expense" &&
-            t.category === categoryName &&
-            new Date(t.date).getMonth() === prevMonth &&
-            new Date(t.date).getFullYear() === prevYear
-        )
-        .reduce((acc, curr) => acc + parseFloat(curr.amount), 0);
-
-      // If we spent less than the budget last month, add the remainder
-      if (prevSpent < budget) {
-        effectiveBudget += budget - prevSpent;
-      }
+    // Add accumulated rollover from previous months
+    if (isRollover && category.accumulatedRollover) {
+      effectiveBudget += category.accumulatedRollover;
     }
 
     return {
@@ -201,7 +189,8 @@ const BudgetsPage = () => {
             calculateProgress(
               category.name,
               category.budget,
-              category.rollover
+              category.rollover,
+              category
             );
 
           return (

@@ -27,6 +27,7 @@ import {
   Layout,
   Save,
 } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 import * as XLSX from "xlsx";
 import { Responsive, WidthProvider } from "react-grid-layout";
 import "react-grid-layout/css/styles.css";
@@ -35,7 +36,7 @@ import "react-resizable/css/styles.css";
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
 const Dashboard = () => {
-  const { transactions, deleteTransaction, clearTransactions, stats } =
+  const { transactions, deleteTransaction, clearTransactions, stats, loading } =
     useTransactions();
   const { accounts } = useAccounts();
   const { categories } = useCategories();
@@ -302,7 +303,11 @@ const Dashboard = () => {
                 <Layout className="h-3 w-3 opacity-50" />
               </div>
             )}
-            <BalanceCard amount={stats.balance} />
+            {loading ? (
+              <Skeleton className="w-full h-full" />
+            ) : (
+              <BalanceCard amount={stats.balance} />
+            )}
           </div>
         </div>
         <div
@@ -319,7 +324,11 @@ const Dashboard = () => {
                 <Layout className="h-3 w-3 opacity-50" />
               </div>
             )}
-            <IncomeCard amount={stats.income} />
+            {loading ? (
+              <Skeleton className="w-full h-full" />
+            ) : (
+              <IncomeCard amount={stats.income} />
+            )}
           </div>
         </div>
         <div
@@ -336,7 +345,11 @@ const Dashboard = () => {
                 <Layout className="h-3 w-3 opacity-50" />
               </div>
             )}
-            <ExpenseCard amount={stats.expense} />
+            {loading ? (
+              <Skeleton className="w-full h-full" />
+            ) : (
+              <ExpenseCard amount={stats.expense} />
+            )}
           </div>
         </div>
 
@@ -354,35 +367,43 @@ const Dashboard = () => {
                 <Layout className="h-3 w-3 opacity-50" />
               </div>
             )}
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 h-full p-1">
-              {accountBalances.map((account) => (
-                <Card
-                  key={account.id}
-                  className="relative overflow-hidden h-full"
-                >
-                  <div
-                    className="absolute top-0 left-0 w-1 h-full"
-                    style={{ backgroundColor: account.color }}
-                  />
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">
-                      {account.name}
-                    </CardTitle>
-                    <div className="text-muted-foreground">
-                      {getIcon(account.type)}
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold">
-                      {formatCurrency(account.currentBalance)}
-                    </div>
-                    <p className="text-xs text-muted-foreground capitalize">
-                      {t(`accounts.${account.type}`)}
-                    </p>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+            {loading ? (
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 h-full p-1">
+                {[1, 2, 3, 4].map((i) => (
+                  <Skeleton key={i} className="h-full w-full" />
+                ))}
+              </div>
+            ) : (
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 h-full p-1">
+                {accountBalances.map((account) => (
+                  <Card
+                    key={account.id}
+                    className="relative overflow-hidden h-full"
+                  >
+                    <div
+                      className="absolute top-0 left-0 w-1 h-full"
+                      style={{ backgroundColor: account.color }}
+                    />
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium">
+                        {account.name}
+                      </CardTitle>
+                      <div className="text-muted-foreground">
+                        {getIcon(account.type)}
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold">
+                        {formatCurrency(account.currentBalance)}
+                      </div>
+                      <p className="text-xs text-muted-foreground capitalize">
+                        {t(`accounts.${account.type}`)}
+                      </p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
           </div>
         </div>
 
@@ -400,7 +421,11 @@ const Dashboard = () => {
                 <Layout className="h-3 w-3 opacity-50" />
               </div>
             )}
-            <OverviewChart transactions={transactions} />
+            {loading ? (
+              <Skeleton className="w-full h-full" />
+            ) : (
+              <OverviewChart transactions={transactions} />
+            )}
           </div>
         </div>
         <div
@@ -417,7 +442,11 @@ const Dashboard = () => {
                 <Layout className="h-3 w-3 opacity-50" />
               </div>
             )}
-            <CategoryChart transactions={transactions} />
+            {loading ? (
+              <Skeleton className="w-full h-full" />
+            ) : (
+              <CategoryChart transactions={transactions} />
+            )}
           </div>
         </div>
 
@@ -435,10 +464,18 @@ const Dashboard = () => {
                 <Layout className="h-3 w-3 opacity-50" />
               </div>
             )}
-            <TransactionHistory
-              transactions={transactions}
-              onDelete={deleteTransaction}
-            />
+            {loading ? (
+              <div className="space-y-4 p-4">
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <Skeleton key={i} className="h-16 w-full" />
+                ))}
+              </div>
+            ) : (
+              <TransactionHistory
+                transactions={transactions}
+                onDelete={deleteTransaction}
+              />
+            )}
           </div>
         </div>
       </ResponsiveGridLayout>
