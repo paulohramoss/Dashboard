@@ -115,9 +115,9 @@ const Dashboard = () => {
           const accountsItem = layout.find((item) => item.i === "accounts");
           if (accountsItem) {
             // Calculate rows needed: ceil(accounts / cols)
-            // Each row of cards takes roughly 1.0 grid unit
+            // Each row of cards takes roughly 1.6 grid units
             const rowsNeeded = Math.ceil(accounts.length / cols);
-            const newHeight = Math.max(2, Math.ceil(rowsNeeded * 1.0));
+            const newHeight = Math.max(2, Math.ceil(rowsNeeded * 1.6));
 
             if (accountsItem.h !== newHeight) {
               accountsItem.h = newHeight;
