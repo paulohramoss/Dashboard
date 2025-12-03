@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useTransactions } from "@/hooks/useTransactions";
 import { useAccounts } from "@/hooks/useAccounts";
@@ -96,6 +96,53 @@ const Dashboard = () => {
     const saved = localStorage.getItem("dashboardLayout");
     return saved ? JSON.parse(saved) : defaultLayouts;
   });
+
+  // Dynamically adjust accounts widget height based on number of accounts
+  useEffect(() => {
+    if (loading || accounts.length === 0) return;
+
+    const timer = setTimeout(() => {
+      setLayouts((prevLayouts) => {
+        // Deep copy to avoid mutating active state
+        const newLayouts = JSON.parse(JSON.stringify(prevLayouts));
+        let hasChanges = false;
+
+        // Helper to update height for a specific breakpoint
+        const updateHeight = (breakpoint, cols) => {
+          const layout = newLayouts[breakpoint];
+          if (!layout) return;
+
+          const accountsItem = layout.find((item) => item.i === "accounts");
+          if (accountsItem) {
+            // Calculate rows needed: ceil(accounts / cols)
+            // Each row of cards takes roughly 1.0 grid unit
+            const rowsNeeded = Math.ceil(accounts.length / cols);
+            const newHeight = Math.max(2, Math.ceil(rowsNeeded * 1.0));
+
+            if (accountsItem.h !== newHeight) {
+              accountsItem.h = newHeight;
+              hasChanges = true;
+            }
+          }
+        };
+
+        // Update for each breakpoint
+        updateHeight("lg", 4); // 4 columns in grid
+        updateHeight("md", 2); // 2 columns in grid
+        updateHeight("sm", 1); // 1 column in grid
+
+        if (hasChanges) {
+          // Persist to localStorage
+          localStorage.setItem("dashboardLayout", JSON.stringify(newLayouts));
+          return newLayouts;
+        }
+
+        return prevLayouts;
+      });
+    }, 0);
+
+    return () => clearTimeout(timer);
+  }, [accounts.length, loading]);
 
   const onLayoutChange = (currentLayout, allLayouts) => {
     setLayouts(allLayouts);
