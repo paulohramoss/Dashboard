@@ -1,5 +1,6 @@
 import React, { useMemo, useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { useLayout } from "@/context/LayoutContext";
 import { useTransactions } from "@/hooks/useTransactions";
 import { useAccounts } from "@/hooks/useAccounts";
 import { useCategories } from "@/hooks/useCategories";
@@ -59,6 +60,7 @@ const Dashboard = () => {
   const { accounts } = useAccounts();
   const { categories } = useCategories();
   const { t, i18n } = useTranslation();
+  const { isExpanded } = useLayout();
   const [isDraggable, setIsDraggable] = useState(false);
 
   // Default Layouts
@@ -115,9 +117,11 @@ const Dashboard = () => {
           const accountsItem = layout.find((item) => item.i === "accounts");
           if (accountsItem) {
             // Calculate rows needed: ceil(accounts / cols)
-            // Each row of cards takes roughly 1.6 grid units
+            // Use different multipliers based on sidebar state (isExpanded)
+            const multiplier = isExpanded ? 1.2 : 1.6;
+
             const rowsNeeded = Math.ceil(accounts.length / cols);
-            const newHeight = Math.max(2, Math.ceil(rowsNeeded * 1.6));
+            const newHeight = Math.max(2, Math.ceil(rowsNeeded * multiplier));
 
             if (accountsItem.h !== newHeight) {
               accountsItem.h = newHeight;
@@ -142,7 +146,7 @@ const Dashboard = () => {
     }, 0);
 
     return () => clearTimeout(timer);
-  }, [accounts.length, loading]);
+  }, [accounts.length, loading, isExpanded]);
 
   const onLayoutChange = (currentLayout, allLayouts) => {
     setLayouts(allLayouts);
