@@ -32,12 +32,15 @@ import {
 } from "@/components/ui/dialog";
 import CurrencyInput from "@/components/ui/currency-input";
 import ConfirmDialog from "@/components/ui/confirm-dialog";
+import { useLayout } from "@/context/LayoutContext";
+import { cn } from "@/lib/utils";
 
 const AccountsPage = () => {
   const { t } = useTranslation();
   const { accounts, addAccount, deleteAccount, updateAccount, loading } =
     useAccounts();
   const { transactions } = useTransactions();
+  const { isPrivacyMode } = useLayout();
   const [isAdding, setIsAdding] = useState(false);
   const [newAccount, setNewAccount] = useState({
     name: "",
@@ -277,7 +280,12 @@ const AccountsPage = () => {
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">
+                <div
+                  className={cn(
+                    "text-2xl font-bold",
+                    isPrivacyMode && "privacy-blur"
+                  )}
+                >
                   {new Intl.NumberFormat("pt-BR", {
                     style: "currency",
                     currency: "BRL",

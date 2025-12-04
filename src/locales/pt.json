@@ -21,6 +21,12 @@
     "pin": "Fixar Menu",
     "unpin": "Desafixar Menu"
   },
+  "privacy": {
+    "enable": "Ativar Modo Privacidade",
+    "disable": "Desativar Modo Privacidade",
+    "enabled": "Modo Privacidade ativado",
+    "disabled": "Modo Privacidade desativado"
+  },
   "dashboard": {
     "title": "Painel",
     "subtitle": "Visão geral do seu status financeiro e atividades recentes.",

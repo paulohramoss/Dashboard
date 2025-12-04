@@ -10,11 +10,14 @@ import { Plus, Trash2 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import CurrencyInput from "@/components/ui/currency-input";
 import ConfirmDialog from "@/components/ui/confirm-dialog";
+import { useLayout } from "@/context/LayoutContext";
+import { cn } from "@/lib/utils";
 
 const BudgetsPage = () => {
   const { t } = useTranslation();
   const { categories, updateCategory, loading } = useCategories();
   const { transactions } = useTransactions();
+  const { isPrivacyMode } = useLayout();
 
   // Run rollover logic
   useBudgetRollover(categories, transactions);
@@ -237,17 +240,21 @@ const BudgetsPage = () => {
                   <div className="space-y-2">
                     <div className="flex justify-between text-sm">
                       <span className="text-muted-foreground">
-                        {new Intl.NumberFormat("pt-BR", {
-                          style: "currency",
-                          currency: "BRL",
-                        }).format(spent)}{" "}
+                        <span className={cn(isPrivacyMode && "privacy-blur")}>
+                          {new Intl.NumberFormat("pt-BR", {
+                            style: "currency",
+                            currency: "BRL",
+                          }).format(spent)}
+                        </span>{" "}
                         {t("budgets.spent")}
                       </span>
                       <span className="font-medium">
-                        {new Intl.NumberFormat("pt-BR", {
-                          style: "currency",
-                          currency: "BRL",
-                        }).format(remaining)}{" "}
+                        <span className={cn(isPrivacyMode && "privacy-blur")}>
+                          {new Intl.NumberFormat("pt-BR", {
+                            style: "currency",
+                            currency: "BRL",
+                          }).format(remaining)}
+                        </span>{" "}
                         {t("budgets.remaining")}
                       </span>
                     </div>
@@ -260,17 +267,21 @@ const BudgetsPage = () => {
                     />
                     <p className="text-xs text-muted-foreground text-right">
                       {t("budgets.total")}:{" "}
-                      {new Intl.NumberFormat("pt-BR", {
-                        style: "currency",
-                        currency: "BRL",
-                      }).format(effectiveBudget)}
+                      <span className={cn(isPrivacyMode && "privacy-blur")}>
+                        {new Intl.NumberFormat("pt-BR", {
+                          style: "currency",
+                          currency: "BRL",
+                        }).format(effectiveBudget)}
+                      </span>
                       {effectiveBudget > category.budget && (
                         <span className="text-green-500 ml-1 text-[10px]">
                           (+
-                          {new Intl.NumberFormat("pt-BR", {
-                            style: "currency",
-                            currency: "BRL",
-                          }).format(effectiveBudget - category.budget)}{" "}
+                          <span className={cn(isPrivacyMode && "privacy-blur")}>
+                            {new Intl.NumberFormat("pt-BR", {
+                              style: "currency",
+                              currency: "BRL",
+                            }).format(effectiveBudget - category.budget)}
+                          </span>{" "}
                           rollover)
                         </span>
                       )}

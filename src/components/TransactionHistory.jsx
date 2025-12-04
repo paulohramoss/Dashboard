@@ -12,10 +12,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import ConfirmDialog from "@/components/ui/confirm-dialog";
 import { cn } from "@/lib/utils";
+import { useLayout } from "@/context/LayoutContext";
 
 const TransactionHistory = ({ transactions, onDelete }) => {
   const { t } = useTranslation();
   const { categories } = useCategories();
+  const { isPrivacyMode } = useLayout();
   const [deleteId, setDeleteId] = useState(null);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
@@ -112,7 +114,8 @@ const TransactionHistory = ({ transactions, onDelete }) => {
                       transaction.type === "income"
                         ? "text-green-600"
                         : "text-red-600",
-                      transaction.isShadow && "opacity-70"
+                      transaction.isShadow && "opacity-70",
+                      isPrivacyMode && "privacy-blur"
                     )}
                   >
                     {transaction.type === "income" ? "+" : "-"}

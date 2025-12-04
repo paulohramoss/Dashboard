@@ -8,9 +8,12 @@ import {
   ArrowDownRight,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useLayout } from "@/context/LayoutContext";
+import { cn } from "@/lib/utils";
 
 export const BalanceCard = ({ amount }) => {
   const { t } = useTranslation();
+  const { isPrivacyMode } = useLayout();
   return (
     <Card className="bg-primary text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-200 h-full">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -20,7 +23,9 @@ export const BalanceCard = ({ amount }) => {
         <Wallet className="h-4 w-4 text-primary-foreground/70" />
       </CardHeader>
       <CardContent>
-        <div className="text-3xl font-bold">
+        <div
+          className={cn("text-3xl font-bold", isPrivacyMode && "privacy-blur")}
+        >
           {new Intl.NumberFormat("pt-BR", {
             style: "currency",
             currency: "BRL",
@@ -33,6 +38,7 @@ export const BalanceCard = ({ amount }) => {
 
 export const IncomeCard = ({ amount }) => {
   const { t } = useTranslation();
+  const { isPrivacyMode } = useLayout();
   return (
     <Card className="hover:shadow-md transition-all duration-200 h-full">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -44,7 +50,12 @@ export const IncomeCard = ({ amount }) => {
         </div>
       </CardHeader>
       <CardContent>
-        <div className="text-2xl font-bold text-green-600 flex items-center gap-2">
+        <div
+          className={cn(
+            "text-2xl font-bold text-green-600 flex items-center gap-2",
+            isPrivacyMode && "privacy-blur"
+          )}
+        >
           {new Intl.NumberFormat("pt-BR", {
             style: "currency",
             currency: "BRL",
@@ -58,6 +69,7 @@ export const IncomeCard = ({ amount }) => {
 
 export const ExpenseCard = ({ amount }) => {
   const { t } = useTranslation();
+  const { isPrivacyMode } = useLayout();
   return (
     <Card className="hover:shadow-md transition-all duration-200 h-full">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -69,7 +81,12 @@ export const ExpenseCard = ({ amount }) => {
         </div>
       </CardHeader>
       <CardContent>
-        <div className="text-2xl font-bold text-red-600 flex items-center gap-2">
+        <div
+          className={cn(
+            "text-2xl font-bold text-red-600 flex items-center gap-2",
+            isPrivacyMode && "privacy-blur"
+          )}
+        >
           {new Intl.NumberFormat("pt-BR", {
             style: "currency",
             currency: "BRL",

@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import { cn } from "@/lib/utils";
 import {
   Trash2,
   FileSpreadsheet,
@@ -60,7 +61,7 @@ const Dashboard = () => {
   const { accounts } = useAccounts();
   const { categories } = useCategories();
   const { t, i18n } = useTranslation();
-  const { isExpanded } = useLayout();
+  const { isExpanded, isPrivacyMode } = useLayout();
   const [isDraggable, setIsDraggable] = useState(false);
 
   // Default Layouts
@@ -507,7 +508,12 @@ const Dashboard = () => {
                       </div>
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold">
+                      <div
+                        className={cn(
+                          "text-2xl font-bold",
+                          isPrivacyMode && "privacy-blur"
+                        )}
+                      >
                         {formatCurrency(account.currentBalance)}
                       </div>
                       <p className="text-xs text-muted-foreground capitalize">

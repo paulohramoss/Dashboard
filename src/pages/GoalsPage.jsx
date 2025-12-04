@@ -22,12 +22,14 @@ import CurrencyInput from "@/components/ui/currency-input";
 import { Select } from "@/components/ui/select";
 import ConfirmDialog from "@/components/ui/confirm-dialog";
 import { cn } from "@/lib/utils";
+import { useLayout } from "@/context/LayoutContext";
 
 const GoalsPage = () => {
   const { t } = useTranslation();
   const { goals, addGoal, deleteGoal, allocateFunds, loading } = useGoals();
   const { accounts } = useAccounts();
   const { transactions } = useTransactions();
+  const { isPrivacyMode } = useLayout();
 
   const accountsWithBalance = React.useMemo(() => {
     return accounts.map((account) => {
@@ -191,7 +193,12 @@ const GoalsPage = () => {
                       <span className="text-muted-foreground">
                         {t("goals.saved")}
                       </span>
-                      <span className="font-bold text-primary">
+                      <span
+                        className={cn(
+                          "font-bold text-primary",
+                          isPrivacyMode && "privacy-blur"
+                        )}
+                      >
                         {formatCurrency(goal.currentAmount)}
                       </span>
                     </div>
@@ -203,7 +210,10 @@ const GoalsPage = () => {
                     <div className="flex justify-between text-xs text-muted-foreground">
                       <span>{Math.round(progress)}%</span>
                       <span>
-                        {t("goals.target")}: {formatCurrency(goal.targetAmount)}
+                        {t("goals.target")}:{" "}
+                        <span className={cn(isPrivacyMode && "privacy-blur")}>
+                          {formatCurrency(goal.targetAmount)}
+                        </span>
                       </span>
                     </div>
 
@@ -352,7 +362,8 @@ const GoalsPage = () => {
                 </option>
                 {accountsWithBalance.map((acc) => (
                   <option key={acc.id} value={acc.id}>
-                    {acc.name} ({formatCurrency(acc.balance)})
+                    {acc.name} (
+                    {isPrivacyMode ? "*****" : formatCurrency(acc.balance)})
                   </option>
                 ))}
               </Select>

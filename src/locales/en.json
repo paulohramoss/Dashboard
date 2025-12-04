@@ -21,6 +21,12 @@
     "pin": "Pin Sidebar",
     "unpin": "Unpin Sidebar"
   },
+  "privacy": {
+    "enable": "Enable Privacy Mode",
+    "disable": "Disable Privacy Mode",
+    "enabled": "Privacy Mode enabled",
+    "disabled": "Privacy Mode disabled"
+  },
   "dashboard": {
     "title": "Dashboard",
     "subtitle": "Overview of your financial status and recent activity.",

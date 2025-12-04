@@ -7,10 +7,13 @@ import CategoryChart from "@/components/Charts/CategoryChart";
 import MonthlyEvolutionChart from "@/components/Charts/MonthlyEvolutionChart";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useLayout } from "@/context/LayoutContext";
+import { cn } from "@/lib/utils";
 
 const ReportsPage = () => {
   const { transactions, stats, loading } = useTransactions();
   const { t } = useTranslation();
+  const { isPrivacyMode } = useLayout();
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
@@ -59,11 +62,12 @@ const ReportsPage = () => {
             </span>{" "}
             {t("reports.totalTransactionsPart2")}{" "}
             <span
-              className={
+              className={cn(
                 stats.balance >= 0
                   ? "text-green-600 font-bold"
-                  : "text-red-600 font-bold"
-              }
+                  : "text-red-600 font-bold",
+                isPrivacyMode && "privacy-blur"
+              )}
             >
               {new Intl.NumberFormat("pt-BR", {
                 style: "currency",

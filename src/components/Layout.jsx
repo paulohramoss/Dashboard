@@ -14,6 +14,8 @@ import {
   PinOff,
   Calendar,
   Star,
+  Eye,
+  EyeOff,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -39,6 +41,24 @@ const Layout = ({ children }) => {
     return false;
   });
   const [isHovered, setIsHovered] = useState(false);
+  const [isPrivacyMode, setIsPrivacyMode] = useState(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const saved = localStorage.getItem("privacyMode");
+        return saved !== null ? JSON.parse(saved) : false;
+      } catch {
+        return false;
+      }
+    }
+    return false;
+  });
+
+  const togglePrivacyMode = () => {
+    const newState = !isPrivacyMode;
+    setIsPrivacyMode(newState);
+    localStorage.setItem("privacyMode", JSON.stringify(newState));
+    toast.success(newState ? t("privacy.enabled") : t("privacy.disabled"));
+  };
 
   const location = useLocation();
   const { user, logout } = useAuth();
@@ -76,7 +96,13 @@ const Layout = ({ children }) => {
 
   return (
     <LayoutContext.Provider
-      value={{ isExpanded, isSidebarOpen, setIsSidebarOpen }}
+      value={{
+        isExpanded,
+        isSidebarOpen,
+        setIsSidebarOpen,
+        isPrivacyMode,
+        togglePrivacyMode,
+      }}
     >
       <div className="min-h-screen bg-background flex">
         <TourGuide />
@@ -227,6 +253,21 @@ const Layout = ({ children }) => {
               <Menu className="h-6 w-6" />
             </Button>
             <div className="flex items-center gap-4 ml-auto">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={togglePrivacyMode}
+                title={
+                  isPrivacyMode ? t("privacy.disable") : t("privacy.enable")
+                }
+                className="text-muted-foreground hover:text-foreground"
+              >
+                {isPrivacyMode ? (
+                  <EyeOff className="h-5 w-5" />
+                ) : (
+                  <Eye className="h-5 w-5" />
+                )}
+              </Button>
               <LanguageToggle />
               <ThemeToggle />
               <span className="text-sm font-medium hidden md:block">
