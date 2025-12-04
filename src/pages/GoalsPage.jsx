@@ -6,7 +6,8 @@ import { useTransactions } from "@/hooks/useTransactions";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
-import { Plus, Target, Wallet, Trash2 } from "lucide-react";
+import { Plus, Star, Wallet, Trash2 } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Dialog,
   DialogContent,
@@ -24,7 +25,7 @@ import { cn } from "@/lib/utils";
 
 const GoalsPage = () => {
   const { t } = useTranslation();
-  const { goals, addGoal, deleteGoal, allocateFunds } = useGoals();
+  const { goals, addGoal, deleteGoal, allocateFunds, loading } = useGoals();
   const { accounts } = useAccounts();
   const { transactions } = useTransactions();
 
@@ -138,76 +139,109 @@ const GoalsPage = () => {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {goals.map((goal) => {
-          const progress = calculateProgress(
-            goal.currentAmount,
-            goal.targetAmount
-          );
-          return (
-            <Card
-              key={goal.id}
-              className="overflow-hidden hover:shadow-lg transition-shadow"
-            >
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-xl font-bold">{goal.name}</CardTitle>
-                <Target className="h-5 w-5 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4 mt-4">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">
-                      {t("goals.saved")}
-                    </span>
-                    <span className="font-bold text-primary">
-                      {formatCurrency(goal.currentAmount)}
-                    </span>
+        {loading ? (
+          <>
+            {[1, 2, 3].map((i) => (
+              <Card key={i} className="overflow-hidden">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <Skeleton className="h-6 w-32" />
+                  <Skeleton className="h-5 w-5 rounded-full" />
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4 mt-4">
+                    <div className="flex justify-between text-sm">
+                      <Skeleton className="h-4 w-16" />
+                      <Skeleton className="h-4 w-20" />
+                    </div>
+                    <Skeleton className="h-3 w-full" />
+                    <div className="flex justify-between text-xs">
+                      <Skeleton className="h-3 w-8" />
+                      <Skeleton className="h-3 w-24" />
+                    </div>
+                    <Skeleton className="h-3 w-32 mx-auto" />
+                    <div className="flex gap-2 mt-4">
+                      <Skeleton className="h-9 flex-1" />
+                      <Skeleton className="h-9 w-9" />
+                    </div>
                   </div>
-                  <Progress
-                    value={progress}
-                    className="h-3"
-                    indicatorColor={goal.color}
-                  />
-                  <div className="flex justify-between text-xs text-muted-foreground">
-                    <span>{Math.round(progress)}%</span>
-                    <span>
-                      {t("goals.target")}: {formatCurrency(goal.targetAmount)}
-                    </span>
-                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </>
+        ) : (
+          goals.map((goal) => {
+            const progress = calculateProgress(
+              goal.currentAmount,
+              goal.targetAmount
+            );
+            return (
+              <Card
+                key={goal.id}
+                className="overflow-hidden hover:shadow-lg transition-shadow"
+              >
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-xl font-bold">
+                    {goal.name}
+                  </CardTitle>
+                  <Star className="h-5 w-5 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4 mt-4">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-muted-foreground">
+                        {t("goals.saved")}
+                      </span>
+                      <span className="font-bold text-primary">
+                        {formatCurrency(goal.currentAmount)}
+                      </span>
+                    </div>
+                    <Progress
+                      value={progress}
+                      className="h-3"
+                      indicatorColor={goal.color}
+                    />
+                    <div className="flex justify-between text-xs text-muted-foreground">
+                      <span>{Math.round(progress)}%</span>
+                      <span>
+                        {t("goals.target")}: {formatCurrency(goal.targetAmount)}
+                      </span>
+                    </div>
 
-                  {goal.targetDate && (
-                    <p className="text-xs text-center text-muted-foreground">
-                      {t("goals.targetDate")}:{" "}
-                      {new Date(goal.targetDate).toLocaleDateString()}
-                    </p>
-                  )}
+                    {goal.targetDate && (
+                      <p className="text-xs text-center text-muted-foreground">
+                        {t("goals.targetDate")}:{" "}
+                        {new Date(goal.targetDate).toLocaleDateString()}
+                      </p>
+                    )}
 
-                  <div className="flex gap-2 mt-4">
-                    <Button
-                      variant="outline"
-                      className="flex-1 gap-2"
-                      onClick={() => openAllocate(goal)}
-                    >
-                      <Wallet className="h-4 w-4" />
-                      {t("goals.allocate")}
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="text-muted-foreground hover:text-destructive"
-                      onClick={() => confirmDelete(goal)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
+                    <div className="flex gap-2 mt-4">
+                      <Button
+                        variant="outline"
+                        className="flex-1 gap-2"
+                        onClick={() => openAllocate(goal)}
+                      >
+                        <Wallet className="h-4 w-4" />
+                        {t("goals.allocate")}
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="text-muted-foreground hover:text-destructive"
+                        onClick={() => confirmDelete(goal)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-          );
-        })}
+                </CardContent>
+              </Card>
+            );
+          })
+        )}
 
         {goals.length === 0 && (
           <div className="col-span-full flex flex-col items-center justify-center p-12 border-2 border-dashed rounded-lg text-muted-foreground">
-            <Target className="h-12 w-12 mb-4 opacity-50" />
+            <Star className="h-12 w-12 mb-4 opacity-50" />
             <p className="text-lg font-medium">{t("goals.noGoals")}</p>
             <p className="text-sm">{t("goals.startSaving")}</p>
           </div>

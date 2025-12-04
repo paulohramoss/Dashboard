@@ -13,6 +13,7 @@ import {
   Pin,
   PinOff,
   Calendar,
+  Star,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -67,7 +68,7 @@ const Layout = ({ children }) => {
     { icon: Wallet, label: t("nav.transactions"), path: "/transactions" },
     { icon: Calendar, label: t("nav.calendar"), path: "/calendar" },
     { icon: Target, label: t("nav.budgets"), path: "/budgets" },
-    { icon: Target, label: t("nav.goals"), path: "/goals" },
+    { icon: Star, label: t("nav.goals"), path: "/goals" },
     { icon: Wallet, label: t("accounts.title"), path: "/accounts" },
     { icon: PieChart, label: t("nav.reports"), path: "/reports" },
     { icon: Settings, label: t("nav.settings"), path: "/settings" },

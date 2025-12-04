@@ -22,6 +22,7 @@ import {
   TrendingUp,
   Edit,
 } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Dialog,
   DialogContent,
@@ -34,7 +35,8 @@ import ConfirmDialog from "@/components/ui/confirm-dialog";
 
 const AccountsPage = () => {
   const { t } = useTranslation();
-  const { accounts, addAccount, deleteAccount, updateAccount } = useAccounts();
+  const { accounts, addAccount, deleteAccount, updateAccount, loading } =
+    useAccounts();
   const { transactions } = useTransactions();
   const [isAdding, setIsAdding] = useState(false);
   const [newAccount, setNewAccount] = useState({
@@ -225,51 +227,75 @@ const AccountsPage = () => {
       )}
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {accountBalances.map((account) => (
-          <Card key={account.id}>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                {account.name}
-              </CardTitle>
-              <div className="flex items-center gap-2">
-                {getIcon(account.type)}
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8 text-muted-foreground hover:text-primary"
-                  onClick={() => handleEditClick(account)}
-                >
-                  <Edit className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8 text-muted-foreground hover:text-destructive"
-                  onClick={() => confirmDelete(account)}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                {new Intl.NumberFormat("pt-BR", {
-                  style: "currency",
-                  currency: "BRL",
-                }).format(account.currentBalance)}
-              </div>
-              <div className="flex items-center gap-2 mt-2">
-                <div
-                  className="w-2 h-2 rounded-full"
-                  style={{ backgroundColor: account.color }}
-                />
-                <p className="text-xs text-muted-foreground capitalize">
-                  {t(`accounts.${account.type}`)}
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+        {loading ? (
+          <>
+            {[1, 2, 3].map((i) => (
+              <Card key={i}>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <Skeleton className="h-4 w-24" />
+                  <div className="flex items-center gap-2">
+                    <Skeleton className="h-4 w-4" />
+                    <Skeleton className="h-8 w-8 rounded-md" />
+                    <Skeleton className="h-8 w-8 rounded-md" />
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <Skeleton className="h-8 w-32 mb-2" />
+                  <div className="flex items-center gap-2 mt-2">
+                    <Skeleton className="w-2 h-2 rounded-full" />
+                    <Skeleton className="h-3 w-16" />
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </>
+        ) : (
+          accountBalances.map((account) => (
+            <Card key={account.id}>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">
+                  {account.name}
+                </CardTitle>
+                <div className="flex items-center gap-2">
+                  {getIcon(account.type)}
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 text-muted-foreground hover:text-primary"
+                    onClick={() => handleEditClick(account)}
+                  >
+                    <Edit className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                    onClick={() => confirmDelete(account)}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {new Intl.NumberFormat("pt-BR", {
+                    style: "currency",
+                    currency: "BRL",
+                  }).format(account.currentBalance)}
+                </div>
+                <div className="flex items-center gap-2 mt-2">
+                  <div
+                    className="w-2 h-2 rounded-full"
+                    style={{ backgroundColor: account.color }}
+                  />
+                  <p className="text-xs text-muted-foreground capitalize">
+                    {t(`accounts.${account.type}`)}
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          ))
+        )}
       </div>
 
       <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>

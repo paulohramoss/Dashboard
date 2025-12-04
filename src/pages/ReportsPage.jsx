@@ -6,9 +6,10 @@ import OverviewChart from "@/components/Charts/OverviewChart";
 import CategoryChart from "@/components/Charts/CategoryChart";
 import MonthlyEvolutionChart from "@/components/Charts/MonthlyEvolutionChart";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const ReportsPage = () => {
-  const { transactions, stats } = useTransactions();
+  const { transactions, stats, loading } = useTransactions();
   const { t } = useTranslation();
 
   return (
@@ -20,12 +21,30 @@ const ReportsPage = () => {
         <p className="text-muted-foreground">{t("reports.subtitle")}</p>
       </div>
 
-      <SummaryCards stats={stats} />
+      {loading ? (
+        <div className="grid gap-4 md:grid-cols-3">
+          {[1, 2, 3].map((i) => (
+            <Skeleton key={i} className="h-32 w-full" />
+          ))}
+        </div>
+      ) : (
+        <SummaryCards stats={stats} />
+      )}
 
       <div className="grid gap-4 md:grid-cols-2">
-        <OverviewChart transactions={transactions} />
-        <CategoryChart transactions={transactions} />
-        <MonthlyEvolutionChart transactions={transactions} />
+        {loading ? (
+          <>
+            <Skeleton className="h-[300px] w-full" />
+            <Skeleton className="h-[300px] w-full" />
+            <Skeleton className="h-[300px] w-full col-span-2" />
+          </>
+        ) : (
+          <>
+            <OverviewChart transactions={transactions} />
+            <CategoryChart transactions={transactions} />
+            <MonthlyEvolutionChart transactions={transactions} />
+          </>
+        )}
       </div>
 
       <Card>

@@ -7,12 +7,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Plus, Trash2 } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 import CurrencyInput from "@/components/ui/currency-input";
 import ConfirmDialog from "@/components/ui/confirm-dialog";
 
 const BudgetsPage = () => {
   const { t } = useTranslation();
-  const { categories, updateCategory } = useCategories();
+  const { categories, updateCategory, loading } = useCategories();
   const { transactions } = useTransactions();
 
   // Run rollover logic
@@ -184,79 +185,102 @@ const BudgetsPage = () => {
       )}
 
       <div className="grid gap-6">
-        {activeBudgets.map((category) => {
-          const { spent, percentage, remaining, effectiveBudget } =
-            calculateProgress(
-              category.name,
-              category.budget,
-              category.rollover,
-              category
-            );
-
-          return (
-            <Card key={category.id}>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-base font-medium">
-                  {category.isDefault
-                    ? t(`categories.${category.name.toLowerCase()}`)
-                    : category.name}
-                </CardTitle>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="text-muted-foreground hover:text-destructive"
-                  onClick={() => confirmDelete(category)}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">
-                      {new Intl.NumberFormat("pt-BR", {
-                        style: "currency",
-                        currency: "BRL",
-                      }).format(spent)}{" "}
-                      {t("budgets.spent")}
-                    </span>
-                    <span className="font-medium">
-                      {new Intl.NumberFormat("pt-BR", {
-                        style: "currency",
-                        currency: "BRL",
-                      }).format(remaining)}{" "}
-                      {t("budgets.remaining")}
-                    </span>
+        {loading ? (
+          <div className="grid gap-6">
+            {[1, 2, 3].map((i) => (
+              <Card key={i}>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <Skeleton className="h-5 w-32" />
+                  <Skeleton className="h-8 w-8 rounded-md" />
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <Skeleton className="h-4 w-24" />
+                      <Skeleton className="h-4 w-24" />
+                    </div>
+                    <Skeleton className="h-2 w-full" />
+                    <Skeleton className="h-3 w-32 ml-auto" />
                   </div>
-                  <Progress
-                    value={percentage}
-                    className={percentage >= 100 ? "bg-destructive/20" : ""}
-                    indicatorClassName={
-                      percentage >= 100 ? "bg-destructive" : ""
-                    }
-                  />
-                  <p className="text-xs text-muted-foreground text-right">
-                    {t("budgets.total")}:{" "}
-                    {new Intl.NumberFormat("pt-BR", {
-                      style: "currency",
-                      currency: "BRL",
-                    }).format(effectiveBudget)}
-                    {effectiveBudget > category.budget && (
-                      <span className="text-green-500 ml-1 text-[10px]">
-                        (+
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        ) : (
+          activeBudgets.map((category) => {
+            const { spent, percentage, remaining, effectiveBudget } =
+              calculateProgress(
+                category.name,
+                category.budget,
+                category.rollover,
+                category
+              );
+
+            return (
+              <Card key={category.id}>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-base font-medium">
+                    {category.isDefault
+                      ? t(`categories.${category.name.toLowerCase()}`)
+                      : category.name}
+                  </CardTitle>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="text-muted-foreground hover:text-destructive"
+                    onClick={() => confirmDelete(category)}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-muted-foreground">
                         {new Intl.NumberFormat("pt-BR", {
                           style: "currency",
                           currency: "BRL",
-                        }).format(effectiveBudget - category.budget)}{" "}
-                        rollover)
+                        }).format(spent)}{" "}
+                        {t("budgets.spent")}
                       </span>
-                    )}
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          );
-        })}
+                      <span className="font-medium">
+                        {new Intl.NumberFormat("pt-BR", {
+                          style: "currency",
+                          currency: "BRL",
+                        }).format(remaining)}{" "}
+                        {t("budgets.remaining")}
+                      </span>
+                    </div>
+                    <Progress
+                      value={percentage}
+                      className={percentage >= 100 ? "bg-destructive/20" : ""}
+                      indicatorClassName={
+                        percentage >= 100 ? "bg-destructive" : ""
+                      }
+                    />
+                    <p className="text-xs text-muted-foreground text-right">
+                      {t("budgets.total")}:{" "}
+                      {new Intl.NumberFormat("pt-BR", {
+                        style: "currency",
+                        currency: "BRL",
+                      }).format(effectiveBudget)}
+                      {effectiveBudget > category.budget && (
+                        <span className="text-green-500 ml-1 text-[10px]">
+                          (+
+                          {new Intl.NumberFormat("pt-BR", {
+                            style: "currency",
+                            currency: "BRL",
+                          }).format(effectiveBudget - category.budget)}{" "}
+                          rollover)
+                        </span>
+                      )}
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })
+        )}
 
         {activeBudgets.length === 0 && !isAdding && (
           <div className="text-center py-10 text-muted-foreground">
