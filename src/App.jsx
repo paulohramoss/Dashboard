@@ -16,6 +16,7 @@ import SettingsPage from "@/pages/SettingsPage";
 import LoginPage from "@/pages/LoginPage";
 import RegisterPage from "@/pages/RegisterPage";
 import BudgetsPage from "@/pages/BudgetsPage";
+import GoalsPage from "@/pages/GoalsPage";
 import AccountsPage from "@/pages/AccountsPage";
 import CalendarPage from "@/pages/CalendarPage";
 import NotificationManager from "@/components/NotificationManager";
@@ -75,6 +76,7 @@ const App = () => {
                       />
                       <Route path="/calendar" element={<CalendarPage />} />
                       <Route path="/budgets" element={<BudgetsPage />} />
+                      <Route path="/goals" element={<GoalsPage />} />
                       <Route path="/accounts" element={<AccountsPage />} />
                       <Route path="/reports" element={<ReportsPage />} />
                       <Route path="/settings" element={<SettingsPage />} />

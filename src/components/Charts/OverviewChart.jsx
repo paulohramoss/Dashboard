@@ -19,12 +19,28 @@ const OverviewChart = ({ transactions }) => {
     const grouped = transactions.reduce((acc, curr) => {
       const date = curr.date;
       if (!acc[date]) {
-        acc[date] = { date, income: 0, expense: 0 };
+        acc[date] = {
+          date,
+          income: 0,
+          expense: 0,
+          totalIncome: 0,
+          totalExpense: 0,
+        };
       }
+
+      const amount = parseFloat(curr.amount);
+
+      // Always add to total (Shadow + Real)
       if (curr.type === "income") {
-        acc[date].income += curr.amount;
+        acc[date].totalIncome += amount;
+        if (!curr.isShadow) {
+          acc[date].income += amount;
+        }
       } else if (curr.type === "expense") {
-        acc[date].expense += curr.amount;
+        acc[date].totalExpense += amount;
+        if (!curr.isShadow) {
+          acc[date].expense += amount;
+        }
       }
       return acc;
     }, {});
@@ -87,6 +103,30 @@ const OverviewChart = ({ transactions }) => {
               }}
             />
             <Legend verticalAlign="top" height={36} iconType="circle" />
+
+            {/* Shadow Data (Total) - Rendered behind real data */}
+            <Area
+              type="monotone"
+              dataKey="totalIncome"
+              stroke="#22c55e"
+              strokeWidth={2}
+              strokeDasharray="5 5"
+              fillOpacity={0.1}
+              fill="url(#colorIncome)"
+              name={`${t("charts.income")} (${t("dashboard.simulated")})`}
+            />
+            <Area
+              type="monotone"
+              dataKey="totalExpense"
+              stroke="#ef4444"
+              strokeWidth={2}
+              strokeDasharray="5 5"
+              fillOpacity={0.1}
+              fill="url(#colorExpense)"
+              name={`${t("charts.expense")} (${t("dashboard.simulated")})`}
+            />
+
+            {/* Real Data */}
             <Area
               type="monotone"
               dataKey="income"

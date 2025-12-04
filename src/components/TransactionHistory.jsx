@@ -1,6 +1,12 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Trash2, ArrowUpCircle, ArrowDownCircle, Repeat } from "lucide-react";
+import {
+  Trash2,
+  ArrowUpCircle,
+  ArrowDownCircle,
+  Repeat,
+  Ghost,
+} from "lucide-react";
 import { useCategories } from "@/hooks/useCategories";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
@@ -59,7 +65,12 @@ const TransactionHistory = ({ transactions, onDelete }) => {
             transactions.slice(0, 10).map((transaction) => (
               <div
                 key={transaction.id}
-                className="flex items-center justify-between p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors"
+                className={cn(
+                  "flex items-center justify-between p-4 rounded-lg border transition-colors",
+                  transaction.isShadow
+                    ? "bg-muted/30 border-dashed border-primary/30"
+                    : "bg-card hover:bg-accent/50"
+                )}
               >
                 <div className="flex items-center gap-4">
                   <div
@@ -67,7 +78,8 @@ const TransactionHistory = ({ transactions, onDelete }) => {
                       "h-10 w-10 rounded-full flex items-center justify-center",
                       transaction.type === "income"
                         ? "bg-green-100 text-green-600"
-                        : "bg-red-100 text-red-600"
+                        : "bg-red-100 text-red-600",
+                      transaction.isShadow && "opacity-70"
                     )}
                   >
                     {transaction.type === "income" ? (
@@ -77,7 +89,12 @@ const TransactionHistory = ({ transactions, onDelete }) => {
                     )}
                   </div>
                   <div>
-                    <p className="font-medium">{transaction.description}</p>
+                    <div className="flex items-center gap-2">
+                      <p className="font-medium">{transaction.description}</p>
+                      {transaction.isShadow && (
+                        <Ghost className="h-3 w-3 text-muted-foreground" />
+                      )}
+                    </div>
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
                       <span>{formatDate(transaction.date)}</span>
                       <span>•</span>
@@ -94,7 +111,8 @@ const TransactionHistory = ({ transactions, onDelete }) => {
                       "font-bold",
                       transaction.type === "income"
                         ? "text-green-600"
-                        : "text-red-600"
+                        : "text-red-600",
+                      transaction.isShadow && "opacity-70"
                     )}
                   >
                     {transaction.type === "income" ? "+" : "-"}

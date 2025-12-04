@@ -8,6 +8,7 @@
     "reports": "Relatórios",
     "calendar": "Calendário",
     "budgets": "Metas",
+    "goals": "Sonhos",
     "settings": "Configurações",
     "logout": "Sair",
     "confirmLogout": "Confirmar Saída?"
@@ -32,7 +33,8 @@
     "customize": "Personalizar Layout",
     "totalBalance": "Saldo Total",
     "income": "Receitas",
-    "expenses": "Despesas"
+    "expenses": "Despesas",
+    "simulated": "Simulado"
   },
   "transactions": {
     "title": "Transações",
@@ -179,6 +181,29 @@
     "rollover": "Orçamento Acumulativo",
     "rolloverDesc": "O valor não gasto soma ao próximo mês",
     "noBudgets": "Nenhuma meta definida."
+  },
+  "goals": {
+    "title": "Metas e Sonhos",
+    "subtitle": "Acompanhe o progresso dos seus sonhos.",
+    "addGoal": "Adicionar Meta",
+    "newGoal": "Nova Meta",
+    "name": "Nome da Meta",
+    "namePlaceholder": "ex: Viagem Japão",
+    "targetAmount": "Valor Alvo",
+    "targetDate": "Data Alvo",
+    "color": "Cor",
+    "saved": "Guardado",
+    "target": "Meta",
+    "allocate": "Alocar Fundos",
+    "allocateFunds": "Alocar Fundos",
+    "sourceAccount": "Conta de Origem",
+    "selectAccount": "Selecione uma conta",
+    "amount": "Valor",
+    "confirmAllocation": "Confirmar Alocação",
+    "noGoals": "Nenhuma meta ainda.",
+    "startSaving": "Comece a poupar para seus sonhos hoje!",
+    "deleteTitle": "Excluir Meta",
+    "deleteDescription": "Tem certeza que deseja excluir esta meta? Os fundos alocados permanecerão no histórico como despesas."
   },
   "calendar": {
     "title": "Calendário Financeiro",
