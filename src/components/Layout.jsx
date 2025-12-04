@@ -25,6 +25,7 @@ import { LanguageToggle } from "@/components/LanguageToggle";
 import TourGuide from "@/components/TourGuide";
 import { toast } from "sonner";
 import { LayoutContext } from "@/context/LayoutContext";
+import IOSInstallPrompt from "@/components/IOSInstallPrompt";
 
 const Layout = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -106,6 +107,7 @@ const Layout = ({ children }) => {
     >
       <div className="min-h-screen bg-background flex">
         <TourGuide />
+        <IOSInstallPrompt />
         {/* Mobile Sidebar Overlay */}
         {isSidebarOpen && (
           <div

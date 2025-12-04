@@ -27,6 +27,12 @@
     "enabled": "Privacy Mode enabled",
     "disabled": "Privacy Mode disabled"
   },
+  "install": {
+    "title": "Install App",
+    "description": "Install this app on your home screen for a better experience.",
+    "step1": "Tap the Share button",
+    "step2": "Scroll down and tap 'Add to Home Screen'"
+  },
   "dashboard": {
     "title": "Dashboard",
     "subtitle": "Overview of your financial status and recent activity.",
