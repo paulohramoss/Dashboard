@@ -90,27 +90,31 @@ const TransactionHistory = ({ transactions, onDelete }) => {
                       <ArrowDownCircle className="h-6 w-6" />
                     )}
                   </div>
-                  <div>
+                  <div className="min-w-0">
                     <div className="flex items-center gap-2">
-                      <p className="font-medium">{transaction.description}</p>
+                      <p className="font-medium truncate">
+                        {transaction.description}
+                      </p>
                       {transaction.isShadow && (
-                        <Ghost className="h-3 w-3 text-muted-foreground" />
+                        <Ghost className="h-3 w-3 text-muted-foreground flex-shrink-0" />
                       )}
                     </div>
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
                       <span>{formatDate(transaction.date)}</span>
                       <span>•</span>
-                      <span>{getCategoryLabel(transaction.category)}</span>
+                      <span className="truncate">
+                        {getCategoryLabel(transaction.category)}
+                      </span>
                       {transaction.isRecurring && (
-                        <Repeat className="h-3 w-3 ml-1 text-blue-500" />
+                        <Repeat className="h-3 w-3 ml-1 text-blue-500 flex-shrink-0" />
                       )}
                     </div>
                   </div>
                 </div>
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-4 ml-4 flex-shrink-0">
                   <span
                     className={cn(
-                      "font-bold",
+                      "font-bold whitespace-nowrap",
                       transaction.type === "income"
                         ? "text-green-600"
                         : "text-red-600",

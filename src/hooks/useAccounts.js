@@ -32,6 +32,8 @@ export const useAccounts = () => {
         id: doc.id,
         ...doc.data(),
       }));
+      // Sort by order field, ascending
+      docs.sort((a, b) => (a.order || 0) - (b.order || 0));
       setAccounts(docs);
       setLoading(false);
     });
@@ -45,6 +47,7 @@ export const useAccounts = () => {
       await addDoc(collection(db, "accounts"), {
         ...account,
         userId: user.id,
+        order: accounts.length, // Add at the end
         createdAt: new Date().toISOString(),
       });
     } catch (error) {
@@ -62,6 +65,22 @@ export const useAccounts = () => {
     }
   };
 
+  const reorderAccounts = async (newOrderAccounts) => {
+    if (!user?.id) return;
+    try {
+      // Create a batch update or individual updates
+      // Since Firestore doesn't support batch update for different docs easily without writeBatch
+      // We will loop and update. For a small number of accounts, this is fine.
+      const updatePromises = newOrderAccounts.map((account, index) => {
+        const docRef = doc(db, "accounts", account.id);
+        return updateDoc(docRef, { order: index });
+      });
+      await Promise.all(updatePromises);
+    } catch (error) {
+      console.error("Error reordering accounts:", error);
+    }
+  };
+
   const deleteAccount = async (id) => {
     if (!user?.id) return;
     try {
@@ -76,6 +95,7 @@ export const useAccounts = () => {
     addAccount,
     updateAccount,
     deleteAccount,
+    reorderAccounts,
     loading,
   };
 };

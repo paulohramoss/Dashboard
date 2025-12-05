@@ -3,8 +3,11 @@ import { driver } from "driver.js";
 import "driver.js/dist/driver.css";
 import { useTranslation } from "react-i18next";
 
+import { useLayout } from "@/context/LayoutContext";
+
 const TourGuide = () => {
   const { t } = useTranslation();
+  const { setIsSidebarOpen } = useLayout();
 
   useEffect(() => {
     const tourCompleted = localStorage.getItem("tutorialCompleted");
@@ -43,6 +46,7 @@ const TourGuide = () => {
                 t("tour.addTransactionDesc") ||
                 "Clique aqui para registrar suas receitas e despesas rapidamente.",
             },
+            onHighlightStarted: () => setIsSidebarOpen(true),
           },
           {
             element: "#sidebar-nav",
@@ -50,12 +54,14 @@ const TourGuide = () => {
               title: t("tour.navTitle") || "Navegação",
               description:
                 t("tour.navDesc") ||
-                "Use este menu para acessar suas Transações, Metas, Contas e Relatórios.",
+                "Use este menu para acessar suas Transações, Orçamentos, Objetivos, Contas e Relatórios.",
             },
+            onHighlightStarted: () => setIsSidebarOpen(true),
           },
         ],
         onDestroyed: () => {
           localStorage.setItem("tutorialCompleted", "true");
+          setIsSidebarOpen(false); // Close sidebar after tutorial
         },
       });
 

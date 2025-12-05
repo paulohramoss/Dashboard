@@ -137,7 +137,7 @@ const Layout = ({ children }) => {
               isExpanded ? "px-6 justify-between" : "px-0 justify-center"
             )}
           >
-            {isExpanded ? (
+            {isExpanded || isSidebarOpen ? (
               <>
                 <h1 className="text-xl font-bold text-primary truncate">
                   {t("app.title")}
@@ -188,14 +188,14 @@ const Layout = ({ children }) => {
                   location.pathname === item.path
                     ? "bg-primary text-primary-foreground"
                     : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
-                  !isExpanded && "justify-center px-2"
+                  !isExpanded && "lg:justify-center lg:px-2"
                 )}
               >
                 <item.icon className={cn("h-5 w-5 flex-shrink-0")} />
                 <span
                   className={cn(
                     "transition-all duration-300 opacity-100",
-                    !isExpanded && "opacity-0 w-0 hidden"
+                    !isExpanded && "lg:opacity-0 lg:w-0 lg:hidden"
                   )}
                 >
                   {item.label}
@@ -217,7 +217,7 @@ const Layout = ({ children }) => {
                 isConfirmingLogout
                   ? "bg-destructive text-destructive-foreground shadow-lg scale-105"
                   : "text-muted-foreground hover:bg-destructive/10 hover:text-destructive",
-                !isExpanded && "justify-center px-2"
+                !isExpanded && "lg:justify-center lg:px-2"
               )}
             >
               <LogOut
@@ -229,7 +229,7 @@ const Layout = ({ children }) => {
               <span
                 className={cn(
                   "transition-all duration-300 opacity-100",
-                  !isExpanded && "opacity-0 w-0 hidden"
+                  !isExpanded && "lg:opacity-0 lg:w-0 lg:hidden"
                 )}
               >
                 {isConfirmingLogout ? t("nav.confirmLogout") : t("nav.logout")}

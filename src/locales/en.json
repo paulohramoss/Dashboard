@@ -2,6 +2,28 @@
   "app": {
     "title": "FinanceDash"
   },
+  "auth": {
+    "welcome": "Welcome back",
+    "loginSubtitle": "Enter your credentials to access your dashboard",
+    "createAccount": "Create an account",
+    "registerSubtitle": "Enter your details to get started",
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "haveAccount": "Already have an account?",
+    "noAccount": "Don't have an account?",
+    "fullName": "Full Name",
+    "password": "Password",
+    "forgotPassword": "Forgot Password?",
+    "confirmPassword": "Confirm Password",
+    "invalidCredentials": "Invalid email or password",
+    "emailInUse": "Email already registered",
+    "passwordMismatch": "Passwords do not match",
+    "passwordLength": "Password must be at least 6 characters",
+    "createAccountError": "Failed to create account. Please try again.",
+    "privacyNotice": "Your privacy is our priority.",
+    "noAccess": "We do not have access to your financial data.",
+    "lgpd": "100% compliant with"
+  },
   "nav": {
     "dashboard": "Dashboard",
     "transactions": "Transactions",
@@ -210,7 +232,8 @@
     "rollover": "Rollover Budget",
     "rolloverDesc": "Unspent budget carries over to next month",
     "remainingOf": "remaining of",
-    "accumulatedOf": "accumulated of"
+    "accumulatedOf": "accumulated of",
+    "noBudgets": "No budgets set. Add one to start planning."
   },
   "goals": {
     "title": "Goals",
@@ -253,19 +276,6 @@
     "initialBalance": "Initial Balance",
     "color": "Color",
     "checking": "Checking",
-    "savings": "Savings",
-    "credit": "Credit Card",
-    "cash": "Cash",
-    "investment": "Investment",
-    "confirmDelete": "Are you sure you want to delete this account?",
-    "deleteTitle": "Delete Account",
-    "deleteDescription": "Are you sure you want to delete this account? All associated transactions will be kept but unlinked.",
-    "editTitle": "Edit Account",
-    "creditTypeLocked": "Credit card type cannot be changed.",
-    "saveAccount": "Save Changes"
-  },
-  "auth": {
-    "forgotPassword": "Forgot Password?",
     "resetPassword": "Reset Password",
     "resetSubtitle": "Enter your email to receive a secure link to reset your password.",
     "sendLink": "Send Reset Link",

@@ -7,7 +7,9 @@ export function cn(...inputs) {
 
 export function formatDateToLocal(dateString) {
   if (!dateString) return "";
-  const [year, month, day] = dateString.split("-");
+  // Handle ISO strings by taking the date part only
+  const cleanDate = dateString.split("T")[0];
+  const [year, month, day] = cleanDate.split("-");
   return `${day}/${month}/${year}`;
 }
 

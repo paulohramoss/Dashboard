@@ -2,6 +2,28 @@
   "app": {
     "title": "FinanceDash"
   },
+  "auth": {
+    "welcome": "Bem-vindo de volta",
+    "loginSubtitle": "Insira suas credenciais para acessar o painel",
+    "createAccount": "Criar uma conta",
+    "registerSubtitle": "Insira seus dados para começar",
+    "signIn": "Entrar",
+    "signUp": "Cadastrar",
+    "haveAccount": "Já tem uma conta?",
+    "noAccount": "Não tem uma conta?",
+    "fullName": "Nome Completo",
+    "password": "Senha",
+    "forgotPassword": "Esqueceu a senha?",
+    "confirmPassword": "Confirmar Senha",
+    "invalidCredentials": "Email ou senha inválidos",
+    "emailInUse": "E-mail já cadastrado",
+    "passwordMismatch": "As senhas não coincidem",
+    "passwordLength": "A senha deve ter pelo menos 6 caracteres",
+    "createAccountError": "Falha ao criar conta. Tente novamente.",
+    "privacyNotice": "Sua privacidade é nossa prioridade.",
+    "noAccess": "Não temos acesso aos seus dados financeiros.",
+    "lgpd": "100% em conformidade com a"
+  },
   "nav": {
     "dashboard": "Painel",
     "transactions": "Transações",
@@ -210,7 +232,8 @@
     "rollover": "Orçamento Acumulativo",
     "rolloverDesc": "O valor não gasto soma ao próximo mês",
     "remainingOf": "restantes de",
-    "accumulatedOf": "acumulados de"
+    "accumulatedOf": "acumulados de",
+    "noBudgets": "Nenhum orçamento definido. Adicione um para começar a planejar."
   },
   "goals": {
     "title": "Objetivos",
@@ -253,19 +276,6 @@
     "initialBalance": "Saldo Inicial",
     "color": "Cor",
     "checking": "Corrente",
-    "savings": "Poupança",
-    "credit": "Cartão de Crédito",
-    "cash": "Dinheiro",
-    "investment": "Investimento",
-    "confirmDelete": "Tem certeza que deseja excluir esta conta?",
-    "deleteTitle": "Excluir Conta",
-    "deleteDescription": "Tem certeza que deseja excluir esta conta? Todas as transações associadas serão mantidas, mas sem vínculo com a conta.",
-    "editTitle": "Editar Conta",
-    "creditTypeLocked": "O tipo cartão de crédito não pode ser alterado.",
-    "saveAccount": "Salvar Alterações"
-  },
-  "auth": {
-    "forgotPassword": "Esqueceu a senha?",
     "resetPassword": "Redefinir Senha",
     "resetSubtitle": "Digite seu e-mail para receber um link seguro de redefinição de senha.",
     "sendLink": "Enviar Link de Redefinição",

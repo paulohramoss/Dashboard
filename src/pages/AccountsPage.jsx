@@ -35,10 +35,58 @@ import ConfirmDialog from "@/components/ui/confirm-dialog";
 import { useLayout } from "@/context/LayoutContext";
 import { cn } from "@/lib/utils";
 
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  rectSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+
+// Draggable Card Component
+const SortableAccountCard = ({ account, children }) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: account.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+    zIndex: isDragging ? 10 : 1,
+  };
+
+  return (
+    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
+      {children}
+    </div>
+  );
+};
+
 const AccountsPage = () => {
   const { t } = useTranslation();
-  const { accounts, addAccount, deleteAccount, updateAccount, loading } =
-    useAccounts();
+  const {
+    accounts,
+    addAccount,
+    deleteAccount,
+    updateAccount,
+    reorderAccounts,
+    loading,
+  } = useAccounts();
   const { transactions } = useTransactions();
   const { isPrivacyMode } = useLayout();
   const [isAdding, setIsAdding] = useState(false);
@@ -54,6 +102,39 @@ const AccountsPage = () => {
 
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [editingAccount, setEditingAccount] = useState(null);
+
+  // Reordering Logic
+  const [isReordering, setIsReordering] = useState(false);
+  const [orderedAccounts, setOrderedAccounts] = useState([]);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  const handleDragEnd = (event) => {
+    const { active, over } = event;
+
+    if (active.id !== over.id) {
+      setOrderedAccounts((items) => {
+        const oldIndex = items.findIndex((item) => item.id === active.id);
+        const newIndex = items.findIndex((item) => item.id === over.id);
+        return arrayMove(items, oldIndex, newIndex);
+      });
+    }
+  };
+
+  const handleSaveOrder = async () => {
+    await reorderAccounts(orderedAccounts);
+    setIsReordering(false);
+  };
+
+  const handleCancelReorder = () => {
+    setIsReordering(false);
+    setOrderedAccounts(accounts);
+  };
 
   const handleEditClick = (account) => {
     setEditingAccount({ ...account });
@@ -158,17 +239,41 @@ const AccountsPage = () => {
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h2 className="text-3xl font-bold tracking-tight">
             {t("accounts.title")}
           </h2>
           <p className="text-muted-foreground">{t("accounts.subtitle")}</p>
         </div>
-        <Button onClick={() => setIsAdding(!isAdding)}>
-          <Plus className="mr-2 h-4 w-4" />
-          {t("accounts.addAccount")}
-        </Button>
+        <div className="flex gap-2">
+          {isReordering ? (
+            <>
+              <Button variant="outline" onClick={handleCancelReorder}>
+                {t("accounts.cancelReorder")}
+              </Button>
+              <Button onClick={handleSaveOrder}>
+                {t("accounts.saveOrder")}
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setIsReordering(true);
+                  setOrderedAccounts(accounts);
+                }}
+              >
+                {t("accounts.reorder")}
+              </Button>
+              <Button onClick={() => setIsAdding(!isAdding)}>
+                <Plus className="mr-2 h-4 w-4" />
+                {t("accounts.addAccount")}
+              </Button>
+            </>
+          )}
+        </div>
       </div>
 
       {isAdding && (
@@ -229,82 +334,146 @@ const AccountsPage = () => {
         </Card>
       )}
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {loading ? (
-          <>
-            {[1, 2, 3].map((i) => (
-              <Card key={i}>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <Skeleton className="h-4 w-24" />
-                  <div className="flex items-center gap-2">
-                    <Skeleton className="h-4 w-4" />
-                    <Skeleton className="h-8 w-8 rounded-md" />
-                    <Skeleton className="h-8 w-8 rounded-md" />
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <Skeleton className="h-8 w-32 mb-2" />
-                  <div className="flex items-center gap-2 mt-2">
-                    <Skeleton className="w-2 h-2 rounded-full" />
-                    <Skeleton className="h-3 w-16" />
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </>
-        ) : (
-          accountBalances.map((account) => (
-            <Card key={account.id}>
+      {loading ? (
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {[1, 2, 3].map((i) => (
+            <Card key={i}>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  {account.name}
-                </CardTitle>
+                <Skeleton className="h-4 w-24" />
                 <div className="flex items-center gap-2">
-                  {getIcon(account.type)}
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-8 w-8 text-muted-foreground hover:text-primary"
-                    onClick={() => handleEditClick(account)}
-                  >
-                    <Edit className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-8 w-8 text-muted-foreground hover:text-destructive"
-                    onClick={() => confirmDelete(account)}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
+                  <Skeleton className="h-4 w-4" />
+                  <Skeleton className="h-8 w-8 rounded-md" />
+                  <Skeleton className="h-8 w-8 rounded-md" />
                 </div>
               </CardHeader>
               <CardContent>
-                <div
-                  className={cn(
-                    "text-2xl font-bold",
-                    isPrivacyMode && "privacy-blur"
-                  )}
-                >
-                  {new Intl.NumberFormat("pt-BR", {
-                    style: "currency",
-                    currency: "BRL",
-                  }).format(account.currentBalance)}
-                </div>
+                <Skeleton className="h-8 w-32 mb-2" />
                 <div className="flex items-center gap-2 mt-2">
-                  <div
-                    className="w-2 h-2 rounded-full"
-                    style={{ backgroundColor: account.color }}
-                  />
-                  <p className="text-xs text-muted-foreground capitalize">
-                    {t(`accounts.${account.type}`)}
-                  </p>
+                  <Skeleton className="w-2 h-2 rounded-full" />
+                  <Skeleton className="h-3 w-16" />
                 </div>
               </CardContent>
             </Card>
-          ))
-        )}
-      </div>
+          ))}
+        </div>
+      ) : (
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {isReordering ? (
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
+            >
+              <SortableContext
+                items={orderedAccounts.map((a) => a.id)}
+                strategy={rectSortingStrategy}
+              >
+                {orderedAccounts.map((account) => {
+                  const balanceInfo = accountBalances.find(
+                    (b) => b.id === account.id
+                  );
+                  return (
+                    <SortableAccountCard key={account.id} account={account}>
+                      <Card className="relative overflow-hidden group cursor-move hover:shadow-lg transition-shadow">
+                        <div
+                          className="absolute top-0 left-0 w-1 h-full"
+                          style={{ backgroundColor: account.color }}
+                        />
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                          <CardTitle className="text-sm font-medium">
+                            {account.name}
+                          </CardTitle>
+                          <div className="text-muted-foreground">
+                            {getIcon(account.type)}
+                          </div>
+                        </CardHeader>
+                        <CardContent>
+                          <div
+                            className={cn(
+                              "text-2xl font-bold",
+                              isPrivacyMode && "privacy-blur"
+                            )}
+                          >
+                            {formatCurrency(
+                              balanceInfo ? balanceInfo.currentBalance : 0
+                            )}
+                          </div>
+                          <p className="text-xs text-muted-foreground capitalize">
+                            {t(`accounts.${account.type}`)}
+                          </p>
+                        </CardContent>
+                      </Card>
+                    </SortableAccountCard>
+                  );
+                })}
+              </SortableContext>
+            </DndContext>
+          ) : (
+            accounts.map((account) => {
+              const balanceInfo = accountBalances.find(
+                (b) => b.id === account.id
+              );
+              return (
+                <Card
+                  key={account.id}
+                  className="relative overflow-hidden group transition-all hover:shadow-md"
+                >
+                  <div
+                    className="absolute top-0 left-0 w-1 h-full"
+                    style={{ backgroundColor: account.color }}
+                  />
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">
+                      {account.name}
+                    </CardTitle>
+                    <div className="flex items-center gap-2">
+                      {getIcon(account.type)}
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 text-muted-foreground hover:text-primary opacity-0 group-hover:opacity-100 transition-opacity"
+                        onClick={() => handleEditClick(account)}
+                      >
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
+                        onClick={() => confirmDelete(account)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <div
+                      className={cn(
+                        "text-2xl font-bold",
+                        isPrivacyMode && "privacy-blur"
+                      )}
+                    >
+                      {new Intl.NumberFormat("pt-BR", {
+                        style: "currency",
+                        currency: "BRL",
+                      }).format(balanceInfo ? balanceInfo.currentBalance : 0)}
+                    </div>
+                    <div className="flex items-center gap-2 mt-2">
+                      <div
+                        className="w-2 h-2 rounded-full"
+                        style={{ backgroundColor: account.color }}
+                      />
+                      <p className="text-xs text-muted-foreground capitalize">
+                        {t(`accounts.${account.type}`)}
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })
+          )}
+        </div>
+      )}
 
       <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
         <DialogContent>
@@ -395,6 +564,14 @@ const AccountsPage = () => {
       />
     </div>
   );
+};
+
+// Helper for formatting currency (can be moved to utils or shared)
+const formatCurrency = (amount) => {
+  return new Intl.NumberFormat("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  }).format(amount);
 };
 
 export default AccountsPage;
