@@ -11,7 +11,7 @@ import { useCategories } from "@/hooks/useCategories";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import ConfirmDialog from "@/components/ui/confirm-dialog";
-import { cn } from "@/lib/utils";
+import { cn, formatDateToLocal } from "@/lib/utils";
 import { useLayout } from "@/context/LayoutContext";
 
 const TransactionHistory = ({ transactions, onDelete }) => {
@@ -41,7 +41,7 @@ const TransactionHistory = ({ transactions, onDelete }) => {
   };
 
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString("pt-BR");
+    return formatDateToLocal(dateString);
   };
 
   const getCategoryLabel = (categoryName) => {

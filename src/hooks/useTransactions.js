@@ -11,6 +11,7 @@ import {
   onSnapshot,
   writeBatch,
 } from "firebase/firestore";
+import { getCurrentLocalDate } from "@/lib/utils";
 
 export const useTransactions = () => {
   const { user } = useAuth();
@@ -103,7 +104,7 @@ export const useTransactions = () => {
       const transactionData = {
         ...transaction,
         userId: user.id,
-        date: transaction.date || new Date().toISOString(),
+        date: transaction.date || getCurrentLocalDate(),
         createdAt: new Date().toISOString(),
         accountId: transaction.accountId || null,
       };
@@ -130,7 +131,7 @@ export const useTransactions = () => {
         batch.set(docRef, {
           ...t,
           userId: user.id,
-          date: t.date || new Date().toISOString(),
+          date: t.date || getCurrentLocalDate(),
           createdAt: new Date().toISOString(),
         });
       });
@@ -173,7 +174,7 @@ export const useTransactions = () => {
       ...transaction,
       id: `shadow-${Date.now()}`,
       isShadow: true,
-      date: transaction.date || new Date().toISOString(),
+      date: transaction.date || getCurrentLocalDate(),
       createdAt: new Date().toISOString(),
     };
     setShadowTransactions((prev) => [...prev, newShadow]);
@@ -223,16 +224,16 @@ const calculateNextDueDate = (date, frequency) => {
   const d = new Date(date);
   switch (frequency) {
     case "daily":
-      d.setDate(d.getDate() + 1);
+      d.setUTCDate(d.getUTCDate() + 1);
       break;
     case "weekly":
-      d.setDate(d.getDate() + 7);
+      d.setUTCDate(d.getUTCDate() + 7);
       break;
     case "monthly":
-      d.setMonth(d.getMonth() + 1);
+      d.setUTCMonth(d.getUTCMonth() + 1);
       break;
     case "yearly":
-      d.setFullYear(d.getFullYear() + 1);
+      d.setUTCFullYear(d.getUTCFullYear() + 1);
       break;
     default:
       break;

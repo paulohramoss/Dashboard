@@ -13,6 +13,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
 
 import CurrencyInput from "@/components/ui/currency-input";
+import { getCurrentLocalDate } from "@/lib/utils";
 
 const TransactionForm = ({ onAddTransaction }) => {
   const { t } = useTranslation();
@@ -24,7 +25,7 @@ const TransactionForm = ({ onAddTransaction }) => {
     amount: "",
     type: "expense",
     category: "",
-    date: new Date().toISOString().split("T")[0],
+    date: getCurrentLocalDate(),
     isRecurring: false,
     frequency: "monthly",
     isInstallment: false,
@@ -115,7 +116,7 @@ const TransactionForm = ({ onAddTransaction }) => {
       amount: "",
       type: "expense",
       category: categories.filter((c) => c.type === "expense")[0]?.name || "",
-      date: new Date().toISOString().split("T")[0],
+      date: getCurrentLocalDate(),
       isRecurring: false,
       frequency: "monthly",
       isInstallment: false,
