@@ -16,6 +16,7 @@ import {
   Star,
   Eye,
   EyeOff,
+  Repeat,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -88,6 +89,7 @@ const Layout = ({ children }) => {
     { icon: LayoutDashboard, label: t("nav.dashboard"), path: "/" },
     { icon: Wallet, label: t("nav.transactions"), path: "/transactions" },
     { icon: Calendar, label: t("nav.calendar"), path: "/calendar" },
+    { icon: Repeat, label: t("nav.subscriptions"), path: "/subscriptions" },
     { icon: Target, label: t("nav.budgets"), path: "/budgets" },
     { icon: Star, label: t("nav.goals"), path: "/goals" },
     { icon: Wallet, label: t("accounts.title"), path: "/accounts" },

@@ -7,6 +7,7 @@
     "transactions": "Transações",
     "reports": "Relatórios",
     "calendar": "Calendário",
+    "subscriptions": "Assinaturas",
     "budgets": "Metas",
     "goals": "Sonhos",
     "settings": "Configurações",
@@ -47,6 +48,19 @@
     "income": "Receitas",
     "expenses": "Despesas",
     "simulated": "Simulado"
+  },
+  "subscriptions": {
+    "title": "Gestão de Assinaturas",
+    "subtitle": "Gerencie suas despesas recorrentes e custos fixos.",
+    "add": "Nova Assinatura",
+    "fixedCostLabel": "Custo de Vida Fixo",
+    "monthlyEstimate": "Você começa o mês devendo este valor.",
+    "activeSubscriptions": "Assinaturas Ativas",
+    "noSubscriptions": "Nenhuma assinatura ativa encontrada.",
+    "listDescription": "Lista de todas as suas despesas recorrentes.",
+    "emptyState": "Você não tem assinaturas recorrentes. Adicione uma para controlar seus custos fixos!",
+    "deleteTitle": "Excluir Assinatura",
+    "deleteDescription": "Tem certeza que deseja excluir esta assinatura? Isso interromperá as recorrências futuras."
   },
   "transactions": {
     "title": "Transações",

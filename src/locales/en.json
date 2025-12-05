@@ -7,6 +7,7 @@
     "transactions": "Transactions",
     "reports": "Reports",
     "calendar": "Calendar",
+    "subscriptions": "Subscriptions",
     "budgets": "Budgets",
     "goals": "Goals",
     "settings": "Settings",
@@ -47,6 +48,19 @@
     "income": "Income",
     "expenses": "Expenses",
     "simulated": "Simulated"
+  },
+  "subscriptions": {
+    "title": "Subscription Hub",
+    "subtitle": "Manage your recurring expenses and fixed costs.",
+    "add": "Add Subscription",
+    "fixedCostLabel": "Fixed Cost of Living",
+    "monthlyEstimate": "You start the month owing this amount.",
+    "activeSubscriptions": "Active Subscriptions",
+    "noSubscriptions": "No active subscriptions found.",
+    "listDescription": "List of all your recurring expenses.",
+    "emptyState": "You have no recurring subscriptions. Add one to track your fixed costs!",
+    "deleteTitle": "Delete Subscription",
+    "deleteDescription": "Are you sure you want to delete this subscription? It will stop future recurrences."
   },
   "transactions": {
     "title": "Transactions",
