@@ -247,6 +247,14 @@
     "saveAccount": "Save Changes"
   },
   "auth": {
+    "forgotPassword": "Forgot Password?",
+    "resetPassword": "Reset Password",
+    "resetSubtitle": "Enter your email to receive a secure link to reset your password.",
+    "sendLink": "Send Reset Link",
+    "resetSentTo": "A reset link has been sent to {{email}}.",
+    "checkEmail": "Check your email",
+    "backToLogin": "Back to Login",
+    "resetError": "Failed to send reset email. Verify the email address.",
     "welcome": "Welcome back",
     "loginSubtitle": "Enter your credentials to access your dashboard",
     "createAccount": "Create an account",

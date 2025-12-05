@@ -102,6 +102,14 @@ const LoginPage = () => {
                     )}
                   </Button>
                 </div>
+                <div className="flex justify-end">
+                  <Link
+                    to="/forgot-password"
+                    className="text-sm font-medium text-primary hover:underline transition-colors"
+                  >
+                    {t("auth.forgotPassword")}
+                  </Link>
+                </div>
               </div>
               <Button type="submit" className="w-full h-11 text-base">
                 {t("auth.signIn")}

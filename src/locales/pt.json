@@ -195,7 +195,7 @@
     "noBudgets": "Nenhuma meta definida."
   },
   "goals": {
-    "title": "Metas e Sonhos",
+    "title": "Sonhos",
     "subtitle": "Acompanhe o progresso dos seus sonhos.",
     "addGoal": "Adicionar Meta",
     "newGoal": "Nova Meta",
@@ -247,6 +247,14 @@
     "saveAccount": "Salvar Alterações"
   },
   "auth": {
+    "forgotPassword": "Esqueceu a senha?",
+    "resetPassword": "Redefinir Senha",
+    "resetSubtitle": "Digite seu e-mail para receber um link seguro de redefinição de senha.",
+    "sendLink": "Enviar Link de Redefinição",
+    "resetSentTo": "Um link de redefinição foi enviado para {{email}}.",
+    "checkEmail": "Verifique seu e-mail",
+    "backToLogin": "Voltar para Login",
+    "resetError": "Falha ao enviar e-mail. Verifique o endereço informado.",
     "welcome": "Bem-vindo de volta",
     "loginSubtitle": "Insira suas credenciais para acessar o painel",
     "createAccount": "Criar uma conta",

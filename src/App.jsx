@@ -23,6 +23,7 @@ import NotificationManager from "@/components/NotificationManager";
 import TermsPage from "@/pages/TermsPage";
 import PrivacyPage from "@/pages/PrivacyPage";
 import CookiePolicyPage from "@/pages/CookiePolicyPage";
+import ForgotPasswordPage from "@/pages/ForgotPasswordPage";
 
 const ProtectedRoute = ({ children }) => {
   const { user } = useAuth();
@@ -59,6 +60,7 @@ const App = () => {
           <Routes>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
             <Route path="/terms" element={<TermsPage />} />
             <Route path="/privacy" element={<PrivacyPage />} />
             <Route path="/cookie-policy" element={<CookiePolicyPage />} />

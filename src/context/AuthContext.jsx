@@ -7,6 +7,7 @@ import {
   signOut,
   onAuthStateChanged,
   updateProfile,
+  sendPasswordResetEmail,
 } from "firebase/auth";
 
 export const AuthProvider = ({ children }) => {
@@ -73,6 +74,16 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const resetPassword = async (email) => {
+    try {
+      await sendPasswordResetEmail(auth, email);
+      return true;
+    } catch (error) {
+      console.error("Reset password error:", error);
+      throw error;
+    }
+  };
+
   const updateUser = async (updates) => {
     if (auth.currentUser) {
       try {
@@ -90,7 +101,15 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, login, logout, register, updateUser, loading }}
+      value={{
+        user,
+        login,
+        logout,
+        register,
+        updateUser,
+        resetPassword,
+        loading,
+      }}
     >
       {!loading && children}
     </AuthContext.Provider>
