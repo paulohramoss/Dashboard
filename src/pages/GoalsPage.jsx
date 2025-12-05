@@ -189,17 +189,20 @@ const GoalsPage = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4 mt-4">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">
-                        {t("goals.saved")}
+                    <div className="flex justify-between items-center text-sm font-medium">
+                      <span>
+                        <span className={cn(isPrivacyMode && "privacy-blur")}>
+                          {formatCurrency(goal.currentAmount)}
+                        </span>{" "}
+                        <span className="text-muted-foreground font-normal">
+                          {t("budgets.accumulatedOf")}
+                        </span>{" "}
+                        <span className={cn(isPrivacyMode && "privacy-blur")}>
+                          {formatCurrency(goal.targetAmount)}
+                        </span>
                       </span>
-                      <span
-                        className={cn(
-                          "font-bold text-primary",
-                          isPrivacyMode && "privacy-blur"
-                        )}
-                      >
-                        {formatCurrency(goal.currentAmount)}
+                      <span className="text-muted-foreground">
+                        ({Math.round(progress)}%)
                       </span>
                     </div>
                     <Progress
@@ -208,21 +211,14 @@ const GoalsPage = () => {
                       indicatorColor={goal.color}
                     />
                     <div className="flex justify-between text-xs text-muted-foreground">
-                      <span>{Math.round(progress)}%</span>
-                      <span>
-                        {t("goals.target")}:{" "}
-                        <span className={cn(isPrivacyMode && "privacy-blur")}>
-                          {formatCurrency(goal.targetAmount)}
+                      {/* Placeholder for spacing or aux info if needed */}
+                      <span></span>
+                      {goal.targetDate && (
+                        <span>
+                          {new Date(goal.targetDate).toLocaleDateString()}
                         </span>
-                      </span>
+                      )}
                     </div>
-
-                    {goal.targetDate && (
-                      <p className="text-xs text-center text-muted-foreground">
-                        {t("goals.targetDate")}:{" "}
-                        {new Date(goal.targetDate).toLocaleDateString()}
-                      </p>
-                    )}
 
                     <div className="flex gap-2 mt-4">
                       <Button

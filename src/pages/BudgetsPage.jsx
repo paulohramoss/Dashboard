@@ -211,7 +211,7 @@ const BudgetsPage = () => {
           </div>
         ) : (
           activeBudgets.map((category) => {
-            const { spent, percentage, remaining, effectiveBudget } =
+            const { percentage, remaining, effectiveBudget } =
               calculateProgress(
                 category.name,
                 category.budget,
@@ -238,16 +238,7 @@ const BudgetsPage = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">
-                        <span className={cn(isPrivacyMode && "privacy-blur")}>
-                          {new Intl.NumberFormat("pt-BR", {
-                            style: "currency",
-                            currency: "BRL",
-                          }).format(spent)}
-                        </span>{" "}
-                        {t("budgets.spent")}
-                      </span>
+                    <div className="flex justify-between items-center text-sm">
                       <span className="font-medium">
                         <span className={cn(isPrivacyMode && "privacy-blur")}>
                           {new Intl.NumberFormat("pt-BR", {
@@ -255,23 +246,32 @@ const BudgetsPage = () => {
                             currency: "BRL",
                           }).format(remaining)}
                         </span>{" "}
-                        {t("budgets.remaining")}
+                        {t("budgets.remainingOf")}{" "}
+                        <span className={cn(isPrivacyMode && "privacy-blur")}>
+                          {new Intl.NumberFormat("pt-BR", {
+                            style: "currency",
+                            currency: "BRL",
+                          }).format(effectiveBudget)}
+                        </span>
                       </span>
                     </div>
                     <Progress
                       value={percentage}
-                      className={percentage >= 100 ? "bg-destructive/20" : ""}
-                      indicatorClassName={
-                        percentage >= 100 ? "bg-destructive" : ""
-                      }
+                      className={cn(
+                        "h-2",
+                        percentage >= 100 && "bg-destructive/20"
+                      )}
+                      indicatorClassName={cn(
+                        percentage < 75
+                          ? "bg-green-500" // Safe
+                          : percentage < 100
+                          ? "bg-yellow-500" // Warning
+                          : "bg-destructive" // Exceeded
+                      )}
                     />
-                    <p className="text-xs text-muted-foreground text-right">
-                      {t("budgets.total")}:{" "}
-                      <span className={cn(isPrivacyMode && "privacy-blur")}>
-                        {new Intl.NumberFormat("pt-BR", {
-                          style: "currency",
-                          currency: "BRL",
-                        }).format(effectiveBudget)}
+                    <div className="flex justify-between items-center text-xs text-muted-foreground">
+                      <span>
+                        {Math.round(percentage)}% {t("budgets.spent")}
                       </span>
                       {effectiveBudget > category.budget && (
                         <span className="text-green-500 ml-1 text-[10px]">
@@ -285,7 +285,7 @@ const BudgetsPage = () => {
                           rollover)
                         </span>
                       )}
-                    </p>
+                    </div>
                   </div>
                 </CardContent>
               </Card>

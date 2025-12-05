@@ -209,11 +209,12 @@
     "total": "Total",
     "rollover": "Rollover Budget",
     "rolloverDesc": "Unspent budget carries over to next month",
-    "noBudgets": "No budgets set."
+    "remainingOf": "remaining of",
+    "accumulatedOf": "accumulated of"
   },
   "goals": {
-    "title": "Savings Goals",
-    "subtitle": "Track your progress towards your dreams.",
+    "title": "Goals",
+    "subtitle": "Track your progress towards your goals.",
     "addGoal": "Add Goal",
     "newGoal": "New Goal",
     "name": "Goal Name",
@@ -230,7 +231,7 @@
     "amount": "Amount",
     "confirmAllocation": "Confirm Allocation",
     "noGoals": "No goals yet.",
-    "startSaving": "Start saving for your dreams today!",
+    "startSaving": "Start saving for your goals today!",
     "deleteTitle": "Delete Goal",
     "deleteDescription": "Are you sure you want to delete this goal? The allocated funds will remain in your transaction history as expenses."
   },
@@ -314,7 +315,7 @@
     "addTransactionTitle": "Add Transaction",
     "addTransactionDesc": "Click here to quickly record your income and expenses.",
     "navTitle": "Navigation",
-    "navDesc": "Use this menu to access your Transactions, Budgets, Accounts, and Reports."
+    "navDesc": "Use this menu to access your Transactions, Budgets, Goals, Accounts, and Reports."
   },
   "cookies": {
     "message": "We use cookies to ensure you get the best experience on our website. By continuing to use our site, you agree to our use of cookies.",
