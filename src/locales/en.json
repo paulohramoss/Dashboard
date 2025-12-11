@@ -256,7 +256,12 @@
     "noGoals": "No goals yet.",
     "startSaving": "Start saving for your goals today!",
     "deleteTitle": "Delete Goal",
-    "deleteDescription": "Are you sure you want to delete this goal? The allocated funds will remain in your transaction history as expenses."
+    "deleteDescription": "Are you sure you want to delete this goal? The allocated funds will remain in your transaction history as expenses.",
+    "goalReached": "Congratulations! Goal reached! 🎉",
+    "allocationSuccess": "Funds allocated successfully!",
+    "allocationError": "Failed to allocate funds. Please try again.",
+    "amountToAllocate": "Amount to Allocate",
+    "remaining": "Remaining"
   },
   "calendar": {
     "title": "Financial Calendar",
@@ -310,7 +315,8 @@
     "loading": "Loading...",
     "success": "Success",
     "error": "Error",
-
+    "save": "Save",
+    "export": "Export",
     "done": "Done",
     "next": "Next",
     "previous": "Previous",

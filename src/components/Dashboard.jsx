@@ -1,9 +1,9 @@
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLayout } from "@/context/LayoutContext";
 import { useTransactions } from "@/hooks/useTransactions";
 import { useAccounts } from "@/hooks/useAccounts";
-import { useCategories } from "@/hooks/useCategories";
+
 import {
   BalanceCard,
   IncomeCard,
@@ -39,6 +39,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { CustomDropdown, DropdownItem } from "@/components/ui/custom-dropdown";
+import { Download, MoreVertical } from "lucide-react";
 import TransactionForm from "@/components/TransactionForm";
 import * as XLSX from "xlsx";
 import { Responsive, WidthProvider } from "react-grid-layout";
@@ -46,6 +48,8 @@ import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
+
+import { motion as Motion } from "framer-motion";
 
 const Dashboard = () => {
   const {
@@ -56,342 +60,227 @@ const Dashboard = () => {
     loading,
     isShadowMode,
     toggleShadowMode,
-    addShadowTransaction,
   } = useTransactions();
   const { accounts } = useAccounts();
-  const { categories } = useCategories();
-  const { t, i18n } = useTranslation();
-  const { isExpanded, isPrivacyMode } = useLayout();
-  const [isDraggable, setIsDraggable] = useState(false);
+  const { t } = useTranslation();
+  const { isPrivacyMode, isSidebarCollapsed } = useLayout();
 
-  // Default Layouts
-  const defaultLayouts = {
-    lg: [
-      { i: "balance", x: 0, y: 0, w: 4, h: 2 },
-      { i: "income", x: 4, y: 0, w: 4, h: 2 },
-      { i: "expense", x: 8, y: 0, w: 4, h: 2 },
-      { i: "accounts", x: 0, y: 2, w: 12, h: 2 },
-      { i: "overview", x: 0, y: 4, w: 8, h: 4 },
-      { i: "category", x: 8, y: 4, w: 4, h: 4 },
-      { i: "history", x: 0, y: 8, w: 12, h: 6 },
-    ],
-    md: [
-      { i: "balance", x: 0, y: 0, w: 4, h: 2 },
-      { i: "income", x: 4, y: 0, w: 4, h: 2 },
-      { i: "expense", x: 8, y: 0, w: 4, h: 2 },
-      { i: "accounts", x: 0, y: 2, w: 12, h: 2 },
-      { i: "overview", x: 0, y: 4, w: 12, h: 4 },
-      { i: "category", x: 0, y: 8, w: 12, h: 4 },
-      { i: "history", x: 0, y: 12, w: 12, h: 6 },
-    ],
-    sm: [
-      { i: "balance", x: 0, y: 0, w: 12, h: 2 },
-      { i: "income", x: 0, y: 2, w: 12, h: 2 },
-      { i: "expense", x: 0, y: 4, w: 12, h: 2 },
-      { i: "accounts", x: 0, y: 6, w: 12, h: 2 },
-      { i: "overview", x: 0, y: 8, w: 12, h: 4 },
-      { i: "category", x: 0, y: 12, w: 12, h: 4 },
-      { i: "history", x: 0, y: 16, w: 12, h: 6 },
-    ],
-  };
-
+  const [isSimulateOpen, setIsSimulateOpen] = useState(false);
   const [layouts, setLayouts] = useState(() => {
-    const saved = localStorage.getItem("dashboardLayout");
-    return saved ? JSON.parse(saved) : defaultLayouts;
+    const savedLayout = localStorage.getItem("dashboardLayout");
+    return savedLayout
+      ? JSON.parse(savedLayout)
+      : {
+          lg: [
+            { i: "balance", x: 0, y: 0, w: 4, h: 2, minH: 2 },
+            { i: "income", x: 4, y: 0, w: 4, h: 2, minH: 2 },
+            { i: "expense", x: 8, y: 0, w: 4, h: 2, minH: 2 },
+            { i: "overview", x: 0, y: 2, w: 8, h: 4, minH: 4 },
+            { i: "category", x: 8, y: 2, w: 4, h: 4, minH: 4 },
+            { i: "history", x: 0, y: 6, w: 9, h: 5, minH: 5 },
+            { i: "accounts", x: 9, y: 6, w: 3, h: 5, minH: 5 },
+          ],
+          md: [
+            { i: "balance", x: 0, y: 0, w: 4, h: 2 },
+            { i: "income", x: 4, y: 0, w: 4, h: 2 },
+            { i: "expense", x: 8, y: 0, w: 4, h: 2 },
+            { i: "overview", x: 0, y: 2, w: 8, h: 4 },
+            { i: "category", x: 8, y: 2, w: 4, h: 4 },
+            { i: "history", x: 0, y: 6, w: 8, h: 5 },
+            { i: "accounts", x: 8, y: 6, w: 4, h: 5 },
+          ],
+          sm: [
+            { i: "balance", x: 0, y: 0, w: 12, h: 2 },
+            { i: "income", x: 0, y: 2, w: 6, h: 2 },
+            { i: "expense", x: 6, y: 2, w: 6, h: 2 },
+            { i: "overview", x: 0, y: 4, w: 12, h: 4 },
+            { i: "category", x: 0, y: 8, w: 12, h: 4 },
+            { i: "history", x: 0, y: 12, w: 12, h: 5 },
+            { i: "accounts", x: 0, y: 17, w: 12, h: 5 },
+          ],
+        };
   });
 
-  // Dynamically adjust accounts widget height based on number of accounts
-  useEffect(() => {
-    if (loading || accounts.length === 0) return;
+  const [isDraggable, setIsDraggable] = useState(false);
 
-    const timer = setTimeout(() => {
-      setLayouts((prevLayouts) => {
-        // Deep copy to avoid mutating active state
-        const newLayouts = JSON.parse(JSON.stringify(prevLayouts));
-        let hasChanges = false;
-
-        // Helper to update height for a specific breakpoint
-        const updateHeight = (breakpoint, cols) => {
-          const layout = newLayouts[breakpoint];
-          if (!layout) return;
-
-          const accountsItem = layout.find((item) => item.i === "accounts");
-          if (accountsItem) {
-            // Calculate rows needed: ceil(accounts / cols)
-            // Use different multipliers based on sidebar state (isExpanded)
-            const multiplier = isExpanded ? 1.2 : 1.6;
-
-            const rowsNeeded = Math.ceil(accounts.length / cols);
-            const newHeight = Math.max(2, Math.ceil(rowsNeeded * multiplier));
-
-            if (accountsItem.h !== newHeight) {
-              accountsItem.h = newHeight;
-              hasChanges = true;
-            }
-          }
-        };
-
-        // Update for each breakpoint
-        updateHeight("lg", 4); // 4 columns in grid
-        updateHeight("md", 2); // 2 columns in grid
-        updateHeight("sm", 1); // 1 column in grid
-
-        if (hasChanges) {
-          // Persist to localStorage
-          localStorage.setItem("dashboardLayout", JSON.stringify(newLayouts));
-          return newLayouts;
-        }
-
-        return prevLayouts;
-      });
-    }, 0);
-
-    return () => clearTimeout(timer);
-  }, [accounts.length, loading, isExpanded]);
-
-  const onLayoutChange = (currentLayout, allLayouts) => {
+  const onLayoutChange = (layout, allLayouts) => {
     setLayouts(allLayouts);
     localStorage.setItem("dashboardLayout", JSON.stringify(allLayouts));
   };
 
-  const accountBalances = useMemo(() => {
+  const exportToExcel = () => {
+    const ws = XLSX.utils.json_to_sheet(
+      transactions.map((t) => ({
+        Data: new Date(t.date).toLocaleDateString("pt-BR"),
+        Descrição: t.description,
+        Categoria: t.category,
+        Tipo: t.type === "income" ? "Receita" : "Despesa",
+        Valor: t.amount,
+        Conta: accounts.find((a) => a.id === t.accountId)?.name || "N/A",
+      }))
+    );
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Transações");
+    XLSX.writeFile(wb, "transacoes.xlsx");
+  };
+
+  const exportToPDF = () => {
+    const doc = new jsPDF();
+    doc.text("Relatório Financeiro", 14, 22);
+
+    const tableData = transactions.map((t) => [
+      new Date(t.date).toLocaleDateString("pt-BR"),
+      t.description,
+      t.category,
+      t.type === "income" ? "Receita" : "Despesa",
+      `R$ ${parseFloat(t.amount).toFixed(2)}`,
+    ]);
+
+    autoTable(doc, {
+      head: [["Data", "Descrição", "Categoria", "Tipo", "Valor"]],
+      body: tableData,
+      startY: 30,
+    });
+
+    doc.save("relatorio.pdf");
+  };
+
+  // Accounts with balance calculation
+  const accountsWithBalance = useMemo(() => {
     return accounts.map((account) => {
       const accountTransactions = transactions.filter(
         (t) => t.accountId === account.id
       );
-      const income = accountTransactions
-        .filter((t) => t.type === "income")
-        .reduce((acc, t) => acc + parseFloat(t.amount), 0);
-      const expense = accountTransactions
-        .filter((t) => t.type === "expense")
-        .reduce((acc, t) => acc + parseFloat(t.amount), 0);
-
-      // Calculate transfers
-      const transfersOut = transactions
-        .filter((t) => t.type === "transfer" && t.accountId === account.id)
-        .reduce((acc, t) => acc + parseFloat(t.amount), 0);
-
-      const transfersIn = transactions
-        .filter(
-          (t) => t.type === "transfer" && t.destinationAccountId === account.id
-        )
-        .reduce((acc, t) => acc + parseFloat(t.amount), 0);
-
-      return {
-        ...account,
-        currentBalance:
-          (account.initialBalance || 0) +
-          income -
-          expense -
-          transfersOut +
-          transfersIn,
-      };
+      const balance = accountTransactions.reduce((acc, curr) => {
+        return curr.type === "income"
+          ? acc + parseFloat(curr.amount)
+          : acc - parseFloat(curr.amount);
+      }, parseFloat(account.initialBalance || 0));
+      return { ...account, balance };
     });
   }, [accounts, transactions]);
 
-  const getIcon = (type) => {
-    switch (type) {
-      case "checking":
-        return <Building2 className="h-5 w-5" />;
-      case "savings":
-        return <Wallet className="h-5 w-5" />;
-      case "credit":
-        return <CreditCard className="h-5 w-5" />;
-      case "cash":
-        return <Banknote className="h-5 w-5" />;
-      case "investment":
-        return <TrendingUp className="h-5 w-5" />;
-      default:
-        return <Wallet className="h-5 w-5" />;
-    }
+  const container = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
   };
 
-  const getCategoryLabel = (categoryName) => {
-    const category = categories.find((c) => c.name === categoryName);
-    return category?.isDefault
-      ? t(`categories.${categoryName.toLowerCase()}`)
-      : categoryName;
+  const item = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0 },
   };
-
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-    }).format(amount);
-  };
-
-  const handleExportExcel = () => {
-    const isPt = i18n.language === "pt";
-    const currency = isPt ? "BRL" : "USD";
-    const locale = isPt ? "pt-BR" : "en-US";
-
-    const exportData = transactions.map((transaction) => ({
-      [t("transactions.table.date")]: new Date(
-        transaction.date
-      ).toLocaleDateString(locale),
-      [t("transactions.table.description")]: transaction.description,
-      [t("transactions.table.category")]: getCategoryLabel(
-        transaction.category
-      ),
-      [t("transactions.table.type")]: t(
-        `transactions.form.${transaction.type}`
-      ),
-      [t("transactions.table.amount")]: new Intl.NumberFormat(locale, {
-        style: "currency",
-        currency: currency,
-      }).format(transaction.amount),
-    }));
-
-    const ws = XLSX.utils.json_to_sheet(exportData);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Transactions");
-    XLSX.writeFile(wb, "financial-dashboard-export.xlsx");
-  };
-
-  const handleExportPDF = () => {
-    const doc = new jsPDF();
-    const isPt = i18n.language === "pt";
-    const currency = isPt ? "BRL" : "USD";
-    const locale = isPt ? "pt-BR" : "en-US";
-
-    doc.setFontSize(18);
-    doc.text(t("reports.title"), 14, 22);
-
-    doc.setFontSize(11);
-    doc.text(
-      `${t("legal.lastUpdated")}: ${new Date().toLocaleDateString(locale)}`,
-      14,
-      30
-    );
-
-    const tableColumn = [
-      t("transactions.table.date"),
-      t("transactions.table.description"),
-      t("transactions.table.category"),
-      t("transactions.table.type"),
-      t("transactions.table.amount"),
-    ];
-
-    const tableRows = [];
-
-    transactions.forEach((transaction) => {
-      const transactionData = [
-        new Date(transaction.date).toLocaleDateString(locale),
-        transaction.description,
-        getCategoryLabel(transaction.category),
-        t(`transactions.form.${transaction.type}`),
-        new Intl.NumberFormat(locale, {
-          style: "currency",
-          currency: currency,
-        }).format(transaction.amount),
-      ];
-      tableRows.push(transactionData);
-    });
-
-    autoTable(doc, {
-      head: [tableColumn],
-      body: tableRows,
-      startY: 40,
-      theme: "grid",
-      styles: { fontSize: 8 },
-      headStyles: { fillColor: [37, 99, 235] }, // Primary blue color
-    });
-
-    doc.save("financial-dashboard-report.pdf");
-  };
-
-  const [isSimulateOpen, setIsSimulateOpen] = useState(false);
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500 pb-10">
-      {/* ... header ... */}
-
-      <Dialog open={isSimulateOpen} onOpenChange={setIsSimulateOpen}>
-        <DialogContent className="sm:max-w-[600px]">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Ghost className="h-5 w-5" />
-              {t("dashboard.simulateTransaction")}
-            </DialogTitle>
-          </DialogHeader>
-          <TransactionForm
-            onAddTransaction={(transaction) => {
-              addShadowTransaction(transaction);
-              setIsSimulateOpen(false);
-            }}
-          />
-        </DialogContent>
-      </Dialog>
-      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+    <Motion.div
+      variants={container}
+      initial="hidden"
+      animate="show"
+      className="space-y-8 pb-10"
+    >
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h2
-            id="dashboard-title"
-            className="text-3xl font-bold tracking-tight"
-          >
+          <h2 className="text-3xl font-bold tracking-tight">
             {t("dashboard.title")}
           </h2>
           <p className="text-muted-foreground">{t("dashboard.subtitle")}</p>
         </div>
-        <div className="flex items-center gap-2 flex-wrap">
-          <div className="flex items-center space-x-2 mr-4 bg-muted/50 p-2 rounded-lg border">
-            <Switch
-              id="shadow-mode"
-              checked={isShadowMode}
-              onCheckedChange={toggleShadowMode}
-            />
-            <Label
-              htmlFor="shadow-mode"
-              className="flex items-center gap-2 cursor-pointer"
-            >
-              <Ghost className="h-4 w-4" />
-              {t("dashboard.shadowMode")}
-            </Label>
-          </div>
+        <div className="flex flex-wrap items-center gap-2">
+          {!isSidebarCollapsed && (
+            <>
+              {isDraggable && (
+                <Button
+                  variant="default"
+                  size="sm"
+                  onClick={() => setIsDraggable(false)}
+                  className="bg-green-600 hover:bg-green-700"
+                >
+                  <Save className="mr-2 h-4 w-4" />
+                  {t("dashboard.saveLayout", "Salvar Layout")}
+                </Button>
+              )}
 
-          {isShadowMode && (
-            <Button
-              onClick={() => setIsSimulateOpen(true)}
-              className="bg-purple-600 hover:bg-purple-700 text-white"
-            >
-              <Ghost className="mr-2 h-4 w-4" />
-              {t("dashboard.simulate")}
-            </Button>
+              <Button
+                variant="default"
+                size="sm"
+                onClick={() => setIsSimulateOpen(true)}
+                className="hidden md:flex"
+              >
+                <TrendingUp className="mr-2 h-4 w-4" />
+                {t("dashboard.simulate", "Simular")}
+              </Button>
+              {/* Mobile simulate icon only */}
+              <Button
+                variant="default"
+                size="icon"
+                onClick={() => setIsSimulateOpen(true)}
+                className="md:hidden"
+              >
+                <TrendingUp className="h-4 w-4" />
+              </Button>
+
+              <CustomDropdown
+                trigger={
+                  <Button variant="outline" size="sm">
+                    <Download className="mr-2 h-4 w-4" />
+                    {t("common.export", "Export")}
+                  </Button>
+                }
+              >
+                <DropdownItem onClick={exportToExcel}>
+                  <FileSpreadsheet className="mr-2 h-4 w-4" />
+                  Excel
+                </DropdownItem>
+                <DropdownItem onClick={exportToPDF}>
+                  <FileText className="mr-2 h-4 w-4" />
+                  PDF
+                </DropdownItem>
+              </CustomDropdown>
+
+              <CustomDropdown
+                trigger={
+                  <Button variant="ghost" size="icon">
+                    <MoreVertical className="h-4 w-4" />
+                  </Button>
+                }
+              >
+                <DropdownItem onClick={() => setIsDraggable(!isDraggable)}>
+                  <Layout className="mr-2 h-4 w-4" />
+                  {isDraggable
+                    ? t("dashboard.saveLayout", "Salvar Layout")
+                    : t("dashboard.editLayout", "Editar Layout")}
+                </DropdownItem>
+                <DropdownItem onClick={toggleShadowMode}>
+                  <Ghost className="mr-2 h-4 w-4" />
+                  {isShadowMode ? "Sair do Shadow Mode" : "Shadow Mode"}
+                </DropdownItem>
+                <div className="my-1 h-px bg-muted" />
+                <DropdownItem
+                  onClick={clearTransactions}
+                  destructive
+                  className="text-red-500 hover:text-red-600 hover:bg-red-50"
+                >
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  {t("dashboard.clearData")}
+                </DropdownItem>
+              </CustomDropdown>
+            </>
           )}
-
-          <Button
-            variant={isDraggable ? "default" : "outline"}
-            onClick={() => setIsDraggable(!isDraggable)}
-          >
-            {isDraggable ? (
-              <>
-                <Save className="mr-2 h-4 w-4" />
-                {t("common.done")}
-              </>
-            ) : (
-              <>
-                <Layout className="mr-2 h-4 w-4" />
-                {t("dashboard.customize")}
-              </>
-            )}
-          </Button>
-          <Button
-            variant="outline"
-            onClick={clearTransactions}
-            className="text-destructive hover:text-destructive hover:bg-destructive/10"
-          >
-            <Trash2 className="mr-2 h-4 w-4" />
-            {t("dashboard.clearData")}
-          </Button>
-          <Button variant="outline" onClick={handleExportExcel}>
-            <FileSpreadsheet className="mr-2 h-4 w-4" />
-            {t("dashboard.exportExcel")}
-          </Button>
-          <Button variant="outline" onClick={handleExportPDF}>
-            <FileText className="mr-2 h-4 w-4" />
-            {t("dashboard.exportPDF")}
-          </Button>
         </div>
       </div>
+
+      <Dialog open={isSimulateOpen} onOpenChange={setIsSimulateOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t("dashboard.simulate", "Simular")}</DialogTitle>
+          </DialogHeader>
+          <TransactionForm onSuccess={() => setIsSimulateOpen(false)} />
+        </DialogContent>
+      </Dialog>
 
       <ResponsiveGridLayout
         className="layout"
@@ -412,7 +301,7 @@ const Dashboard = () => {
               : ""
           }
         >
-          <div className="h-full relative">
+          <Motion.div variants={item} className="h-full relative">
             {isDraggable && (
               <div className="drag-handle absolute top-0 left-0 right-0 h-6 bg-gray-200/50 cursor-move z-10 rounded-t-lg flex justify-center items-center">
                 <Layout className="h-3 w-3 opacity-50" />
@@ -423,7 +312,7 @@ const Dashboard = () => {
             ) : (
               <BalanceCard amount={stats.balance} />
             )}
-          </div>
+          </Motion.div>
         </div>
         <div
           key="income"
@@ -433,7 +322,7 @@ const Dashboard = () => {
               : ""
           }
         >
-          <div className="h-full relative">
+          <Motion.div variants={item} className="h-full relative">
             {isDraggable && (
               <div className="drag-handle absolute top-0 left-0 right-0 h-6 bg-gray-200/50 cursor-move z-10 rounded-t-lg flex justify-center items-center">
                 <Layout className="h-3 w-3 opacity-50" />
@@ -444,7 +333,7 @@ const Dashboard = () => {
             ) : (
               <IncomeCard amount={stats.income} />
             )}
-          </div>
+          </Motion.div>
         </div>
         <div
           key="expense"
@@ -454,7 +343,7 @@ const Dashboard = () => {
               : ""
           }
         >
-          <div className="h-full relative">
+          <Motion.div variants={item} className="h-full relative">
             {isDraggable && (
               <div className="drag-handle absolute top-0 left-0 right-0 h-6 bg-gray-200/50 cursor-move z-10 rounded-t-lg flex justify-center items-center">
                 <Layout className="h-3 w-3 opacity-50" />
@@ -465,7 +354,7 @@ const Dashboard = () => {
             ) : (
               <ExpenseCard amount={stats.expense} />
             )}
-          </div>
+          </Motion.div>
         </div>
 
         <div
@@ -476,55 +365,58 @@ const Dashboard = () => {
               : ""
           }
         >
-          <div className="h-full relative overflow-y-auto">
+          <Motion.div
+            variants={item}
+            className="h-full relative overflow-y-auto"
+          >
             {isDraggable && (
               <div className="drag-handle absolute top-0 left-0 right-0 h-6 bg-gray-200/50 cursor-move z-10 rounded-t-lg flex justify-center items-center">
                 <Layout className="h-3 w-3 opacity-50" />
               </div>
             )}
             {loading ? (
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 h-full p-1">
-                {[1, 2, 3, 4].map((i) => (
-                  <Skeleton key={i} className="h-full w-full" />
-                ))}
+              <div className="grid gap-4">
+                <Skeleton className="h-20 w-full" />
+                <Skeleton className="h-20 w-full" />
               </div>
             ) : (
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 h-full p-1">
-                {accountBalances.map((account) => (
-                  <Card
-                    key={account.id}
-                    className="relative overflow-hidden h-full"
-                  >
-                    <div
-                      className="absolute top-0 left-0 w-1 h-full"
-                      style={{ backgroundColor: account.color }}
-                    />
+              <div className="grid gap-4">
+                {accountsWithBalance.map((account) => (
+                  <Card key={account.id} className="min-h-[100px]">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                       <CardTitle className="text-sm font-medium">
                         {account.name}
                       </CardTitle>
-                      <div className="text-muted-foreground">
-                        {getIcon(account.type)}
-                      </div>
+                      {account.type === "wallet" ? (
+                        <Wallet className="h-4 w-4 text-muted-foreground" />
+                      ) : account.type === "investment" ? (
+                        <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                      ) : (
+                        <Building2 className="h-4 w-4 text-muted-foreground" />
+                      )}
                     </CardHeader>
                     <CardContent>
-                      <div
-                        className={cn(
-                          "text-2xl font-bold",
-                          isPrivacyMode && "privacy-blur"
-                        )}
-                      >
-                        {formatCurrency(account.currentBalance)}
+                      <div className="text-2xl font-bold">
+                        <span className={cn(isPrivacyMode && "privacy-blur")}>
+                          {new Intl.NumberFormat("pt-BR", {
+                            style: "currency",
+                            currency: "BRL",
+                          }).format(account.balance)}
+                        </span>
                       </div>
-                      <p className="text-xs text-muted-foreground capitalize">
-                        {t(`accounts.${account.type}`)}
+                      <p className="text-xs text-muted-foreground">
+                        {account.type === "checking"
+                          ? t("accounts.type.checking")
+                          : account.type === "investment"
+                          ? t("accounts.type.investment")
+                          : t("accounts.type.wallet")}
                       </p>
                     </CardContent>
                   </Card>
                 ))}
               </div>
             )}
-          </div>
+          </Motion.div>
         </div>
 
         <div
@@ -535,7 +427,7 @@ const Dashboard = () => {
               : ""
           }
         >
-          <div className="h-full relative">
+          <Motion.div variants={item} className="h-full relative">
             {isDraggable && (
               <div className="drag-handle absolute top-0 left-0 right-0 h-6 bg-gray-200/50 cursor-move z-10 rounded-t-lg flex justify-center items-center">
                 <Layout className="h-3 w-3 opacity-50" />
@@ -546,7 +438,7 @@ const Dashboard = () => {
             ) : (
               <OverviewChart transactions={transactions} />
             )}
-          </div>
+          </Motion.div>
         </div>
         <div
           key="category"
@@ -556,7 +448,7 @@ const Dashboard = () => {
               : ""
           }
         >
-          <div className="h-full relative">
+          <Motion.div variants={item} className="h-full relative">
             {isDraggable && (
               <div className="drag-handle absolute top-0 left-0 right-0 h-6 bg-gray-200/50 cursor-move z-10 rounded-t-lg flex justify-center items-center">
                 <Layout className="h-3 w-3 opacity-50" />
@@ -567,7 +459,7 @@ const Dashboard = () => {
             ) : (
               <CategoryChart transactions={transactions} />
             )}
-          </div>
+          </Motion.div>
         </div>
 
         <div
@@ -578,28 +470,27 @@ const Dashboard = () => {
               : ""
           }
         >
-          <div className="h-full relative overflow-y-auto">
+          <Motion.div
+            variants={item}
+            className="h-full relative overflow-y-auto"
+          >
             {isDraggable && (
               <div className="drag-handle absolute top-0 left-0 right-0 h-6 bg-gray-200/50 cursor-move z-10 rounded-t-lg flex justify-center items-center">
                 <Layout className="h-3 w-3 opacity-50" />
               </div>
             )}
             {loading ? (
-              <div className="space-y-4 p-4">
-                {[1, 2, 3, 4, 5].map((i) => (
-                  <Skeleton key={i} className="h-16 w-full" />
-                ))}
-              </div>
+              <Skeleton className="w-full h-full" />
             ) : (
               <TransactionHistory
                 transactions={transactions}
                 onDelete={deleteTransaction}
               />
             )}
-          </div>
+          </Motion.div>
         </div>
       </ResponsiveGridLayout>
-    </div>
+    </Motion.div>
   );
 };
 

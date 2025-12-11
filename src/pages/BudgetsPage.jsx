@@ -13,6 +13,8 @@ import ConfirmDialog from "@/components/ui/confirm-dialog";
 import { useLayout } from "@/context/LayoutContext";
 import { cn } from "@/lib/utils";
 
+import { motion as Motion } from "framer-motion";
+
 const BudgetsPage = () => {
   const { t } = useTranslation();
   const { categories, updateCategory, loading } = useCategories();
@@ -111,8 +113,23 @@ const BudgetsPage = () => {
     }
   };
 
+  const container = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
   return (
-    <div className="space-y-6 animate-in fade-in duration-500">
+    <Motion.div
+      variants={container}
+      initial="hidden"
+      animate="show"
+      className="space-y-6"
+    >
       <div className="flex justify-between items-center">
         <div>
           <h2 className="text-3xl font-bold tracking-tight">
@@ -219,76 +236,96 @@ const BudgetsPage = () => {
                 category
               );
 
+            const getProgressColor = () => {
+              if (percentage < 75) return "bg-green-500";
+              if (percentage < 100) return "bg-yellow-500";
+              return "bg-destructive";
+            };
+
             return (
-              <Card key={category.id}>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-base font-medium">
-                    {category.isDefault
-                      ? t(`categories.${category.name.toLowerCase()}`)
-                      : category.name}
-                  </CardTitle>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="text-muted-foreground hover:text-destructive"
-                    onClick={() => confirmDelete(category)}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-2">
-                    <div className="flex justify-between items-center text-sm">
-                      <span className="font-medium">
-                        <span className={cn(isPrivacyMode && "privacy-blur")}>
-                          {new Intl.NumberFormat("pt-BR", {
-                            style: "currency",
-                            currency: "BRL",
-                          }).format(remaining)}
-                        </span>{" "}
-                        {t("budgets.remainingOf")}{" "}
-                        <span className={cn(isPrivacyMode && "privacy-blur")}>
-                          {new Intl.NumberFormat("pt-BR", {
-                            style: "currency",
-                            currency: "BRL",
-                          }).format(effectiveBudget)}
-                        </span>
-                      </span>
-                    </div>
-                    <Progress
-                      value={percentage}
-                      className={cn(
-                        "h-2",
-                        percentage >= 100 && "bg-destructive/20"
-                      )}
-                      indicatorClassName={cn(
-                        percentage < 75
-                          ? "bg-green-500" // Safe
-                          : percentage < 100
-                          ? "bg-yellow-500" // Warning
-                          : "bg-destructive" // Exceeded
-                      )}
-                    />
-                    <div className="flex justify-between items-center text-xs text-muted-foreground">
-                      <span>
-                        {Math.round(percentage)}% {t("budgets.spent")}
-                      </span>
-                      {effectiveBudget > category.budget && (
-                        <span className="text-green-500 ml-1 text-[10px]">
-                          (+
+              <Motion.div
+                key={category.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-base font-medium">
+                      {category.isDefault
+                        ? t(`categories.${category.name.toLowerCase()}`)
+                        : category.name}
+                    </CardTitle>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="text-muted-foreground hover:text-destructive"
+                      onClick={() => confirmDelete(category)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-2">
+                      <div className="flex justify-between items-center text-sm">
+                        <span className="font-medium">
                           <span className={cn(isPrivacyMode && "privacy-blur")}>
                             {new Intl.NumberFormat("pt-BR", {
                               style: "currency",
                               currency: "BRL",
-                            }).format(effectiveBudget - category.budget)}
+                            }).format(remaining)}
                           </span>{" "}
-                          rollover)
+                          {t("budgets.remainingOf")}{" "}
+                          <span className={cn(isPrivacyMode && "privacy-blur")}>
+                            {new Intl.NumberFormat("pt-BR", {
+                              style: "currency",
+                              currency: "BRL",
+                            }).format(effectiveBudget)}
+                          </span>
                         </span>
-                      )}
+                      </div>
+
+                      {/* Custom Animated Progress Bar */}
+                      <div
+                        className={cn(
+                          "h-2 w-full bg-secondary rounded-full overflow-hidden",
+                          percentage >= 100 && "bg-destructive/20"
+                        )}
+                      >
+                        <Motion.div
+                          className={cn(
+                            "h-full rounded-full",
+                            getProgressColor()
+                          )}
+                          initial={{ width: 0 }}
+                          animate={{ width: `${percentage}%` }}
+                          transition={{ duration: 1, ease: "easeOut" }}
+                        />
+                      </div>
+
+                      <div className="flex justify-between items-center text-xs text-muted-foreground">
+                        <span>
+                          {Math.round(percentage)}% {t("budgets.spent")}
+                        </span>
+                        {effectiveBudget > category.budget && (
+                          <span className="text-green-500 ml-1 text-[10px]">
+                            (+
+                            <span
+                              className={cn(isPrivacyMode && "privacy-blur")}
+                            >
+                              {new Intl.NumberFormat("pt-BR", {
+                                style: "currency",
+                                currency: "BRL",
+                              }).format(effectiveBudget - category.budget)}
+                            </span>{" "}
+                            rollover)
+                          </span>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
+              </Motion.div>
             );
           })
         )}
@@ -310,7 +347,7 @@ const BudgetsPage = () => {
         cancelText={t("common.cancel")}
         variant="destructive"
       />
-    </div>
+    </Motion.div>
   );
 };
 

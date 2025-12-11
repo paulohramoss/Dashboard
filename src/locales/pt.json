@@ -256,7 +256,12 @@
     "noGoals": "Nenhum objetivo ainda.",
     "startSaving": "Comece a poupar para seus objetivos hoje!",
     "deleteTitle": "Excluir Objetivo",
-    "deleteDescription": "Tem certeza que deseja excluir este objetivo? Os fundos alocados permanecerão no histórico como despesas."
+    "deleteDescription": "Tem certeza que deseja excluir este objetivo? Os fundos alocados permanecerão no histórico como despesas.",
+    "goalReached": "Parabéns! Objetivo alcançado! 🎉",
+    "allocationSuccess": "Fundos alocados com sucesso!",
+    "allocationError": "Falha ao alocar fundos. Tente novamente.",
+    "amountToAllocate": "Valor a Alocar",
+    "remaining": "Restante"
   },
   "calendar": {
     "title": "Calendário Financeiro",
@@ -311,6 +316,7 @@
     "success": "Sucesso",
     "error": "Erro",
     "save": "Salvar",
+    "export": "Exportar",
     "done": "Concluído",
     "next": "Próximo",
     "previous": "Anterior",
