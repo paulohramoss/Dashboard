@@ -301,16 +301,16 @@
     "createAccountError": "Failed to create account. Please try again.",
     "privacyNotice": "Your privacy is our priority.",
     "noAccess": "We do not have access to your financial data.",
-    "lgpd": "100% compliant with"
+    "lgpd": "100% compliant with",
+    "reorder": "Reorder Accounts",
+    "cancelReorder": "Cancel Reorder",
+    "saveOrder": "Save Order"
   },
   "common": {
     "loading": "Loading...",
     "success": "Success",
     "error": "Error",
-    "entertainment": "Entertainment",
-    "salary": "Salary",
-    "freelance": "Freelance",
-    "other": "Other",
+
     "done": "Done",
     "next": "Next",
     "previous": "Previous",

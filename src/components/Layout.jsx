@@ -289,7 +289,7 @@ const Layout = ({ children }) => {
           </div>
 
           <footer className="border-t bg-card/50 p-4 text-center text-xs text-muted-foreground">
-            v1.0.0
+            v1.0.10
           </footer>
         </main>
       </div>

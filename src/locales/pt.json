@@ -301,7 +301,10 @@
     "createAccountError": "Falha ao criar conta. Tente novamente.",
     "privacyNotice": "Sua privacidade é nossa prioridade.",
     "noAccess": "Não temos acesso aos seus dados financeiros.",
-    "lgpd": "100% em conformidade com a"
+    "lgpd": "100% em conformidade com a",
+    "reorder": "Reordenar Contas",
+    "cancelReorder": "Cancelar Reordenação",
+    "saveOrder": "Salvar Ordem"
   },
   "common": {
     "loading": "Carregando...",
