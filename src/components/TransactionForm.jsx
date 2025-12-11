@@ -310,7 +310,7 @@ const TransactionForm = ({ onAddTransaction }) => {
                   onChange={(e) =>
                     setFormData({ ...formData, frequency: e.target.value })
                   }
-                  className="w-auto h-8 min-w-[120px]"
+                  className="w-[180px] h-10"
                 >
                   <option value="daily">{t("transactions.form.daily")}</option>
                   <option value="weekly">
@@ -343,7 +343,7 @@ const TransactionForm = ({ onAddTransaction }) => {
                       installmentsCount: parseInt(e.target.value) || 2,
                     })
                   }
-                  className="w-20 h-8"
+                  className="w-20 h-10"
                 />
               </div>
             )}
