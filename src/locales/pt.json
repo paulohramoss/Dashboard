@@ -69,7 +69,9 @@
     "totalBalance": "Saldo Total",
     "income": "Receitas",
     "expenses": "Despesas",
-    "simulated": "Simulado"
+    "simulated": "Simulado",
+    "saveLayout": "Salvar Layout",
+    "editLayout": "Editar Layout"
   },
   "subscriptions": {
     "title": "Gestão de Assinaturas",
@@ -154,7 +156,9 @@
     "subtitle": "Análise detalhada das suas finanças.",
     "transactionSummary": "Resumo de Transações",
     "totalTransactionsPart1": "Você tem um total de",
-    "totalTransactionsPart2": "transações registradas. Seu saldo atual é"
+    "totalTransactionsPart2": "transações registradas. Seu saldo atual é",
+    "financialFlow": "Fluxo Financeiro",
+    "flowDescription": "Visualize como o dinheiro entra na sua carteira e como é distribuído nas despesas."
   },
   "settings": {
     "title": "Configurações",
@@ -321,7 +325,8 @@
     "next": "Próximo",
     "previous": "Anterior",
     "delete": "Excluir",
-    "cancel": "Cancelar"
+    "cancel": "Cancelar",
+    "noData": "Sem dados para exibir."
   },
   "tour": {
     "welcomeTitle": "Bem-vindo ao FinanceDash!",

@@ -69,7 +69,9 @@
     "totalBalance": "Total Balance",
     "income": "Income",
     "expenses": "Expenses",
-    "simulated": "Simulated"
+    "simulated": "Simulated",
+    "saveLayout": "Save Layout",
+    "editLayout": "Edit Layout"
   },
   "subscriptions": {
     "title": "Subscription Hub",
@@ -151,10 +153,12 @@
   },
   "reports": {
     "title": "Reports",
-    "subtitle": "Detailed analysis of your finances.",
+    "subtitle": "Analyze your financial health.",
     "transactionSummary": "Transaction Summary",
     "totalTransactionsPart1": "You have a total of",
-    "totalTransactionsPart2": "transactions recorded. Your current balance is"
+    "totalTransactionsPart2": "transactions with a balance of",
+    "financialFlow": "Financial Flow",
+    "flowDescription": "Visualize how money enters your wallet and how it is distributed in expenses."
   },
   "settings": {
     "title": "Settings",
@@ -321,7 +325,8 @@
     "next": "Next",
     "previous": "Previous",
     "delete": "Delete",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "noData": "No data to display."
   },
   "tour": {
     "welcomeTitle": "Welcome to FinanceDash!",

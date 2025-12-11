@@ -405,11 +405,7 @@ const Dashboard = () => {
                         </span>
                       </div>
                       <p className="text-xs text-muted-foreground">
-                        {account.type === "checking"
-                          ? t("accounts.type.checking")
-                          : account.type === "investment"
-                          ? t("accounts.type.investment")
-                          : t("accounts.type.wallet")}
+                        {t(`accounts.${account.type}`)}
                       </p>
                     </CardContent>
                   </Card>

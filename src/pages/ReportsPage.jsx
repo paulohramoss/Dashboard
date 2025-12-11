@@ -5,6 +5,7 @@ import SummaryCards from "@/components/SummaryCards";
 import OverviewChart from "@/components/Charts/OverviewChart";
 import CategoryChart from "@/components/Charts/CategoryChart";
 import MonthlyEvolutionChart from "@/components/Charts/MonthlyEvolutionChart";
+import FinancialFlowChart from "@/components/Charts/FinancialFlowChart";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useLayout } from "@/context/LayoutContext";
@@ -44,6 +45,7 @@ const ReportsPage = () => {
         ) : (
           <>
             <OverviewChart transactions={transactions} />
+            <FinancialFlowChart transactions={transactions} />
             <CategoryChart transactions={transactions} />
             <MonthlyEvolutionChart transactions={transactions} />
           </>
