@@ -397,7 +397,9 @@
     "income": "Income",
     "expense": "Expenses",
     "other": "Other",
-    "monthlyEvolution": "Monthly Evolution"
+    "monthlyEvolution": "Monthly Evolution",
+    "balance": "Balance",
+    "projectedBalance": "Projected Balance"
   },
   "categories": {
     "general": "General",

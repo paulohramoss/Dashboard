@@ -397,7 +397,9 @@
     "income": "Receitas",
     "expense": "Despesas",
     "other": "Outros",
-    "monthlyEvolution": "Evolução Mensal"
+    "monthlyEvolution": "Evolução Mensal",
+    "balance": "Saldo",
+    "projectedBalance": "Saldo Previsto"
   },
   "categories": {
     "general": "Geral",
