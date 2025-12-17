@@ -102,6 +102,24 @@ const Dashboard = () => {
             { i: "history", x: 0, y: 12, w: 12, h: 5 },
             { i: "accounts", x: 0, y: 17, w: 12, h: 5 },
           ],
+          xs: [
+            { i: "balance", x: 0, y: 0, w: 12, h: 2 },
+            { i: "income", x: 0, y: 2, w: 12, h: 2 },
+            { i: "expense", x: 0, y: 4, w: 12, h: 2 },
+            { i: "overview", x: 0, y: 6, w: 12, h: 4 },
+            { i: "category", x: 0, y: 10, w: 12, h: 4 },
+            { i: "history", x: 0, y: 14, w: 12, h: 5 },
+            { i: "accounts", x: 0, y: 19, w: 12, h: 5 },
+          ],
+          xxs: [
+            { i: "balance", x: 0, y: 0, w: 12, h: 2 },
+            { i: "income", x: 0, y: 2, w: 12, h: 2 },
+            { i: "expense", x: 0, y: 4, w: 12, h: 2 },
+            { i: "overview", x: 0, y: 6, w: 12, h: 4 },
+            { i: "category", x: 0, y: 10, w: 12, h: 4 },
+            { i: "history", x: 0, y: 14, w: 12, h: 5 },
+            { i: "accounts", x: 0, y: 19, w: 12, h: 5 },
+          ],
         };
   });
 
