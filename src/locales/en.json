@@ -32,6 +32,7 @@
     "subscriptions": "Subscriptions",
     "budgets": "Budgets",
     "goals": "Goals",
+    "debt": "Debts",
     "settings": "Settings",
     "logout": "Logout",
     "confirmLogout": "Confirm Logout?"
@@ -148,6 +149,9 @@
       "defaultDescription": "Imported Transaction",
       "ofxNoTransactions": "No transactions found in OFX file"
     },
+    "errors": {
+      "missingDestination": "Please select a destination account for transfer."
+    },
     "confirmDeleteTitle": "Delete Transaction",
     "confirmDeleteDescription": "Are you sure you want to delete this transaction? This action cannot be undone."
   },
@@ -214,6 +218,8 @@
     "sendFeedback": "Send Feedback",
     "feedbackSent": "Feedback sent successfully! Thank you.",
     "feedbackError": "Failed to send feedback.",
+    "accountDeleted": "Account deleted successfully!",
+    "deleteAccountError": "Failed to delete account. Please try again.",
     "sendEmail": "Send Email Directly"
   },
   "budgets": {
@@ -285,6 +291,14 @@
     "initialBalance": "Initial Balance",
     "color": "Color",
     "checking": "Checking",
+    "savings": "Savings",
+    "credit": "Credit Card",
+    "cash": "Cash",
+    "investment": "Investment",
+    "loan": "Loan",
+    "editTitle": "Edit Account",
+    "saveAccount": "Save Account",
+    "creditTypeLocked": "Credit card type cannot be changed.",
     "resetPassword": "Reset Password",
     "resetSubtitle": "Enter your email to receive a secure link to reset your password.",
     "sendLink": "Send Reset Link",
@@ -410,5 +424,19 @@
     "salary": "Salary",
     "freelance": "Freelance",
     "other": "Other"
+  },
+  "debt": {
+    "title": "Debt Management",
+    "subtitle": "Plan your debt payoff and become debt-free.",
+    "noDebts": "Congratulations! No debts found.",
+    "noDebtsDesc": "Your credit card and loan accounts are positive or zero.",
+    "monthlyPayment": "Monthly Payment",
+    "interestRate": "Annual Interest Rate (%)",
+    "paymentTooLow": "Payment too low to cover interest.",
+    "enterPayment": "Enter a monthly amount to simulate.",
+    "timeToPayoff": "Estimated Time",
+    "debtFreeDate": "Debt Free Date",
+    "interest": "Estimated Interest",
+    "months": "months"
   }
 }

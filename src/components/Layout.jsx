@@ -17,6 +17,7 @@ import {
   Eye,
   EyeOff,
   Repeat,
+  TrendingDown,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -92,6 +93,7 @@ const Layout = ({ children }) => {
     { icon: Repeat, label: t("nav.subscriptions"), path: "/subscriptions" },
     { icon: Target, label: t("nav.budgets"), path: "/budgets" },
     { icon: Star, label: t("nav.goals"), path: "/goals" },
+    { icon: TrendingDown, label: t("nav.debt", "Dívidas"), path: "/debt" },
     { icon: Wallet, label: t("accounts.title"), path: "/accounts" },
     { icon: PieChart, label: t("nav.reports"), path: "/reports" },
     { icon: Settings, label: t("nav.settings"), path: "/settings" },

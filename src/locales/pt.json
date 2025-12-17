@@ -32,6 +32,7 @@
     "subscriptions": "Assinaturas",
     "budgets": "Orçamentos",
     "goals": "Objetivos",
+    "debt": "Dívidas",
     "settings": "Configurações",
     "logout": "Sair",
     "confirmLogout": "Confirmar Saída?"
@@ -148,6 +149,9 @@
       "defaultDescription": "Transação Importada",
       "ofxNoTransactions": "Nenhuma transação encontrada no arquivo OFX"
     },
+    "errors": {
+      "missingDestination": "Selecione uma conta de destino para transferência."
+    },
     "confirmDeleteTitle": "Excluir Transação",
     "confirmDeleteDescription": "Tem certeza que deseja excluir esta transação? Esta ação não pode ser desfeita."
   },
@@ -214,6 +218,8 @@
     "sendFeedback": "Enviar Feedback",
     "feedbackSent": "Feedback enviado com sucesso! Obrigado.",
     "feedbackError": "Falha ao enviar feedback.",
+    "accountDeleted": "Conta excluída com sucesso!",
+    "deleteAccountError": "Falha ao excluir conta. Tente novamente.",
     "sendEmail": "Enviar E-mail Diretamente"
   },
   "budgets": {
@@ -284,7 +290,15 @@
     "type": "Tipo",
     "initialBalance": "Saldo Inicial",
     "color": "Cor",
-    "checking": "Corrente",
+    "checking": "Conta Corrente",
+    "savings": "Poupança",
+    "credit": "Cartão de Crédito",
+    "cash": "Dinheiro",
+    "investment": "Investimentos",
+    "loan": "Empréstimo",
+    "editTitle": "Editar Conta",
+    "saveAccount": "Salvar Conta",
+    "creditTypeLocked": "O tipo Cartão de Crédito não pode ser alterado.",
     "resetPassword": "Redefinir Senha",
     "resetSubtitle": "Digite seu e-mail para receber um link seguro de redefinição de senha.",
     "sendLink": "Enviar Link de Redefinição",
@@ -410,5 +424,19 @@
     "salary": "Salário",
     "freelance": "Freelance",
     "other": "Outros"
+  },
+  "debt": {
+    "title": "Gestão de Dívidas",
+    "subtitle": "Planeje o pagamento de suas dívidas e fique livre delas.",
+    "noDebts": "Parabéns! Nenhuma dívida encontrada.",
+    "noDebtsDesc": "Suas contas de cartão e empréstimo estão positivas ou zeradas.",
+    "monthlyPayment": "Pagamento Mensal (R$)",
+    "interestRate": "Juros ao Ano (%)",
+    "paymentTooLow": "Pagamento insuficiente para cobrir os juros.",
+    "enterPayment": "Informe um valor mensal para simular.",
+    "timeToPayoff": "Tempo Estimado",
+    "debtFreeDate": "Livre em",
+    "interest": "Juros Estimados",
+    "months": "meses"
   }
 }

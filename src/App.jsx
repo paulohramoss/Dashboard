@@ -25,6 +25,7 @@ import PrivacyPage from "@/pages/PrivacyPage";
 import CookiePolicyPage from "@/pages/CookiePolicyPage";
 import ForgotPasswordPage from "@/pages/ForgotPasswordPage";
 import SubscriptionsPage from "@/pages/SubscriptionsPage";
+import DebtSnowballPage from "@/pages/DebtSnowballPage";
 
 const ProtectedRoute = ({ children }) => {
   const { user } = useAuth();
@@ -80,6 +81,7 @@ const App = () => {
                       <Route path="/calendar" element={<CalendarPage />} />
                       <Route path="/budgets" element={<BudgetsPage />} />
                       <Route path="/goals" element={<GoalsPage />} />
+                      <Route path="/debt" element={<DebtSnowballPage />} />
                       <Route
                         path="/subscriptions"
                         element={<SubscriptionsPage />}

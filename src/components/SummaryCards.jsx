@@ -10,10 +10,13 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useLayout } from "@/context/LayoutContext";
 import { cn } from "@/lib/utils";
+import { useCurrency } from "@/hooks/useCurrency";
 
 export const BalanceCard = ({ amount }) => {
   const { t } = useTranslation();
   const { isPrivacyMode } = useLayout();
+  const formatCurrency = useCurrency();
+
   return (
     <Card className="bg-primary text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-200 h-full">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -26,10 +29,7 @@ export const BalanceCard = ({ amount }) => {
         <div
           className={cn("text-3xl font-bold", isPrivacyMode && "privacy-blur")}
         >
-          {new Intl.NumberFormat("pt-BR", {
-            style: "currency",
-            currency: "BRL",
-          }).format(amount)}
+          {formatCurrency(amount)}
         </div>
       </CardContent>
     </Card>
@@ -39,6 +39,8 @@ export const BalanceCard = ({ amount }) => {
 export const IncomeCard = ({ amount }) => {
   const { t } = useTranslation();
   const { isPrivacyMode } = useLayout();
+  const formatCurrency = useCurrency();
+
   return (
     <Card className="hover:shadow-md transition-all duration-200 h-full">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -56,10 +58,7 @@ export const IncomeCard = ({ amount }) => {
             isPrivacyMode && "privacy-blur"
           )}
         >
-          {new Intl.NumberFormat("pt-BR", {
-            style: "currency",
-            currency: "BRL",
-          }).format(amount)}
+          {formatCurrency(amount)}
           <ArrowUpRight className="h-4 w-4" />
         </div>
       </CardContent>
@@ -70,6 +69,8 @@ export const IncomeCard = ({ amount }) => {
 export const ExpenseCard = ({ amount }) => {
   const { t } = useTranslation();
   const { isPrivacyMode } = useLayout();
+  const formatCurrency = useCurrency();
+
   return (
     <Card className="hover:shadow-md transition-all duration-200 h-full">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -87,10 +88,7 @@ export const ExpenseCard = ({ amount }) => {
             isPrivacyMode && "privacy-blur"
           )}
         >
-          {new Intl.NumberFormat("pt-BR", {
-            style: "currency",
-            currency: "BRL",
-          }).format(amount)}
+          {formatCurrency(amount)}
           <ArrowDownRight className="h-4 w-4" />
         </div>
       </CardContent>

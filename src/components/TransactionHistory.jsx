@@ -14,12 +14,15 @@ import ConfirmDialog from "@/components/ui/confirm-dialog";
 import { cn, formatDateToLocal } from "@/lib/utils";
 import { useLayout } from "@/context/LayoutContext";
 
+import { useCurrency } from "@/hooks/useCurrency";
+
 const TransactionHistory = ({ transactions, onDelete }) => {
   const { t } = useTranslation();
   const { categories } = useCategories();
   const { isPrivacyMode } = useLayout();
   const [deleteId, setDeleteId] = useState(null);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const formatCurrency = useCurrency();
 
   const handleDeleteClick = (id) => {
     setDeleteId(id);
@@ -31,13 +34,6 @@ const TransactionHistory = ({ transactions, onDelete }) => {
       onDelete(deleteId);
       setDeleteId(null);
     }
-  };
-
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-    }).format(amount);
   };
 
   const formatDate = (dateString) => {

@@ -191,12 +191,14 @@ export const useTransactions = () => {
   const stats = allTransactions.reduce(
     (acc, curr) => {
       const amount = parseFloat(curr.amount);
+      const outputAmount = isNaN(amount) ? 0 : amount;
+
       if (curr.type === "income") {
-        acc.income += amount;
-        acc.balance += amount;
+        acc.income += outputAmount;
+        acc.balance += outputAmount;
       } else if (curr.type === "expense") {
-        acc.expense += amount;
-        acc.balance -= amount;
+        acc.expense += outputAmount;
+        acc.balance -= outputAmount;
       }
       return acc;
     },

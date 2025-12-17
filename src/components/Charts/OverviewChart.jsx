@@ -15,7 +15,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { isAfter, subDays, startOfDay } from "date-fns";
 
 const OverviewChart = ({ transactions, forecastData = [], currentBalance }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+
+  const currencyFormatter = (value) => {
+    return new Intl.NumberFormat(i18n.language === "pt" ? "pt-BR" : "en-US", {
+      style: "currency",
+      currency: "BRL",
+    }).format(value);
+  };
 
   const data = React.useMemo(() => {
     // 1. Process Historical Data
@@ -202,7 +209,7 @@ const OverviewChart = ({ transactions, forecastData = [], currentBalance }) => {
               fontSize={12}
               tickLine={false}
               axisLine={false}
-              tickFormatter={(value) => `R$${value}`}
+              tickFormatter={currencyFormatter}
             />
             {/* YAxis Right: Balance */}
             <YAxis
@@ -212,7 +219,7 @@ const OverviewChart = ({ transactions, forecastData = [], currentBalance }) => {
               fontSize={12}
               tickLine={false}
               axisLine={false}
-              tickFormatter={(value) => `R$${value}`}
+              tickFormatter={currencyFormatter}
             />
 
             <Tooltip
@@ -223,6 +230,7 @@ const OverviewChart = ({ transactions, forecastData = [], currentBalance }) => {
                 boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
               }}
               labelFormatter={(value) => new Date(value).toLocaleDateString()}
+              formatter={(value) => [currencyFormatter(value)]}
             />
             <Legend verticalAlign="top" height={36} iconType="circle" />
 

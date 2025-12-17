@@ -2,6 +2,7 @@ import React, { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLayout } from "@/context/LayoutContext";
 import { useTransactions } from "@/hooks/useTransactions";
+import { useCurrency } from "@/hooks/useCurrency";
 import { useAccounts } from "@/hooks/useAccounts";
 
 import {
@@ -63,6 +64,7 @@ const Dashboard = () => {
   } = useTransactions();
   const { accounts } = useAccounts();
   const { t } = useTranslation();
+  const formatCurrency = useCurrency();
   const { isPrivacyMode, isSidebarCollapsed } = useLayout();
 
   const [isSimulateOpen, setIsSimulateOpen] = useState(false);
@@ -133,7 +135,7 @@ const Dashboard = () => {
       t.description,
       t.category,
       t.type === "income" ? "Receita" : "Despesa",
-      `R$ ${parseFloat(t.amount).toFixed(2)}`,
+      formatCurrency(t.amount),
     ]);
 
     autoTable(doc, {
@@ -398,10 +400,7 @@ const Dashboard = () => {
                     <CardContent>
                       <div className="text-2xl font-bold">
                         <span className={cn(isPrivacyMode && "privacy-blur")}>
-                          {new Intl.NumberFormat("pt-BR", {
-                            style: "currency",
-                            currency: "BRL",
-                          }).format(account.balance)}
+                          {formatCurrency(account.balance)}
                         </span>
                       </div>
                       <p className="text-xs text-muted-foreground">

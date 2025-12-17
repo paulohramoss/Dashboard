@@ -20,6 +20,7 @@ import {
   Landmark,
   Banknote,
   TrendingUp,
+  Building2,
   Edit,
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -232,6 +233,8 @@ const AccountsPage = () => {
         return <Banknote className="h-4 w-4" />;
       case "investment":
         return <TrendingUp className="h-4 w-4" />;
+      case "loan":
+        return <Building2 className="h-4 w-4" />;
       default:
         return <Wallet className="h-4 w-4" />;
     }
@@ -304,6 +307,9 @@ const AccountsPage = () => {
                   <option value="credit">{t("accounts.credit")}</option>
                   <option value="cash">{t("accounts.cash")}</option>
                   <option value="investment">{t("accounts.investment")}</option>
+                  <option value="loan">
+                    {t("accounts.loan", "Empréstimo")}
+                  </option>
                 </select>
               </div>
               <div className="w-[150px] space-y-2">
@@ -515,6 +521,12 @@ const AccountsPage = () => {
                   <option value="credit">{t("accounts.credit")}</option>
                   <option value="cash">{t("accounts.cash")}</option>
                   <option value="investment">{t("accounts.investment")}</option>
+                  <option value="loan">
+                    {t("accounts.loan", "Empréstimo")}
+                  </option>
+                  <option value="loan">
+                    {t("accounts.loan", "Empréstimo")}
+                  </option>
                 </select>
                 {editingAccount.type === "credit" && (
                   <p className="text-xs text-muted-foreground">

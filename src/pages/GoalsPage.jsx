@@ -28,9 +28,13 @@ import { useLayout } from "@/context/LayoutContext";
 import { motion as Motion } from "framer-motion";
 import confetti from "canvas-confetti";
 
+import { useCurrency } from "@/hooks/useCurrency";
+
 const GoalsPage = () => {
   const { t } = useTranslation();
+  const formatCurrency = useCurrency();
   const { goals, addGoal, deleteGoal, allocateFunds, loading } = useGoals();
+
   const { accounts } = useAccounts();
   const { transactions } = useTransactions();
   const { isPrivacyMode } = useLayout();
@@ -425,14 +429,6 @@ const GoalsPage = () => {
       />
     </Motion.div>
   );
-};
-
-// Helper for currency formatting
-const formatCurrency = (value) => {
-  return new Intl.NumberFormat("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-  }).format(value || 0);
 };
 
 export default GoalsPage;
