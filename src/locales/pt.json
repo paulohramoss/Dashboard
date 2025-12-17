@@ -72,7 +72,8 @@
     "expenses": "Despesas",
     "simulated": "Simulado",
     "saveLayout": "Salvar Layout",
-    "editLayout": "Editar Layout"
+    "editLayout": "Editar Layout",
+    "simulationAdded": "Simulação adicionada ao Modo Sombra"
   },
   "subscriptions": {
     "title": "Gestão de Assinaturas",

@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { toast } from "sonner";
 import { useLayout } from "@/context/LayoutContext";
 import { useTransactions } from "@/hooks/useTransactions";
 import { useCurrency } from "@/hooks/useCurrency";
@@ -61,6 +62,7 @@ const Dashboard = () => {
     loading,
     isShadowMode,
     toggleShadowMode,
+    addShadowTransaction,
   } = useTransactions();
   const { accounts } = useAccounts();
   const { t } = useTranslation();
@@ -280,7 +282,19 @@ const Dashboard = () => {
           <DialogHeader>
             <DialogTitle>{t("dashboard.simulate", "Simular")}</DialogTitle>
           </DialogHeader>
-          <TransactionForm onSuccess={() => setIsSimulateOpen(false)} />
+          <TransactionForm
+            onAddTransaction={(data) => {
+              addShadowTransaction(data);
+              if (!isShadowMode) toggleShadowMode();
+              setIsSimulateOpen(false);
+              toast.success(
+                t(
+                  "dashboard.simulationAdded",
+                  "Simulação adicionada ao Modo Sombra"
+                )
+              );
+            }}
+          />
         </DialogContent>
       </Dialog>
 

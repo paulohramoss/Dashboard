@@ -72,7 +72,8 @@
     "expenses": "Expenses",
     "simulated": "Simulated",
     "saveLayout": "Save Layout",
-    "editLayout": "Edit Layout"
+    "editLayout": "Edit Layout",
+    "simulationAdded": "Simulation added to Shadow Mode"
   },
   "subscriptions": {
     "title": "Subscription Hub",
