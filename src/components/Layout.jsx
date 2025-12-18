@@ -313,7 +313,7 @@ const Layout = ({ children }) => {
               <div className="flex items-center gap-1.5 opacity-80 hover:opacity-100 transition-opacity">
                 <span>{t("footer.developedBy")}</span>
                 <a
-                  href="https://www.instagram.com/pauloh_ramoss/"
+                  href="https://www.linkedin.com/in/paulo-ramos-83402818a/"
                   target="_blank"
                   className="font-medium text-foreground"
                 >
@@ -321,7 +321,7 @@ const Layout = ({ children }) => {
                 </a>
                 <span className="text-muted-foreground/50">&</span>
                 <a
-                  href="https://www.instagram.com/g.donada_/"
+                  href="https://www.linkedin.com/in/gabriel-schmitz-donada-760678233/?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"
                   target="_blank"
                   className="font-medium text-foreground"
                 >
