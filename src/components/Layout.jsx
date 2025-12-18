@@ -308,11 +308,21 @@ const Layout = ({ children }) => {
 
               <div className="flex items-center gap-1.5 opacity-80 hover:opacity-100 transition-opacity">
                 <span>Desenvolvido por</span>
-                <span className="font-medium text-foreground">Paulo Ramos</span>
+                <a
+                  href="https://www.instagram.com/pauloh_ramoss/"
+                  target="_blank"
+                  className="font-medium text-foreground"
+                >
+                  Paulo Ramos
+                </a>
                 <span className="text-muted-foreground/50">&</span>
-                <span className="font-medium text-foreground">
+                <a
+                  href="https://www.instagram.com/g.donada_/"
+                  target="_blank"
+                  className="font-medium text-foreground"
+                >
                   Gabriel Donada
-                </span>
+                </a>
               </div>
             </div>
           </footer>
