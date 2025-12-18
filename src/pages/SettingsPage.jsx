@@ -44,6 +44,7 @@ import { auth } from "@/lib/firebase";
 import ConfirmDialog from "@/components/ui/confirm-dialog";
 
 import { useNotifications } from "@/hooks/useNotifications";
+import emailjs from "@emailjs/browser";
 
 const SettingsPage = () => {
   const { t } = useTranslation();
@@ -163,7 +164,8 @@ const SettingsPage = () => {
 
     setSendingFeedback(true);
     try {
-      await addDoc(collection(db, "suggestions"), {
+      // Send to Firestore
+      const firestorePromise = addDoc(collection(db, "suggestions"), {
         userId: user?.id,
         userEmail: user?.email,
         userName: user?.name,
@@ -171,6 +173,42 @@ const SettingsPage = () => {
         message: feedback.message,
         createdAt: new Date().toISOString(),
       });
+
+      // Send to Email via EmailJS
+      // TODO: Replace these placeholders with your actual EmailJS keys
+      const YOUR_SERVICE_ID = "service_8vcx7bq";
+      const YOUR_TEMPLATE_ID = "template_rhmsjbl";
+      const YOUR_PUBLIC_KEY = "lMkgyQ1ZogoJ0ZqwC";
+
+      // Only attempt to send email if keys are configured (basic check)
+      let emailPromise = Promise.resolve();
+      if (
+        YOUR_SERVICE_ID !== "service_8vcx7bq" &&
+        YOUR_TEMPLATE_ID !== "template_rhmsjbl" &&
+        YOUR_PUBLIC_KEY !== "lMkgyQ1ZogoJ0ZqwC"
+      ) {
+        const templateParams = {
+          user_name: user?.name || "Anonymous",
+          user_email: user?.email || "No Email",
+          feedback_type: feedback.type,
+          message: feedback.message,
+          to_email: "pramosphdr548@gmail.com",
+        };
+
+        emailPromise = emailjs.send(
+          YOUR_SERVICE_ID,
+          YOUR_TEMPLATE_ID,
+          templateParams,
+          YOUR_PUBLIC_KEY
+        );
+      } else {
+        console.warn(
+          "EmailJS keys are missing. Feedback will only be saved to Firestore."
+        );
+      }
+
+      await Promise.all([firestorePromise, emailPromise]);
+
       toast.success(t("settings.feedbackSent"));
       setFeedback({ type: "suggestion", message: "" });
     } catch (error) {
