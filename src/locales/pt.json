@@ -34,6 +34,7 @@
     "goals": "Objetivos",
     "debt": "Dívidas",
     "settings": "Configurações",
+    "tutorial": "Manual do Usuário",
     "logout": "Sair",
     "confirmLogout": "Confirmar Saída?"
   },
@@ -444,5 +445,50 @@
   },
   "theme": {
     "toggle": "Alternar tema"
+  },
+  "tutorialPage": {
+    "title": "Manual do Usuário",
+    "subtitle": "Aprenda a dominar suas finanças com o FinanceDash.",
+    "sections": {
+      "intro": {
+        "title": "Introdução",
+        "content": "Bem-vindo ao FinanceDash! Este guia foi criado para ajudar você a explorar todas as funcionalidades da sua nova ferramenta de gestão financeira. Nosso objetivo é simplificar o controle do seu dinheiro, permitindo que você tome decisões mais inteligentes e alcance seus objetivos."
+      },
+      "dashboard": {
+        "title": "Painel Principal",
+        "description": "O Painel é o seu centro de comando. Aqui você tem uma visão imediata da saúde das suas finanças.",
+        "points": {
+          "1": "Resumo de Cartões: Veja seu saldo atual, receitas e despesas do mês.",
+          "2": "Gráfico Visão Geral: Acompanhe a evolução do seu saldo ao longo do tempo.",
+          "3": "Despesas por Categoria: Entenda para onde seu dinheiro está indo."
+        }
+      },
+      "transactions": {
+        "title": "Transações",
+        "description": "O coração do sistema. Registre cada movimentação para manter seu controle preciso.",
+        "points": {
+          "1": "Adicionar: Clique no botão '+' ou 'Adicionar Transação' para registrar gastos ou ganhos.",
+          "2": "Importar: Use a função de importação para trazer dados do seu banco (OFX, Excel, CSV).",
+          "3": "Recorrência: Configure transações que se repetem (assinaturas, salário) ou parcelamentos."
+        }
+      },
+      "planning": {
+        "title": "Planejamento",
+        "description": "Ferramentas poderosas para organizar seu futuro financeiro.",
+        "budgets": "Orçamentos: Defina limites de gastos para cada categoria e receba alertas.",
+        "goals": "Objetivos: Crie metas de poupança (ex: Viagem, Carro) e acompanhe seu progresso.",
+        "debt": "Dívidas: Use o método 'Bola de Neve' para planejar a quitação de empréstimos e cartões."
+      },
+      "reports": {
+        "title": "Relatórios",
+        "description": "Analise seus dados com profundidade.",
+        "content": "Os relatórios oferecem gráficos detalhados sobre seus hábitos de consumo, permitindo identificar tendências e áreas de economia."
+      },
+      "accounts": {
+        "title": "Contas",
+        "description": "Gerencie todas as suas fontes de recursos.",
+        "content": "Cadastre suas contas bancárias, carteiras físicas e cartões de crédito. Mantenha os saldos atualizados para um controle fidedigno."
+      }
+    }
   }
 }

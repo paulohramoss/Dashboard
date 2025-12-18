@@ -563,26 +563,6 @@ const SettingsPage = () => {
               </Button>
             </CardContent>
           </Card>
-
-          <Card className="mt-6">
-            <CardHeader>
-              <CardTitle>{t("settings.help") || "Ajuda"}</CardTitle>
-              <CardDescription>
-                {t("settings.helpDesc") || "Opções de ajuda e suporte."}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button
-                variant="outline"
-                onClick={() => {
-                  localStorage.removeItem("tutorialCompleted");
-                  window.location.href = "/";
-                }}
-              >
-                {t("settings.restartTutorial") || "Reiniciar Tutorial"}
-              </Button>
-            </CardContent>
-          </Card>
         </TabsContent>
 
         <TabsContent value="feedback">

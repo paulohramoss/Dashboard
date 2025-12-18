@@ -26,6 +26,7 @@ import CookiePolicyPage from "@/pages/CookiePolicyPage";
 import ForgotPasswordPage from "@/pages/ForgotPasswordPage";
 import SubscriptionsPage from "@/pages/SubscriptionsPage";
 import DebtSnowballPage from "@/pages/DebtSnowballPage";
+import TutorialPage from "@/pages/TutorialPage";
 
 const ProtectedRoute = ({ children }) => {
   const { user } = useAuth();
@@ -89,6 +90,7 @@ const App = () => {
                       <Route path="/accounts" element={<AccountsPage />} />
                       <Route path="/reports" element={<ReportsPage />} />
                       <Route path="/settings" element={<SettingsPage />} />
+                      <Route path="/tutorial" element={<TutorialPage />} />
                     </Routes>
                   </Layout>
                 </ProtectedRoute>

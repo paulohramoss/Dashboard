@@ -18,13 +18,14 @@ import {
   EyeOff,
   Repeat,
   TrendingDown,
+  BookOpen,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageToggle } from "@/components/LanguageToggle";
-import TourGuide from "@/components/TourGuide";
+
 import { toast } from "sonner";
 import { LayoutContext } from "@/context/LayoutContext";
 import IOSInstallPrompt from "@/components/IOSInstallPrompt";
@@ -96,6 +97,7 @@ const Layout = ({ children }) => {
     { icon: TrendingDown, label: t("nav.debt", "Dívidas"), path: "/debt" },
     { icon: Wallet, label: t("accounts.title"), path: "/accounts" },
     { icon: PieChart, label: t("nav.reports"), path: "/reports" },
+    { icon: BookOpen, label: t("nav.tutorial"), path: "/tutorial" },
     { icon: Settings, label: t("nav.settings"), path: "/settings" },
   ];
 
@@ -110,7 +112,6 @@ const Layout = ({ children }) => {
       }}
     >
       <div className="min-h-screen bg-background flex">
-        <TourGuide />
         <IOSInstallPrompt />
         {/* Mobile Sidebar Overlay */}
         {isSidebarOpen && (
@@ -125,7 +126,7 @@ const Layout = ({ children }) => {
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
           className={cn(
-            "fixed inset-y-0 left-0 z-50 bg-card border-r transition-all duration-300 ease-in-out",
+            "fixed inset-y-0 left-0 z-50 bg-card border-r transition-all duration-300 ease-in-out flex flex-col",
             // Mobile: transform based on state, fixed width
             "w-64 transform lg:transform-none",
             isSidebarOpen ? "translate-x-0" : "-translate-x-full",
@@ -177,7 +178,10 @@ const Layout = ({ children }) => {
             </Button>
           </div>
 
-          <nav id="sidebar-nav" className="p-4 space-y-2">
+          <nav
+            id="sidebar-nav"
+            className="p-4 space-y-2 flex-1 overflow-y-auto"
+          >
             {navItems.map((item, index) => (
               <Link
                 key={index}

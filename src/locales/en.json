@@ -34,6 +34,7 @@
     "goals": "Goals",
     "debt": "Debts",
     "settings": "Settings",
+    "tutorial": "User Guide",
     "logout": "Logout",
     "confirmLogout": "Confirm Logout?"
   },
@@ -444,5 +445,50 @@
   },
   "theme": {
     "toggle": "Toggle theme"
+  },
+  "tutorialPage": {
+    "title": "User Guide",
+    "subtitle": "Master your finances with FinanceDash.",
+    "sections": {
+      "intro": {
+        "title": "Introduction",
+        "content": "Welcome to FinanceDash! This guide is designed to help you explore all the features of your new financial management tool. Our goal is to simplify your money management, allowing you to make smarter decisions and reach your goals."
+      },
+      "dashboard": {
+        "title": "Main Dashboard",
+        "description": "The Dashboard is your command center. Here you get an immediate view of your financial health.",
+        "points": {
+          "1": "Summary Cards: See your current balance, income, and expenses for the month.",
+          "2": "Overview Chart: Track your balance evolution over time.",
+          "3": "Expenses by Category: Understand where your money is going."
+        }
+      },
+      "transactions": {
+        "title": "Transactions",
+        "description": "The heart of the system. Record every movement to keep accurate control.",
+        "points": {
+          "1": "Add: Click the '+' or 'Add Transaction' button to log expenses or income.",
+          "2": "Import: Use the import function to bring data from your bank (OFX, Excel, CSV).",
+          "3": "Recurring: Set up repeating transactions (subscriptions, salary) or installments."
+        }
+      },
+      "planning": {
+        "title": "Planning",
+        "description": "Powerful tools to organize your financial future.",
+        "budgets": "Budgets: Set spending limits for each category and receive alerts.",
+        "goals": "Goals: Create savings targets (e.g., Trip, Car) and track your progress.",
+        "debt": "Debts: Use the 'Snowball' method to plan the payoff of loans and credit cards."
+      },
+      "reports": {
+        "title": "Reports",
+        "description": "Analyze your data in depth.",
+        "content": "Reports offer detailed charts on your spending habits, allowing you to identify trends and areas for savings."
+      },
+      "accounts": {
+        "title": "Accounts",
+        "description": "Manage all your resource sources.",
+        "content": "Register your bank accounts, physical wallets, and credit cards. Keep balances updated for trustworthy control."
+      }
+    }
   }
 }
