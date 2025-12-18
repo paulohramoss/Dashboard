@@ -64,13 +64,13 @@ const TransactionHistory = ({ transactions, onDelete }) => {
               <div
                 key={transaction.id}
                 className={cn(
-                  "flex items-center justify-between p-4 rounded-lg border transition-colors",
+                  "flex items-center justify-between p-3 md:p-4 rounded-lg border transition-colors",
                   transaction.isShadow
                     ? "bg-muted/30 border-dashed border-primary/30"
                     : "bg-card hover:bg-accent/50"
                 )}
               >
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-4 flex-1 min-w-0">
                   <div
                     className={cn(
                       "h-10 w-10 rounded-full flex items-center justify-center",
