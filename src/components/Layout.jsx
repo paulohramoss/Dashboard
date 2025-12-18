@@ -291,8 +291,30 @@ const Layout = ({ children }) => {
             <div className="max-w-7xl mx-auto">{children}</div>
           </div>
 
-          <footer className="border-t bg-card/50 p-4 text-center text-xs text-muted-foreground">
-            v1.0.10
+          <footer className="border-t bg-card/50 py-6 px-6 lg:px-8 mt-auto">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
+              <div className="flex items-center gap-2">
+                <span className="font-semibold text-foreground/80">
+                  FinanceDash
+                </span>
+                <span>&copy; {new Date().getFullYear()}</span>
+                <span className="hidden md:inline text-muted-foreground/30">
+                  |
+                </span>
+                <span className="bg-primary/10 text-primary px-2 py-0.5 rounded-full font-medium">
+                  v1.0.15
+                </span>
+              </div>
+
+              <div className="flex items-center gap-1.5 opacity-80 hover:opacity-100 transition-opacity">
+                <span>Desenvolvido por</span>
+                <span className="font-medium text-foreground">Paulo Ramos</span>
+                <span className="text-muted-foreground/50">&</span>
+                <span className="font-medium text-foreground">
+                  Gabriel Donada
+                </span>
+              </div>
+            </div>
           </footer>
         </main>
       </div>
