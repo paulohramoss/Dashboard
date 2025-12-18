@@ -341,7 +341,9 @@
     "previous": "Anterior",
     "delete": "Excluir",
     "cancel": "Cancelar",
-    "noData": "Sem dados para exibir."
+    "noData": "Sem dados para exibir.",
+    "genericError": "Algo deu errado.",
+    "close": "Fechar"
   },
   "tour": {
     "welcomeTitle": "Bem-vindo ao FinanceDash!",
@@ -439,5 +441,8 @@
     "debtFreeDate": "Livre em",
     "interest": "Juros Estimados",
     "months": "meses"
+  },
+  "theme": {
+    "toggle": "Alternar tema"
   }
 }

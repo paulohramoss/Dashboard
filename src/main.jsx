@@ -1,5 +1,6 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
+import { Translation } from "react-i18next";
 import "./index.css";
 import "./i18n";
 import App from "./App.jsx";
@@ -31,7 +32,9 @@ class ErrorBoundary extends React.Component {
             height: "100vh",
           }}
         >
-          <h1>Something went wrong.</h1>
+          <Translation>
+            {(t) => <h1>{t("common.genericError")}</h1>}
+          </Translation>
           <p>{this.state.error && this.state.error.toString()}</p>
         </div>
       );

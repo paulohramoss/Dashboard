@@ -341,7 +341,9 @@
     "previous": "Previous",
     "delete": "Delete",
     "cancel": "Cancel",
-    "noData": "No data to display."
+    "noData": "No data to display.",
+    "genericError": "Something went wrong.",
+    "close": "Close"
   },
   "tour": {
     "welcomeTitle": "Welcome to FinanceDash!",
@@ -439,5 +441,8 @@
     "debtFreeDate": "Debt Free Date",
     "interest": "Estimated Interest",
     "months": "months"
+  },
+  "theme": {
+    "toggle": "Toggle theme"
   }
 }
