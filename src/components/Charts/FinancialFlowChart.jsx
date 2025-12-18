@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  ResponsiveContainer,
-  Sankey,
-  Tooltip,
-  Layer,
-  Rectangle,
-} from "recharts";
+import { ResponsiveContainer, Sankey, Tooltip } from "recharts";
 import { useTranslation } from "react-i18next";
 import {
   Card,
@@ -19,19 +13,47 @@ const FinancialFlowChart = ({ transactions }) => {
   const { t } = useTranslation();
 
   // 1. Process Data
+  // 1. Process Data & Grouping logic (Threshold 1%)
   const incomeTransactions = transactions.filter((t) => t.type === "income");
   const expenseTransactions = transactions.filter((t) => t.type === "expense");
 
-  // Group by category
-  const incomeByCategory = incomeTransactions.reduce((acc, curr) => {
-    acc[curr.category] = (acc[curr.category] || 0) + parseFloat(curr.amount);
-    return acc;
-  }, {});
+  const totalIncome = incomeTransactions.reduce(
+    (acc, curr) => acc + parseFloat(curr.amount),
+    0
+  );
+  const totalExpense = expenseTransactions.reduce(
+    (acc, curr) => acc + parseFloat(curr.amount),
+    0
+  );
 
-  const expenseByCategory = expenseTransactions.reduce((acc, curr) => {
-    acc[curr.category] = (acc[curr.category] || 0) + parseFloat(curr.amount);
-    return acc;
-  }, {});
+  const processCategories = (txs, total) => {
+    const byCategory = txs.reduce((acc, curr) => {
+      acc[curr.category] = (acc[curr.category] || 0) + parseFloat(curr.amount);
+      return acc;
+    }, {});
+
+    const result = {};
+    let othersAmount = 0;
+
+    Object.entries(byCategory).forEach(([cat, amount]) => {
+      if (total > 0 && amount / total < 0.01) {
+        othersAmount += amount;
+      } else {
+        result[cat] = amount;
+      }
+    });
+
+    if (othersAmount > 0) {
+      result["Others"] = othersAmount;
+    }
+    return result;
+  };
+
+  const incomeByCategory = processCategories(incomeTransactions, totalIncome);
+  const expenseByCategory = processCategories(
+    expenseTransactions,
+    totalExpense
+  );
 
   // 2. Create Nodes and Links
   // Structure: [Income Categories] -> [Wallet] -> [Expense Categories]
@@ -46,9 +68,15 @@ const FinancialFlowChart = ({ transactions }) => {
   // incomeCategories.length + 1 to ...: Expense Categories
 
   const nodes = [
-    ...incomeCategories.map((name) => ({ name: t(name, name) })), // Income Nodes
+    ...incomeCategories.map((name) => ({
+      name:
+        name === "Others" ? t("categories.others", "Outros") : t(name, name),
+    })), // Income Nodes
     { name: t("common.wallet", "Carteira") }, // Central Node
-    ...expenseCategories.map((name) => ({ name: t(name, name) })), // Expense Nodes
+    ...expenseCategories.map((name) => ({
+      name:
+        name === "Others" ? t("categories.others", "Outros") : t(name, name),
+    })), // Expense Nodes
   ];
 
   const WALLET_INDEX = incomeCategories.length;
@@ -91,44 +119,6 @@ const FinancialFlowChart = ({ transactions }) => {
       </Card>
     );
   }
-
-  // Custom Node Content
-  const renderNode = ({
-    x,
-    y,
-    width,
-    height,
-    index,
-    payload,
-    containerWidth,
-  }) => {
-    const isOut = x + width + 6 > containerWidth;
-    return (
-      <Layer key={`CustomNode${index}`}>
-        <Rectangle
-          x={x}
-          y={y}
-          width={width}
-          height={height}
-          fill="url(#colorGradient)"
-          fillOpacity="1"
-        />
-        <text
-          x={x + width / 2}
-          y={y + height / 2}
-          textAnchor="middle"
-          alignmentBaseline="middle"
-          fill="#fff"
-          fontSize="12"
-          fontWeight="bold"
-          style={{ pointerEvents: "none" }}
-        >
-          {/* Show name only if height is big enough */}
-          {height > 20 ? payload.name : ""}
-        </text>
-      </Layer>
-    );
-  };
 
   // Custom Link Overlay
   // We can stick to default or slight customization
