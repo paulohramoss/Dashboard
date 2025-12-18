@@ -182,6 +182,7 @@ const Layout = ({ children }) => {
               <Link
                 key={index}
                 to={item.path}
+                onClick={() => setIsSidebarOpen(false)}
                 id={
                   item.path === "/transactions" ? "nav-transactions" : undefined
                 }
