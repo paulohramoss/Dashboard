@@ -58,7 +58,9 @@ const CalendarPage = () => {
   }, [locale]);
 
   const getDayTransactions = (date) => {
-    return transactions.filter((t) => isSameDay(new Date(t.date), date));
+    return transactions.filter((t) =>
+      isSameDay(new Date(`${t.date}T12:00:00`), date)
+    );
   };
 
   const getDayStats = (dayTransactions) => {

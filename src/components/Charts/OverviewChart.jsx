@@ -212,7 +212,7 @@ const OverviewChart = ({ transactions, forecastData = [], currentBalance }) => {
               tickLine={false}
               axisLine={false}
               tickFormatter={(value) =>
-                new Date(value).toLocaleDateString(undefined, {
+                new Date(`${value}T12:00:00`).toLocaleDateString(undefined, {
                   month: "short",
                   day: "numeric",
                 })
@@ -246,7 +246,9 @@ const OverviewChart = ({ transactions, forecastData = [], currentBalance }) => {
                 border: "1px solid #e2e8f0",
                 boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
               }}
-              labelFormatter={(value) => new Date(value).toLocaleDateString()}
+              labelFormatter={(value) =>
+                new Date(`${value}T12:00:00`).toLocaleDateString()
+              }
               formatter={(value) => [currencyFormatter(value)]}
             />
 

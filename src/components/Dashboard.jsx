@@ -133,7 +133,7 @@ const Dashboard = () => {
   const exportToExcel = () => {
     const ws = XLSX.utils.json_to_sheet(
       transactions.map((t) => ({
-        Data: new Date(t.date).toLocaleDateString("pt-BR"),
+        Data: new Date(`${t.date}T12:00:00`).toLocaleDateString("pt-BR"),
         Descrição: t.description,
         Categoria: t.category,
         Tipo: t.type === "income" ? "Receita" : "Despesa",
@@ -151,7 +151,7 @@ const Dashboard = () => {
     doc.text("Relatório Financeiro", 14, 22);
 
     const tableData = transactions.map((t) => [
-      new Date(t.date).toLocaleDateString("pt-BR"),
+      new Date(`${t.date}T12:00:00`).toLocaleDateString("pt-BR"),
       t.description,
       t.category,
       t.type === "income" ? "Receita" : "Despesa",
