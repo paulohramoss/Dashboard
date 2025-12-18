@@ -45,6 +45,7 @@ import ConfirmDialog from "@/components/ui/confirm-dialog";
 
 import { useNotifications } from "@/hooks/useNotifications";
 import emailjs from "@emailjs/browser";
+import { useRules } from "@/hooks/useRules";
 
 const SettingsPage = () => {
   const { t } = useTranslation();
@@ -53,6 +54,7 @@ const SettingsPage = () => {
     useCategories();
   const { enabled: notificationsEnabled, toggleNotifications } =
     useNotifications();
+  const { rules, addRule, deleteRule } = useRules();
 
   const [name, setName] = useState(user?.name || "");
   const [email, setEmail] = useState(user?.email || "");
@@ -108,6 +110,19 @@ const SettingsPage = () => {
       color: category.color,
     });
     setEditingId(category.id);
+  };
+
+  const [newRule, setNewRule] = useState({
+    keyword: "",
+    type: "expense", // default
+    category: "",
+  });
+
+  const handleAddRule = async (e) => {
+    e.preventDefault();
+    if (!newRule.keyword || !newRule.category) return;
+    await addRule(newRule);
+    setNewRule({ keyword: "", type: "expense", category: "" });
   };
 
   const [feedback, setFeedback] = useState({
@@ -299,6 +314,10 @@ const SettingsPage = () => {
           <TabsTrigger value="security" className="flex items-center gap-2">
             <Shield className="h-4 w-4" />
             {t("settings.security")}
+          </TabsTrigger>
+          <TabsTrigger value="rules" className="flex items-center gap-2">
+            <RefreshCw className="h-4 w-4" />
+            Smart Rules
           </TabsTrigger>
           <TabsTrigger value="feedback" className="flex items-center gap-2">
             <MessageSquare className="h-4 w-4" />
@@ -653,6 +672,128 @@ const SettingsPage = () => {
                 <Trash2 className="mr-2 h-4 w-4" />
                 {t("settings.deleteAccountButton")}
               </Button>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="rules">
+          <Card>
+            <CardHeader>
+              <CardTitle>Smart Categorization Rules</CardTitle>
+              <CardDescription>
+                Automatically categorize transactions based on description
+                keywords.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <form onSubmit={handleAddRule} className="flex gap-4 items-end">
+                <div className="space-y-2 flex-1">
+                  <Label>Keyword</Label>
+                  <Input
+                    value={newRule.keyword}
+                    onChange={(e) =>
+                      setNewRule({ ...newRule, keyword: e.target.value })
+                    }
+                    placeholder="e.g. Starbucks, Uber"
+                  />
+                </div>
+                <div className="space-y-2 w-32">
+                  <Label>Type</Label>
+                  <select
+                    className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                    value={newRule.type}
+                    onChange={(e) =>
+                      setNewRule({
+                        ...newRule,
+                        type: e.target.value,
+                        category: "",
+                      })
+                    }
+                  >
+                    <option value="expense">{t("settings.expense")}</option>
+                    <option value="income">{t("settings.income")}</option>
+                  </select>
+                </div>
+                <div className="space-y-2 w-48">
+                  <Label>Category</Label>
+                  <select
+                    className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                    value={newRule.category}
+                    onChange={(e) =>
+                      setNewRule({ ...newRule, category: e.target.value })
+                    }
+                  >
+                    <option value="">Select Category</option>
+                    {categories
+                      .filter((c) => c.type === newRule.type)
+                      .filter(
+                        // Deduplicate logic similar to other dropdowns
+                        (cat, index, self) =>
+                          index === self.findIndex((c) => c.name === cat.name)
+                      )
+                      .map((cat) => (
+                        <option key={cat.id} value={cat.name}>
+                          {cat.isDefault
+                            ? t(`categories.${cat.name.toLowerCase()}`)
+                            : cat.name}
+                        </option>
+                      ))}
+                  </select>
+                </div>
+                <Button type="submit">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Rule
+                </Button>
+              </form>
+
+              <div className="space-y-2 max-h-[400px] overflow-y-auto">
+                <div className="grid grid-cols-12 gap-4 p-2 text-sm font-medium text-muted-foreground border-b">
+                  <div className="col-span-5">Keyword</div>
+                  <div className="col-span-4">Category</div>
+                  <div className="col-span-2">Type</div>
+                  <div className="col-span-1"></div>
+                </div>
+                {rules.length === 0 && (
+                  <div className="p-4 text-center text-muted-foreground text-sm">
+                    No custom rules defined yet.
+                  </div>
+                )}
+                {rules.map((rule) => (
+                  <div
+                    key={rule.id}
+                    className="grid grid-cols-12 gap-4 p-3 border rounded-lg bg-card items-center text-sm"
+                  >
+                    <div className="col-span-5 font-medium">{rule.keyword}</div>
+                    <div className="col-span-4">
+                      {/* Try to translate if it matches a default category, else show raw name */}
+                      <span
+                        className={`px-2 py-1 rounded-full text-xs font-medium ${
+                          rule.type === "income"
+                            ? "bg-green-100 text-green-700"
+                            : "bg-red-100 text-red-700"
+                        }`}
+                      >
+                        {rule.category}
+                      </span>
+                    </div>
+                    <div className="col-span-2 capitalize text-muted-foreground">
+                      {rule.type === "income"
+                        ? t("settings.income")
+                        : t("settings.expense")}
+                    </div>
+                    <div className="col-span-1 flex justify-end">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="text-destructive hover:bg-destructive/10 h-8 w-8"
+                        onClick={() => deleteRule(rule.id)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </CardContent>
           </Card>
         </TabsContent>

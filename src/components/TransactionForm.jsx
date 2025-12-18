@@ -4,6 +4,7 @@ import { Plus } from "lucide-react";
 import { useCategories } from "@/hooks/useCategories";
 import { useAccounts } from "@/hooks/useAccounts";
 import { useTransactions } from "@/hooks/useTransactions";
+import { useRules } from "@/hooks/useRules";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
@@ -87,6 +88,7 @@ const TransactionForm = ({ onAddTransaction }) => {
   const { categories } = useCategories();
   const { accounts } = useAccounts();
   const { transactions } = useTransactions();
+  const { rules } = useRules();
   const [formData, setFormData] = useState({
     description: "",
     amount: "",
@@ -115,17 +117,39 @@ const TransactionForm = ({ onAddTransaction }) => {
 
     // Smart Categorization
     const lowerDesc = description.toLowerCase();
-    for (const [key, mapping] of Object.entries(KEYWORD_MAP)) {
-      if (lowerDesc.includes(key)) {
-        // Verify if category exists in user's categories
-        const categoryExists = categories.some(
-          (c) => c.name === mapping.category && c.type === mapping.type
-        );
 
+    // 1. Check Custom User Rules First (Priority)
+    let matchFound = false;
+
+    // We can assume rules are loaded.
+    for (const rule of rules) {
+      if (lowerDesc.includes(rule.keyword)) {
+        // Verify category exists
+        const categoryExists = categories.some(
+          (c) => c.name === rule.category && c.type === rule.type
+        );
         if (categoryExists) {
-          newType = mapping.type;
-          newCategory = mapping.category;
-          break; // Stop at first match
+          newType = rule.type;
+          newCategory = rule.category;
+          matchFound = true;
+          break;
+        }
+      }
+    }
+
+    // 2. Fallback to Static Map if no custom rule matched
+    if (!matchFound) {
+      for (const [key, mapping] of Object.entries(KEYWORD_MAP)) {
+        if (lowerDesc.includes(key)) {
+          const categoryExists = categories.some(
+            (c) => c.name === mapping.category && c.type === mapping.type
+          );
+
+          if (categoryExists) {
+            newType = mapping.type;
+            newCategory = mapping.category;
+            break; // Stop at first match
+          }
         }
       }
     }
