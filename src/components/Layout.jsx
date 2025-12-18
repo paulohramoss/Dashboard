@@ -81,25 +81,7 @@ const Layout = ({ children }) => {
     });
   };
 
-  const [appVersion, setAppVersion] = useState("v1.0.78");
-
-  useEffect(() => {
-    const fetchVersion = async () => {
-      try {
-        const response = await fetch(`/version.json?t=${new Date().getTime()}`);
-        if (response.ok) {
-          const data = await response.json();
-          if (data.version) {
-            setAppVersion(data.version);
-          }
-        }
-      } catch (error) {
-        console.error("Error fetching version:", error);
-      }
-    };
-
-    fetchVersion();
-  }, []);
+  const appVersion = "v1.0.78";
 
   // Desktop: Expanded if pinned OR hovered
   const isExpanded = isPinned || isHovered;
