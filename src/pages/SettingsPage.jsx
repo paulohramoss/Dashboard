@@ -175,24 +175,26 @@ const SettingsPage = () => {
       });
 
       // Send to Email via EmailJS
-      // TODO: Replace these placeholders with your actual EmailJS keys
+      // Keys updated from user screenshots
       const YOUR_SERVICE_ID = "service_8vcx7bq";
-      const YOUR_TEMPLATE_ID = "template_rhmsjbl";
+      const YOUR_TEMPLATE_ID = "template_qamjc3i";
       const YOUR_PUBLIC_KEY = "lMkgyQ1ZogoJ0ZqwC";
 
-      // Only attempt to send email if keys are configured (basic check)
+      // Only attempt to send email if keys are configured
       let emailPromise = Promise.resolve();
-      if (
-        YOUR_SERVICE_ID !== "service_8vcx7bq" &&
-        YOUR_TEMPLATE_ID !== "template_rhmsjbl" &&
-        YOUR_PUBLIC_KEY !== "lMkgyQ1ZogoJ0ZqwC"
-      ) {
+      if (YOUR_SERVICE_ID && YOUR_TEMPLATE_ID && YOUR_PUBLIC_KEY) {
         const templateParams = {
+          // Custom params
           user_name: user?.name || "Anonymous",
           user_email: user?.email || "No Email",
           feedback_type: feedback.type,
           message: feedback.message,
           to_email: "pramosphdr548@gmail.com",
+
+          // Standard default params (just in case)
+          from_name: user?.name || "Anonymous",
+          from_email: user?.email || "No Email",
+          reply_to: user?.email || "No Email",
         };
 
         emailPromise = emailjs.send(
