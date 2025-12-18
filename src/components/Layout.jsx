@@ -25,6 +25,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageToggle } from "@/components/LanguageToggle";
+import { Analytics } from "@vercel/analytics/react";
 
 import { toast } from "sonner";
 import { LayoutContext } from "@/context/LayoutContext";
@@ -132,6 +133,7 @@ const Layout = ({ children }) => {
       }}
     >
       <div className="min-h-screen bg-background flex">
+        <Analytics />
         <IOSInstallPrompt />
         {/* Mobile Sidebar Overlay */}
         {isSidebarOpen && (
