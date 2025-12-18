@@ -83,7 +83,8 @@
     "editLayout": "Edit Layout",
     "simulationAdded": "Simulation added to Shadow Mode",
     "forecast": "Forecast (End of Month)",
-    "forecastDesc": "Estimated balance"
+    "forecastDesc": "Estimated balance",
+    "forecastWarning": "Warning: Risk of negative balance on {{date}}"
   },
   "subscriptions": {
     "title": "Subscription Hub",

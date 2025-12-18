@@ -83,7 +83,8 @@
     "editLayout": "Editar Layout",
     "simulationAdded": "Simulação adicionada ao Modo Sombra",
     "forecast": "Previsão (Fim do Mês)",
-    "forecastDesc": "Saldo estimado"
+    "forecastDesc": "Saldo estimado",
+    "forecastWarning": "Cuidado: Risco de saldo negativo em {{date}}"
   },
   "subscriptions": {
     "title": "Gestão de Assinaturas",

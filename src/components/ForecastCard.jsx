@@ -1,11 +1,23 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { TrendingUp, TrendingDown, ArrowRight } from "lucide-react";
+import { TrendingUp, TrendingDown, AlertTriangle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useLayout } from "@/context/LayoutContext";
 import { cn } from "@/lib/utils";
 import { useCurrency } from "@/hooks/useCurrency";
-import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis } from "recharts";
+import {
+  Area,
+  AreaChart,
+  ResponsiveContainer,
+  Tooltip as RechartsTooltip,
+} from "recharts";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { formatDate } from "@/utils/dateUtils";
 
 const ForecastCard = ({ forecast, amount }) => {
   const { t } = useTranslation();
@@ -19,7 +31,14 @@ const ForecastCard = ({ forecast, amount }) => {
 
   const color = isPositive ? "#16a34a" : "#dc2626"; // green-600 : red-600
 
+  // Check for negative balance risk
+  const riskDate = useMemo(() => {
+    const negativeDay = forecast.find((day) => day.balance < 0);
+    return negativeDay ? negativeDay.date : null;
+  }, [forecast]);
+
   const formattedAmount = formatCurrency(amount);
+
   // Dynamic font size for large numbers
   const getFontSize = (text) => {
     if (text.length > 20) return "text-lg";
@@ -30,8 +49,24 @@ const ForecastCard = ({ forecast, amount }) => {
   return (
     <Card className="hover:shadow-md transition-all duration-200 h-full overflow-hidden relative flex flex-col justify-between">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative z-10">
-        <CardTitle className="text-sm font-medium whitespace-nowrap">
+        <CardTitle className="text-sm font-medium whitespace-nowrap flex items-center gap-2">
           {t("dashboard.forecast", "Previsão (Fim do Mês)")}
+          {riskDate && (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <AlertTriangle className="h-4 w-4 text-yellow-500 animate-pulse cursor-help" />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>
+                    {t("dashboard.forecastWarning", {
+                      date: formatDate(riskDate),
+                    })}
+                  </p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
         </CardTitle>
         <div
           className={cn(
@@ -69,9 +104,16 @@ const ForecastCard = ({ forecast, amount }) => {
         >
           {formattedAmount}
         </div>
-        <p className="text-xs text-muted-foreground mt-1">
-          {t("dashboard.forecastDesc", "Saldo estimado")}
-        </p>
+        <div className="flex flex-col">
+          <p className="text-xs text-muted-foreground mt-1">
+            {t("dashboard.forecastDesc", "Saldo estimado")}
+          </p>
+          {riskDate && (
+            <p className="text-[10px] text-yellow-600 dark:text-yellow-500 font-medium mt-0.5 truncate">
+              {t("dashboard.forecastWarning", { date: formatDate(riskDate) })}
+            </p>
+          )}
+        </div>
       </CardContent>
 
       {/* Mini Chart Background */}
