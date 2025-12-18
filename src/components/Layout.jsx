@@ -135,7 +135,7 @@ const Layout = ({ children }) => {
         >
           <div
             className={cn(
-              "h-16 flex items-center border-b transition-all duration-300",
+              "min-h-16 h-auto py-4 flex items-center border-b transition-all duration-300",
               isExpanded ? "px-6 justify-between" : "px-0 justify-center"
             )}
           >
@@ -187,7 +187,7 @@ const Layout = ({ children }) => {
                   item.path === "/transactions" ? "nav-transactions" : undefined
                 }
                 className={cn(
-                  "flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-md transition-all duration-200 overflow-hidden whitespace-nowrap",
+                  "flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-md transition-all duration-200 overflow-hidden",
                   location.pathname === item.path
                     ? "bg-primary text-primary-foreground"
                     : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
@@ -216,7 +216,7 @@ const Layout = ({ children }) => {
               }}
               onMouseLeave={() => setIsConfirmingLogout(false)}
               className={cn(
-                "w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-md transition-all duration-300 overflow-hidden whitespace-nowrap",
+                "w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-md transition-all duration-300 overflow-hidden",
                 isConfirmingLogout
                   ? "bg-destructive text-destructive-foreground shadow-lg scale-105"
                   : "text-muted-foreground hover:bg-destructive/10 hover:text-destructive",
@@ -250,7 +250,7 @@ const Layout = ({ children }) => {
           )}
         >
           {/* Header */}
-          <header className="h-16 border-b bg-card flex items-center px-6 lg:px-8 justify-between">
+          <header className="min-h-16 h-auto py-4 border-b bg-card flex items-center px-6 lg:px-8 justify-between">
             <Button
               variant="ghost"
               size="icon"
