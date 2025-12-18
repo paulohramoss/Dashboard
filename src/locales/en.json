@@ -490,5 +490,23 @@
         "content": "Register your bank accounts, physical wallets, and credit cards. Keep balances updated for trustworthy control."
       }
     }
+  },
+  "footer": {
+    "developedBy": "Developed by"
+  },
+  "export": {
+    "title": "Financial Report",
+    "date": "Date",
+    "description": "Description",
+    "category": "Category",
+    "type": "Type",
+    "value": "Value",
+    "account": "Account",
+    "income": "Income",
+    "expense": "Expense"
+  },
+  "shadowMode": {
+    "exit": "Exit Shadow Mode",
+    "enter": "Shadow Mode"
   }
 }

@@ -311,7 +311,7 @@ const Layout = ({ children }) => {
               </div>
 
               <div className="flex items-center gap-1.5 opacity-80 hover:opacity-100 transition-opacity">
-                <span>Desenvolvido por</span>
+                <span>{t("footer.developedBy")}</span>
                 <a
                   href="https://www.instagram.com/pauloh_ramoss/"
                   target="_blank"

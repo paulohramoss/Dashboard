@@ -133,12 +133,16 @@ const Dashboard = () => {
   const exportToExcel = () => {
     const ws = XLSX.utils.json_to_sheet(
       transactions.map((t) => ({
-        Data: new Date(`${t.date}T12:00:00`).toLocaleDateString("pt-BR"),
-        Descrição: t.description,
-        Categoria: t.category,
-        Tipo: t.type === "income" ? "Receita" : "Despesa",
-        Valor: t.amount,
-        Conta: accounts.find((a) => a.id === t.accountId)?.name || "N/A",
+        [t("export.date")]: new Date(`${t.date}T12:00:00`).toLocaleDateString(
+          "pt-BR"
+        ),
+        [t("export.description")]: t.description,
+        [t("export.category")]: t.category,
+        [t("export.type")]:
+          t.type === "income" ? t("export.income") : t("export.expense"),
+        [t("export.value")]: t.amount,
+        [t("export.account")]:
+          accounts.find((a) => a.id === t.accountId)?.name || "N/A",
       }))
     );
     const wb = XLSX.utils.book_new();
@@ -148,18 +152,26 @@ const Dashboard = () => {
 
   const exportToPDF = () => {
     const doc = new jsPDF();
-    doc.text("Relatório Financeiro", 14, 22);
+    doc.text(t("export.title"), 14, 22);
 
     const tableData = transactions.map((t) => [
       new Date(`${t.date}T12:00:00`).toLocaleDateString("pt-BR"),
       t.description,
       t.category,
-      t.type === "income" ? "Receita" : "Despesa",
+      t.type === "income" ? t("export.income") : t("export.expense"),
       formatCurrency(t.amount),
     ]);
 
     autoTable(doc, {
-      head: [["Data", "Descrição", "Categoria", "Tipo", "Valor"]],
+      head: [
+        [
+          t("export.date"),
+          t("export.description"),
+          t("export.category"),
+          t("export.type"),
+          t("export.value"),
+        ],
+      ],
       body: tableData,
       startY: 30,
     });
@@ -279,7 +291,7 @@ const Dashboard = () => {
                 </DropdownItem>
                 <DropdownItem onClick={toggleShadowMode}>
                   <Ghost className="mr-2 h-4 w-4" />
-                  {isShadowMode ? "Sair do Shadow Mode" : "Shadow Mode"}
+                  {isShadowMode ? t("shadowMode.exit") : t("shadowMode.enter")}
                 </DropdownItem>
                 <div className="my-1 h-px bg-muted" />
                 <DropdownItem

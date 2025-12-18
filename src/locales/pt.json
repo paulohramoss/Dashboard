@@ -490,5 +490,23 @@
         "content": "Cadastre suas contas bancárias, carteiras físicas e cartões de crédito. Mantenha os saldos atualizados para um controle fidedigno."
       }
     }
+  },
+  "footer": {
+    "developedBy": "Desenvolvido por"
+  },
+  "export": {
+    "title": "Relatório Financeiro",
+    "date": "Data",
+    "description": "Descrição",
+    "category": "Categoria",
+    "type": "Tipo",
+    "value": "Valor",
+    "account": "Conta",
+    "income": "Receita",
+    "expense": "Despesa"
+  },
+  "shadowMode": {
+    "exit": "Sair do Modo Sombra",
+    "enter": "Modo Sombra"
   }
 }
