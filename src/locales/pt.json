@@ -81,7 +81,9 @@
     "simulated": "Simulado",
     "saveLayout": "Salvar Layout",
     "editLayout": "Editar Layout",
-    "simulationAdded": "Simulação adicionada ao Modo Sombra"
+    "simulationAdded": "Simulação adicionada ao Modo Sombra",
+    "forecast": "Previsão (Fim do Mês)",
+    "forecastDesc": "Saldo estimado"
   },
   "subscriptions": {
     "title": "Gestão de Assinaturas",
@@ -514,5 +516,10 @@
   "shadowMode": {
     "exit": "Sair do Modo Sombra",
     "enter": "Modo Sombra"
+  },
+  "rules": {
+    "suggestionTitle": "Sugestão de Regra Inteligente 💡",
+    "suggestionDesc": "Deseja sempre classificar \"{{description}}\" como \"{{category}}\"?",
+    "save": "Salvar Regra"
   }
 }

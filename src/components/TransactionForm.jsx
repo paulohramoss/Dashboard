@@ -88,7 +88,7 @@ const TransactionForm = ({ onAddTransaction }) => {
   const { categories } = useCategories();
   const { accounts } = useAccounts();
   const { transactions } = useTransactions();
-  const { rules } = useRules();
+  const { rules, addRule } = useRules();
   const [formData, setFormData] = useState({
     description: "",
     amount: "",
@@ -244,6 +244,48 @@ const TransactionForm = ({ onAddTransaction }) => {
       installmentsCount: 2,
       accountId: "",
       destinationAccountId: "",
+    });
+
+    // Suggest saving a rule if one doesn't exist
+    checkForRuleSuggestion(
+      formData.description,
+      categoryToSubmit,
+      formData.type
+    );
+  };
+
+  const checkForRuleSuggestion = (description, category, type) => {
+    const lowerDesc = description.toLowerCase().trim();
+    if (!lowerDesc) return;
+
+    // 1. Check if covered by existing custom rules
+    const hasCustomRule = rules.some((r) => lowerDesc.includes(r.keyword));
+    if (hasCustomRule) return;
+
+    // 2. Check if covered by hardcoded map
+    const hasStaticRule = Object.keys(KEYWORD_MAP).some((key) =>
+      lowerDesc.includes(key)
+    );
+    if (hasStaticRule) return;
+
+    // 3. If no rule exists, prompt user
+    toast(t("rules.suggestionTitle", "Sugestão de Regra Inteligente 💡"), {
+      description: t("rules.suggestionDesc", {
+        description,
+        category,
+        defaultValue: `Deseja sempre classificar "${description}" como "${category}"?`,
+      }),
+      action: {
+        label: t("rules.save", "Salvar Regra"),
+        onClick: () => {
+          addRule({
+            keyword: description, // Use the full description as keyword
+            category,
+            type,
+          });
+        },
+      },
+      duration: 8000,
     });
   };
 

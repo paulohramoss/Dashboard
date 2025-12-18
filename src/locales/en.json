@@ -81,7 +81,9 @@
     "simulated": "Simulated",
     "saveLayout": "Save Layout",
     "editLayout": "Edit Layout",
-    "simulationAdded": "Simulation added to Shadow Mode"
+    "simulationAdded": "Simulation added to Shadow Mode",
+    "forecast": "Forecast (End of Month)",
+    "forecastDesc": "Estimated balance"
   },
   "subscriptions": {
     "title": "Subscription Hub",
@@ -514,5 +516,10 @@
   "shadowMode": {
     "exit": "Exit Shadow Mode",
     "enter": "Shadow Mode"
+  },
+  "rules": {
+    "suggestionTitle": "Smart Rule Suggestion 💡",
+    "suggestionDesc": "Do you want to always categorize \"{{description}}\" as \"{{category}}\"?",
+    "save": "Save Rule"
   }
 }
