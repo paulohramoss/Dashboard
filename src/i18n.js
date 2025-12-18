@@ -12,7 +12,10 @@ i18n
     resources: {
       en: { translation: en },
       pt: { translation: pt },
+      "pt-BR": { translation: pt },
     },
+    supportedLngs: ["en", "pt", "pt-BR"],
+    nonExplicitSupportedLngs: true,
     fallbackLng: "en",
     interpolation: {
       escapeValue: false,

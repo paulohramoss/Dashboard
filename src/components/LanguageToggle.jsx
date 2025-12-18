@@ -7,7 +7,7 @@ export function LanguageToggle() {
   const { i18n } = useTranslation();
 
   const toggleLanguage = () => {
-    const newLang = i18n.language === "en" ? "pt" : "en";
+    const newLang = i18n.language?.startsWith("pt") ? "en" : "pt";
     i18n.changeLanguage(newLang);
   };
 
@@ -19,7 +19,9 @@ export function LanguageToggle() {
       className="gap-2"
     >
       <Globe className="h-4 w-4" />
-      <span className="font-bold">{i18n.language === "pt" ? "PT" : "EN"}</span>
+      <span className="font-bold">
+        {i18n.language?.startsWith("pt") ? "PT" : "EN"}
+      </span>
     </Button>
   );
 }
