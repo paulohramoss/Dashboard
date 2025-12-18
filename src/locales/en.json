@@ -229,7 +229,12 @@
     "feedbackError": "Failed to send feedback.",
     "accountDeleted": "Account deleted successfully!",
     "deleteAccountError": "Failed to delete account. Please try again.",
-    "sendEmail": "Send Email Directly"
+    "sendEmail": "Send Email Directly",
+    "recalculateRollover": "Recalculate Balances",
+    "recalculateRolloverDesc": "This will reset accumulated budgets and force a recalculation from the previous month. Use this if you edited past transactions.",
+    "recalculateConfirm": "Are you sure? This may change your current budget balances.",
+    "recalculating": "Recalculating...",
+    "recalculateSuccess": "Balances recalculated successfully!"
   },
   "budgets": {
     "title": "Budgets",
@@ -344,7 +349,8 @@
     "cancel": "Cancel",
     "noData": "No data to display.",
     "genericError": "Something went wrong.",
-    "close": "Close"
+    "close": "Close",
+    "yes": "Yes"
   },
   "tour": {
     "welcomeTitle": "Welcome to FinanceDash!",

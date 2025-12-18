@@ -229,7 +229,12 @@
     "feedbackError": "Falha ao enviar feedback.",
     "accountDeleted": "Conta excluída com sucesso!",
     "deleteAccountError": "Falha ao excluir conta. Tente novamente.",
-    "sendEmail": "Enviar E-mail Diretamente"
+    "sendEmail": "Enviar E-mail Diretamente",
+    "recalculateRollover": "Recalcular Saldos",
+    "recalculateRolloverDesc": "Isso irá resetar os orçamentos acumulados e forçar um recálculo desde o mês anterior. Use se você fez alterações em meses passados.",
+    "recalculateConfirm": "Tem certeza? Isso pode alterar os saldos atuais dos seus orçamentos.",
+    "recalculating": "Recalculando...",
+    "recalculateSuccess": "Saldos recalculados com sucesso!"
   },
   "budgets": {
     "title": "Orçamentos",
@@ -344,7 +349,8 @@
     "cancel": "Cancelar",
     "noData": "Sem dados para exibir.",
     "genericError": "Algo deu errado.",
-    "close": "Fechar"
+    "close": "Fechar",
+    "yes": "Sim"
   },
   "tour": {
     "welcomeTitle": "Bem-vindo ao FinanceDash!",

@@ -29,10 +29,11 @@ import {
   Mail,
   Eye,
   EyeOff,
+  RefreshCw,
 } from "lucide-react";
 import { toast } from "sonner";
 import { db } from "@/lib/firebase";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, doc, writeBatch } from "firebase/firestore";
 import {
   updatePassword,
   reauthenticateWithCredential,
@@ -114,6 +115,32 @@ const SettingsPage = () => {
   });
   const [sendingFeedback, setSendingFeedback] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [recalculating, setRecalculating] = useState(false);
+  const [recalculateDialogOpen, setRecalculateDialogOpen] = useState(false);
+
+  const handleRecalculateRollovers = async () => {
+    try {
+      setRecalculating(true);
+      const batch = writeBatch(db);
+      categories.forEach((cat) => {
+        if (cat.rollover) {
+          const ref = doc(db, "categories", cat.id);
+          batch.update(ref, {
+            lastRolloverCheck: null,
+            accumulatedRollover: 0,
+          });
+        }
+      });
+      await batch.commit();
+      toast.success(t("settings.recalculateSuccess"));
+    } catch (error) {
+      console.error("Error recalculating rollovers:", error);
+      toast.error(t("common.error"));
+    } finally {
+      setRecalculating(false);
+      setRecalculateDialogOpen(false);
+    }
+  };
 
   const handleDeleteAccount = async () => {
     try {
@@ -390,6 +417,31 @@ const SettingsPage = () => {
               </div>
             </CardContent>
           </Card>
+
+          <Card className="mt-6">
+            <CardHeader>
+              <CardTitle>{t("settings.recalculateRollover")}</CardTitle>
+              <CardDescription>
+                {t("settings.recalculateRolloverDesc")}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button
+                variant="outline"
+                onClick={() => setRecalculateDialogOpen(true)}
+                disabled={recalculating}
+              >
+                <RefreshCw
+                  className={`mr-2 h-4 w-4 ${
+                    recalculating ? "animate-spin" : ""
+                  }`}
+                />
+                {recalculating
+                  ? t("settings.recalculating")
+                  : t("settings.recalculateRollover")}
+              </Button>
+            </CardContent>
+          </Card>
         </TabsContent>
 
         <TabsContent value="notifications">
@@ -630,6 +682,16 @@ const SettingsPage = () => {
         confirmText={t("settings.deleteAccountButton")}
         cancelText={t("common.cancel")}
         variant="destructive"
+      />
+
+      <ConfirmDialog
+        isOpen={recalculateDialogOpen}
+        onClose={() => setRecalculateDialogOpen(false)}
+        onConfirm={handleRecalculateRollovers}
+        title={t("settings.recalculateRollover")}
+        description={t("settings.recalculateConfirm")}
+        confirmText={t("common.yes")}
+        cancelText={t("common.cancel")}
       />
     </div>
   );
