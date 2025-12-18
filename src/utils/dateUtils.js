@@ -1,4 +1,4 @@
-import { startOfDay, endOfDay } from "date-fns";
+import { startOfDay, endOfDay, isValid } from "date-fns";
 import { format as formatTz } from "date-fns-tz";
 import { ptBR, enUS } from "date-fns/locale";
 
@@ -30,11 +30,14 @@ const getLocale = () => {
  */
 export const formatDate = (date, pattern = "dd/MM/yyyy", timeZone = null) => {
   if (!date) return "";
+  const d = new Date(date);
+  if (!isValid(d)) return ""; // Fail gracefully for invalid dates
+
   const tz = timeZone || getUserTimezone();
   const locale = getLocale();
 
   // Use date-fns-tz format function which handles IANA timezones
-  return formatTz(date, pattern, { timeZone: tz, locale });
+  return formatTz(d, pattern, { timeZone: tz, locale });
 };
 
 /**

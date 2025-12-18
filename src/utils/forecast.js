@@ -8,6 +8,7 @@ import {
   startOfDay,
   endOfDay,
   isSameDay,
+  isValid,
 } from "date-fns";
 import { parseInputDate } from "@/utils/dateUtils";
 
@@ -31,6 +32,7 @@ export const calculateCashFlowForecast = (
   // We filter for transactions strictly AFTER today.
   const futureTransactions = transactions.filter((t) => {
     const tDate = parseInputDate(t.date);
+    if (!isValid(tDate)) return false;
     return isAfter(tDate, today) && isBefore(tDate, endDate) && !t.isShadow;
   });
 
@@ -45,6 +47,7 @@ export const calculateCashFlowForecast = (
 
   recurringTemplates.forEach((t) => {
     let nextDate = parseInputDate(t.nextDueDate);
+    if (!isValid(nextDate)) return; // Skip invalid due dates
 
     // Project occurrences until endDate
     while (isBefore(nextDate, endDate)) {
