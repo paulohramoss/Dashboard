@@ -80,7 +80,7 @@ const Layout = ({ children }) => {
     });
   };
 
-  const [appVersion, setAppVersion] = useState("v1.0.15");
+  const [appVersion, setAppVersion] = useState("v1.0.78");
 
   useEffect(() => {
     const fetchVersion = async () => {
