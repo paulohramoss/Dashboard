@@ -8,7 +8,6 @@ import {
   XAxis,
   YAxis,
   Tooltip,
-  Legend,
   CartesianGrid,
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -171,7 +170,25 @@ const OverviewChart = ({ transactions, forecastData = [], currentBalance }) => {
         <CardTitle>{t("charts.financialOverview")}</CardTitle>
       </CardHeader>
       <CardContent className="pl-2">
-        <ResponsiveContainer width="100%" height={350}>
+        <div className="flex flex-wrap justify-center gap-4 mb-4 text-sm text-muted-foreground">
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full bg-green-500" />
+            <span>{t("charts.income")}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full bg-red-500" />
+            <span>{t("charts.expense")}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full bg-[#3b82f6]" />
+            <span>{t("charts.balance")}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full border-2 border-[#3b82f6] border-dashed" />
+            <span>{t("charts.projectedBalance") || "Forecast"}</span>
+          </div>
+        </div>
+        <ResponsiveContainer width="100%" height={300}>
           <ComposedChart data={data}>
             <defs>
               <linearGradient id="colorIncome" x1="0" y1="0" x2="0" y2="1">
@@ -232,7 +249,6 @@ const OverviewChart = ({ transactions, forecastData = [], currentBalance }) => {
               labelFormatter={(value) => new Date(value).toLocaleDateString()}
               formatter={(value) => [currencyFormatter(value)]}
             />
-            <Legend verticalAlign="top" height={36} iconType="circle" />
 
             {/* Areas for Income/Expense (Left Axis) */}
             <Area
