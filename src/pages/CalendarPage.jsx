@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useTransactions } from "@/hooks/useTransactions";
+import { parseInputDate } from "@/utils/dateUtils";
 import {
   format,
   startOfMonth,
@@ -58,9 +59,7 @@ const CalendarPage = () => {
   }, [locale]);
 
   const getDayTransactions = (date) => {
-    return transactions.filter((t) =>
-      isSameDay(new Date(`${t.date}T12:00:00`), date)
-    );
+    return transactions.filter((t) => isSameDay(parseInputDate(t.date), date));
   };
 
   const getDayStats = (dayTransactions) => {

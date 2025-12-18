@@ -14,6 +14,7 @@ import { toast } from "sonner";
 
 import CurrencyInput from "@/components/ui/currency-input";
 import { getCurrentLocalDate } from "@/lib/utils";
+import { parseInputDate } from "@/utils/dateUtils";
 
 const KEYWORD_MAP = {
   // Transport
@@ -176,7 +177,7 @@ const TransactionForm = ({ onAddTransaction }) => {
       );
 
       if (category && category.budget > 0) {
-        const transactionDate = new Date(formData.date);
+        const transactionDate = parseInputDate(formData.date);
         const currentMonth = transactionDate.getMonth();
         const currentYear = transactionDate.getFullYear();
 

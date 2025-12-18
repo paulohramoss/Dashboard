@@ -12,6 +12,7 @@ import {
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { isAfter, subDays, startOfDay } from "date-fns";
+import { parseInputDate, formatDate } from "@/utils/dateUtils";
 
 const OverviewChart = ({ transactions, forecastData = [], currentBalance }) => {
   const { t, i18n } = useTranslation();
@@ -212,10 +213,7 @@ const OverviewChart = ({ transactions, forecastData = [], currentBalance }) => {
               tickLine={false}
               axisLine={false}
               tickFormatter={(value) =>
-                new Date(`${value}T12:00:00`).toLocaleDateString(undefined, {
-                  month: "short",
-                  day: "numeric",
-                })
+                formatDate(parseInputDate(value), "dd MMM")
               }
               dy={10}
             />
@@ -247,7 +245,7 @@ const OverviewChart = ({ transactions, forecastData = [], currentBalance }) => {
                 boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
               }}
               labelFormatter={(value) =>
-                new Date(`${value}T12:00:00`).toLocaleDateString()
+                formatDate(parseInputDate(value), "dd/MM/yyyy")
               }
               formatter={(value) => [currencyFormatter(value)]}
             />

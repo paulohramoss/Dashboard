@@ -5,11 +5,11 @@ import {
   format,
   isAfter,
   isBefore,
-  parseISO,
   startOfDay,
   endOfDay,
   isSameDay,
 } from "date-fns";
+import { parseInputDate } from "@/utils/dateUtils";
 
 /**
  * Calculates the cash flow forecast for the next N days.
@@ -30,7 +30,7 @@ export const calculateCashFlowForecast = (
   // 1. Identify Existing Future Transactions (e.g. Installments)
   // We filter for transactions strictly AFTER today.
   const futureTransactions = transactions.filter((t) => {
-    const tDate = parseISO(t.date);
+    const tDate = parseInputDate(t.date);
     return isAfter(tDate, today) && isBefore(tDate, endDate) && !t.isShadow;
   });
 
@@ -44,7 +44,7 @@ export const calculateCashFlowForecast = (
   const projectedRecurring = [];
 
   recurringTemplates.forEach((t) => {
-    let nextDate = parseISO(t.nextDueDate);
+    let nextDate = parseInputDate(t.nextDueDate);
 
     // Project occurrences until endDate
     while (isBefore(nextDate, endDate)) {
