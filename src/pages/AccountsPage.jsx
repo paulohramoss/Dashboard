@@ -94,7 +94,7 @@ const AccountsPage = () => {
   const [newAccount, setNewAccount] = useState({
     name: "",
     type: "checking",
-    initialBalance: "",
+    initialBalance: 0,
     color: "#000000",
   });
 
@@ -193,7 +193,13 @@ const AccountsPage = () => {
 
   const handleAddAccount = async (e) => {
     e.preventDefault();
-    if (!newAccount.name || newAccount.initialBalance === "") return;
+    if (
+      !newAccount.name ||
+      newAccount.initialBalance === "" ||
+      newAccount.initialBalance === null ||
+      newAccount.initialBalance === undefined
+    )
+      return;
 
     await addAccount({
       ...newAccount,
@@ -203,7 +209,7 @@ const AccountsPage = () => {
     setNewAccount({
       name: "",
       type: "checking",
-      initialBalance: "",
+      initialBalance: 0,
       color: "#000000",
     });
     setIsAdding(false);

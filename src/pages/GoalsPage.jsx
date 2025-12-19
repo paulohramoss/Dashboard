@@ -342,26 +342,14 @@ const GoalsPage = () => {
             <div className="space-y-2">
               <Label>{t("goals.color")}</Label>
               <div className="flex gap-2">
-                {[
-                  "#22c55e",
-                  "#3b82f6",
-                  "#f59e0b",
-                  "#ef4444",
-                  "#8b5cf6",
-                  "#ec4899",
-                ].map((color) => (
-                  <button
-                    key={color}
-                    type="button"
-                    className={`w-8 h-8 rounded-full border-2 ${
-                      newGoal.color === color
-                        ? "border-primary"
-                        : "border-transparent"
-                    }`}
-                    style={{ backgroundColor: color }}
-                    onClick={() => setNewGoal({ ...newGoal, color })}
-                  />
-                ))}
+                <Input
+                  type="color"
+                  className="h-10 w-20 p-1 cursor-pointer"
+                  value={newGoal.color}
+                  onChange={(e) =>
+                    setNewGoal({ ...newGoal, color: e.target.value })
+                  }
+                />
               </div>
             </div>
             <Button type="submit" className="w-full">

@@ -1,5 +1,6 @@
 import React from "react";
 import { Input } from "@/components/ui/input";
+import { useTranslation } from "react-i18next";
 
 const CurrencyInput = ({
   value,
@@ -8,10 +9,12 @@ const CurrencyInput = ({
   className,
   ...props
 }) => {
+  const { i18n } = useTranslation();
+
   const formatCurrency = (val) => {
     if (val === undefined || val === null || val === "") return "";
     const number = Number(val);
-    return new Intl.NumberFormat("pt-BR", {
+    return new Intl.NumberFormat(i18n.language, {
       style: "currency",
       currency: "BRL",
     }).format(number);
