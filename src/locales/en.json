@@ -521,6 +521,11 @@
   "rules": {
     "suggestionTitle": "Smart Rule Suggestion 💡",
     "suggestionDesc": "Do you want to always categorize \"{{description}}\" as \"{{category}}\"?",
-    "save": "Save Rule"
+    "save": "Save Rule",
+    "success": "Rule added successfully",
+    "error": "Failed to add rule",
+    "exists": "Rule for this keyword already exists",
+    "deleteSuccess": "Rule deleted successfully",
+    "deleteError": "Failed to delete rule"
   }
 }

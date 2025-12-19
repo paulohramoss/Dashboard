@@ -19,8 +19,6 @@ const VersionChecker = () => {
         const localVersion = localStorage.getItem("app_version");
 
         if (localVersion && localVersion !== serverVersion) {
-          console.log("New version detected. Clearing cache and reloading...");
-
           // Clear local storage version to ensure we update it after reload
           // We don't clear ALL local storage to preserve user session/preferences if possible
           // But if "clearing cache" is strict requirement, we might need to be more aggressive.

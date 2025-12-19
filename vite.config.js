@@ -67,7 +67,7 @@ export default defineConfig({
             "jspdf-autotable",
             "xlsx",
             "papaparse",
-            "ofx-js",
+
             "i18next",
             "react-i18next",
           ],

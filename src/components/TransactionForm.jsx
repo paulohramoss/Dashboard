@@ -103,12 +103,27 @@ const TransactionForm = ({ onAddTransaction }) => {
   });
 
   // Filter categories based on selected type and deduplicate by name
+  // Filter categories based on selected type and deduplicate by translated name
   const availableCategories = useMemo(() => {
     const filtered = categories.filter((cat) => cat.type === formData.type);
-    return filtered.filter(
-      (cat, index, self) => index === self.findIndex((t) => t.name === cat.name)
-    );
-  }, [categories, formData.type]);
+
+    // Deduplicate based on translated name to avoid "Food" (Alimentação) and "Alimentação" appearing together
+    return filtered.filter((cat, index, self) => {
+      const catName = cat.isDefault
+        ? t(`categories.${cat.name.toLowerCase()}`)
+        : cat.name;
+
+      return (
+        index ===
+        self.findIndex((c) => {
+          const cName = c.isDefault
+            ? t(`categories.${c.name.toLowerCase()}`)
+            : c.name;
+          return cName === catName;
+        })
+      );
+    });
+  }, [categories, formData.type, t]);
 
   const handleDescriptionChange = (e) => {
     const description = e.target.value;
@@ -166,10 +181,21 @@ const TransactionForm = ({ onAddTransaction }) => {
     const newType = e.target.value;
     const newAvailableCategories = categories
       .filter((cat) => cat.type === newType)
-      .filter(
-        (cat, index, self) =>
-          index === self.findIndex((t) => t.name === cat.name)
-      );
+      .filter((cat, index, self) => {
+        const catName = cat.isDefault
+          ? t(`categories.${cat.name.toLowerCase()}`)
+          : cat.name;
+
+        return (
+          index ===
+          self.findIndex((c) => {
+            const cName = c.isDefault
+              ? t(`categories.${c.name.toLowerCase()}`)
+              : c.name;
+            return cName === catName;
+          })
+        );
+      });
 
     setFormData({
       ...formData,

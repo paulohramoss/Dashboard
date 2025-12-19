@@ -521,6 +521,11 @@
   "rules": {
     "suggestionTitle": "Sugestão de Regra Inteligente 💡",
     "suggestionDesc": "Deseja sempre classificar \"{{description}}\" como \"{{category}}\"?",
-    "save": "Salvar Regra"
+    "save": "Salvar Regra",
+    "success": "Regra adicionada com sucesso",
+    "error": "Falha ao adicionar regra",
+    "exists": "Já existe uma regra para esta palavra-chave",
+    "deleteSuccess": "Regra excluída com sucesso",
+    "deleteError": "Falha ao excluir regra"
   }
 }

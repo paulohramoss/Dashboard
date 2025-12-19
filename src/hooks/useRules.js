@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import {
   collection,
   query,
@@ -13,6 +14,7 @@ import { useAuth } from "./useAuth";
 import { toast } from "sonner";
 
 export const useRules = () => {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [rules, setRules] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -56,7 +58,7 @@ export const useRules = () => {
         (r) => r.keyword.toLowerCase() === rule.keyword.toLowerCase()
       );
       if (exists) {
-        toast.error("Rule for this keyword already exists");
+        toast.error(t("rules.exists"));
         return;
       }
 
@@ -67,20 +69,21 @@ export const useRules = () => {
         type: rule.type,
         createdAt: new Date().toISOString(),
       });
-      toast.success("Rule added successfully");
+      toast.success(t("rules.success"));
     } catch (error) {
       console.error("Error adding rule:", error);
-      toast.error("Failed to add rule");
+      toast.error(t("rules.error"));
     }
   };
 
   const deleteRule = async (ruleId) => {
     try {
       await deleteDoc(doc(db, "userRules", ruleId));
-      toast.success("Rule deleted successfully");
+
+      toast.success(t("rules.deleteSuccess"));
     } catch (error) {
       console.error("Error deleting rule:", error);
-      toast.error("Failed to delete rule");
+      toast.error(t("rules.deleteError"));
     }
   };
 

@@ -83,7 +83,6 @@ export const useGoals = () => {
       console.error("User ID missing in allocateFunds");
       return;
     }
-    console.log("Allocating funds:", { goalId, amount, accountId, goalName });
 
     try {
       const batch = writeBatch(db);
@@ -107,10 +106,6 @@ export const useGoals = () => {
         createdAt: new Date().toISOString(),
         isSystem: true, // Flag to identify system generated transactions
       });
-
-      console.log("Committing batch for allocation...");
-      await batch.commit();
-      console.log("Allocation successful");
     } catch (error) {
       console.error("Error allocation funds:", error);
       throw error;

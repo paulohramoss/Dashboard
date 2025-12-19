@@ -140,17 +140,19 @@ const Dashboard = () => {
 
   const exportToExcel = () => {
     const ws = XLSX.utils.json_to_sheet(
-      transactions.map((t) => ({
-        [t("export.date")]: new Date(`${t.date}T12:00:00`).toLocaleDateString(
-          "pt-BR"
-        ),
-        [t("export.description")]: t.description,
-        [t("export.category")]: t.category,
+      transactions.map((transaction) => ({
+        [t("export.date")]: new Date(
+          `${transaction.date}T12:00:00`
+        ).toLocaleDateString("pt-BR"),
+        [t("export.description")]: transaction.description,
+        [t("export.category")]: transaction.category,
         [t("export.type")]:
-          t.type === "income" ? t("export.income") : t("export.expense"),
-        [t("export.value")]: t.amount,
+          transaction.type === "income"
+            ? t("export.income")
+            : t("export.expense"),
+        [t("export.value")]: transaction.amount,
         [t("export.account")]:
-          accounts.find((a) => a.id === t.accountId)?.name || "N/A",
+          accounts.find((a) => a.id === transaction.accountId)?.name || "N/A",
       }))
     );
     const wb = XLSX.utils.book_new();
@@ -162,12 +164,12 @@ const Dashboard = () => {
     const doc = new jsPDF();
     doc.text(t("export.title"), 14, 22);
 
-    const tableData = transactions.map((t) => [
-      new Date(`${t.date}T12:00:00`).toLocaleDateString("pt-BR"),
-      t.description,
-      t.category,
-      t.type === "income" ? t("export.income") : t("export.expense"),
-      formatCurrency(t.amount),
+    const tableData = transactions.map((transaction) => [
+      new Date(`${transaction.date}T12:00:00`).toLocaleDateString("pt-BR"),
+      transaction.description,
+      transaction.category,
+      transaction.type === "income" ? t("export.income") : t("export.expense"),
+      formatCurrency(transaction.amount),
     ]);
 
     autoTable(doc, {

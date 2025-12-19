@@ -49,9 +49,12 @@ export const useCategories = () => {
 
   useEffect(() => {
     if (!user?.id) {
-      setCategories([]);
-      setLoading(false);
-      return;
+      // Avoid synchronous state updates in effect
+      const timer = setTimeout(() => {
+        setCategories([]);
+        setLoading(false);
+      }, 0);
+      return () => clearTimeout(timer);
     }
 
     const q = query(

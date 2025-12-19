@@ -275,7 +275,6 @@ const checkRecurringTransactions = async (currentTransactions) => {
   if (hasUpdates) {
     try {
       await batch.commit();
-      console.log("Recurring transactions processed.");
     } catch (error) {
       console.error("Error processing recurring transactions:", error);
     }

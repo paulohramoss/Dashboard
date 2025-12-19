@@ -89,9 +89,6 @@ export const useBudgetRollover = (categories, transactions) => {
                 accumulatedRollover: newAccumulated,
                 lastRolloverCheck: currentMonthKey,
               });
-              console.log(
-                `Updated rollover for ${category.name}: +${accumulatedToAdd}`
-              );
             } catch (error) {
               console.error("Error updating rollover:", error);
             }
