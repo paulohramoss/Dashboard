@@ -140,20 +140,40 @@ const Dashboard = () => {
 
   const exportToExcel = () => {
     const ws = XLSX.utils.json_to_sheet(
-      transactions.map((transaction) => ({
-        [t("export.date")]: new Date(
-          `${transaction.date}T12:00:00`
-        ).toLocaleDateString("pt-BR"),
-        [t("export.description")]: transaction.description,
-        [t("export.category")]: transaction.category,
-        [t("export.type")]:
-          transaction.type === "income"
-            ? t("export.income")
-            : t("export.expense"),
-        [t("export.value")]: transaction.amount,
-        [t("export.account")]:
-          accounts.find((a) => a.id === transaction.accountId)?.name || "N/A",
-      }))
+      transactions.map((transaction) => {
+        // Safe Date Parsing
+        let dateStr = transaction.date;
+        try {
+          if (!dateStr) throw new Error("No date");
+          // Ensure YYYY-MM-DD
+          const [year, month, day] = dateStr.split("-");
+          const dateObj = new Date(year, month - 1, day);
+          if (isNaN(dateObj.getTime())) throw new Error("Invalid Date");
+          dateStr = dateObj.toLocaleDateString("pt-BR");
+        } catch {
+          dateStr = transaction.date || "N/A";
+        }
+
+        // Localized Category
+        const categoryKey = `categories.${transaction.category.toLowerCase()}`;
+        const translatedCategory =
+          t(categoryKey) !== categoryKey
+            ? t(categoryKey)
+            : transaction.category;
+
+        return {
+          [t("export.date")]: dateStr,
+          [t("export.description")]: transaction.description,
+          [t("export.category")]: translatedCategory,
+          [t("export.type")]:
+            transaction.type === "income"
+              ? t("export.income")
+              : t("export.expense"),
+          [t("export.value")]: transaction.amount,
+          [t("export.account")]:
+            accounts.find((a) => a.id === transaction.accountId)?.name || "N/A",
+        };
+      })
     );
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Transações");
@@ -164,13 +184,34 @@ const Dashboard = () => {
     const doc = new jsPDF();
     doc.text(t("export.title"), 14, 22);
 
-    const tableData = transactions.map((transaction) => [
-      new Date(`${transaction.date}T12:00:00`).toLocaleDateString("pt-BR"),
-      transaction.description,
-      transaction.category,
-      transaction.type === "income" ? t("export.income") : t("export.expense"),
-      formatCurrency(transaction.amount),
-    ]);
+    const tableData = transactions.map((transaction) => {
+      // Safe Date Parsing
+      let dateStr = transaction.date;
+      try {
+        if (!dateStr) throw new Error("No date");
+        const [year, month, day] = dateStr.split("-");
+        const dateObj = new Date(year, month - 1, day);
+        if (isNaN(dateObj.getTime())) throw new Error("Invalid Date");
+        dateStr = dateObj.toLocaleDateString("pt-BR");
+      } catch {
+        dateStr = transaction.date || "N/A";
+      }
+
+      // Localized Category
+      const categoryKey = `categories.${transaction.category.toLowerCase()}`;
+      const translatedCategory =
+        t(categoryKey) !== categoryKey ? t(categoryKey) : transaction.category;
+
+      return [
+        dateStr,
+        transaction.description,
+        translatedCategory,
+        transaction.type === "income"
+          ? t("export.income")
+          : t("export.expense"),
+        formatCurrency(transaction.amount),
+      ];
+    });
 
     autoTable(doc, {
       head: [

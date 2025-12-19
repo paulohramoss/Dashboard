@@ -203,6 +203,7 @@
     "deleteAccountButton": "Delete Account",
     "categories": "Categories",
     "categoriesDesc": "Manage your transaction categories.",
+    "category": "Category",
     "addCategory": "Add Category",
     "updateCategory": "Update Category",
     "cancel": "Cancel",
@@ -237,7 +238,15 @@
     "recalculateRolloverDesc": "This will reset accumulated budgets and force a recalculation from the previous month. Use this if you edited past transactions.",
     "recalculateConfirm": "Are you sure? This may change your current budget balances.",
     "recalculating": "Recalculating...",
-    "recalculateSuccess": "Balances recalculated successfully!"
+    "recalculateSuccess": "Balances recalculated successfully!",
+    "smartRules": "Smart Rules",
+    "rulesTitle": "Smart Categorization Rules",
+    "rulesDesc": "Automatically categorize transactions based on description keywords.",
+    "keyword": "Keyword",
+    "keywordPlaceholder": "e.g. Starbucks, Uber",
+    "selectCategory": "Select Category",
+    "addRule": "Add Rule",
+    "noRules": "No custom rules defined yet."
   },
   "budgets": {
     "title": "Budgets",

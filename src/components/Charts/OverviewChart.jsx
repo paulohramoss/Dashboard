@@ -18,6 +18,7 @@ const OverviewChart = ({ transactions, forecastData = [], currentBalance }) => {
   const { t, i18n } = useTranslation();
 
   const currencyFormatter = (value) => {
+    if (isNaN(value) || value === null || value === undefined) return "R$ 0,00";
     return new Intl.NumberFormat(i18n.language === "pt" ? "pt-BR" : "en-US", {
       style: "currency",
       currency: "BRL",

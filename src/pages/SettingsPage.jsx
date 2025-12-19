@@ -317,7 +317,7 @@ const SettingsPage = () => {
           </TabsTrigger>
           <TabsTrigger value="rules" className="flex items-center gap-2">
             <RefreshCw className="h-4 w-4" />
-            Smart Rules
+            {t("settings.smartRules")}
           </TabsTrigger>
           <TabsTrigger value="feedback" className="flex items-center gap-2">
             <MessageSquare className="h-4 w-4" />
@@ -679,26 +679,23 @@ const SettingsPage = () => {
         <TabsContent value="rules">
           <Card>
             <CardHeader>
-              <CardTitle>Smart Categorization Rules</CardTitle>
-              <CardDescription>
-                Automatically categorize transactions based on description
-                keywords.
-              </CardDescription>
+              <CardTitle>{t("settings.rulesTitle")}</CardTitle>
+              <CardDescription>{t("settings.rulesDesc")}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <form onSubmit={handleAddRule} className="flex gap-4 items-end">
                 <div className="space-y-2 flex-1">
-                  <Label>Keyword</Label>
+                  <Label>{t("settings.keyword")}</Label>
                   <Input
                     value={newRule.keyword}
                     onChange={(e) =>
                       setNewRule({ ...newRule, keyword: e.target.value })
                     }
-                    placeholder="e.g. Starbucks, Uber"
+                    placeholder={t("settings.keywordPlaceholder")}
                   />
                 </div>
                 <div className="space-y-2 w-32">
-                  <Label>Type</Label>
+                  <Label>{t("settings.categoryType")}</Label>
                   <select
                     className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                     value={newRule.type}
@@ -715,7 +712,7 @@ const SettingsPage = () => {
                   </select>
                 </div>
                 <div className="space-y-2 w-48">
-                  <Label>Category</Label>
+                  <Label>{t("settings.category")}</Label>
                   <select
                     className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                     value={newRule.category}
@@ -723,7 +720,7 @@ const SettingsPage = () => {
                       setNewRule({ ...newRule, category: e.target.value })
                     }
                   >
-                    <option value="">Select Category</option>
+                    <option value="">{t("settings.selectCategory")}</option>
                     {categories
                       .filter((c) => c.type === newRule.type)
                       .filter(
@@ -742,20 +739,20 @@ const SettingsPage = () => {
                 </div>
                 <Button type="submit">
                   <Plus className="h-4 w-4 mr-2" />
-                  Add Rule
+                  {t("settings.addRule")}
                 </Button>
               </form>
 
               <div className="space-y-2 max-h-[400px] overflow-y-auto">
                 <div className="grid grid-cols-12 gap-4 p-2 text-sm font-medium text-muted-foreground border-b">
-                  <div className="col-span-5">Keyword</div>
-                  <div className="col-span-4">Category</div>
-                  <div className="col-span-2">Type</div>
+                  <div className="col-span-5">{t("settings.keyword")}</div>
+                  <div className="col-span-4">{t("settings.category")}</div>
+                  <div className="col-span-2">{t("settings.categoryType")}</div>
                   <div className="col-span-1"></div>
                 </div>
                 {rules.length === 0 && (
                   <div className="p-4 text-center text-muted-foreground text-sm">
-                    No custom rules defined yet.
+                    {t("settings.noRules")}
                   </div>
                 )}
                 {rules.map((rule) => (

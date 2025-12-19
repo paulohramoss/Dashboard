@@ -203,6 +203,7 @@
     "deleteAccountButton": "Excluir Conta",
     "categories": "Categorias",
     "categoriesDesc": "Gerencie suas categorias de transações.",
+    "category": "Categoria",
     "addCategory": "Adicionar Categoria",
     "updateCategory": "Atualizar Categoria",
     "cancel": "Cancelar",
@@ -237,7 +238,15 @@
     "recalculateRolloverDesc": "Isso irá resetar os orçamentos acumulados e forçar um recálculo desde o mês anterior. Use se você fez alterações em meses passados.",
     "recalculateConfirm": "Tem certeza? Isso pode alterar os saldos atuais dos seus orçamentos.",
     "recalculating": "Recalculando...",
-    "recalculateSuccess": "Saldos recalculados com sucesso!"
+    "recalculateSuccess": "Saldos recalculados com sucesso!",
+    "smartRules": "Regras Inteligentes",
+    "rulesTitle": "Regras de Categorização Inteligente",
+    "rulesDesc": "Categorize transações automaticamente com base em palavras-chave da descrição.",
+    "keyword": "Palavra-chave",
+    "keywordPlaceholder": "ex: Starbucks, Uber",
+    "selectCategory": "Selecione uma categoria",
+    "addRule": "Adicionar Regra",
+    "noRules": "Nenhuma regra personalizada definida ainda."
   },
   "budgets": {
     "title": "Orçamentos",
