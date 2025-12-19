@@ -617,6 +617,7 @@ const Dashboard = () => {
               <TransactionHistory
                 transactions={transactions}
                 onDelete={deleteTransaction}
+                limit={10}
               />
             )}
           </Motion.div>
