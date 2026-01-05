@@ -20,7 +20,7 @@ export const useRules = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!user) {
+    if (!user?.id) {
       // Avoid synchronous state updates in effect
       const timer = setTimeout(() => {
         setRules([]);
@@ -47,11 +47,11 @@ export const useRules = () => {
     });
 
     return () => unsubscribe();
-  }, [user]);
+  }, [user?.id]);
 
   const addRule = async (rule) => {
     try {
-      if (!user) return;
+      if (!user?.id) return;
 
       // Check for duplicates
       const exists = rules.some(
