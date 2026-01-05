@@ -46,45 +46,47 @@ const CategoryChart = ({ transactions }) => {
         <CardTitle>{t("charts.expensesByCategory")}</CardTitle>
       </CardHeader>
       <CardContent>
-        <ResponsiveContainer width="100%" height={350}>
-          <PieChart>
-            <Pie
-              data={data}
-              cx="50%"
-              cy="50%"
-              innerRadius={80}
-              outerRadius={100}
-              paddingAngle={2}
-              dataKey="value"
-              strokeWidth={2}
-              stroke="#fff"
-            >
-              {data.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={entry.color} />
-              ))}
-            </Pie>
-            <Tooltip
-              formatter={(value) =>
-                new Intl.NumberFormat("pt-BR", {
-                  style: "currency",
-                  currency: "BRL",
-                }).format(value)
-              }
-              contentStyle={{
-                borderRadius: "8px",
-                border: "1px solid #e2e8f0",
-                boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
-              }}
-              itemStyle={{ color: "#1e293b" }}
-            />
-            <Legend
-              layout="horizontal"
-              verticalAlign="bottom"
-              align="center"
-              wrapperStyle={{ paddingTop: "20px" }}
-            />
-          </PieChart>
-        </ResponsiveContainer>
+        <div style={{ width: "100%", height: 350 }}>
+          <ResponsiveContainer>
+            <PieChart>
+              <Pie
+                data={data}
+                cx="50%"
+                cy="50%"
+                innerRadius={80}
+                outerRadius={100}
+                paddingAngle={2}
+                dataKey="value"
+                strokeWidth={2}
+                stroke="#fff"
+              >
+                {data.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.color} />
+                ))}
+              </Pie>
+              <Tooltip
+                formatter={(value) =>
+                  new Intl.NumberFormat("pt-BR", {
+                    style: "currency",
+                    currency: "BRL",
+                  }).format(value)
+                }
+                contentStyle={{
+                  borderRadius: "8px",
+                  border: "1px solid #e2e8f0",
+                  boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
+                }}
+                itemStyle={{ color: "#1e293b" }}
+              />
+              <Legend
+                layout="horizontal"
+                verticalAlign="bottom"
+                align="center"
+                wrapperStyle={{ paddingTop: "20px" }}
+              />
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
       </CardContent>
     </Card>
   );

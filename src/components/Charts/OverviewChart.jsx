@@ -190,116 +190,118 @@ const OverviewChart = ({ transactions, forecastData = [], currentBalance }) => {
             <span>{t("charts.projectedBalance") || "Forecast"}</span>
           </div>
         </div>
-        <ResponsiveContainer width="100%" height={300}>
-          <ComposedChart data={data}>
-            <defs>
-              <linearGradient id="colorIncome" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#22c55e" stopOpacity={0.3} />
-                <stop offset="95%" stopColor="#22c55e" stopOpacity={0} />
-              </linearGradient>
-              <linearGradient id="colorExpense" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#ef4444" stopOpacity={0.3} />
-                <stop offset="95%" stopColor="#ef4444" stopOpacity={0} />
-              </linearGradient>
-            </defs>
-            <CartesianGrid
-              strokeDasharray="3 3"
-              vertical={false}
-              stroke="#e5e7eb"
-            />
-            <XAxis
-              dataKey="date"
-              stroke="#888888"
-              fontSize={12}
-              tickLine={false}
-              axisLine={false}
-              tickFormatter={(value) =>
-                formatDate(parseInputDate(value), "dd MMM")
-              }
-              dy={10}
-            />
-            {/* YAxis Left: Income/Expense */}
-            <YAxis
-              yAxisId="left"
-              stroke="#888888"
-              fontSize={12}
-              tickLine={false}
-              axisLine={false}
-              tickFormatter={currencyFormatter}
-            />
-            {/* YAxis Right: Balance */}
-            <YAxis
-              yAxisId="right"
-              orientation="right"
-              stroke="#3b82f6"
-              fontSize={12}
-              tickLine={false}
-              axisLine={false}
-              tickFormatter={currencyFormatter}
-            />
+        <div style={{ width: "100%", height: 300 }}>
+          <ResponsiveContainer>
+            <ComposedChart data={data}>
+              <defs>
+                <linearGradient id="colorIncome" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#22c55e" stopOpacity={0.3} />
+                  <stop offset="95%" stopColor="#22c55e" stopOpacity={0} />
+                </linearGradient>
+                <linearGradient id="colorExpense" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#ef4444" stopOpacity={0.3} />
+                  <stop offset="95%" stopColor="#ef4444" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid
+                strokeDasharray="3 3"
+                vertical={false}
+                stroke="#e5e7eb"
+              />
+              <XAxis
+                dataKey="date"
+                stroke="#888888"
+                fontSize={12}
+                tickLine={false}
+                axisLine={false}
+                tickFormatter={(value) =>
+                  formatDate(parseInputDate(value), "dd MMM")
+                }
+                dy={10}
+              />
+              {/* YAxis Left: Income/Expense */}
+              <YAxis
+                yAxisId="left"
+                stroke="#888888"
+                fontSize={12}
+                tickLine={false}
+                axisLine={false}
+                tickFormatter={currencyFormatter}
+              />
+              {/* YAxis Right: Balance */}
+              <YAxis
+                yAxisId="right"
+                orientation="right"
+                stroke="#3b82f6"
+                fontSize={12}
+                tickLine={false}
+                axisLine={false}
+                tickFormatter={currencyFormatter}
+              />
 
-            <Tooltip
-              cursor={{ stroke: "#888888", strokeWidth: 1 }}
-              contentStyle={{
-                borderRadius: "8px",
-                border: "1px solid #e2e8f0",
-                boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
-              }}
-              labelFormatter={(value) =>
-                formatDate(parseInputDate(value), "dd/MM/yyyy")
-              }
-              formatter={(value) => [currencyFormatter(value)]}
-            />
+              <Tooltip
+                cursor={{ stroke: "#888888", strokeWidth: 1 }}
+                contentStyle={{
+                  borderRadius: "8px",
+                  border: "1px solid #e2e8f0",
+                  boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
+                }}
+                labelFormatter={(value) =>
+                  formatDate(parseInputDate(value), "dd/MM/yyyy")
+                }
+                formatter={(value) => [currencyFormatter(value)]}
+              />
 
-            {/* Areas for Income/Expense (Left Axis) */}
-            <Area
-              yAxisId="left"
-              type="monotone"
-              dataKey="income"
-              stroke="#22c55e"
-              strokeWidth={2}
-              fillOpacity={1}
-              fill="url(#colorIncome)"
-              name={t("charts.income")}
-            />
-            <Area
-              yAxisId="left"
-              type="monotone"
-              dataKey="expense"
-              stroke="#ef4444"
-              strokeWidth={2}
-              fillOpacity={1}
-              fill="url(#colorExpense)"
-              name={t("charts.expense")}
-            />
+              {/* Areas for Income/Expense (Left Axis) */}
+              <Area
+                yAxisId="left"
+                type="monotone"
+                dataKey="income"
+                stroke="#22c55e"
+                strokeWidth={2}
+                fillOpacity={1}
+                fill="url(#colorIncome)"
+                name={t("charts.income")}
+              />
+              <Area
+                yAxisId="left"
+                type="monotone"
+                dataKey="expense"
+                stroke="#ef4444"
+                strokeWidth={2}
+                fillOpacity={1}
+                fill="url(#colorExpense)"
+                name={t("charts.expense")}
+              />
 
-            {/* Forecast Areas (lighter, dotted stroke?) - Optional */}
-            {/* Keeping it simple: Balance Line is the hero here */}
+              {/* Forecast Areas (lighter, dotted stroke?) - Optional */}
+              {/* Keeping it simple: Balance Line is the hero here */}
 
-            {/* Line for Historical Balance (Right Axis) */}
-            <Line
-              yAxisId="right"
-              type="monotone"
-              dataKey="historicalBalance"
-              stroke="#3b82f6"
-              strokeWidth={3}
-              dot={false}
-              name={t("charts.balance")}
-            />
+              {/* Line for Historical Balance (Right Axis) */}
+              <Line
+                yAxisId="right"
+                type="monotone"
+                dataKey="historicalBalance"
+                stroke="#3b82f6"
+                strokeWidth={3}
+                dot={false}
+                name={t("charts.balance")}
+              />
 
-            {/* Line for Projected Balance (Right Axis) */}
-            <Line
-              yAxisId="right"
-              type="monotone"
-              dataKey="projectedBalance"
-              stroke="#3b82f6"
-              strokeWidth={3}
-              strokeDasharray="5 5"
-              dot={false}
-              name={t("charts.projectedBalance") || "Forecast"}
-            />
-          </ComposedChart>
-        </ResponsiveContainer>
+              {/* Line for Projected Balance (Right Axis) */}
+              <Line
+                yAxisId="right"
+                type="monotone"
+                dataKey="projectedBalance"
+                stroke="#3b82f6"
+                strokeWidth={3}
+                strokeDasharray="5 5"
+                dot={false}
+                name={t("charts.projectedBalance") || "Forecast"}
+              />
+            </ComposedChart>
+          </ResponsiveContainer>
+        </div>
       </CardContent>
     </Card>
   );
