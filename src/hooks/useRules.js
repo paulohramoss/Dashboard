@@ -35,16 +35,23 @@ export const useRules = () => {
       // orderBy("keyword") // Requires index, let's sort in client for now to avoid blocking
     );
 
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const rulesData = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      // Sort alphabetically by keyword
-      rulesData.sort((a, b) => a.keyword.localeCompare(b.keyword));
-      setRules(rulesData);
-      setLoading(false);
-    });
+    const unsubscribe = onSnapshot(
+      q,
+      (snapshot) => {
+        const rulesData = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        // Sort alphabetically by keyword
+        rulesData.sort((a, b) => a.keyword.localeCompare(b.keyword));
+        setRules(rulesData);
+        setLoading(false);
+      },
+      (error) => {
+        console.error("Error fetching rules:", error);
+        setLoading(false);
+      }
+    );
 
     return () => unsubscribe();
   }, [user?.id]);

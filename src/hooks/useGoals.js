@@ -23,14 +23,21 @@ export const useGoals = () => {
     if (user?.id) {
       const q = query(collection(db, "goals"), where("userId", "==", user.id));
 
-      const unsubscribe = onSnapshot(q, (snapshot) => {
-        const docs = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        setGoals(docs);
-        setLoading(false);
-      });
+      const unsubscribe = onSnapshot(
+        q,
+        (snapshot) => {
+          const docs = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+          setGoals(docs);
+          setLoading(false);
+        },
+        (error) => {
+          console.error("Error fetching goals:", error);
+          setLoading(false);
+        }
+      );
 
       return () => unsubscribe();
     } else {

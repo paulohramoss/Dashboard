@@ -27,16 +27,23 @@ export const useAccounts = () => {
 
     const q = query(collection(db, "accounts"), where("userId", "==", user.id));
 
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const docs = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      // Sort by order field, ascending
-      docs.sort((a, b) => (a.order || 0) - (b.order || 0));
-      setAccounts(docs);
-      setLoading(false);
-    });
+    const unsubscribe = onSnapshot(
+      q,
+      (snapshot) => {
+        const docs = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        // Sort by order field, ascending
+        docs.sort((a, b) => (a.order || 0) - (b.order || 0));
+        setAccounts(docs);
+        setLoading(false);
+      },
+      (error) => {
+        console.error("Error fetching accounts:", error);
+        setLoading(false);
+      }
+    );
 
     return () => unsubscribe();
   }, [user?.id]);

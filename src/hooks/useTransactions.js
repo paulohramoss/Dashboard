@@ -31,21 +31,28 @@ export const useTransactions = () => {
       where("userId", "==", user.id)
     );
 
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const docs = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
+    const unsubscribe = onSnapshot(
+      q,
+      (snapshot) => {
+        const docs = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
 
-      // Sort client-side to avoid needing a composite index in Firestore
-      docs.sort((a, b) => new Date(b.date) - new Date(a.date));
+        // Sort client-side to avoid needing a composite index in Firestore
+        docs.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-      setTransactions(docs);
-      setLoading(false);
+        setTransactions(docs);
+        setLoading(false);
 
-      // Check for recurring transactions
-      checkRecurringTransactions(docs);
-    });
+        // Check for recurring transactions
+        checkRecurringTransactions(docs);
+      },
+      (error) => {
+        console.error("Error fetching transactions:", error);
+        setLoading(false);
+      }
+    );
 
     return () => unsubscribe();
   }, [user?.id]);

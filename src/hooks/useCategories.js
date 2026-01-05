@@ -62,20 +62,27 @@ export const useCategories = () => {
       where("userId", "==", user.id)
     );
 
-    const unsubscribe = onSnapshot(q, async (snapshot) => {
-      const docs = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
+    const unsubscribe = onSnapshot(
+      q,
+      async (snapshot) => {
+        const docs = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
 
-      if (docs.length === 0 && !snapshot.metadata.fromCache) {
-        // Initialize default categories if none exist
-        await initializeDefaultCategories(user.id);
-      } else {
-        setCategories(docs);
+        if (docs.length === 0 && !snapshot.metadata.fromCache) {
+          // Initialize default categories if none exist
+          await initializeDefaultCategories(user.id);
+        } else {
+          setCategories(docs);
+          setLoading(false);
+        }
+      },
+      (error) => {
+        console.error("Error fetching categories:", error);
         setLoading(false);
       }
-    });
+    );
 
     return () => unsubscribe();
   }, [user?.id]);
