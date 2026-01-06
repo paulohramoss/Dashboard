@@ -170,6 +170,7 @@
   "reports": {
     "title": "Relatórios",
     "subtitle": "Análise detalhada das suas finanças.",
+    "button": "Baixar Relatório PDF",
     "transactionSummary": "Resumo de Transações",
     "totalTransactionsPart1": "Você tem um total de",
     "totalTransactionsPart2": "transações registradas. Seu saldo atual é",
@@ -370,6 +371,10 @@
     "cancel": "Cancelar",
     "noData": "Sem dados para exibir.",
     "genericError": "Algo deu errado.",
+    "edit": "Editar",
+    "account": "Conta",
+    "allAccounts": "Todas as Contas",
+    "back": "Voltar",
     "close": "Fechar",
     "yes": "Sim"
   },

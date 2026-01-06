@@ -15,6 +15,7 @@ const TransactionsPage = () => {
     search: "",
     type: "all",
     category: "all",
+    accountId: "all",
     startDate: "",
     endDate: "",
   });
@@ -27,6 +28,10 @@ const TransactionsPage = () => {
       const matchesType = filters.type === "all" || t.type === filters.type;
       const matchesCategory =
         filters.category === "all" || t.category === filters.category;
+      const matchesAccount =
+        !filters.accountId ||
+        filters.accountId === "all" ||
+        t.accountId === filters.accountId;
 
       let matchesDate = true;
       if (filters.startDate && filters.endDate) {
@@ -37,7 +42,13 @@ const TransactionsPage = () => {
         matchesDate = t.date <= filters.endDate;
       }
 
-      return matchesSearch && matchesType && matchesCategory && matchesDate;
+      return (
+        matchesSearch &&
+        matchesType &&
+        matchesCategory &&
+        matchesAccount &&
+        matchesDate
+      );
     });
   }, [transactions, filters]);
 

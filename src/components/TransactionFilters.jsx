@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useCategories } from "@/hooks/useCategories";
+import { useAccounts } from "@/hooks/useAccounts";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
@@ -10,13 +11,25 @@ import { Search, Filter, X } from "lucide-react";
 const TransactionFilters = ({ onFilterChange }) => {
   const { t } = useTranslation();
   const { categories } = useCategories();
+  const { accounts } = useAccounts();
   const [filters, setFilters] = useState({
     search: "",
     type: "all",
     category: "all",
+    accountId: "all",
     startDate: "",
     endDate: "",
   });
+
+  // Deduplicate categories based on name
+  const uniqueCategories = React.useMemo(() => {
+    const seen = new Set();
+    return categories.filter((cat) => {
+      const duplicate = seen.has(cat.name);
+      seen.add(cat.name);
+      return !duplicate;
+    });
+  }, [categories]);
 
   useEffect(() => {
     onFilterChange(filters);
@@ -31,6 +44,7 @@ const TransactionFilters = ({ onFilterChange }) => {
       search: "",
       type: "all",
       category: "all",
+      accountId: "all",
       startDate: "",
       endDate: "",
     });
@@ -57,6 +71,25 @@ const TransactionFilters = ({ onFilterChange }) => {
 
           <div className="space-y-2 w-full md:w-[180px]">
             <label className="text-sm font-medium">
+              {t("common.account") || "Conta"}
+            </label>
+            <Select
+              value={filters.accountId}
+              onChange={(e) => handleChange("accountId", e.target.value)}
+            >
+              <option value="all">
+                {t("common.allAccounts") || "Todas as Contas"}
+              </option>
+              {accounts.map((acc) => (
+                <option key={acc.id} value={acc.id}>
+                  {acc.name}
+                </option>
+              ))}
+            </Select>
+          </div>
+
+          <div className="space-y-2 w-full md:w-[180px]">
+            <label className="text-sm font-medium">
               {t("transactions.form.type")}
             </label>
             <Select
@@ -78,7 +111,7 @@ const TransactionFilters = ({ onFilterChange }) => {
               onChange={(e) => handleChange("category", e.target.value)}
             >
               <option value="all">{t("transactions.allCategories")}</option>
-              {categories.map((cat) => (
+              {uniqueCategories.map((cat) => (
                 <option key={cat.id} value={cat.name}>
                   {cat.isDefault
                     ? t(`categories.${cat.name.toLowerCase()}`)
