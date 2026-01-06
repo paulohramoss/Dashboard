@@ -536,5 +536,10 @@
     "exists": "Já existe uma regra para esta palavra-chave",
     "deleteSuccess": "Regra excluída com sucesso",
     "deleteError": "Falha ao excluir regra"
+  },
+  "insights": {
+    "spendingSpike": "Ei, você gastou {{percentage}}% a mais em '{{category}}' este mês comparado à sua média dos últimos 3 meses.",
+    "comparison": "Atual: {{current}} vs Média: {{average}}",
+    "noAnomalies": "Tudo certo! Seus gastos estão dentro do esperado."
   }
 }

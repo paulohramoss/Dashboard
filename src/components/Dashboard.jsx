@@ -15,6 +15,7 @@ import OverviewChart from "@/components/Charts/OverviewChart";
 import CategoryChart from "@/components/Charts/CategoryChart";
 import TransactionHistory from "@/components/TransactionHistory";
 import ForecastCard from "@/components/ForecastCard";
+import SmartAlerts from "@/components/SmartAlerts";
 import { calculateCashFlowForecast } from "@/utils/forecast";
 import { endOfMonth, differenceInDays, startOfDay } from "date-fns";
 import { Button } from "@/components/ui/button";
@@ -74,59 +75,64 @@ const Dashboard = () => {
 
   const [isSimulateOpen, setIsSimulateOpen] = useState(false);
   const [layouts, setLayouts] = useState(() => {
-    const savedLayout = localStorage.getItem("dashboardLayout_v2");
+    const savedLayout = localStorage.getItem("dashboardLayout_v4");
     return savedLayout
       ? JSON.parse(savedLayout)
       : {
           lg: [
-            { i: "balance", x: 0, y: 0, w: 3, h: 2, minH: 2 },
-            { i: "forecast", x: 3, y: 0, w: 3, h: 2, minH: 2 },
-            { i: "income", x: 6, y: 0, w: 3, h: 2, minH: 2 },
-            { i: "expense", x: 9, y: 0, w: 3, h: 2, minH: 2 },
-            { i: "overview", x: 0, y: 2, w: 8, h: 4, minH: 4 },
-            { i: "category", x: 8, y: 2, w: 4, h: 4, minH: 4 },
-            { i: "history", x: 0, y: 6, w: 9, h: 5, minH: 5 },
-            { i: "accounts", x: 9, y: 6, w: 3, h: 5, minH: 5 },
+            { i: "balance", x: 0, y: 0, w: 6, h: 2, minH: 2 },
+            { i: "forecast", x: 6, y: 0, w: 6, h: 2, minH: 2 },
+            { i: "income", x: 0, y: 2, w: 6, h: 2, minH: 2 },
+            { i: "expense", x: 6, y: 2, w: 6, h: 2, minH: 2 },
+            { i: "insights", x: 0, y: 4, w: 12, h: 2, minH: 2 },
+            { i: "overview", x: 0, y: 6, w: 8, h: 4, minH: 4 },
+            { i: "category", x: 8, y: 6, w: 4, h: 4, minH: 4 },
+            { i: "history", x: 0, y: 10, w: 9, h: 5, minH: 5 },
+            { i: "accounts", x: 9, y: 10, w: 3, h: 5, minH: 5 },
           ],
           md: [
-            { i: "balance", x: 0, y: 0, w: 3, h: 2 },
-            { i: "forecast", x: 3, y: 0, w: 3, h: 2 },
-            { i: "income", x: 6, y: 0, w: 3, h: 2 },
-            { i: "expense", x: 9, y: 0, w: 3, h: 2 },
-            { i: "overview", x: 0, y: 2, w: 8, h: 4 },
-            { i: "category", x: 8, y: 2, w: 4, h: 4 },
-            { i: "history", x: 0, y: 6, w: 8, h: 5 },
-            { i: "accounts", x: 8, y: 6, w: 4, h: 5 },
-          ],
-          sm: [
             { i: "balance", x: 0, y: 0, w: 6, h: 2 },
             { i: "forecast", x: 6, y: 0, w: 6, h: 2 },
             { i: "income", x: 0, y: 2, w: 6, h: 2 },
             { i: "expense", x: 6, y: 2, w: 6, h: 2 },
-            { i: "overview", x: 0, y: 4, w: 12, h: 4 },
-            { i: "category", x: 0, y: 8, w: 12, h: 4 },
-            { i: "history", x: 0, y: 12, w: 12, h: 5 },
-            { i: "accounts", x: 0, y: 17, w: 12, h: 5 },
+            { i: "insights", x: 0, y: 4, w: 12, h: 2 },
+            { i: "overview", x: 0, y: 6, w: 8, h: 4 },
+            { i: "category", x: 8, y: 6, w: 4, h: 4 },
+            { i: "history", x: 0, y: 10, w: 8, h: 5 },
+            { i: "accounts", x: 8, y: 10, w: 4, h: 5 },
+          ],
+          sm: [
+            { i: "balance", x: 0, y: 0, w: 12, h: 2 },
+            { i: "forecast", x: 0, y: 2, w: 12, h: 2 },
+            { i: "income", x: 0, y: 4, w: 12, h: 2 },
+            { i: "expense", x: 0, y: 6, w: 12, h: 2 },
+            { i: "insights", x: 0, y: 8, w: 12, h: 2 },
+            { i: "overview", x: 0, y: 10, w: 12, h: 4 },
+            { i: "category", x: 0, y: 14, w: 12, h: 4 },
+            { i: "history", x: 0, y: 18, w: 12, h: 5 },
+            { i: "accounts", x: 0, y: 23, w: 12, h: 5 },
           ],
           xs: [
             { i: "balance", x: 0, y: 0, w: 12, h: 2 },
             { i: "forecast", x: 0, y: 2, w: 12, h: 2 },
             { i: "income", x: 0, y: 4, w: 12, h: 2 },
             { i: "expense", x: 0, y: 6, w: 12, h: 2 },
-            { i: "overview", x: 0, y: 8, w: 12, h: 4 },
-            { i: "category", x: 0, y: 12, w: 12, h: 4 },
-            { i: "history", x: 0, y: 16, w: 12, h: 5 },
-            { i: "accounts", x: 0, y: 21, w: 12, h: 5 },
+            { i: "insights", x: 0, y: 8, w: 12, h: 2 },
+            { i: "overview", x: 0, y: 10, w: 12, h: 4 },
+            { i: "category", x: 0, y: 14, w: 12, h: 4 },
+            { i: "history", x: 0, y: 18, w: 12, h: 5 },
+            { i: "accounts", x: 0, y: 23, w: 12, h: 5 },
           ],
           xxs: [
             { i: "balance", x: 0, y: 0, w: 12, h: 2 },
             { i: "forecast", x: 0, y: 2, w: 12, h: 2 },
             { i: "income", x: 0, y: 4, w: 12, h: 2 },
             { i: "expense", x: 0, y: 6, w: 12, h: 2 },
-            { i: "overview", x: 0, y: 8, w: 12, h: 4 },
-            { i: "category", x: 0, y: 12, w: 12, h: 4 },
-            { i: "history", x: 0, y: 14, w: 12, h: 5 },
-            { i: "accounts", x: 0, y: 19, w: 12, h: 5 },
+            { i: "insights", x: 0, y: 8, w: 12, h: 2 },
+            { i: "overview", x: 0, y: 10, w: 12, h: 4 },
+            { i: "category", x: 0, y: 14, w: 12, h: 4 },
+            { i: "history", x: 0, y: 18, w: 12, h: 5 },
+            { i: "accounts", x: 0, y: 23, w: 12, h: 5 },
           ],
         };
   });
@@ -135,7 +141,7 @@ const Dashboard = () => {
 
   const onLayoutChange = (layout, allLayouts) => {
     setLayouts(allLayouts);
-    localStorage.setItem("dashboardLayout_v2", JSON.stringify(allLayouts));
+    localStorage.setItem("dashboardLayout_v3", JSON.stringify(allLayouts));
   };
 
   const exportToExcel = () => {
@@ -492,6 +498,28 @@ const Dashboard = () => {
               <Skeleton className="w-full h-full" />
             ) : (
               <ExpenseCard amount={stats.expense} />
+            )}
+          </Motion.div>
+        </div>
+
+        <div
+          key="insights"
+          className={
+            isDraggable
+              ? "border-2 border-dashed border-primary/50 rounded-lg"
+              : ""
+          }
+        >
+          <Motion.div variants={item} className="h-full relative">
+            {isDraggable && (
+              <div className="drag-handle absolute top-0 left-0 right-0 h-6 bg-gray-200/50 cursor-move z-50 rounded-t-lg flex justify-center items-center">
+                <Layout className="h-3 w-3 opacity-50" />
+              </div>
+            )}
+            {loading ? (
+              <Skeleton className="w-full h-full" />
+            ) : (
+              <SmartAlerts transactions={transactions} />
             )}
           </Motion.div>
         </div>

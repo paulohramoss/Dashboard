@@ -536,5 +536,10 @@
     "exists": "Rule for this keyword already exists",
     "deleteSuccess": "Rule deleted successfully",
     "deleteError": "Failed to delete rule"
+  },
+  "insights": {
+    "spendingSpike": "Hey, you spent {{percentage}}% more on '{{category}}' this month compared to your 3-month average.",
+    "comparison": "Current: {{current}} vs Average: {{average}}",
+    "noAnomalies": "All good! Your spending is within expected limits."
   }
 }
