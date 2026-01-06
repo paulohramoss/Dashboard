@@ -8,9 +8,11 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
+import { useCurrency } from "@/hooks/useCurrency";
 
 const FinancialFlowChart = ({ transactions }) => {
   const { t } = useTranslation();
+  const formatCurrency = useCurrency();
 
   // 1. Process Data
   // 1. Process Data & Grouping logic (Threshold 1%)
@@ -61,6 +63,19 @@ const FinancialFlowChart = ({ transactions }) => {
   const incomeCategories = Object.keys(incomeByCategory);
   const expenseCategories = Object.keys(expenseByCategory);
 
+  const translateCategory = (name) => {
+    if (name === "Others") return t("categories.others", "Outros");
+    if (!name) return name;
+
+    // Check if translation exists for lowercase key
+    const dimKey = `categories.${name.toLowerCase()}`;
+
+    // If translation returns the key itself (and not the text), it means missing translation
+    // However, depending on i18n config, it might return the key.
+    // Usually t(key, default) works best.
+    return t(dimKey, name);
+  };
+
   // Nodes array
   // Indices:
   // 0 to incomeCategories.length - 1: Income Categories
@@ -69,13 +84,11 @@ const FinancialFlowChart = ({ transactions }) => {
 
   const nodes = [
     ...incomeCategories.map((name) => ({
-      name:
-        name === "Others" ? t("categories.others", "Outros") : t(name, name),
+      name: translateCategory(name),
     })), // Income Nodes
     { name: t("common.wallet", "Carteira") }, // Central Node
     ...expenseCategories.map((name) => ({
-      name:
-        name === "Others" ? t("categories.others", "Outros") : t(name, name),
+      name: translateCategory(name),
     })), // Expense Nodes
   ];
 
@@ -148,7 +161,7 @@ const FinancialFlowChart = ({ transactions }) => {
               bottom: 20,
             }}
           >
-            <Tooltip />
+            <Tooltip formatter={(value) => formatCurrency(value)} />
           </Sankey>
         </ResponsiveContainer>
       </CardContent>
