@@ -10,6 +10,7 @@ import {
   where,
   onSnapshot,
   writeBatch,
+  updateDoc,
 } from "firebase/firestore";
 import { getCurrentLocalDate } from "@/lib/utils";
 
@@ -148,6 +149,17 @@ export const useTransactions = () => {
     }
   };
 
+  const updateTransaction = async (id, updatedData) => {
+    if (!user?.id) return;
+    try {
+      const transactionRef = doc(db, "transactions", id);
+      await updateDoc(transactionRef, updatedData);
+    } catch (error) {
+      console.error("Error updating transaction:", error);
+      throw error;
+    }
+  };
+
   const deleteTransaction = async (id) => {
     if (!user?.id) return;
     try {
@@ -217,6 +229,7 @@ export const useTransactions = () => {
     realTransactions: transactions, // Access to real only if needed
     addTransaction,
     addTransactions,
+    updateTransaction,
     deleteTransaction,
     clearTransactions,
     stats,

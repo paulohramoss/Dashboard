@@ -6,6 +6,7 @@ import {
   ArrowDownCircle,
   Repeat,
   Ghost,
+  Pencil,
 } from "lucide-react";
 import { useCategories } from "@/hooks/useCategories";
 import { Button } from "@/components/ui/button";
@@ -17,7 +18,7 @@ import PrivacyBlur from "@/components/ui/PrivacyBlur";
 
 import { useCurrency } from "@/hooks/useCurrency";
 
-const TransactionHistory = ({ transactions, onDelete, limit }) => {
+const TransactionHistory = ({ transactions, onDelete, onEdit, limit }) => {
   const { t } = useTranslation();
   const { categories } = useCategories();
   // const { isPrivacyMode } = useLayout(); // Removed
@@ -29,6 +30,7 @@ const TransactionHistory = ({ transactions, onDelete, limit }) => {
     setDeleteId(id);
     setIsConfirmOpen(true);
   };
+  // ... existing code ...
 
   const handleConfirmDelete = () => {
     if (deleteId) {
@@ -122,6 +124,14 @@ const TransactionHistory = ({ transactions, onDelete, limit }) => {
                       {transaction.type === "income" ? "+" : "-"}
                       {formatCurrency(transaction.amount)}
                     </PrivacyBlur>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="text-muted-foreground hover:text-primary"
+                      onClick={() => onEdit && onEdit(transaction)}
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </Button>
                     <Button
                       variant="ghost"
                       size="icon"

@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { Plus } from "lucide-react";
+import { Plus, Pencil } from "lucide-react";
 import { useCategories } from "@/hooks/useCategories";
 import { useAccounts } from "@/hooks/useAccounts";
 import { useTransactions } from "@/hooks/useTransactions";
@@ -83,23 +83,33 @@ const KEYWORD_MAP = {
   freela: { category: "Freelance", type: "income" },
 };
 
-const TransactionForm = ({ onAddTransaction }) => {
+const TransactionForm = ({
+  onAddTransaction,
+  initialData = null,
+  isEditing = false,
+  variant = "default", // "default" | "clean"
+}) => {
   const { t } = useTranslation();
   const { categories } = useCategories();
   const { accounts } = useAccounts();
   const { transactions } = useTransactions();
   const { rules, addRule } = useRules();
+
   const [formData, setFormData] = useState({
-    description: "",
-    amount: "",
-    type: "expense",
-    category: "",
-    date: getCurrentLocalDate(),
-    isRecurring: false,
-    frequency: "monthly",
-    isInstallment: false,
-    installmentsCount: 2,
-    accountId: "",
+    description: initialData?.description || "",
+    amount: initialData?.amount || "",
+    type: initialData?.type || "expense",
+    category:
+      initialData?.category ||
+      categories.filter((c) => c.type === "expense")[0]?.name ||
+      "",
+    date: initialData?.date || getCurrentLocalDate(),
+    isRecurring: initialData?.isRecurring || false,
+    frequency: initialData?.frequency || "monthly",
+    isInstallment: initialData?.isInstallment || false,
+    installmentsCount: initialData?.installmentsCount || 2,
+    accountId: initialData?.accountId || "",
+    destinationAccountId: initialData?.destinationAccountId || "", // Add this if missing in original state
   });
 
   // Filter categories based on selected type and deduplicate by name
@@ -258,19 +268,21 @@ const TransactionForm = ({ onAddTransaction }) => {
       amount: amountValue,
     });
 
-    setFormData({
-      description: "",
-      amount: "",
-      type: "expense",
-      category: categories.filter((c) => c.type === "expense")[0]?.name || "",
-      date: getCurrentLocalDate(),
-      isRecurring: false,
-      frequency: "monthly",
-      isInstallment: false,
-      installmentsCount: 2,
-      accountId: "",
-      destinationAccountId: "",
-    });
+    if (!isEditing) {
+      setFormData({
+        description: "",
+        amount: "",
+        type: "expense",
+        category: categories.filter((c) => c.type === "expense")[0]?.name || "",
+        date: getCurrentLocalDate(),
+        isRecurring: false,
+        frequency: "monthly",
+        isInstallment: false,
+        installmentsCount: 2,
+        accountId: "",
+        destinationAccountId: "",
+      });
+    }
 
     // Suggest saving a rule if one doesn't exist
     checkForRuleSuggestion(
@@ -315,241 +327,236 @@ const TransactionForm = ({ onAddTransaction }) => {
     });
   };
 
+  const FormContent = (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <label className="text-sm font-medium">
+            {t("transactions.form.description")}
+          </label>
+          <Input
+            placeholder="e.g. Grocery Shopping"
+            value={formData.description}
+            onChange={handleDescriptionChange}
+            required
+          />
+        </div>
+        <div className="space-y-2">
+          <label className="text-sm font-medium">
+            {t("transactions.form.amount")}
+          </label>
+          <CurrencyInput
+            value={formData.amount}
+            onChange={(val) => setFormData({ ...formData, amount: val })}
+            placeholder="R$ 0,00"
+            required
+          />
+        </div>
+        <div className="space-y-2">
+          <label className="text-sm font-medium">
+            {t("transactions.form.type")}
+          </label>
+          <Select value={formData.type} onChange={handleTypeChange}>
+            <option value="expense">{t("transactions.form.expense")}</option>
+            <option value="income">{t("transactions.form.income")}</option>
+            <option value="transfer">{t("transactions.form.transfer")}</option>
+          </Select>
+        </div>
+
+        {formData.type !== "transfer" && (
+          <div className="space-y-2">
+            <label className="text-sm font-medium">
+              {t("transactions.form.category")}
+            </label>
+            <Select
+              value={formData.category || availableCategories[0]?.name || ""}
+              onChange={(e) =>
+                setFormData({ ...formData, category: e.target.value })
+              }
+            >
+              {availableCategories.map((cat) => (
+                <option key={cat.id} value={cat.name}>
+                  {cat.isDefault
+                    ? t(`categories.${cat.name.toLowerCase()}`)
+                    : cat.name}
+                </option>
+              ))}
+            </Select>
+          </div>
+        )}
+
+        <div className="space-y-2">
+          <label className="text-sm font-medium">
+            {formData.type === "transfer"
+              ? t("transactions.form.sourceAccount")
+              : t("accounts.title")}
+          </label>
+          <Select
+            value={formData.accountId}
+            onChange={(e) =>
+              setFormData({ ...formData, accountId: e.target.value })
+            }
+            required
+          >
+            <option value="">{t("transactions.form.selectAccount")}</option>
+            {accounts.map((acc) => (
+              <option key={acc.id} value={acc.id}>
+                {acc.name}
+              </option>
+            ))}
+          </Select>
+        </div>
+
+        {formData.type === "transfer" && (
+          <div className="space-y-2">
+            <label className="text-sm font-medium">
+              {accounts.find((a) => a.id === formData.destinationAccountId)
+                ?.type === "credit"
+                ? t("transactions.form.paymentInfo", "Pagar Fatura do Cartão:") // Custom label
+                : t("transactions.form.destinationAccount")}
+            </label>
+            <Select
+              value={formData.destinationAccountId || ""}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  destinationAccountId: e.target.value,
+                })
+              }
+              required
+            >
+              <option value="">{t("transactions.form.selectAccount")}</option>
+              {accounts
+                .filter((acc) => acc.id !== formData.accountId)
+                .map((acc) => (
+                  <option key={acc.id} value={acc.id}>
+                    {acc.name}{" "}
+                    {acc.type === "credit"
+                      ? `(${t("accounts.credit", "Cartão")})`
+                      : ""}
+                  </option>
+                ))}
+            </Select>
+          </div>
+        )}
+
+        <div className="space-y-2">
+          <label className="text-sm font-medium">
+            {t("transactions.form.date")}
+          </label>
+          <Input
+            type="date"
+            value={formData.date}
+            onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+            required
+          />
+        </div>
+      </div>
+
+      <div className="flex flex-col space-y-4 p-4 border rounded-lg bg-muted/50">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <Switch
+              id="recurring"
+              checked={formData.isRecurring}
+              onCheckedChange={(checked) =>
+                setFormData({
+                  ...formData,
+                  isRecurring: checked,
+                  isInstallment: checked ? false : formData.isInstallment,
+                })
+              }
+            />
+            <Label htmlFor="recurring">
+              {t("transactions.form.recurring")}
+            </Label>
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <Switch
+              id="installment"
+              checked={formData.isInstallment}
+              onCheckedChange={(checked) =>
+                setFormData({
+                  ...formData,
+                  isInstallment: checked,
+                  isRecurring: checked ? false : formData.isRecurring,
+                })
+              }
+            />
+            <Label htmlFor="installment">
+              {t("transactions.form.isInstallment")}
+            </Label>
+          </div>
+        </div>
+
+        {formData.isRecurring && (
+          <div className="flex items-center space-x-2 animate-in fade-in slide-in-from-top-2">
+            <Label htmlFor="frequency">
+              {t("transactions.form.frequency")}:
+            </Label>
+            <Select
+              value={formData.frequency}
+              onChange={(e) =>
+                setFormData({ ...formData, frequency: e.target.value })
+              }
+              className="w-[180px] h-10"
+            >
+              <option value="daily">{t("transactions.form.daily")}</option>
+              <option value="weekly">{t("transactions.form.weekly")}</option>
+              <option value="monthly">{t("transactions.form.monthly")}</option>
+              <option value="yearly">{t("transactions.form.yearly")}</option>
+            </Select>
+          </div>
+        )}
+
+        {formData.isInstallment && (
+          <div className="flex items-center space-x-2 animate-in fade-in slide-in-from-top-2">
+            <Label htmlFor="installments">
+              {t("transactions.form.installments")}:
+            </Label>
+            <Input
+              type="number"
+              id="installments"
+              min="2"
+              max="99"
+              value={formData.installmentsCount}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  installmentsCount: parseInt(e.target.value) || 2,
+                })
+              }
+              className="w-20 h-10"
+            />
+          </div>
+        )}
+      </div>
+
+      <Button type="submit" className="w-full">
+        {isEditing ? (
+          <>
+            <Pencil className="mr-2 h-4 w-4" /> {t("common.save", "Salvar")}
+          </>
+        ) : (
+          <>
+            <Plus className="mr-2 h-4 w-4" /> {t("transactions.form.add")}
+          </>
+        )}
+      </Button>
+    </form>
+  );
+
+  if (variant === "clean") {
+    return FormContent;
+  }
+
   return (
     <Card>
       <CardHeader>
         <CardTitle>{t("transactions.addTransaction")}</CardTitle>
       </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium">
-                {t("transactions.form.description")}
-              </label>
-              <Input
-                placeholder="e.g. Grocery Shopping"
-                value={formData.description}
-                onChange={handleDescriptionChange}
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium">
-                {t("transactions.form.amount")}
-              </label>
-              <CurrencyInput
-                value={formData.amount}
-                onChange={(val) => setFormData({ ...formData, amount: val })}
-                placeholder="R$ 0,00"
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium">
-                {t("transactions.form.type")}
-              </label>
-              <Select value={formData.type} onChange={handleTypeChange}>
-                <option value="expense">
-                  {t("transactions.form.expense")}
-                </option>
-                <option value="income">{t("transactions.form.income")}</option>
-                <option value="transfer">
-                  {t("transactions.form.transfer")}
-                </option>
-              </Select>
-            </div>
-
-            {formData.type !== "transfer" && (
-              <div className="space-y-2">
-                <label className="text-sm font-medium">
-                  {t("transactions.form.category")}
-                </label>
-                <Select
-                  value={
-                    formData.category || availableCategories[0]?.name || ""
-                  }
-                  onChange={(e) =>
-                    setFormData({ ...formData, category: e.target.value })
-                  }
-                >
-                  {availableCategories.map((cat) => (
-                    <option key={cat.id} value={cat.name}>
-                      {cat.isDefault
-                        ? t(`categories.${cat.name.toLowerCase()}`)
-                        : cat.name}
-                    </option>
-                  ))}
-                </Select>
-              </div>
-            )}
-
-            <div className="space-y-2">
-              <label className="text-sm font-medium">
-                {formData.type === "transfer"
-                  ? t("transactions.form.sourceAccount")
-                  : t("accounts.title")}
-              </label>
-              <Select
-                value={formData.accountId}
-                onChange={(e) =>
-                  setFormData({ ...formData, accountId: e.target.value })
-                }
-                required
-              >
-                <option value="">{t("transactions.form.selectAccount")}</option>
-                {accounts.map((acc) => (
-                  <option key={acc.id} value={acc.id}>
-                    {acc.name}
-                  </option>
-                ))}
-              </Select>
-            </div>
-
-            {formData.type === "transfer" && (
-              <div className="space-y-2">
-                <label className="text-sm font-medium">
-                  {accounts.find((a) => a.id === formData.destinationAccountId)
-                    ?.type === "credit"
-                    ? t(
-                        "transactions.form.paymentInfo",
-                        "Pagar Fatura do Cartão:"
-                      ) // Custom label
-                    : t("transactions.form.destinationAccount")}
-                </label>
-                <Select
-                  value={formData.destinationAccountId || ""}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      destinationAccountId: e.target.value,
-                    })
-                  }
-                  required
-                >
-                  <option value="">
-                    {t("transactions.form.selectAccount")}
-                  </option>
-                  {accounts
-                    .filter((acc) => acc.id !== formData.accountId)
-                    .map((acc) => (
-                      <option key={acc.id} value={acc.id}>
-                        {acc.name}{" "}
-                        {acc.type === "credit"
-                          ? `(${t("accounts.credit", "Cartão")})`
-                          : ""}
-                      </option>
-                    ))}
-                </Select>
-              </div>
-            )}
-
-            <div className="space-y-2">
-              <label className="text-sm font-medium">
-                {t("transactions.form.date")}
-              </label>
-              <Input
-                type="date"
-                value={formData.date}
-                onChange={(e) =>
-                  setFormData({ ...formData, date: e.target.value })
-                }
-                required
-              />
-            </div>
-          </div>
-
-          <div className="flex flex-col space-y-4 p-4 border rounded-lg bg-muted/50">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <Switch
-                  id="recurring"
-                  checked={formData.isRecurring}
-                  onCheckedChange={(checked) =>
-                    setFormData({
-                      ...formData,
-                      isRecurring: checked,
-                      isInstallment: checked ? false : formData.isInstallment,
-                    })
-                  }
-                />
-                <Label htmlFor="recurring">
-                  {t("transactions.form.recurring")}
-                </Label>
-              </div>
-
-              <div className="flex items-center space-x-2">
-                <Switch
-                  id="installment"
-                  checked={formData.isInstallment}
-                  onCheckedChange={(checked) =>
-                    setFormData({
-                      ...formData,
-                      isInstallment: checked,
-                      isRecurring: checked ? false : formData.isRecurring,
-                    })
-                  }
-                />
-                <Label htmlFor="installment">
-                  {t("transactions.form.isInstallment")}
-                </Label>
-              </div>
-            </div>
-
-            {formData.isRecurring && (
-              <div className="flex items-center space-x-2 animate-in fade-in slide-in-from-top-2">
-                <Label htmlFor="frequency">
-                  {t("transactions.form.frequency")}:
-                </Label>
-                <Select
-                  value={formData.frequency}
-                  onChange={(e) =>
-                    setFormData({ ...formData, frequency: e.target.value })
-                  }
-                  className="w-[180px] h-10"
-                >
-                  <option value="daily">{t("transactions.form.daily")}</option>
-                  <option value="weekly">
-                    {t("transactions.form.weekly")}
-                  </option>
-                  <option value="monthly">
-                    {t("transactions.form.monthly")}
-                  </option>
-                  <option value="yearly">
-                    {t("transactions.form.yearly")}
-                  </option>
-                </Select>
-              </div>
-            )}
-
-            {formData.isInstallment && (
-              <div className="flex items-center space-x-2 animate-in fade-in slide-in-from-top-2">
-                <Label htmlFor="installments">
-                  {t("transactions.form.installments")}:
-                </Label>
-                <Input
-                  type="number"
-                  id="installments"
-                  min="2"
-                  max="99"
-                  value={formData.installmentsCount}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      installmentsCount: parseInt(e.target.value) || 2,
-                    })
-                  }
-                  className="w-20 h-10"
-                />
-              </div>
-            )}
-          </div>
-
-          <Button type="submit" className="w-full">
-            <Plus className="mr-2 h-4 w-4" /> {t("transactions.form.add")}
-          </Button>
-        </form>
-      </CardContent>
+      <CardContent>{FormContent}</CardContent>
     </Card>
   );
 };

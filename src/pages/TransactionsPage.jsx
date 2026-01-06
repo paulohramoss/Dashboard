@@ -6,10 +6,21 @@ import TransactionForm from "@/components/TransactionForm";
 import TransactionFilters from "@/components/TransactionFilters";
 import FileUploader from "@/components/FileUploader";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 const TransactionsPage = () => {
-  const { transactions, deleteTransaction, addTransaction, addTransactions } =
-    useTransactions();
+  const {
+    transactions,
+    deleteTransaction,
+    addTransaction,
+    addTransactions,
+    updateTransaction,
+  } = useTransactions();
   const { t } = useTranslation();
   const [filters, setFilters] = useState({
     search: "",
@@ -19,6 +30,22 @@ const TransactionsPage = () => {
     startDate: "",
     endDate: "",
   });
+  const [editingTransaction, setEditingTransaction] = useState(null);
+
+  const handleEdit = (transaction) => {
+    setEditingTransaction(transaction);
+  };
+
+  const handleUpdate = async (updatedData) => {
+    if (editingTransaction) {
+      try {
+        await updateTransaction(editingTransaction.id, updatedData);
+        setEditingTransaction(null);
+      } catch (error) {
+        console.error("Error updating transaction:", error);
+      }
+    }
+  };
 
   const filteredTransactions = useMemo(() => {
     return transactions.filter((t) => {
@@ -73,6 +100,7 @@ const TransactionsPage = () => {
               <TransactionHistory
                 transactions={filteredTransactions}
                 onDelete={deleteTransaction}
+                onEdit={handleEdit}
               />
             </CardContent>
           </Card>
@@ -82,6 +110,27 @@ const TransactionsPage = () => {
           <FileUploader onUpload={addTransactions} />
         </div>
       </div>
+
+      <Dialog
+        open={!!editingTransaction}
+        onOpenChange={(open) => !open && setEditingTransaction(null)}
+      >
+        <DialogContent className="max-w-3xl">
+          <DialogHeader>
+            <DialogTitle>
+              {t("transactions.editTransaction", "Editar Transação")}
+            </DialogTitle>
+          </DialogHeader>
+          {editingTransaction && (
+            <TransactionForm
+              initialData={editingTransaction}
+              isEditing={true}
+              onAddTransaction={handleUpdate}
+              variant="clean"
+            />
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
