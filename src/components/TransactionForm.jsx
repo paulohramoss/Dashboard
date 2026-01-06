@@ -409,7 +409,13 @@ const TransactionForm = ({ onAddTransaction }) => {
             {formData.type === "transfer" && (
               <div className="space-y-2">
                 <label className="text-sm font-medium">
-                  {t("transactions.form.destinationAccount")}
+                  {accounts.find((a) => a.id === formData.destinationAccountId)
+                    ?.type === "credit"
+                    ? t(
+                        "transactions.form.paymentInfo",
+                        "Pagar Fatura do Cartão:"
+                      ) // Custom label
+                    : t("transactions.form.destinationAccount")}
                 </label>
                 <Select
                   value={formData.destinationAccountId || ""}
@@ -428,7 +434,10 @@ const TransactionForm = ({ onAddTransaction }) => {
                     .filter((acc) => acc.id !== formData.accountId)
                     .map((acc) => (
                       <option key={acc.id} value={acc.id}>
-                        {acc.name}
+                        {acc.name}{" "}
+                        {acc.type === "credit"
+                          ? `(${t("accounts.credit", "Cartão")})`
+                          : ""}
                       </option>
                     ))}
                 </Select>

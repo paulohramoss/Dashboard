@@ -31,6 +31,8 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
+import { toast } from "sonner";
+
 import CurrencyInput from "@/components/ui/currency-input";
 import ConfirmDialog from "@/components/ui/confirm-dialog";
 import { useLayout } from "@/context/LayoutContext";
@@ -96,6 +98,7 @@ const AccountsPage = () => {
     type: "checking",
     initialBalance: 0,
     color: "#000000",
+    closingDay: 1, // Default closing day for credit cards
   });
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -150,6 +153,7 @@ const AccountsPage = () => {
       name: editingAccount.name,
       type: editingAccount.type,
       color: editingAccount.color,
+      closingDay: editingAccount.closingDay,
     });
 
     setIsEditOpen(false);
@@ -179,14 +183,20 @@ const AccountsPage = () => {
         )
         .reduce((acc, t) => acc + parseFloat(t.amount), 0);
 
+      const currentBalance =
+        (account.initialBalance || 0) +
+        income -
+        expense -
+        transfersOut +
+        transfersIn;
+
       return {
         ...account,
-        currentBalance:
-          (account.initialBalance || 0) +
-          income -
-          expense -
-          transfersOut +
-          transfersIn,
+        currentBalance,
+        invoiceValue:
+          account.type === "credit"
+            ? (account.initialBalance || 0) - currentBalance
+            : 0,
       };
     });
   }, [accounts, transactions]);
@@ -204,6 +214,10 @@ const AccountsPage = () => {
     await addAccount({
       ...newAccount,
       initialBalance: parseFloat(newAccount.initialBalance),
+      closingDay:
+        newAccount.type === "credit"
+          ? parseInt(newAccount.closingDay) || 1
+          : null,
     });
 
     setNewAccount({
@@ -211,6 +225,7 @@ const AccountsPage = () => {
       type: "checking",
       initialBalance: 0,
       color: "#000000",
+      closingDay: 1,
     });
     setIsAdding(false);
   };
@@ -222,6 +237,20 @@ const AccountsPage = () => {
 
   const handleDelete = async () => {
     if (accountToDelete) {
+      // Check for associated transactions
+      const hasTransactions = transactions.some(
+        (t) =>
+          t.accountId === accountToDelete.id ||
+          t.destinationAccountId === accountToDelete.id
+      );
+
+      if (hasTransactions) {
+        toast.error(t("accounts.deleteErrorHasTransactions"));
+        setDeleteDialogOpen(false);
+        setAccountToDelete(null);
+        return;
+      }
+
       await deleteAccount(accountToDelete.id);
       setAccountToDelete(null);
     }
@@ -299,6 +328,25 @@ const AccountsPage = () => {
                   required
                 />
               </div>
+
+              {newAccount.type === "credit" && (
+                <div className="w-[100px] space-y-2 animate-in fade-in slide-in-from-left-2">
+                  <Label>{t("accounts.closingDay", "Fechamento")}</Label>
+                  <Input
+                    type="number"
+                    min="1"
+                    max="31"
+                    value={newAccount.closingDay}
+                    onChange={(e) =>
+                      setNewAccount({
+                        ...newAccount,
+                        closingDay: parseInt(e.target.value) || 1,
+                      })
+                    }
+                    required
+                  />
+                </div>
+              )}
               <div className="w-[150px] space-y-2">
                 <Label>{t("accounts.type")}</Label>
                 <select
@@ -319,7 +367,11 @@ const AccountsPage = () => {
                 </select>
               </div>
               <div className="w-[150px] space-y-2">
-                <Label>{t("accounts.initialBalance")}</Label>
+                <Label>
+                  {newAccount.type === "credit"
+                    ? t("accounts.limit", "Limite")
+                    : t("accounts.initialBalance")}
+                </Label>
                 <CurrencyInput
                   value={newAccount.initialBalance}
                   onChange={(val) =>
@@ -411,8 +463,27 @@ const AccountsPage = () => {
                             )}
                           </div>
                           <p className="text-xs text-muted-foreground capitalize">
-                            {t(`accounts.${account.type}`)}
+                            {account.type === "credit"
+                              ? t(
+                                  "accounts.availableLimit",
+                                  "Limite Disponível"
+                                )
+                              : t(`accounts.${account.type}`)}
                           </p>
+                          {account.type === "credit" && (
+                            <div className="mt-2 pt-2 border-t text-sm flex justify-between">
+                              <span className="text-muted-foreground">
+                                {t("accounts.invoice", "Fatura")}:
+                              </span>
+                              <span
+                                className={cn(isPrivacyMode && "privacy-blur")}
+                              >
+                                {formatCurrency(
+                                  balanceInfo ? balanceInfo.invoiceValue : 0
+                                )}
+                              </span>
+                            </div>
+                          )}
                         </CardContent>
                       </Card>
                     </SortableAccountCard>
@@ -476,9 +547,29 @@ const AccountsPage = () => {
                         style={{ backgroundColor: account.color }}
                       />
                       <p className="text-xs text-muted-foreground capitalize">
-                        {t(`accounts.${account.type}`)}
+                        {account.type === "credit"
+                          ? t("accounts.availableLimit", "Limite Disponível")
+                          : t(`accounts.${account.type}`)}
                       </p>
                     </div>
+
+                    {account.type === "credit" && (
+                      <div className="mt-4 pt-2 border-t text-sm flex justify-between items-center">
+                        <span className="text-muted-foreground">
+                          {t("accounts.invoice", "Fatura Atual")}:
+                        </span>
+                        <span
+                          className={cn(
+                            "font-medium",
+                            isPrivacyMode && "privacy-blur"
+                          )}
+                        >
+                          {formatCurrency(
+                            balanceInfo ? balanceInfo.invoiceValue : 0
+                          )}
+                        </span>
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
               );
