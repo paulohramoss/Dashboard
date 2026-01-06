@@ -176,6 +176,12 @@
     "financialFlow": "Fluxo Financeiro",
     "flowDescription": "Visualize como o dinheiro entra na sua carteira e como é distribuído nas despesas."
   },
+  "finscore": {
+    "tooltip": "Pontuação baseada em poupança, orçamento, reserva e saúde financeira.",
+    "excellent": "Excelente",
+    "good": "Bom",
+    "needsWork": "Atenção"
+  },
   "settings": {
     "title": "Configurações",
     "subtitle": "Gerencie as configurações da sua conta e preferências.",
