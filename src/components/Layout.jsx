@@ -31,6 +31,8 @@ import { toast } from "sonner";
 import { LayoutContext } from "@/context/LayoutContext";
 import IOSInstallPrompt from "@/components/IOSInstallPrompt";
 
+import versionData from "@/version.json";
+
 const Layout = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isConfirmingLogout, setIsConfirmingLogout] = useState(false);
@@ -81,7 +83,7 @@ const Layout = ({ children }) => {
     });
   };
 
-  const appVersion = "v1.0.78";
+  const appVersion = versionData.version;
 
   // Desktop: Expanded if pinned OR hovered
   const isExpanded = isPinned || isHovered;

@@ -50,4 +50,12 @@ fs.writeFileSync(
   JSON.stringify(version, null, 2)
 );
 
+const srcDir = path.join(__dirname, "src");
+if (fs.existsSync(srcDir)) {
+  fs.writeFileSync(
+    path.join(srcDir, "version.json"),
+    JSON.stringify(version, null, 2)
+  );
+}
+
 console.log("Version file generated:", version);
