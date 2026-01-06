@@ -331,10 +331,11 @@ const TransactionForm = ({
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
-          <label className="text-sm font-medium">
+          <label className="text-sm font-medium" htmlFor="description">
             {t("transactions.form.description")}
           </label>
           <Input
+            id="description"
             placeholder="e.g. Grocery Shopping"
             value={formData.description}
             onChange={handleDescriptionChange}
