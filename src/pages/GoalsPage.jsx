@@ -22,8 +22,8 @@ import { Label } from "@/components/ui/label";
 import CurrencyInput from "@/components/ui/currency-input";
 import { Select } from "@/components/ui/select";
 import ConfirmDialog from "@/components/ui/confirm-dialog";
-import { cn } from "@/lib/utils";
-import { useLayout } from "@/context/LayoutContext";
+// import { cn } from "@/lib/utils"; // Removed as unused
+import PrivacyBlur from "@/components/ui/PrivacyBlur";
 
 import { motion as Motion } from "framer-motion";
 import confetti from "canvas-confetti";
@@ -37,7 +37,6 @@ const GoalsPage = () => {
 
   const { accounts } = useAccounts();
   const { transactions } = useTransactions();
-  const { isPrivacyMode } = useLayout();
 
   const accountsWithBalance = React.useMemo(() => {
     return accounts.map((account) => {
@@ -231,19 +230,15 @@ const GoalsPage = () => {
                       <div className="space-y-4 mt-4">
                         <div className="flex justify-between items-center text-sm font-medium">
                           <span>
-                            <span
-                              className={cn(isPrivacyMode && "privacy-blur")}
-                            >
+                            <PrivacyBlur>
                               {formatCurrency(goal.currentAmount)}
-                            </span>{" "}
+                            </PrivacyBlur>{" "}
                             <span className="text-muted-foreground font-normal">
                               {t("budgets.accumulatedOf")}
                             </span>{" "}
-                            <span
-                              className={cn(isPrivacyMode && "privacy-blur")}
-                            >
+                            <PrivacyBlur>
                               {formatCurrency(goal.targetAmount)}
-                            </span>
+                            </PrivacyBlur>
                           </span>
                           <span className="text-muted-foreground">
                             ({Math.round(progress)}%)

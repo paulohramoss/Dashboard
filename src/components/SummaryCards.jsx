@@ -8,13 +8,19 @@ import {
   ArrowDownRight,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useLayout } from "@/context/LayoutContext";
-import { cn } from "@/lib/utils";
+// import { useLayout } from "@/context/LayoutContext"; // Removed
+import PrivacyBlur from "@/components/ui/PrivacyBlur";
+
+// If I use PrivacyBlur className="...", I don't need cn in THIS file if I don't do conditional logic myself.
+// But wait, the original code used cn for merging privacy blur.
+// Now PrivacyBlur encapsulates that.
+// So I will remove it.
+// Actually, let's keep it commented out or remove cleanly.
 import { useCurrency } from "@/hooks/useCurrency";
 
 export const BalanceCard = ({ amount }) => {
   const { t } = useTranslation();
-  const { isPrivacyMode } = useLayout();
+  // const { isPrivacyMode } = useLayout();
   const formatCurrency = useCurrency();
 
   return (
@@ -26,11 +32,9 @@ export const BalanceCard = ({ amount }) => {
         <Wallet className="h-4 w-4 text-primary-foreground/70" />
       </CardHeader>
       <CardContent>
-        <div
-          className={cn("text-3xl font-bold", isPrivacyMode && "privacy-blur")}
-        >
+        <PrivacyBlur className="text-3xl font-bold">
           {formatCurrency(amount)}
-        </div>
+        </PrivacyBlur>
       </CardContent>
     </Card>
   );
@@ -38,7 +42,7 @@ export const BalanceCard = ({ amount }) => {
 
 export const IncomeCard = ({ amount }) => {
   const { t } = useTranslation();
-  const { isPrivacyMode } = useLayout();
+  // const { isPrivacyMode } = useLayout();
   const formatCurrency = useCurrency();
 
   return (
@@ -52,15 +56,10 @@ export const IncomeCard = ({ amount }) => {
         </div>
       </CardHeader>
       <CardContent>
-        <div
-          className={cn(
-            "text-2xl font-bold text-green-600 flex items-center gap-2",
-            isPrivacyMode && "privacy-blur"
-          )}
-        >
+        <PrivacyBlur className="text-2xl font-bold text-green-600 flex items-center gap-2">
           {formatCurrency(amount)}
           <ArrowUpRight className="h-4 w-4" />
-        </div>
+        </PrivacyBlur>
       </CardContent>
     </Card>
   );
@@ -68,7 +67,7 @@ export const IncomeCard = ({ amount }) => {
 
 export const ExpenseCard = ({ amount }) => {
   const { t } = useTranslation();
-  const { isPrivacyMode } = useLayout();
+  // const { isPrivacyMode } = useLayout();
   const formatCurrency = useCurrency();
 
   return (
@@ -82,15 +81,10 @@ export const ExpenseCard = ({ amount }) => {
         </div>
       </CardHeader>
       <CardContent>
-        <div
-          className={cn(
-            "text-2xl font-bold text-red-600 flex items-center gap-2",
-            isPrivacyMode && "privacy-blur"
-          )}
-        >
+        <PrivacyBlur className="text-2xl font-bold text-red-600 flex items-center gap-2">
           {formatCurrency(amount)}
           <ArrowDownRight className="h-4 w-4" />
-        </div>
+        </PrivacyBlur>
       </CardContent>
     </Card>
   );

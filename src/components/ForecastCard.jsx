@@ -2,7 +2,8 @@ import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { TrendingUp, TrendingDown, AlertTriangle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useLayout } from "@/context/LayoutContext";
+// import { useLayout } from "@/context/LayoutContext"; // Removed
+import PrivacyBlur from "@/components/ui/PrivacyBlur";
 import { cn } from "@/lib/utils";
 import { useCurrency } from "@/hooks/useCurrency";
 import {
@@ -21,7 +22,7 @@ import { formatDate } from "@/utils/dateUtils";
 
 const ForecastCard = ({ forecast, amount }) => {
   const { t } = useTranslation();
-  const { isPrivacyMode } = useLayout();
+  // const { isPrivacyMode } = useLayout(); // Removed
   const formatCurrency = useCurrency();
 
   // Determine trend color based on start vs end of forecast
@@ -94,16 +95,15 @@ const ForecastCard = ({ forecast, amount }) => {
         </div>
       </CardHeader>
       <CardContent className="relative z-10 flex-1 flex flex-col justify-center">
-        <div
+        <PrivacyBlur
           className={cn(
             "font-bold flex items-center gap-2 tracking-tight",
             getFontSize(formattedAmount),
-            isPositive ? "text-green-600" : "text-red-600",
-            isPrivacyMode && "privacy-blur"
+            isPositive ? "text-green-600" : "text-red-600"
           )}
         >
           {formattedAmount}
-        </div>
+        </PrivacyBlur>
         <div className="flex flex-col">
           <p className="text-xs text-muted-foreground mt-1">
             {t("dashboard.forecastDesc", "Saldo estimado")}

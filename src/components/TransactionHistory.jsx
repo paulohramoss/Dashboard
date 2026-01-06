@@ -12,14 +12,15 @@ import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import ConfirmDialog from "@/components/ui/confirm-dialog";
 import { cn, formatDateToLocal } from "@/lib/utils";
-import { useLayout } from "@/context/LayoutContext";
+// import { useLayout } from "@/context/LayoutContext"; // Removed as unused
+import PrivacyBlur from "@/components/ui/PrivacyBlur";
 
 import { useCurrency } from "@/hooks/useCurrency";
 
 const TransactionHistory = ({ transactions, onDelete, limit }) => {
   const { t } = useTranslation();
   const { categories } = useCategories();
-  const { isPrivacyMode } = useLayout();
+  // const { isPrivacyMode } = useLayout(); // Removed
   const [deleteId, setDeleteId] = useState(null);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const formatCurrency = useCurrency();
@@ -109,19 +110,18 @@ const TransactionHistory = ({ transactions, onDelete, limit }) => {
                     </div>
                   </div>
                   <div className="flex items-center gap-4 ml-4 flex-shrink-0">
-                    <span
+                    <PrivacyBlur
                       className={cn(
                         "font-bold whitespace-nowrap",
                         transaction.type === "income"
                           ? "text-green-600"
                           : "text-red-600",
-                        transaction.isShadow && "opacity-70",
-                        isPrivacyMode && "privacy-blur"
+                        transaction.isShadow && "opacity-70"
                       )}
                     >
                       {transaction.type === "income" ? "+" : "-"}
                       {formatCurrency(transaction.amount)}
-                    </span>
+                    </PrivacyBlur>
                     <Button
                       variant="ghost"
                       size="icon"

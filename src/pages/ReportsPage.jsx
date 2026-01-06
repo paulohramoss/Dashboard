@@ -8,13 +8,14 @@ import MonthlyEvolutionChart from "@/components/Charts/MonthlyEvolutionChart";
 import FinancialFlowChart from "@/components/Charts/FinancialFlowChart";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useLayout } from "@/context/LayoutContext";
-import { cn } from "@/lib/utils";
+import PrivacyBlur from "@/components/ui/PrivacyBlur";
+
+// import { cn } from "@/lib/utils"; // Removed as unused
 
 const ReportsPage = () => {
   const { transactions, stats, loading } = useTransactions();
   const { t } = useTranslation();
-  const { isPrivacyMode } = useLayout();
+  // const { isPrivacyMode } = useLayout(); // Removed
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
@@ -63,19 +64,18 @@ const ReportsPage = () => {
               {transactions.length}
             </span>{" "}
             {t("reports.totalTransactionsPart2")}{" "}
-            <span
-              className={cn(
+            <PrivacyBlur
+              className={
                 stats.balance >= 0
                   ? "text-green-600 font-bold"
-                  : "text-red-600 font-bold",
-                isPrivacyMode && "privacy-blur"
-              )}
+                  : "text-red-600 font-bold"
+              }
             >
               {new Intl.NumberFormat("pt-BR", {
                 style: "currency",
                 currency: "BRL",
               }).format(stats.balance)}
-            </span>
+            </PrivacyBlur>
             .
           </div>
         </CardContent>

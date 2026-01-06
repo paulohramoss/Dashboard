@@ -10,7 +10,8 @@ import { Plus, Trash2 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import CurrencyInput from "@/components/ui/currency-input";
 import ConfirmDialog from "@/components/ui/confirm-dialog";
-import { useLayout } from "@/context/LayoutContext";
+// import { useLayout } from "@/context/LayoutContext";
+import PrivacyBlur from "@/components/ui/PrivacyBlur";
 import { cn } from "@/lib/utils";
 
 import { motion as Motion } from "framer-motion";
@@ -19,7 +20,6 @@ const BudgetsPage = () => {
   const { t } = useTranslation();
   const { categories, updateCategory, loading } = useCategories();
   const { transactions } = useTransactions();
-  const { isPrivacyMode } = useLayout();
 
   // Run rollover logic
   useBudgetRollover(categories, transactions);
@@ -269,19 +269,19 @@ const BudgetsPage = () => {
                     <div className="space-y-2">
                       <div className="flex justify-between items-center text-sm">
                         <span className="font-medium">
-                          <span className={cn(isPrivacyMode && "privacy-blur")}>
+                          <PrivacyBlur>
                             {new Intl.NumberFormat("pt-BR", {
                               style: "currency",
                               currency: "BRL",
                             }).format(remaining)}
-                          </span>{" "}
+                          </PrivacyBlur>{" "}
                           {t("budgets.remainingOf")}{" "}
-                          <span className={cn(isPrivacyMode && "privacy-blur")}>
+                          <PrivacyBlur>
                             {new Intl.NumberFormat("pt-BR", {
                               style: "currency",
                               currency: "BRL",
                             }).format(effectiveBudget)}
-                          </span>
+                          </PrivacyBlur>
                         </span>
                       </div>
 
@@ -310,14 +310,12 @@ const BudgetsPage = () => {
                         {effectiveBudget > category.budget && (
                           <span className="text-green-500 ml-1 text-[10px]">
                             (+
-                            <span
-                              className={cn(isPrivacyMode && "privacy-blur")}
-                            >
+                            <PrivacyBlur>
                               {new Intl.NumberFormat("pt-BR", {
                                 style: "currency",
                                 currency: "BRL",
                               }).format(effectiveBudget - category.budget)}
-                            </span>{" "}
+                            </PrivacyBlur>{" "}
                             rollover)
                           </span>
                         )}

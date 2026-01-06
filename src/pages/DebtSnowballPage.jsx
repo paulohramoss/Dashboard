@@ -11,15 +11,14 @@ import { Progress } from "@/components/ui/progress";
 import CurrencyInput from "@/components/ui/currency-input";
 import { CreditCard, Building2, Calculator, TrendingDown } from "lucide-react";
 import { motion as Motion } from "framer-motion";
-import { useLayout } from "@/context/LayoutContext";
-import { cn } from "@/lib/utils";
+import PrivacyBlur from "@/components/ui/PrivacyBlur";
+// import { cn } from "@/lib/utils"; // Removed as unused
 
 const DebtSnowballPage = () => {
   const { t } = useTranslation();
   const { accounts } = useAccounts();
   const { transactions } = useTransactions();
   const formatCurrency = useCurrency();
-  const { isPrivacyMode } = useLayout();
 
   // Calculate current balances for all accounts
   const accountsWithBalance = useMemo(() => {
@@ -159,14 +158,9 @@ const DebtSnowballPage = () => {
                           {t(`accounts.${debt.type}`)}
                         </p>
                       </div>
-                      <div
-                        className={cn(
-                          "text-xl font-bold text-destructive",
-                          isPrivacyMode && "privacy-blur"
-                        )}
-                      >
+                      <PrivacyBlur className="text-xl font-bold text-destructive">
                         {formatCurrency(debt.balance)}
-                      </div>
+                      </PrivacyBlur>
                     </div>
                   </CardHeader>
                   <CardContent className="space-y-4">

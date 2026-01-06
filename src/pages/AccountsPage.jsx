@@ -35,8 +35,8 @@ import { toast } from "sonner";
 
 import CurrencyInput from "@/components/ui/currency-input";
 import ConfirmDialog from "@/components/ui/confirm-dialog";
-import { useLayout } from "@/context/LayoutContext";
-import { cn } from "@/lib/utils";
+import PrivacyBlur from "@/components/ui/PrivacyBlur";
+// import { cn } from "@/lib/utils"; // Removed as unused
 
 import {
   DndContext,
@@ -91,7 +91,7 @@ const AccountsPage = () => {
     loading,
   } = useAccounts();
   const { transactions } = useTransactions();
-  const { isPrivacyMode } = useLayout();
+  // const { isPrivacyMode } = useLayout();
   const [isAdding, setIsAdding] = useState(false);
   const [newAccount, setNewAccount] = useState({
     name: "",
@@ -452,16 +452,11 @@ const AccountsPage = () => {
                           </div>
                         </CardHeader>
                         <CardContent>
-                          <div
-                            className={cn(
-                              "text-2xl font-bold",
-                              isPrivacyMode && "privacy-blur"
-                            )}
-                          >
+                          <PrivacyBlur className="text-2xl font-bold">
                             {formatCurrency(
                               balanceInfo ? balanceInfo.currentBalance : 0
                             )}
-                          </div>
+                          </PrivacyBlur>
                           <p className="text-xs text-muted-foreground capitalize">
                             {account.type === "credit"
                               ? t(
@@ -475,13 +470,11 @@ const AccountsPage = () => {
                               <span className="text-muted-foreground">
                                 {t("accounts.invoice", "Fatura")}:
                               </span>
-                              <span
-                                className={cn(isPrivacyMode && "privacy-blur")}
-                              >
+                              <PrivacyBlur>
                                 {formatCurrency(
                                   balanceInfo ? balanceInfo.invoiceValue : 0
                                 )}
-                              </span>
+                              </PrivacyBlur>
                             </div>
                           )}
                         </CardContent>
@@ -530,17 +523,12 @@ const AccountsPage = () => {
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <div
-                      className={cn(
-                        "text-2xl font-bold",
-                        isPrivacyMode && "privacy-blur"
-                      )}
-                    >
+                    <PrivacyBlur className="text-2xl font-bold">
                       {new Intl.NumberFormat("pt-BR", {
                         style: "currency",
                         currency: "BRL",
                       }).format(balanceInfo ? balanceInfo.currentBalance : 0)}
-                    </div>
+                    </PrivacyBlur>
                     <div className="flex items-center gap-2 mt-2">
                       <div
                         className="w-2 h-2 rounded-full"
@@ -558,16 +546,11 @@ const AccountsPage = () => {
                         <span className="text-muted-foreground">
                           {t("accounts.invoice", "Fatura Atual")}:
                         </span>
-                        <span
-                          className={cn(
-                            "font-medium",
-                            isPrivacyMode && "privacy-blur"
-                          )}
-                        >
+                        <PrivacyBlur className="font-medium">
                           {formatCurrency(
                             balanceInfo ? balanceInfo.invoiceValue : 0
                           )}
-                        </span>
+                        </PrivacyBlur>
                       </div>
                     )}
                   </CardContent>

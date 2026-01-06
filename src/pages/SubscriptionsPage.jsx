@@ -1,7 +1,9 @@
 import React, { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useTransactions } from "@/hooks/useTransactions";
-import { useLayout } from "@/context/LayoutContext";
+// import { useLayout } from "@/context/LayoutContext"; // Removed as it is not needed if PrivacyBlur handles it internally?
+// Wait, PrivacyBlur handles useLayout internally. So I should remove the hook usage from here.
+import PrivacyBlur from "@/components/ui/PrivacyBlur";
 import {
   Card,
   CardHeader,
@@ -25,7 +27,7 @@ import {
   CalendarClock,
   AlertCircle,
 } from "lucide-react";
-import { cn, formatDateToLocal } from "@/lib/utils";
+import { formatDateToLocal } from "@/lib/utils";
 import ConfirmDialog from "@/components/ui/confirm-dialog";
 import TransactionForm from "@/components/TransactionForm";
 import {
@@ -39,7 +41,7 @@ import {
 const SubscriptionsPage = () => {
   const { t } = useTranslation();
   const { transactions, deleteTransaction, addTransaction } = useTransactions();
-  const { isPrivacyMode } = useLayout();
+  // const { isPrivacyMode } = useLayout(); // Removed
   const [deleteId, setDeleteId] = useState(null);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [isAddOpen, setIsAddOpen] = useState(false);
@@ -131,13 +133,10 @@ const SubscriptionsPage = () => {
               <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
                 {t("subscriptions.fixedCostLabel")}
               </p>
-              <h2
-                className={cn(
-                  "text-4xl font-extrabold text-foreground mt-1",
-                  isPrivacyMode && "privacy-blur"
-                )}
-              >
-                {formatCurrency(totalMonthlyFixedCost)}
+              <h2 className="text-4xl font-extrabold text-foreground mt-1">
+                <PrivacyBlur>
+                  {formatCurrency(totalMonthlyFixedCost)}
+                </PrivacyBlur>
               </h2>
               <p className="text-sm text-muted-foreground mt-1">
                 {t("subscriptions.monthlyEstimate")}
@@ -199,13 +198,8 @@ const SubscriptionsPage = () => {
                         {/* Display Next Due Date if available, else Date */}
                         {formatDateToLocal(sub.nextDueDate || sub.date)}
                       </TableCell>
-                      <TableCell
-                        className={cn(
-                          "text-right font-bold",
-                          isPrivacyMode && "privacy-blur"
-                        )}
-                      >
-                        {formatCurrency(sub.amount)}
+                      <TableCell className="text-right font-bold">
+                        <PrivacyBlur>{formatCurrency(sub.amount)}</PrivacyBlur>
                       </TableCell>
                       <TableCell className="text-right">
                         <Button

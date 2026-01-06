@@ -22,7 +22,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
-import { cn } from "@/lib/utils";
+// import { cn } from "@/lib/utils"; // Removed as unused
+import PrivacyBlur from "@/components/ui/PrivacyBlur";
 import {
   Trash2,
   FileSpreadsheet,
@@ -71,7 +72,7 @@ const Dashboard = () => {
   const { accounts } = useAccounts();
   const { t } = useTranslation();
   const formatCurrency = useCurrency();
-  const { isPrivacyMode, isSidebarCollapsed } = useLayout();
+  const { isSidebarCollapsed } = useLayout();
 
   const [isSimulateOpen, setIsSimulateOpen] = useState(false);
   const [layouts, setLayouts] = useState(() => {
@@ -564,9 +565,9 @@ const Dashboard = () => {
                     </CardHeader>
                     <CardContent>
                       <div className="text-2xl font-bold">
-                        <span className={cn(isPrivacyMode && "privacy-blur")}>
+                        <PrivacyBlur>
                           {formatCurrency(account.balance)}
-                        </span>
+                        </PrivacyBlur>
                       </div>
                       <p className="text-xs text-muted-foreground">
                         {t(`accounts.${account.type}`)}
