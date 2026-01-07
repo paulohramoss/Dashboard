@@ -15,8 +15,8 @@ import ConfirmDialog from "@/components/ui/confirm-dialog";
 import { cn, formatDateToLocal } from "@/lib/utils";
 import PrivacyBlur from "@/components/ui/PrivacyBlur";
 import { useCurrency } from "@/hooks/useCurrency";
-import { FixedSizeList as List } from "react-window";
-import AutoSizer from "react-virtualized-auto-sizer";
+import { List } from "react-window";
+import { AutoSizer } from "react-virtualized-auto-sizer";
 
 const TransactionRow = ({
   data,
