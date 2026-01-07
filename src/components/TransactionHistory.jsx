@@ -109,7 +109,13 @@ const TransactionRow = ({
   );
 };
 
-const TransactionHistory = ({ transactions, onDelete, onEdit, limit }) => {
+const TransactionHistory = ({
+  transactions,
+  onDelete,
+  onEdit,
+  limit,
+  className,
+}) => {
   const { t } = useTranslation();
   const { categories } = useCategories();
   const [deleteId, setDeleteId] = useState(null);
@@ -155,7 +161,9 @@ const TransactionHistory = ({ transactions, onDelete, onEdit, limit }) => {
   );
 
   return (
-    <Card className="col-span-4 lg:col-span-3 h-full flex flex-col">
+    <Card
+      className={cn("col-span-4 lg:col-span-3 h-full flex flex-col", className)}
+    >
       <CardHeader>
         <CardTitle>{t("transactions.title")}</CardTitle>
       </CardHeader>

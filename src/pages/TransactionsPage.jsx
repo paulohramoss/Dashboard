@@ -92,18 +92,12 @@ const TransactionsPage = () => {
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
         <div className="col-span-4 lg:col-span-4 space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>{t("transactions.allTransactions")}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <TransactionHistory
-                transactions={filteredTransactions}
-                onDelete={deleteTransaction}
-                onEdit={handleEdit}
-              />
-            </CardContent>
-          </Card>
+          <TransactionHistory
+            transactions={filteredTransactions}
+            onDelete={deleteTransaction}
+            onEdit={handleEdit}
+            className="h-full"
+          />
         </div>
         <div className="col-span-4 lg:col-span-3 space-y-4">
           <TransactionForm onAddTransaction={addTransaction} />
