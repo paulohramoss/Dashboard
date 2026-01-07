@@ -75,6 +75,137 @@ const Dashboard = () => {
   const formatCurrency = useCurrency();
   const { isSidebarCollapsed } = useLayout();
 
+  /* New Hook for Mobile Detection */
+  const useMediaQuery = (query) => {
+    const [matches, setMatches] = useState(false);
+
+    React.useEffect(() => {
+      const media = window.matchMedia(query);
+      if (media.matches !== matches) {
+        setMatches(media.matches);
+      }
+      const listener = () => setMatches(media.matches);
+      media.addEventListener("change", listener);
+      return () => media.removeEventListener("change", listener);
+    }, [matches, query]);
+
+    return matches;
+  };
+
+  const isMobile = useMediaQuery("(max-width: 768px)");
+
+  const renderCardContent = (key) => {
+    switch (key) {
+      case "balance":
+        return loading ? (
+          <Skeleton className="w-full h-full" />
+        ) : (
+          <BalanceCard amount={stats.balance} />
+        );
+      case "forecast":
+        return loading ? (
+          <Skeleton className="w-full h-full" />
+        ) : (
+          <ForecastCard forecast={forecastData} amount={projectedBalance} />
+        );
+      case "finscore":
+        return loading ? (
+          <Skeleton className="w-full h-full" />
+        ) : (
+          <FinScoreCard />
+        );
+      case "income":
+        return loading ? (
+          <Skeleton className="w-full h-full" />
+        ) : (
+          <IncomeCard amount={stats.income} />
+        );
+      case "expense":
+        return loading ? (
+          <Skeleton className="w-full h-full" />
+        ) : (
+          <ExpenseCard amount={stats.expense} />
+        );
+      case "insights":
+        return loading ? (
+          <Skeleton className="w-full h-full" />
+        ) : (
+          <SmartAlerts transactions={transactions} />
+        );
+      case "overview":
+        return loading ? (
+          <Skeleton className="w-full h-full" />
+        ) : (
+          <OverviewChart transactions={transactions} />
+        );
+      case "category":
+        return loading ? (
+          <Skeleton className="w-full h-full" />
+        ) : (
+          <CategoryChart transactions={transactions} />
+        );
+      case "history":
+        return loading ? (
+          <Skeleton className="w-full h-full" />
+        ) : (
+          <TransactionHistory
+            transactions={transactions}
+            onDelete={deleteTransaction}
+            limit={10}
+          />
+        );
+      case "accounts":
+        return loading ? (
+          <div className="grid gap-4">
+            <Skeleton className="h-20 w-full" />
+            <Skeleton className="h-20 w-full" />
+          </div>
+        ) : (
+          <div className="grid gap-4">
+            {accountsWithBalance.map((account) => (
+              <Card key={account.id} className="min-h-[100px]">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">
+                    {account.name}
+                  </CardTitle>
+                  {account.type === "wallet" ? (
+                    <Wallet className="h-4 w-4 text-muted-foreground" />
+                  ) : account.type === "investment" ? (
+                    <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                  ) : (
+                    <Building2 className="h-4 w-4 text-muted-foreground" />
+                  )}
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">
+                    <PrivacyBlur>{formatCurrency(account.balance)}</PrivacyBlur>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    {t(`accounts.${account.type}`)}
+                  </p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
+
+  const mobileOrder = [
+    "balance",
+    "forecast",
+    "insights",
+    "finscore",
+    "income",
+    "expense",
+    "overview",
+    "category",
+    "history",
+    "accounts",
+  ];
+
   const [isSimulateOpen, setIsSimulateOpen] = useState(false);
   const [layouts, setLayouts] = useState(() => {
     const savedLayout = localStorage.getItem("dashboardLayout_v4");
@@ -310,7 +441,7 @@ const Dashboard = () => {
         <div className="flex flex-wrap items-center gap-2">
           {!isSidebarCollapsed && (
             <>
-              {isDraggable && (
+              {isDraggable && !isMobile && (
                 <Button
                   variant="default"
                   size="sm"
@@ -372,12 +503,14 @@ const Dashboard = () => {
                   </Button>
                 }
               >
-                <DropdownItem onClick={() => setIsDraggable(!isDraggable)}>
-                  <Layout className="mr-2 h-4 w-4" />
-                  {isDraggable
-                    ? t("dashboard.saveLayout", "Salvar Layout")
-                    : t("dashboard.editLayout", "Editar Layout")}
-                </DropdownItem>
+                {!isMobile && (
+                  <DropdownItem onClick={() => setIsDraggable(!isDraggable)}>
+                    <Layout className="mr-2 h-4 w-4" />
+                    {isDraggable
+                      ? t("dashboard.saveLayout", "Salvar Layout")
+                      : t("dashboard.editLayout", "Editar Layout")}
+                  </DropdownItem>
+                )}
                 <DropdownItem onClick={toggleShadowMode}>
                   <Ghost className="mr-2 h-4 w-4" />
                   {isShadowMode ? t("shadowMode.exit") : t("shadowMode.enter")}
@@ -418,272 +551,61 @@ const Dashboard = () => {
         </DialogContent>
       </Dialog>
 
-      <ResponsiveGridLayout
-        className="layout"
-        layouts={layouts}
-        breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
-        cols={{ lg: 12, md: 12, sm: 12, xs: 12, xxs: 12 }}
-        rowHeight={100}
-        isDraggable={isDraggable}
-        isResizable={isDraggable}
-        onLayoutChange={onLayoutChange}
-        draggableHandle=".drag-handle"
-      >
-        <div
-          key="balance"
-          className={
-            isDraggable
-              ? "border-2 border-dashed border-primary/50 rounded-lg"
-              : ""
-          }
-        >
-          <Motion.div variants={item} className="h-full relative">
-            {isDraggable && (
-              <div className="drag-handle absolute top-0 left-0 right-0 h-6 bg-gray-200/50 cursor-move z-50 rounded-t-lg flex justify-center items-center">
-                <Layout className="h-3 w-3 opacity-50" />
-              </div>
-            )}
-            {loading ? (
-              <Skeleton className="w-full h-full" />
-            ) : (
-              <BalanceCard amount={stats.balance} />
-            )}
-          </Motion.div>
+      {isMobile ? (
+        <div className="flex flex-col gap-4">
+          {mobileOrder.map((key) => (
+            <Motion.div key={key} variants={item} className="w-full">
+              {renderCardContent(key)}
+            </Motion.div>
+          ))}
         </div>
-        <div
-          key="forecast"
-          className={
-            isDraggable
-              ? "border-2 border-dashed border-primary/50 rounded-lg"
-              : ""
-          }
+      ) : (
+        <ResponsiveGridLayout
+          className="layout"
+          layouts={layouts}
+          breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
+          cols={{ lg: 12, md: 12, sm: 12, xs: 12, xxs: 12 }}
+          rowHeight={100}
+          isDraggable={isDraggable}
+          isResizable={isDraggable}
+          onLayoutChange={onLayoutChange}
+          draggableHandle=".drag-handle"
         >
-          <Motion.div variants={item} className="h-full relative">
-            {isDraggable && (
-              <div className="drag-handle absolute top-0 left-0 right-0 h-6 bg-gray-200/50 cursor-move z-50 rounded-t-lg flex justify-center items-center">
-                <Layout className="h-3 w-3 opacity-50" />
-              </div>
-            )}
-            {loading ? (
-              <Skeleton className="w-full h-full" />
-            ) : (
-              <ForecastCard forecast={forecastData} amount={projectedBalance} />
-            )}
-          </Motion.div>
-        </div>
-        <div
-          key="finscore"
-          className={
-            isDraggable
-              ? "border-2 border-dashed border-primary/50 rounded-lg"
-              : ""
-          }
-        >
-          <Motion.div variants={item} className="h-full relative">
-            {isDraggable && (
-              <div className="drag-handle absolute top-0 left-0 right-0 h-6 bg-gray-200/50 cursor-move z-50 rounded-t-lg flex justify-center items-center">
-                <Layout className="h-3 w-3 opacity-50" />
-              </div>
-            )}
-            {loading ? (
-              <Skeleton className="w-full h-full" />
-            ) : (
-              <FinScoreCard />
-            )}
-          </Motion.div>
-        </div>
-        <div
-          key="income"
-          className={
-            isDraggable
-              ? "border-2 border-dashed border-primary/50 rounded-lg"
-              : ""
-          }
-        >
-          <Motion.div variants={item} className="h-full relative">
-            {isDraggable && (
-              <div className="drag-handle absolute top-0 left-0 right-0 h-6 bg-gray-200/50 cursor-move z-50 rounded-t-lg flex justify-center items-center">
-                <Layout className="h-3 w-3 opacity-50" />
-              </div>
-            )}
-            {loading ? (
-              <Skeleton className="w-full h-full" />
-            ) : (
-              <IncomeCard amount={stats.income} />
-            )}
-          </Motion.div>
-        </div>
-        <div
-          key="expense"
-          className={
-            isDraggable
-              ? "border-2 border-dashed border-primary/50 rounded-lg"
-              : ""
-          }
-        >
-          <Motion.div variants={item} className="h-full relative">
-            {isDraggable && (
-              <div className="drag-handle absolute top-0 left-0 right-0 h-6 bg-gray-200/50 cursor-move z-50 rounded-t-lg flex justify-center items-center">
-                <Layout className="h-3 w-3 opacity-50" />
-              </div>
-            )}
-            {loading ? (
-              <Skeleton className="w-full h-full" />
-            ) : (
-              <ExpenseCard amount={stats.expense} />
-            )}
-          </Motion.div>
-        </div>
-
-        <div
-          key="insights"
-          className={
-            isDraggable
-              ? "border-2 border-dashed border-primary/50 rounded-lg"
-              : ""
-          }
-        >
-          <Motion.div variants={item} className="h-full relative">
-            {isDraggable && (
-              <div className="drag-handle absolute top-0 left-0 right-0 h-6 bg-gray-200/50 cursor-move z-50 rounded-t-lg flex justify-center items-center">
-                <Layout className="h-3 w-3 opacity-50" />
-              </div>
-            )}
-            {loading ? (
-              <Skeleton className="w-full h-full" />
-            ) : (
-              <SmartAlerts transactions={transactions} />
-            )}
-          </Motion.div>
-        </div>
-
-        <div
-          key="accounts"
-          className={
-            isDraggable
-              ? "border-2 border-dashed border-primary/50 rounded-lg"
-              : ""
-          }
-        >
-          <Motion.div
-            variants={item}
-            className="h-full relative overflow-y-auto"
-          >
-            {isDraggable && (
-              <div className="drag-handle absolute top-0 left-0 right-0 h-6 bg-gray-200/50 cursor-move z-50 rounded-t-lg flex justify-center items-center">
-                <Layout className="h-3 w-3 opacity-50" />
-              </div>
-            )}
-            {loading ? (
-              <div className="grid gap-4">
-                <Skeleton className="h-20 w-full" />
-                <Skeleton className="h-20 w-full" />
-              </div>
-            ) : (
-              <div className="grid gap-4">
-                {accountsWithBalance.map((account) => (
-                  <Card key={account.id} className="min-h-[100px]">
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">
-                        {account.name}
-                      </CardTitle>
-                      {account.type === "wallet" ? (
-                        <Wallet className="h-4 w-4 text-muted-foreground" />
-                      ) : account.type === "investment" ? (
-                        <TrendingUp className="h-4 w-4 text-muted-foreground" />
-                      ) : (
-                        <Building2 className="h-4 w-4 text-muted-foreground" />
-                      )}
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-2xl font-bold">
-                        <PrivacyBlur>
-                          {formatCurrency(account.balance)}
-                        </PrivacyBlur>
-                      </div>
-                      <p className="text-xs text-muted-foreground">
-                        {t(`accounts.${account.type}`)}
-                      </p>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            )}
-          </Motion.div>
-        </div>
-
-        <div
-          key="overview"
-          className={
-            isDraggable
-              ? "border-2 border-dashed border-primary/50 rounded-lg"
-              : ""
-          }
-        >
-          <Motion.div variants={item} className="h-full relative">
-            {isDraggable && (
-              <div className="drag-handle absolute top-0 left-0 right-0 h-6 bg-gray-200/50 cursor-move z-50 rounded-t-lg flex justify-center items-center">
-                <Layout className="h-3 w-3 opacity-50" />
-              </div>
-            )}
-            {loading ? (
-              <Skeleton className="w-full h-full" />
-            ) : (
-              <OverviewChart transactions={transactions} />
-            )}
-          </Motion.div>
-        </div>
-        <div
-          key="category"
-          className={
-            isDraggable
-              ? "border-2 border-dashed border-primary/50 rounded-lg"
-              : ""
-          }
-        >
-          <Motion.div variants={item} className="h-full relative">
-            {isDraggable && (
-              <div className="drag-handle absolute top-0 left-0 right-0 h-6 bg-gray-200/50 cursor-move z-50 rounded-t-lg flex justify-center items-center">
-                <Layout className="h-3 w-3 opacity-50" />
-              </div>
-            )}
-            {loading ? (
-              <Skeleton className="w-full h-full" />
-            ) : (
-              <CategoryChart transactions={transactions} />
-            )}
-          </Motion.div>
-        </div>
-
-        <div
-          key="history"
-          className={
-            isDraggable
-              ? "border-2 border-dashed border-primary/50 rounded-lg"
-              : ""
-          }
-        >
-          <Motion.div
-            variants={item}
-            className="h-full relative overflow-y-auto"
-          >
-            {isDraggable && (
-              <div className="drag-handle absolute top-0 left-0 right-0 h-6 bg-gray-200/50 cursor-move z-10 rounded-t-lg flex justify-center items-center">
-                <Layout className="h-3 w-3 opacity-50" />
-              </div>
-            )}
-            {loading ? (
-              <Skeleton className="w-full h-full" />
-            ) : (
-              <TransactionHistory
-                transactions={transactions}
-                onDelete={deleteTransaction}
-                limit={10}
-              />
-            )}
-          </Motion.div>
-        </div>
-      </ResponsiveGridLayout>
+          {[
+            "balance",
+            "forecast",
+            "finscore",
+            "income",
+            "expense",
+            "insights",
+            "accounts",
+            "overview",
+            "category",
+            "history",
+          ].map((key) => (
+            <div
+              key={key}
+              className={
+                isDraggable
+                  ? "border-2 border-dashed border-primary/50 rounded-lg"
+                  : ""
+              }
+            >
+              <Motion.div
+                variants={item}
+                className="h-full relative overflow-y-auto"
+              >
+                {isDraggable && (
+                  <div className="drag-handle absolute top-0 left-0 right-0 h-6 bg-gray-200/50 cursor-move z-50 rounded-t-lg flex justify-center items-center">
+                    <Layout className="h-3 w-3 opacity-50" />
+                  </div>
+                )}
+                {renderCardContent(key)}
+              </Motion.div>
+            </div>
+          ))}
+        </ResponsiveGridLayout>
+      )}
     </Motion.div>
   );
 };
