@@ -14,6 +14,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
 
 import CurrencyInput from "@/components/ui/currency-input";
+import MagicScan from "@/components/MagicScan";
 import { getCurrentLocalDate } from "@/lib/utils";
 import { parseInputDate } from "@/utils/dateUtils";
 
@@ -292,6 +293,15 @@ const TransactionForm = ({
     );
   };
 
+  const handleScanComplete = (data) => {
+    setFormData((prev) => ({
+      ...prev,
+      amount: data.amount || prev.amount,
+      date: data.date || prev.date,
+      description: prev.description || "Recibo Escaneado", // Optional default
+    }));
+  };
+
   const checkForRuleSuggestion = (description, category, type) => {
     const lowerDesc = description.toLowerCase().trim();
     if (!lowerDesc) return;
@@ -346,13 +356,17 @@ const TransactionForm = ({
           <label className="text-sm font-medium" htmlFor="amount">
             {t("transactions.form.amount")}
           </label>
-          <CurrencyInput
-            id="amount"
-            value={formData.amount}
-            onChange={(val) => setFormData({ ...formData, amount: val })}
-            placeholder="R$ 0,00"
-            required
-          />
+          <div className="flex gap-2">
+            <CurrencyInput
+              id="amount"
+              value={formData.amount}
+              onChange={(val) => setFormData({ ...formData, amount: val })}
+              placeholder="R$ 0,00"
+              required
+              className="flex-1"
+            />
+            <MagicScan onScanComplete={handleScanComplete} />
+          </div>
         </div>
         <div className="space-y-2">
           <label className="text-sm font-medium" htmlFor="type">
