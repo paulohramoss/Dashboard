@@ -337,6 +337,7 @@ const Dashboard = () => {
                 size="icon"
                 onClick={() => setIsSimulateOpen(true)}
                 className="md:hidden"
+                aria-label={t("dashboard.simulate", "Simular")}
               >
                 <TrendingUp className="h-4 w-4" />
               </Button>
@@ -362,7 +363,11 @@ const Dashboard = () => {
 
               <CustomDropdown
                 trigger={
-                  <Button variant="ghost" size="icon">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    aria-label={t("common.options", "Opções")}
+                  >
                     <MoreVertical className="h-4 w-4" />
                   </Button>
                 }

@@ -343,10 +343,11 @@ const TransactionForm = ({
           />
         </div>
         <div className="space-y-2">
-          <label className="text-sm font-medium">
+          <label className="text-sm font-medium" htmlFor="amount">
             {t("transactions.form.amount")}
           </label>
           <CurrencyInput
+            id="amount"
             value={formData.amount}
             onChange={(val) => setFormData({ ...formData, amount: val })}
             placeholder="R$ 0,00"
@@ -354,10 +355,10 @@ const TransactionForm = ({
           />
         </div>
         <div className="space-y-2">
-          <label className="text-sm font-medium">
+          <label className="text-sm font-medium" htmlFor="type">
             {t("transactions.form.type")}
           </label>
-          <Select value={formData.type} onChange={handleTypeChange}>
+          <Select id="type" value={formData.type} onChange={handleTypeChange}>
             <option value="expense">{t("transactions.form.expense")}</option>
             <option value="income">{t("transactions.form.income")}</option>
             <option value="transfer">{t("transactions.form.transfer")}</option>
@@ -366,10 +367,11 @@ const TransactionForm = ({
 
         {formData.type !== "transfer" && (
           <div className="space-y-2">
-            <label className="text-sm font-medium">
+            <label className="text-sm font-medium" htmlFor="category">
               {t("transactions.form.category")}
             </label>
             <Select
+              id="category"
               value={formData.category || availableCategories[0]?.name || ""}
               onChange={(e) =>
                 setFormData({ ...formData, category: e.target.value })
@@ -387,12 +389,13 @@ const TransactionForm = ({
         )}
 
         <div className="space-y-2">
-          <label className="text-sm font-medium">
+          <label className="text-sm font-medium" htmlFor="accountId">
             {formData.type === "transfer"
               ? t("transactions.form.sourceAccount")
               : t("accounts.title")}
           </label>
           <Select
+            id="accountId"
             value={formData.accountId}
             onChange={(e) =>
               setFormData({ ...formData, accountId: e.target.value })
@@ -410,13 +413,17 @@ const TransactionForm = ({
 
         {formData.type === "transfer" && (
           <div className="space-y-2">
-            <label className="text-sm font-medium">
+            <label
+              className="text-sm font-medium"
+              htmlFor="destinationAccountId"
+            >
               {accounts.find((a) => a.id === formData.destinationAccountId)
                 ?.type === "credit"
                 ? t("transactions.form.paymentInfo", "Pagar Fatura do Cartão:") // Custom label
                 : t("transactions.form.destinationAccount")}
             </label>
             <Select
+              id="destinationAccountId"
               value={formData.destinationAccountId || ""}
               onChange={(e) =>
                 setFormData({
@@ -442,10 +449,11 @@ const TransactionForm = ({
         )}
 
         <div className="space-y-2">
-          <label className="text-sm font-medium">
+          <label className="text-sm font-medium" htmlFor="date">
             {t("transactions.form.date")}
           </label>
           <Input
+            id="date"
             type="date"
             value={formData.date}
             onChange={(e) => setFormData({ ...formData, date: e.target.value })}

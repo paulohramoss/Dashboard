@@ -114,6 +114,11 @@ const RegisterPage = () => {
                   size="icon"
                   className="absolute right-0 top-0 h-10 w-10 text-muted-foreground hover:text-foreground"
                   onClick={() => setShowPassword(!showPassword)}
+                  aria-label={
+                    showPassword
+                      ? t("auth.hidePassword", "Ocultar senha")
+                      : t("auth.showPassword", "Mostrar senha")
+                  }
                 >
                   {showPassword ? (
                     <EyeOff className="h-4 w-4" />
@@ -142,6 +147,11 @@ const RegisterPage = () => {
                   size="icon"
                   className="absolute right-0 top-0 h-10 w-10 text-muted-foreground hover:text-foreground"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  aria-label={
+                    showConfirmPassword
+                      ? t("auth.hidePassword", "Ocultar senha")
+                      : t("auth.showPassword", "Mostrar senha")
+                  }
                 >
                   {showConfirmPassword ? (
                     <EyeOff className="h-4 w-4" />

@@ -94,6 +94,11 @@ const LoginPage = () => {
                     size="icon"
                     className="absolute right-0 top-0 h-11 w-11 text-muted-foreground hover:text-foreground"
                     onClick={() => setShowPassword(!showPassword)}
+                    aria-label={
+                      showPassword
+                        ? t("auth.hidePassword", "Ocultar senha")
+                        : t("auth.showPassword", "Mostrar senha")
+                    }
                   >
                     {showPassword ? (
                       <EyeOff className="h-4 w-4" />
