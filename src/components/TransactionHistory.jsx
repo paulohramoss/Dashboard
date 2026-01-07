@@ -173,23 +173,27 @@ const TransactionHistory = ({
             <p className="text-center text-muted-foreground py-8">
               {t("transactions.noTransactions")}
             </p>
-          ) : limit ? (
-            // Simple map for Dashboard (limited items)
-            transactions.slice(0, limit).map((transaction, index) => (
-              <TransactionRow
-                key={transaction.id}
-                data={transactions}
-                index={index}
-                style={{}} // No absolute positioning needed here
-                onEdit={onEdit}
-                onDelete={handleDeleteClick}
-                formatCurrency={formatCurrency}
-                getCategoryLabel={getCategoryLabel}
-                formatDate={formatDate}
-              />
-            ))
+          ) : limit || transactions.length < 50 ? (
+            // Simple map for Dashboard or small lists
+            <div className="space-y-2">
+              {transactions
+                .slice(0, limit || transactions.length)
+                .map((transaction, index) => (
+                  <TransactionRow
+                    key={transaction.id}
+                    data={transactions}
+                    index={index}
+                    style={{}} // No absolute positioning needed here
+                    onEdit={onEdit}
+                    onDelete={handleDeleteClick}
+                    formatCurrency={formatCurrency}
+                    getCategoryLabel={getCategoryLabel}
+                    formatDate={formatDate}
+                  />
+                ))}
+            </div>
           ) : (
-            // Virtualized list for full history
+            // Virtualized list for large history
             <div className="h-[600px] w-full">
               <AutoSizer>
                 {({ height, width }) => (
