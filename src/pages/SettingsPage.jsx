@@ -9,6 +9,7 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -30,6 +31,8 @@ import {
   Eye,
   EyeOff,
   RefreshCw,
+  Loader2,
+  Upload,
 } from "lucide-react";
 import { toast } from "sonner";
 import { db } from "@/lib/firebase";
@@ -49,7 +52,8 @@ import { useRules } from "@/hooks/useRules";
 
 const SettingsPage = () => {
   const { t } = useTranslation();
-  const { user, updateUser } = useAuth();
+  const { user, updateUser, uploadProfilePicture, removeProfilePicture } =
+    useAuth();
   const { categories, addCategory, deleteCategory, updateCategory } =
     useCategories();
   const { enabled: notificationsEnabled, toggleNotifications } =
@@ -67,6 +71,7 @@ const SettingsPage = () => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [updatingPassword, setUpdatingPassword] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
 
   // Password Visibility State
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
@@ -87,6 +92,29 @@ const SettingsPage = () => {
       toast.success(t("settings.profileUpdated"));
     } catch {
       toast.error(t("settings.profileUpdateError"));
+    }
+  };
+
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error(
+        t("settings.imageSizeError", "A imagem deve ter no máximo 5MB")
+      );
+      return;
+    }
+
+    setUploadingImage(true);
+    try {
+      await uploadProfilePicture(file);
+      toast.success(t("settings.avatarUpdated", "Foto de perfil atualizada"));
+    } catch (error) {
+      console.error(error);
+      toast.error(t("settings.avatarUpdateError", "Erro ao atualizar foto"));
+    } finally {
+      setUploadingImage(false);
     }
   };
 
@@ -332,6 +360,81 @@ const SettingsPage = () => {
               <CardDescription>{t("settings.profileDesc")}</CardDescription>
             </CardHeader>
             <CardContent>
+              <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-start mb-6">
+                <Avatar className="w-24 h-24">
+                  <AvatarImage src={user?.photoURL} />
+                  <AvatarFallback className="text-2xl">
+                    {user?.name?.charAt(0).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex flex-col gap-2">
+                  <Label className="text-lg font-semibold">
+                    {t("settings.profilePicture", "Foto de Perfil")}
+                  </Label>
+                  <div className="flex flex-wrap gap-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      className="relative"
+                      disabled={uploadingImage}
+                    >
+                      {uploadingImage ? (
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      ) : (
+                        <Upload className="w-4 h-4 mr-2" />
+                      )}
+                      {uploadingImage
+                        ? t("common.uploading", "Enviando...")
+                        : t("settings.changePhoto", "Alterar Foto")}
+                      <input
+                        type="file"
+                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed"
+                        onChange={handleImageUpload}
+                        accept="image/*"
+                        disabled={uploadingImage}
+                      />
+                    </Button>
+                    {user?.photoURL && (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                        onClick={async () => {
+                          if (
+                            confirm(
+                              t(
+                                "settings.confirmRemovePhoto",
+                                "Remover foto de perfil?"
+                              )
+                            )
+                          ) {
+                            try {
+                              await removeProfilePicture();
+                              toast.success(
+                                t("settings.photoRemoved", "Foto removida")
+                              );
+                            } catch (e) {
+                              toast.error(t("common.error", "Erro ao remover"));
+                            }
+                          }
+                        }}
+                      >
+                        <Trash2 className="w-4 h-4 mr-2" />
+                        {t("settings.removePhoto", "Remover")}
+                      </Button>
+                    )}
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    {t(
+                      "settings.photoRequirements",
+                      "JPG, GIF ou PNG. Max 5MB."
+                    )}
+                  </p>
+                </div>
+              </div>
+
               <form onSubmit={handleProfileUpdate} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="name">{t("settings.name")}</Label>

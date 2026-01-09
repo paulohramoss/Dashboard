@@ -14,6 +14,9 @@ const Tabs = React.forwardRef(
       >
         {React.Children.map(children, (child) => {
           if (React.isValidElement(child)) {
+            if (child.type.displayName === "TabsContent") {
+              return React.cloneElement(child, { activeTab });
+            }
             return React.cloneElement(child, { activeTab, setActiveTab });
           }
           return child;

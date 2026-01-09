@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { AuthContext } from "./AuthContextDefinition";
-import { auth } from "@/lib/firebase";
+import { auth, storage } from "@/lib/firebase";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -9,6 +9,7 @@ import {
   updateProfile,
   sendPasswordResetEmail,
 } from "firebase/auth";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -99,6 +100,45 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const uploadProfilePicture = async (file) => {
+    if (!auth.currentUser) return;
+    if (!file) {
+      // Handle removal (optional logic: reset photoURL)
+      // If file is explicitly null, maybe we delete?
+      // For now, if no file, just return.
+      return;
+    }
+
+    try {
+      const storageRef = ref(storage, `users/${auth.currentUser.uid}/avatar`);
+      await uploadBytes(storageRef, file);
+      const photoURL = await getDownloadURL(storageRef);
+
+      await updateProfile(auth.currentUser, { photoURL });
+
+      setUser((prev) => ({
+        ...prev,
+        photoURL,
+      }));
+
+      return photoURL;
+    } catch (error) {
+      console.error("Error uploading profile picture:", error);
+      throw error;
+    }
+  };
+
+  const removeProfilePicture = async () => {
+    if (!auth.currentUser) return;
+    try {
+      await updateProfile(auth.currentUser, { photoURL: "" });
+      setUser((prev) => ({ ...prev, photoURL: "" }));
+    } catch (error) {
+      console.error("Error removing profile picture:", error);
+      throw error;
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -108,6 +148,8 @@ export const AuthProvider = ({ children }) => {
         register,
         updateUser,
         resetPassword,
+        uploadProfilePicture,
+        removeProfilePicture,
         loading,
       }}
     >

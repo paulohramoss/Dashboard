@@ -21,6 +21,7 @@ import {
   BookOpen,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -290,9 +291,12 @@ const Layout = ({ children }) => {
               <span className="text-sm font-medium hidden md:block">
                 {user?.name}
               </span>
-              <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">
-                {user?.name?.charAt(0).toUpperCase() || "U"}
-              </div>
+              <Avatar className="h-8 w-8">
+                <AvatarImage src={user?.photoURL} alt={user?.name} />
+                <AvatarFallback className="bg-primary/10 text-primary font-bold">
+                  {user?.name?.charAt(0).toUpperCase() || "U"}
+                </AvatarFallback>
+              </Avatar>
             </div>
           </header>
 
