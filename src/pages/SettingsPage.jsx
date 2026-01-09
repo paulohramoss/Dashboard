@@ -415,7 +415,8 @@ const SettingsPage = () => {
                               toast.success(
                                 t("settings.photoRemoved", "Foto removida")
                               );
-                            } catch (e) {
+                            } catch (error) {
+                              console.error(error);
                               toast.error(t("common.error", "Erro ao remover"));
                             }
                           }
