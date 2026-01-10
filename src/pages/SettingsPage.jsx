@@ -33,6 +33,7 @@ import {
   RefreshCw,
   Loader2,
   Upload,
+  Users,
 } from "lucide-react";
 import { toast } from "sonner";
 import { db } from "@/lib/firebase";
@@ -49,6 +50,7 @@ import ConfirmDialog from "@/components/ui/confirm-dialog";
 import { useNotifications } from "@/hooks/useNotifications";
 import emailjs from "@emailjs/browser";
 import { useRules } from "@/hooks/useRules";
+import InvitePartner from "@/components/InvitePartner";
 
 const SettingsPage = () => {
   const { t } = useTranslation();
@@ -350,6 +352,10 @@ const SettingsPage = () => {
           <TabsTrigger value="feedback" className="flex items-center gap-2">
             <MessageSquare className="h-4 w-4" />
             {t("settings.feedback")}
+          </TabsTrigger>
+          <TabsTrigger value="sharing" className="flex items-center gap-2">
+            <Users className="h-4 w-4" />
+            {t("settings.sharing", "Partilha")}
           </TabsTrigger>
         </TabsList>
 
@@ -778,6 +784,10 @@ const SettingsPage = () => {
               </Button>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="sharing">
+          <InvitePartner />
         </TabsContent>
 
         <TabsContent value="rules">

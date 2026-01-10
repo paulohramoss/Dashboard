@@ -8,7 +8,9 @@ import {
   Ghost,
   Pencil,
 } from "lucide-react";
+import { Users } from "lucide-react"; // Import Users for the avatar fallback
 import { useCategories } from "@/hooks/useCategories";
+import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import ConfirmDialog from "@/components/ui/confirm-dialog";
@@ -27,8 +29,10 @@ const TransactionRow = ({
   formatCurrency,
   getCategoryLabel,
   formatDate,
+  currentUser,
 }) => {
   const transaction = data[index];
+  const isOwner = currentUser?.id === transaction.userId;
 
   return (
     <div style={style}>
@@ -42,21 +46,36 @@ const TransactionRow = ({
         style={{ height: "calc(100% - 8px)" }} // Adjust height to account for faux gap
       >
         <div className="flex items-center gap-4 flex-1 min-w-0">
-          <div
-            className={cn(
-              "h-10 w-10 rounded-full flex items-center justify-center",
-              transaction.type === "income"
-                ? "bg-green-100 text-green-600"
-                : "bg-red-100 text-red-600",
-              transaction.isShadow && "opacity-70"
-            )}
-          >
-            {transaction.type === "income" ? (
-              <ArrowUpCircle className="h-6 w-6" />
-            ) : (
-              <ArrowDownCircle className="h-6 w-6" />
+          <div className="relative">
+            <div
+              className={cn(
+                "h-10 w-10 rounded-full flex items-center justify-center",
+                transaction.type === "income"
+                  ? "bg-green-100 text-green-600"
+                  : "bg-red-100 text-red-600",
+                transaction.isShadow && "opacity-70"
+              )}
+            >
+              {transaction.type === "income" ? (
+                <ArrowUpCircle className="h-6 w-6" />
+              ) : (
+                <ArrowDownCircle className="h-6 w-6" />
+              )}
+            </div>
+            {/* Show creator avatar if not current user */}
+            {!isOwner && transaction.userId && (
+              <div
+                className="absolute -bottom-1 -right-1 bg-background rounded-full p-0.5 border border-muted"
+                title="Created by partner"
+              >
+                <div className="h-4 w-4 rounded-full bg-primary flex items-center justify-center text-[10px] text-primary-foreground font-bold">
+                  {/* Ideally we would have user check, for now simple initial of ID or generic icon if we don't have name */}
+                  <Users className="h-2.5 w-2.5" />
+                </div>
+              </div>
             )}
           </div>
+
           <div className="min-w-0">
             <div className="flex items-center gap-2">
               <p className="font-medium truncate">{transaction.description}</p>
@@ -117,6 +136,7 @@ const TransactionHistory = ({
   className,
 }) => {
   const { t } = useTranslation();
+  const { user } = useAuth();
   const { categories } = useCategories();
   const [deleteId, setDeleteId] = useState(null);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
@@ -157,6 +177,7 @@ const TransactionHistory = ({
       formatCurrency={formatCurrency}
       getCategoryLabel={getCategoryLabel}
       formatDate={formatDate}
+      currentUser={user}
     />
   );
 
@@ -189,6 +210,7 @@ const TransactionHistory = ({
                     formatCurrency={formatCurrency}
                     getCategoryLabel={getCategoryLabel}
                     formatDate={formatDate}
+                    currentUser={user}
                   />
                 ))}
             </div>

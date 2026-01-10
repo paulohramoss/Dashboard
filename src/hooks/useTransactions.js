@@ -29,7 +29,7 @@ export const useTransactions = () => {
 
     const q = query(
       collection(db, "transactions"),
-      where("userId", "==", user.id)
+      where("allowedUsers", "array-contains", user.id)
     );
 
     const unsubscribe = onSnapshot(
@@ -92,6 +92,7 @@ export const useTransactions = () => {
           batch.set(docRef, {
             ...transaction,
             userId: user.id,
+            allowedUsers: [user.id],
             description: `${transaction.description} (${
               i + 1
             }/${installmentsCount})`,
@@ -112,6 +113,7 @@ export const useTransactions = () => {
       const transactionData = {
         ...transaction,
         userId: user.id,
+        allowedUsers: [user.id],
         date: transaction.date || getCurrentLocalDate(),
         createdAt: new Date().toISOString(),
         accountId: transaction.accountId || null,
@@ -139,6 +141,7 @@ export const useTransactions = () => {
         batch.set(docRef, {
           ...t,
           userId: user.id,
+          allowedUsers: [user.id],
           date: t.date || getCurrentLocalDate(),
           createdAt: new Date().toISOString(),
         });
@@ -192,6 +195,7 @@ export const useTransactions = () => {
     const newShadow = {
       ...transaction,
       id: `shadow-${Date.now()}`,
+      allowedUsers: [user?.id],
       isShadow: true,
       date: transaction.date || getCurrentLocalDate(),
       createdAt: new Date().toISOString(),

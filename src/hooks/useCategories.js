@@ -37,6 +37,7 @@ export const useCategories = () => {
         batch.set(docRef, {
           ...cat,
           userId,
+          allowedUsers: [userId],
           createdAt: new Date().toISOString(),
           budget: 0, // Default budget
         });
@@ -59,7 +60,7 @@ export const useCategories = () => {
 
     const q = query(
       collection(db, "categories"),
-      where("userId", "==", user.id)
+      where("allowedUsers", "array-contains", user.id)
     );
 
     const unsubscribe = onSnapshot(
@@ -93,6 +94,7 @@ export const useCategories = () => {
       await addDoc(collection(db, "categories"), {
         ...category,
         userId: user.id,
+        allowedUsers: [user.id],
         createdAt: new Date().toISOString(),
         budget: parseFloat(category.budget) || 0,
       });

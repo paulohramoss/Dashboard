@@ -31,7 +31,7 @@ export const useRules = () => {
 
     const q = query(
       collection(db, "userRules"),
-      where("userId", "==", user.id)
+      where("allowedUsers", "array-contains", user.id)
       // orderBy("keyword") // Requires index, let's sort in client for now to avoid blocking
     );
 
@@ -71,6 +71,7 @@ export const useRules = () => {
 
       await addDoc(collection(db, "userRules"), {
         userId: user.id,
+        allowedUsers: [user.id],
         keyword: rule.keyword.toLowerCase().trim(),
         category: rule.category,
         type: rule.type,
