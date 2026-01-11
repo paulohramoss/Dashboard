@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { db } from "@/lib/firebase";
 import {
@@ -28,6 +28,7 @@ export const useCategories = () => {
   const { user } = useAuth();
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
+  const initAttempted = useRef(false);
 
   const initializeDefaultCategories = async (userId) => {
     try {
@@ -58,34 +59,85 @@ export const useCategories = () => {
       return () => clearTimeout(timer);
     }
 
-    const q = query(
+    const q1 = query(
+      collection(db, "categories"),
+      where("userId", "==", user.id)
+    );
+
+    const q2 = query(
       collection(db, "categories"),
       where("allowedUsers", "array-contains", user.id)
     );
 
-    const unsubscribe = onSnapshot(
-      q,
-      async (snapshot) => {
-        const docs = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
+    let results1 = [];
+    let results2 = [];
 
-        if (docs.length === 0 && !snapshot.metadata.fromCache) {
-          // Initialize default categories if none exist
-          await initializeDefaultCategories(user.id);
-        } else {
-          setCategories(docs);
-          setLoading(false);
-        }
-      },
-      (error) => {
-        console.error("Error fetching categories:", error);
-        setLoading(false);
+    const handleUpdate = async () => {
+      const allDocs = [...results1, ...results2];
+      const uniqueDocs = Array.from(
+        new Map(allDocs.map((item) => [item.id, item])).values()
+      );
+
+      // Only init defaults if we have loaded both and list is empty,
+      // AND specifically if we found no owned categories (to avoid loop).
+      // For simplicity/safety in this refactor, we check if distinct results1 is empty after load.
+      if (
+        results1.length === 0 &&
+        results2.length === 0 &&
+        uniqueDocs.length === 0
+      ) {
+        // It's hard to know perfectly when "both" have finished first load without complex state.
+        // But usually if uniqueDocs is empty, we might need defaults.
+        // Let's rely on a simpler check: if q1 returns empty, we might need defaults.
       }
+
+      // Better approach for dual subs init:
+      // We'll leave the init check for a separate effect or just check if results1 (owned) is empty.
+
+      setCategories(uniqueDocs);
+      setLoading(false);
+    };
+
+    // We need to track if we've attempted init to avoid spam
+
+    const unsub1 = onSnapshot(
+      q1,
+      async (snapshot) => {
+        results1 = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
+
+        // Only initialize if:
+        // 1. We have 0 owned categories
+        // 2. We haven't tried yet in this session
+        // 3. The snapshot is NOT from cache (meaning we have confirmed with server that it is empty)
+        if (
+          results1.length === 0 &&
+          !initAttempted.current &&
+          !snapshot.metadata.fromCache
+        ) {
+          initAttempted.current = true;
+          // Double check with a one-time fetch to be absolutely sure before writing?
+          // For now, the snapshot check + ref should be enough to stop the "strict mode" double-tap.
+          await initializeDefaultCategories(user.id);
+        }
+
+        handleUpdate();
+      },
+      (error) => console.error("Error fetching owned categories:", error)
     );
 
-    return () => unsubscribe();
+    const unsub2 = onSnapshot(
+      q2,
+      (snapshot) => {
+        results2 = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
+        handleUpdate();
+      },
+      (error) => console.error("Error fetching shared categories:", error)
+    );
+
+    return () => {
+      unsub1();
+      unsub2();
+    };
   }, [user?.id]);
 
   const addCategory = async (category) => {

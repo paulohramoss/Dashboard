@@ -30,7 +30,9 @@ const CookiePolicyPage = lazy(() => import("@/pages/CookiePolicyPage"));
 const ForgotPasswordPage = lazy(() => import("@/pages/ForgotPasswordPage"));
 const SubscriptionsPage = lazy(() => import("@/pages/SubscriptionsPage"));
 const DebtSnowballPage = lazy(() => import("@/pages/DebtSnowballPage"));
+
 const TutorialPage = lazy(() => import("@/pages/TutorialPage"));
+const JoinPage = lazy(() => import("@/pages/JoinPage")); // New Route
 
 const ProtectedRoute = ({ children }) => {
   const { user } = useAuth();
@@ -57,6 +59,8 @@ const App = () => {
             <Routes>
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
+              <Route path="/join" element={<JoinPage />} />{" "}
+              {/* New Join Route */}
               <Route path="/forgot-password" element={<ForgotPasswordPage />} />
               <Route path="/terms" element={<TermsPage />} />
               <Route path="/privacy" element={<PrivacyPage />} />

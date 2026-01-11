@@ -11,18 +11,28 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { UserPlus, Users, X } from "lucide-react";
+import {
+  UserPlus,
+  Users,
+  Link as LinkIcon,
+  Copy,
+  Loader2,
+  Check,
+} from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
+import { db } from "@/lib/firebase";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 
 const InvitePartner = () => {
   const { t } = useTranslation();
   const { user } = useAuth();
-  const [email, setEmail] = useState("");
   const [inviting, setInviting] = useState(false);
+  const [inviteLink, setInviteLink] = useState("");
+  const [copied, setCopied] = useState(false);
 
-  // Mock list of users with access. In a real full implementation, this would fetch from a subcollection or array in Firestore.
-  // For now, we show the current user and simulate a partner if one was "added".
+  // In a real app, this list would come from fetching "users" collection where "sharedWith" == me
+  // For now, we just show the current user.
   const [accessList] = useState([
     {
       uid: user?.id,
@@ -33,31 +43,36 @@ const InvitePartner = () => {
     },
   ]);
 
-  const handleInvite = async (e) => {
-    e.preventDefault();
-    if (!email.trim()) return;
+  const handleGenerateInvite = async () => {
+    if (!user?.id) return;
 
     setInviting(true);
-
-    // Simulation of invite process
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      toast.success(t("settings.inviteSent", "Convite enviado com sucesso!"));
-      setEmail("");
-      // Simulate adding to list for visual feedback
-      /* 
-            setAccessList(prev => [...prev, {
-                uid: "temp-partner",
-                name: "Parceiro (Pendente)",
-                email: email,
-                role: "Convidado"
-            }]);
-            */
-    } catch {
-      toast.error(t("common.error"));
+      // Create Invite Document
+      const docRef = await addDoc(collection(db, "invites"), {
+        createdBy: user.id,
+        ownerName: user.name || "Alguém",
+        status: "pending",
+        createdAt: serverTimestamp(),
+      });
+
+      // Generate Link
+      const link = `${window.location.origin}/join?code=${docRef.id}`;
+      setInviteLink(link);
+      toast.success(t("settings.inviteGenerated", "Link de convite gerado!"));
+    } catch (error) {
+      console.error("Error creating invite:", error);
+      toast.error(t("common.error", "Erro ao gerar convite."));
     } finally {
       setInviting(false);
     }
+  };
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(inviteLink);
+    setCopied(true);
+    toast.success(t("common.copied", "Copiado!"));
+    setTimeout(() => setCopied(false), 2000);
   };
 
   return (
@@ -74,25 +89,63 @@ const InvitePartner = () => {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
-        <form onSubmit={handleInvite} className="flex gap-4 items-end">
-          <div className="space-y-2 flex-1">
-            <Label>{t("settings.partnerEmail", "Email do Parceiro")}</Label>
-            <Input
-              type="email"
-              placeholder="parceiro@email.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
+        {!inviteLink ? (
+          <div className="flex flex-col gap-4">
+            <p className="text-sm text-muted-foreground">
+              {t(
+                "settings.inviteIntro",
+                "Gere um link para convidar alguém para aceder às suas finanças."
+              )}
+            </p>
+            <Button
+              onClick={handleGenerateInvite}
+              disabled={inviting}
+              className="w-full sm:w-auto"
+            >
+              {inviting ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <UserPlus className="mr-2 h-4 w-4" />
+              )}
+              {inviting
+                ? t("common.generating", "A gerar...")
+                : t("settings.generateInvite", "Gerar Link de Convite")}
+            </Button>
           </div>
-          <Button type="submit" disabled={inviting}>
-            <UserPlus className="mr-2 h-4 w-4" />
-            {inviting
-              ? t("common.sending", "Enviando...")
-              : t("settings.invite", "Convidar")}
-          </Button>
-        </form>
+        ) : (
+          <div className="space-y-4 animate-in fade-in slide-in-from-top-2">
+            <Label>{t("settings.shareLink", "Partilhe este link")}</Label>
+            <div className="flex gap-2">
+              <div className="relative flex-1">
+                <LinkIcon className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                <Input value={inviteLink} readOnly className="pl-9 pr-4" />
+              </div>
+              <Button size="icon" variant="outline" onClick={copyToClipboard}>
+                {copied ? (
+                  <Check className="h-4 w-4 text-green-500" />
+                ) : (
+                  <Copy className="h-4 w-4" />
+                )}
+              </Button>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {t(
+                "settings.linkWarning",
+                "Qualquer pessoa com este link poderá solicitar acesso."
+              )}
+            </p>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setInviteLink("")}
+              className="text-xs"
+            >
+              {t("settings.generateNew", "Gerar novo")}
+            </Button>
+          </div>
+        )}
 
-        <div className="space-y-4">
+        <div className="space-y-4 pt-4 border-t">
           <h4 className="text-sm font-medium text-muted-foreground flex items-center gap-2">
             <Users className="h-4 w-4" />
             {t("settings.usersWithAccess", "Utilizadores com acesso")}
@@ -112,12 +165,9 @@ const InvitePartner = () => {
                   </Avatar>
                   <div>
                     <p className="font-medium text-sm">{u.name}</p>
-                    <p className="text-xs text-muted-foreground">{u.email}</p>
+                    <p className="text-xs text-muted-foreground">{u.role}</p>
                   </div>
                 </div>
-                <span className="text-xs px-2 py-1 bg-primary/10 text-primary rounded-full">
-                  {u.role}
-                </span>
               </div>
             ))}
           </div>

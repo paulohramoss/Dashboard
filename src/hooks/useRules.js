@@ -29,31 +29,51 @@ export const useRules = () => {
       return () => clearTimeout(timer);
     }
 
-    const q = query(
+    const q1 = query(
+      collection(db, "userRules"),
+      where("userId", "==", user.id)
+    );
+
+    const q2 = query(
       collection(db, "userRules"),
       where("allowedUsers", "array-contains", user.id)
-      // orderBy("keyword") // Requires index, let's sort in client for now to avoid blocking
     );
 
-    const unsubscribe = onSnapshot(
-      q,
+    let results1 = [];
+    let results2 = [];
+
+    const handleUpdate = () => {
+      const allDocs = [...results1, ...results2];
+      const uniqueDocs = Array.from(
+        new Map(allDocs.map((item) => [item.id, item])).values()
+      );
+      uniqueDocs.sort((a, b) => a.keyword.localeCompare(b.keyword));
+      setRules(uniqueDocs);
+      setLoading(false);
+    };
+
+    const unsub1 = onSnapshot(
+      q1,
       (snapshot) => {
-        const rulesData = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        // Sort alphabetically by keyword
-        rulesData.sort((a, b) => a.keyword.localeCompare(b.keyword));
-        setRules(rulesData);
-        setLoading(false);
+        results1 = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
+        handleUpdate();
       },
-      (error) => {
-        console.error("Error fetching rules:", error);
-        setLoading(false);
-      }
+      (err) => console.error("Error fetching owned rules:", err)
     );
 
-    return () => unsubscribe();
+    const unsub2 = onSnapshot(
+      q2,
+      (snapshot) => {
+        results2 = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
+        handleUpdate();
+      },
+      (err) => console.error("Error fetching shared rules:", err)
+    );
+
+    return () => {
+      unsub1();
+      unsub2();
+    };
   }, [user?.id]);
 
   const addRule = async (rule) => {

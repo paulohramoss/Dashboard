@@ -27,35 +27,54 @@ export const useTransactions = () => {
       return;
     }
 
-    const q = query(
+    const q1 = query(
+      collection(db, "transactions"),
+      where("userId", "==", user.id)
+    );
+
+    const q2 = query(
       collection(db, "transactions"),
       where("allowedUsers", "array-contains", user.id)
     );
 
-    const unsubscribe = onSnapshot(
-      q,
+    let results1 = [];
+    let results2 = [];
+
+    const handleUpdate = () => {
+      const allDocs = [...results1, ...results2];
+      const uniqueDocs = Array.from(
+        new Map(allDocs.map((item) => [item.id, item])).values()
+      );
+
+      uniqueDocs.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+      setTransactions(uniqueDocs);
+      setLoading(false);
+      checkRecurringTransactions(uniqueDocs);
+    };
+
+    const unsub1 = onSnapshot(
+      q1,
       (snapshot) => {
-        const docs = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-
-        // Sort client-side to avoid needing a composite index in Firestore
-        docs.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-        setTransactions(docs);
-        setLoading(false);
-
-        // Check for recurring transactions
-        checkRecurringTransactions(docs);
+        results1 = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+        handleUpdate();
       },
-      (error) => {
-        console.error("Error fetching transactions:", error);
-        setLoading(false);
-      }
+      (error) => console.error("Error fetching owned transactions:", error)
     );
 
-    return () => unsubscribe();
+    const unsub2 = onSnapshot(
+      q2,
+      (snapshot) => {
+        results2 = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+        handleUpdate();
+      },
+      (error) => console.error("Error fetching shared transactions:", error)
+    );
+
+    return () => {
+      unsub1();
+      unsub2();
+    };
   }, [user?.id]);
 
   const addTransaction = async (transaction) => {

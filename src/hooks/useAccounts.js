@@ -25,27 +25,50 @@ export const useAccounts = () => {
       return;
     }
 
-    const q = query(collection(db, "accounts"), where("userId", "==", user.id));
-
-    const unsubscribe = onSnapshot(
-      q,
-      (snapshot) => {
-        const docs = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        // Sort by order field, ascending
-        docs.sort((a, b) => (a.order || 0) - (b.order || 0));
-        setAccounts(docs);
-        setLoading(false);
-      },
-      (error) => {
-        console.error("Error fetching accounts:", error);
-        setLoading(false);
-      }
+    const q1 = query(
+      collection(db, "accounts"),
+      where("userId", "==", user.id)
+    );
+    const q2 = query(
+      collection(db, "accounts"),
+      where("allowedUsers", "array-contains", user.id)
     );
 
-    return () => unsubscribe();
+    let results1 = [];
+    let results2 = [];
+
+    const handleUpdate = () => {
+      const allDocs = [...results1, ...results2];
+      const uniqueDocs = Array.from(
+        new Map(allDocs.map((item) => [item.id, item])).values()
+      );
+      uniqueDocs.sort((a, b) => (a.order || 0) - (b.order || 0));
+      setAccounts(uniqueDocs);
+      setLoading(false);
+    };
+
+    const unsub1 = onSnapshot(
+      q1,
+      (snap) => {
+        results1 = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+        handleUpdate();
+      },
+      (err) => console.error("Error fetching owned accounts:", err)
+    );
+
+    const unsub2 = onSnapshot(
+      q2,
+      (snap) => {
+        results2 = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+        handleUpdate();
+      },
+      (err) => console.error("Error fetching shared accounts:", err)
+    );
+
+    return () => {
+      unsub1();
+      unsub2();
+    };
   }, [user?.id]);
 
   const addAccount = async (account) => {

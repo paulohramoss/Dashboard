@@ -20,34 +20,54 @@ export const useGoals = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (user?.id) {
-      const q = query(collection(db, "goals"), where("userId", "==", user.id));
-
-      const unsubscribe = onSnapshot(
-        q,
-        (snapshot) => {
-          const docs = snapshot.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-          }));
-          setGoals(docs);
-          setLoading(false);
-        },
-        (error) => {
-          console.error("Error fetching goals:", error);
-          setLoading(false);
-        }
-      );
-
-      return () => unsubscribe();
-    } else {
-      // Avoid synchronous state updates to prevent cascading renders
-      const timer = setTimeout(() => {
+    if (!user?.id) {
+      setTimeout(() => {
         setGoals([]);
         setLoading(false);
       }, 0);
-      return () => clearTimeout(timer);
+      return;
     }
+
+    const q1 = query(collection(db, "goals"), where("userId", "==", user.id));
+    const q2 = query(
+      collection(db, "goals"),
+      where("allowedUsers", "array-contains", user.id)
+    );
+
+    let results1 = [];
+    let results2 = [];
+
+    const handleUpdate = () => {
+      const allDocs = [...results1, ...results2];
+      const uniqueDocs = Array.from(
+        new Map(allDocs.map((item) => [item.id, item])).values()
+      );
+      setGoals(uniqueDocs);
+      setLoading(false);
+    };
+
+    const unsub1 = onSnapshot(
+      q1,
+      (snap) => {
+        results1 = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+        handleUpdate();
+      },
+      (err) => console.error("Error fetching owned goals:", err)
+    );
+
+    const unsub2 = onSnapshot(
+      q2,
+      (snap) => {
+        results2 = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+        handleUpdate();
+      },
+      (err) => console.error("Error fetching shared goals:", err)
+    );
+
+    return () => {
+      unsub1();
+      unsub2();
+    };
   }, [user?.id]);
 
   const addGoal = async (goal) => {

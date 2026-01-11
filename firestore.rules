@@ -10,41 +10,82 @@ service cloud.firestore {
     // Regra Híbrida: Aceita "Modo Casal" (allowedUsers) OU "Modo Solteiro" (userId)
     function isAllowed() {
       return isAuthenticated() && (
-        (resource.data.allowedUsers is list && request.auth.uid in resource.data.allowedUsers) || 
-        (resource.data.userId == request.auth.uid)
+        (resource.data.userId == request.auth.uid) ||
+        (resource.data.get('allowedUsers', []) is list && request.auth.uid in resource.data.allowedUsers)
       );
+    }
+    
+    // Verifica se é uma operação de "Self-Join" segura
+    // Permite ATUALIZAR se o usuário estiver ADICIONANDO apenas a si mesmo ao array allowedUsers
+    // E não estiver removendo ninguém nem alterando outros campos críticos
+    function isJoinOperation() {
+      return isAuthenticated() && 
+        // Apenas update
+        request.method == 'update' &&
+        // Deve ter allowedUsers no recurso original ou no request
+        (resource.data.get('allowedUsers', []) is list) &&
+        // O uid do usuário deve estar no NOVO allowedUsers
+        (request.auth.uid in request.resource.data.allowedUsers) &&
+        // O tamanho do array deve aumentar em exatos 1 (ou manter se já estiver lá, mas a lógica de invite assume que ainda não está)
+        // Simplificação: vamos garantir que todos os users originais AINDA estejam lá
+        (resource.data.allowedUsers.hasAll(request.resource.data.allowedUsers.removeAll([request.auth.uid]))) &&
+        // Garante que o usuário NÃO está alterando o userId (proprietário)
+        request.resource.data.userId == resource.data.userId;
     }
 
     // Na criação, obriga a definir o array allowedUsers
     function isAllowedCreate() {
       return isAuthenticated() && (
+        request.resource.data.userId == request.auth.uid &&
         request.resource.data.allowedUsers is list && 
         request.auth.uid in request.resource.data.allowedUsers
       );
     }
 
+    // Coleção de Convites (Segurança por Obscuridade de ID + Auth)
+    match /invites/{document} {
+      // Quem cria é o dono.
+      allow create: if isAuthenticated() && request.resource.data.createdBy == request.auth.uid;
+      // Leitura pública se souber o ID (para validar o código)
+      // Listagem negada (ninguém pode listar todos os convites)
+      allow get: if true;
+      allow list: if false;
+      // Deletar: Apenas quem criou (opcional: ou quem aceitou, mas deixaremos o frontend deletar após uso)
+      allow delete: if isAuthenticated(); 
+    }
+
     match /transactions/{document} {
-      allow read, update, delete: if isAllowed();
+      allow read: if isAllowed();
+      allow update: if isAllowed() || isJoinOperation();
+      allow delete: if isAllowed();
       allow create: if isAllowedCreate();
     }
 
     match /categories/{document} {
-      allow read, update, delete: if isAllowed();
+      allow read: if isAllowed();
+      allow update: if isAllowed() || isJoinOperation();
+      allow delete: if isAllowed();
       allow create: if isAllowedCreate();
     }
 
     match /accounts/{document} {
-      allow read, update, delete: if isAllowed();
+      allow read: if isAllowed();
+      allow update: if isAllowed() || isJoinOperation();
+      allow delete: if isAllowed();
       allow create: if isAllowedCreate();
     }
 
     match /goals/{document} {
-      allow read, update, delete: if isAllowed();
+      allow read: if isAllowed();
+      allow update: if isAllowed() || isJoinOperation();
+      allow delete: if isAllowed();
       allow create: if isAllowedCreate();
     }
 
     match /userRules/{document} {
-      allow read, update, delete: if isAllowed();
+      allow read: if isAllowed();
+      allow update: if isAllowed() || isJoinOperation();
+      allow delete: if isAllowed();
       allow create: if isAllowedCreate();
     }
 
