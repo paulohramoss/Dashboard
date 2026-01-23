@@ -16,6 +16,9 @@ import {
   PieChart,
   CreditCard,
   ArrowRight,
+  Star,
+  Users,
+  Zap,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -82,6 +85,34 @@ const TutorialPage = () => {
       description: t("tutorialPage.sections.accounts.description"),
       content: t("tutorialPage.sections.accounts.content"),
       action: { label: t("accounts.title"), path: "/accounts" },
+    },
+    {
+      id: "goals",
+      icon: Star,
+      title: t("tutorialPage.sections.goals.title"),
+      description: t("tutorialPage.sections.goals.description"),
+      points: [
+        t("tutorialPage.sections.goals.points.1"),
+        t("tutorialPage.sections.goals.points.2"),
+        t("tutorialPage.sections.goals.points.3"),
+      ],
+      action: { label: t("nav.goals"), path: "/goals" },
+    },
+    {
+      id: "shared",
+      icon: Users,
+      title: t("tutorialPage.sections.shared.title"),
+      description: t("tutorialPage.sections.shared.description"),
+      content: t("tutorialPage.sections.shared.content"),
+      action: { label: t("settings.sharing"), path: "/settings" },
+    },
+    {
+      id: "rules",
+      icon: Zap,
+      title: t("tutorialPage.sections.rules.title"),
+      description: t("tutorialPage.sections.rules.description"),
+      content: t("tutorialPage.sections.rules.content"),
+      action: { label: t("settings.smartRules"), path: "/settings" },
     },
   ];
 

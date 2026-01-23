@@ -520,6 +520,25 @@
         "title": "Contas",
         "description": "Gerencie todas as suas fontes de recursos.",
         "content": "Cadastre suas contas bancárias, carteiras físicas e cartões de crédito. Mantenha os saldos atualizados para um controle fidedigno."
+      },
+      "goals": {
+        "title": "Objetivos e Metas",
+        "description": "Transforme sonhos em realidade com planejamento.",
+        "points": {
+          "1": "Criar Meta: Defina um valor alvo e uma data (ex: Viagem, Carro Novo).",
+          "2": "Acompanhamento: Veja o progresso percentual e quanto falta economizar.",
+          "3": "Alocação: Reserve dinheiro especificamente para cada objetivo."
+        }
+      },
+      "shared": {
+        "title": "Finanças Compartilhadas",
+        "description": "Gerencie o orçamento familiar ou de casal em conjunto.",
+        "content": "Convide parceiros via link seguro para visualizar e editar as mesmas transações, contas e categorias. Ideal para casais ou sócios."
+      },
+      "rules": {
+        "title": "Regras Inteligentes",
+        "description": "Automatize sua organização financeira e economize tempo.",
+        "content": "Crie regras automáticas (ex: 'Se a descrição tiver Uber, categorizar como Transporte'). Isso é especialmente útil ao importar extratos bancários, categorizando tudo automaticamente."
       }
     }
   },
