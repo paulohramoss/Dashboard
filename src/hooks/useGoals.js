@@ -31,7 +31,7 @@ export const useGoals = () => {
     const q1 = query(collection(db, "goals"), where("userId", "==", user.id));
     const q2 = query(
       collection(db, "goals"),
-      where("allowedUsers", "array-contains", user.id)
+      where("allowedUsers", "array-contains", user.id),
     );
 
     let results1 = [];
@@ -40,7 +40,7 @@ export const useGoals = () => {
     const handleUpdate = () => {
       const allDocs = [...results1, ...results2];
       const uniqueDocs = Array.from(
-        new Map(allDocs.map((item) => [item.id, item])).values()
+        new Map(allDocs.map((item) => [item.id, item])).values(),
       );
       setGoals(uniqueDocs);
       setLoading(false);
@@ -52,7 +52,7 @@ export const useGoals = () => {
         results1 = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
         handleUpdate();
       },
-      (err) => console.error("Error fetching owned goals:", err)
+      (err) => console.error("Error fetching owned goals:", err),
     );
 
     const unsub2 = onSnapshot(
@@ -61,7 +61,7 @@ export const useGoals = () => {
         results2 = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
         handleUpdate();
       },
-      (err) => console.error("Error fetching shared goals:", err)
+      (err) => console.error("Error fetching shared goals:", err),
     );
 
     return () => {
@@ -76,6 +76,7 @@ export const useGoals = () => {
       await addDoc(collection(db, "goals"), {
         ...goal,
         userId: user.id,
+        allowedUsers: [user.id],
         currentAmount: 0,
         createdAt: new Date().toISOString(),
       });
