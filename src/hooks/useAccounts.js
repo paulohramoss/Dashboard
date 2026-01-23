@@ -27,11 +27,11 @@ export const useAccounts = () => {
 
     const q1 = query(
       collection(db, "accounts"),
-      where("userId", "==", user.id)
+      where("userId", "==", user.id),
     );
     const q2 = query(
       collection(db, "accounts"),
-      where("allowedUsers", "array-contains", user.id)
+      where("allowedUsers", "array-contains", user.id),
     );
 
     let results1 = [];
@@ -40,7 +40,7 @@ export const useAccounts = () => {
     const handleUpdate = () => {
       const allDocs = [...results1, ...results2];
       const uniqueDocs = Array.from(
-        new Map(allDocs.map((item) => [item.id, item])).values()
+        new Map(allDocs.map((item) => [item.id, item])).values(),
       );
       uniqueDocs.sort((a, b) => (a.order || 0) - (b.order || 0));
       setAccounts(uniqueDocs);
@@ -53,7 +53,7 @@ export const useAccounts = () => {
         results1 = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
         handleUpdate();
       },
-      (err) => console.error("Error fetching owned accounts:", err)
+      (err) => console.error("Error fetching owned accounts:", err),
     );
 
     const unsub2 = onSnapshot(
@@ -62,7 +62,7 @@ export const useAccounts = () => {
         results2 = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
         handleUpdate();
       },
-      (err) => console.error("Error fetching shared accounts:", err)
+      (err) => console.error("Error fetching shared accounts:", err),
     );
 
     return () => {
@@ -77,6 +77,7 @@ export const useAccounts = () => {
       await addDoc(collection(db, "accounts"), {
         ...account,
         userId: user.id,
+        allowedUsers: [user.id],
         order: accounts.length, // Add at the end
         createdAt: new Date().toISOString(),
       });
