@@ -29,12 +29,12 @@ export const useTransactions = () => {
 
     const q1 = query(
       collection(db, "transactions"),
-      where("userId", "==", user.id)
+      where("userId", "==", user.id),
     );
 
     const q2 = query(
       collection(db, "transactions"),
-      where("allowedUsers", "array-contains", user.id)
+      where("allowedUsers", "array-contains", user.id),
     );
 
     let results1 = [];
@@ -43,14 +43,15 @@ export const useTransactions = () => {
     const handleUpdate = () => {
       const allDocs = [...results1, ...results2];
       const uniqueDocs = Array.from(
-        new Map(allDocs.map((item) => [item.id, item])).values()
+        new Map(allDocs.map((item) => [item.id, item])).values(),
       );
 
       uniqueDocs.sort((a, b) => new Date(b.date) - new Date(a.date));
 
       setTransactions(uniqueDocs);
       setLoading(false);
-      checkRecurringTransactions(uniqueDocs);
+      setLoading(false);
+      checkRecurringTransactions(uniqueDocs, user.id);
     };
 
     const unsub1 = onSnapshot(
@@ -59,7 +60,7 @@ export const useTransactions = () => {
         results1 = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
         handleUpdate();
       },
-      (error) => console.error("Error fetching owned transactions:", error)
+      (error) => console.error("Error fetching owned transactions:", error),
     );
 
     const unsub2 = onSnapshot(
@@ -68,7 +69,7 @@ export const useTransactions = () => {
         results2 = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
         handleUpdate();
       },
-      (error) => console.error("Error fetching shared transactions:", error)
+      (error) => console.error("Error fetching shared transactions:", error),
     );
 
     return () => {
@@ -92,7 +93,7 @@ export const useTransactions = () => {
 
         // Calculate the remainder
         const remainder = parseFloat(
-          (totalAmount - baseAmount * installmentsCount).toFixed(2)
+          (totalAmount - baseAmount * installmentsCount).toFixed(2),
         );
 
         const startDate = new Date(transaction.date);
@@ -141,7 +142,7 @@ export const useTransactions = () => {
       if (transaction.isRecurring) {
         transactionData.nextDueDate = calculateNextDueDate(
           transactionData.date,
-          transaction.frequency
+          transaction.frequency,
         );
       }
 
@@ -226,7 +227,7 @@ export const useTransactions = () => {
 
   const allTransactions = isShadowMode
     ? [...transactions, ...shadowTransactions].sort(
-        (a, b) => new Date(b.date) - new Date(a.date)
+        (a, b) => new Date(b.date) - new Date(a.date),
       )
     : transactions;
 
@@ -244,7 +245,7 @@ export const useTransactions = () => {
       }
       return acc;
     },
-    { income: 0, expense: 0, balance: 0 }
+    { income: 0, expense: 0, balance: 0 },
   );
 
   return {
@@ -286,12 +287,19 @@ const calculateNextDueDate = (date, frequency) => {
   return d.toISOString().split("T")[0];
 };
 
-const checkRecurringTransactions = async (currentTransactions) => {
+const checkRecurringTransactions = async (
+  currentTransactions,
+  currentUserId,
+) => {
+  if (!currentUserId) return;
   const today = new Date().toISOString().split("T")[0];
   const batch = writeBatch(db);
   let hasUpdates = false;
 
   currentTransactions.forEach((t) => {
+    // Only the owner should generate the next recurring transaction
+    if (t.userId !== currentUserId) return;
+
     if (t.isRecurring && t.nextDueDate && t.nextDueDate <= today) {
       // Create new transaction
       const newTransactionRef = doc(collection(db, "transactions"));
@@ -301,6 +309,7 @@ const checkRecurringTransactions = async (currentTransactions) => {
         isRecurring: false, // Generated transaction is not recurring itself
         createdAt: new Date().toISOString(),
         originalTransactionId: t.id,
+        allowedUsers: t.allowedUsers || [currentUserId], // Ensure permissions
         nextDueDate: null,
       });
 
