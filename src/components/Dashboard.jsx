@@ -488,7 +488,9 @@ const Dashboard = () => {
                     <span className="hidden sm:inline">
                       {t("common.export", "Export")}
                     </span>
-                    <span className="sm:hidden">Export</span>
+                    <span className="sm:hidden">
+                      {t("common.export", "Export")}
+                    </span>
                   </Button>
                 }
               >
