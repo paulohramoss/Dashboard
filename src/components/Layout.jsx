@@ -138,13 +138,13 @@ const Layout = ({ children }) => {
             "w-64 transform lg:transform-none",
             isSidebarOpen ? "translate-x-0" : "-translate-x-full",
             // Desktop: width based on expanded state
-            isExpanded ? "lg:w-64" : "lg:w-20"
+            isExpanded ? "lg:w-64" : "lg:w-20",
           )}
         >
           <div
             className={cn(
               "min-h-16 h-auto py-4 flex items-center border-b transition-all duration-300",
-              isExpanded ? "px-6 justify-between" : "px-0 justify-center"
+              isExpanded ? "px-6 justify-between" : "px-0 justify-center",
             )}
           >
             {isExpanded || isSidebarOpen ? (
@@ -158,7 +158,7 @@ const Layout = ({ children }) => {
                   size="icon"
                   className={cn(
                     "hidden lg:flex h-8 w-8 ml-auto hover:bg-muted",
-                    isPinned && "text-primary bg-primary/10"
+                    isPinned && "text-primary bg-primary/10",
                   )}
                   onClick={togglePin}
                   title={isPinned ? t("sidebar.unpin") : t("sidebar.pin")}
@@ -202,14 +202,14 @@ const Layout = ({ children }) => {
                   location.pathname === item.path
                     ? "bg-primary text-primary-foreground"
                     : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
-                  !isExpanded && "lg:justify-center lg:px-2"
+                  !isExpanded && "lg:justify-center lg:px-2",
                 )}
               >
                 <item.icon className={cn("h-5 w-5 flex-shrink-0")} />
                 <span
                   className={cn(
                     "transition-all duration-300 opacity-100",
-                    !isExpanded && "lg:opacity-0 lg:w-0 lg:hidden"
+                    !isExpanded && "lg:opacity-0 lg:w-0 lg:hidden",
                   )}
                 >
                   {item.label}
@@ -231,19 +231,19 @@ const Layout = ({ children }) => {
                 isConfirmingLogout
                   ? "bg-destructive text-destructive-foreground shadow-lg scale-105"
                   : "text-muted-foreground hover:bg-destructive/10 hover:text-destructive",
-                !isExpanded && "lg:justify-center lg:px-2"
+                !isExpanded && "lg:justify-center lg:px-2",
               )}
             >
               <LogOut
                 className={cn(
                   "h-5 w-5 transition-transform flex-shrink-0",
-                  isConfirmingLogout && "rotate-180"
+                  isConfirmingLogout && "rotate-180",
                 )}
               />
               <span
                 className={cn(
                   "transition-all duration-300 opacity-100",
-                  !isExpanded && "lg:opacity-0 lg:w-0 lg:hidden"
+                  !isExpanded && "lg:opacity-0 lg:w-0 lg:hidden",
                 )}
               >
                 {isConfirmingLogout ? t("nav.confirmLogout") : t("nav.logout")}
@@ -257,20 +257,20 @@ const Layout = ({ children }) => {
           className={cn(
             "flex-1 flex flex-col min-h-screen overflow-hidden transition-all duration-300 ease-in-out",
             // Adjust margin based on expanded state (pinned OR hovered)
-            isExpanded ? "lg:ml-64" : "lg:ml-20"
+            isExpanded ? "lg:ml-64" : "lg:ml-20",
           )}
         >
           {/* Header */}
-          <header className="min-h-16 h-auto py-4 border-b bg-card flex items-center px-6 lg:px-8 justify-between">
+          <header className="min-h-16 h-auto py-3 md:py-4 border-b bg-card flex items-center px-4 md:px-6 lg:px-8 justify-between">
             <Button
               variant="ghost"
               size="icon"
-              className="lg:hidden -ml-2"
+              className="lg:hidden -ml-2 touch-target"
               onClick={toggleSidebar}
             >
               <Menu className="h-6 w-6" />
             </Button>
-            <div className="flex items-center gap-4 ml-auto">
+            <div className="flex items-center gap-2 md:gap-4 ml-auto">
               <Button
                 variant="ghost"
                 size="icon"
@@ -278,7 +278,7 @@ const Layout = ({ children }) => {
                 title={
                   isPrivacyMode ? t("privacy.disable") : t("privacy.enable")
                 }
-                className="text-muted-foreground hover:text-foreground"
+                className="text-muted-foreground hover:text-foreground touch-target"
               >
                 {isPrivacyMode ? (
                   <EyeOff className="h-5 w-5" />
@@ -291,7 +291,7 @@ const Layout = ({ children }) => {
               <span className="text-sm font-medium hidden md:block">
                 {user?.name}
               </span>
-              <Avatar className="h-8 w-8">
+              <Avatar className="h-8 w-8 md:h-9 md:w-9">
                 <AvatarImage src={user?.photoURL} alt={user?.name} />
                 <AvatarFallback className="bg-primary/10 text-primary font-bold">
                   {user?.name?.charAt(0).toUpperCase() || "U"}
@@ -301,11 +301,11 @@ const Layout = ({ children }) => {
           </header>
 
           {/* Page Content */}
-          <div className="flex-1 overflow-auto p-4 lg:p-8">
+          <div className="flex-1 overflow-auto p-4 md:p-6 lg:p-8">
             <div className="max-w-7xl mx-auto">{children}</div>
           </div>
 
-          <footer className="border-t bg-card/50 py-6 px-6 lg:px-8 mt-auto">
+          <footer className="border-t bg-card/50 py-4 md:py-6 px-4 md:px-6 lg:px-8 mt-auto">
             <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
               <div className="flex items-center gap-2">
                 <span className="font-semibold text-foreground/80">

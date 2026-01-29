@@ -38,22 +38,23 @@ const TransactionRow = ({
     <div style={style}>
       <div
         className={cn(
-          "flex items-center justify-between p-3 md:p-4 rounded-lg border transition-colors mx-1 mb-2", // Added margin for spacing simulation
+          "flex flex-col md:flex-row md:items-center justify-between p-3 md:p-4 rounded-lg border transition-colors mx-1 mb-2 gap-3 md:gap-4",
           transaction.isShadow
             ? "bg-muted/30 border-dashed border-primary/30"
-            : "bg-card hover:bg-accent/50"
+            : "bg-card hover:bg-accent/50",
         )}
-        style={{ height: "calc(100% - 8px)" }} // Adjust height to account for faux gap
+        style={{ height: "calc(100% - 8px)" }}
       >
-        <div className="flex items-center gap-4 flex-1 min-w-0">
-          <div className="relative">
+        {/* Mobile: Stacked Layout | Desktop: Horizontal */}
+        <div className="flex items-center gap-3 md:gap-4 flex-1 min-w-0">
+          <div className="relative flex-shrink-0">
             <div
               className={cn(
-                "h-10 w-10 rounded-full flex items-center justify-center",
+                "h-10 w-10 md:h-10 md:w-10 rounded-full flex items-center justify-center",
                 transaction.type === "income"
                   ? "bg-green-100 text-green-600"
                   : "bg-red-100 text-red-600",
-                transaction.isShadow && "opacity-70"
+                transaction.isShadow && "opacity-70",
               )}
             >
               {transaction.type === "income" ? (
@@ -69,23 +70,24 @@ const TransactionRow = ({
                 title="Created by partner"
               >
                 <div className="h-4 w-4 rounded-full bg-primary flex items-center justify-center text-[10px] text-primary-foreground font-bold">
-                  {/* Ideally we would have user check, for now simple initial of ID or generic icon if we don't have name */}
                   <Users className="h-2.5 w-2.5" />
                 </div>
               </div>
             )}
           </div>
 
-          <div className="min-w-0">
-            <div className="flex items-center gap-2">
-              <p className="font-medium truncate">{transaction.description}</p>
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-2 mb-1">
+              <p className="font-medium truncate text-sm md:text-base">
+                {transaction.description}
+              </p>
               {transaction.isShadow && (
                 <Ghost className="h-3 w-3 text-muted-foreground flex-shrink-0" />
               )}
             </div>
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <div className="flex flex-wrap items-center gap-1.5 md:gap-2 text-xs md:text-sm text-muted-foreground">
               <span>{formatDate(transaction.date)}</span>
-              <span>•</span>
+              <span className="hidden md:inline">•</span>
               <span className="truncate">
                 {getCategoryLabel(transaction.category)}
               </span>
@@ -95,33 +97,37 @@ const TransactionRow = ({
             </div>
           </div>
         </div>
-        <div className="flex items-center gap-4 ml-4 flex-shrink-0">
+
+        {/* Amount and Actions */}
+        <div className="flex items-center justify-between md:justify-end gap-3 md:gap-4 ml-13 md:ml-0 flex-shrink-0">
           <PrivacyBlur
             className={cn(
-              "font-bold whitespace-nowrap",
+              "font-bold whitespace-nowrap text-base md:text-base",
               transaction.type === "income" ? "text-green-600" : "text-red-600",
-              transaction.isShadow && "opacity-70"
+              transaction.isShadow && "opacity-70",
             )}
           >
             {transaction.type === "income" ? "+" : "-"}
             {formatCurrency(transaction.amount)}
           </PrivacyBlur>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="text-muted-foreground hover:text-primary"
-            onClick={() => onEdit && onEdit(transaction)}
-          >
-            <Pencil className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="text-muted-foreground hover:text-destructive"
-            onClick={() => onDelete(transaction.id)}
-          >
-            <Trash2 className="h-4 w-4" />
-          </Button>
+          <div className="flex items-center gap-1 md:gap-2">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-muted-foreground hover:text-primary h-9 w-9 md:h-10 md:w-10 touch-target"
+              onClick={() => onEdit && onEdit(transaction)}
+            >
+              <Pencil className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-muted-foreground hover:text-destructive h-9 w-9 md:h-10 md:w-10 touch-target"
+              onClick={() => onDelete(transaction.id)}
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
       </div>
     </div>

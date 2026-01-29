@@ -317,7 +317,7 @@ const Dashboard = () => {
           [t("export.account")]:
             accounts.find((a) => a.id === transaction.accountId)?.name || "N/A",
         };
-      })
+      }),
     );
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Transações");
@@ -378,13 +378,16 @@ const Dashboard = () => {
   const accountsWithBalance = useMemo(() => {
     return accounts.map((account) => {
       const accountTransactions = transactions.filter(
-        (t) => t.accountId === account.id
+        (t) => t.accountId === account.id,
       );
-      const balance = accountTransactions.reduce((acc, curr) => {
-        return curr.type === "income"
-          ? acc + parseFloat(curr.amount)
-          : acc - parseFloat(curr.amount);
-      }, parseFloat(account.initialBalance || 0));
+      const balance = accountTransactions.reduce(
+        (acc, curr) => {
+          return curr.type === "income"
+            ? acc + parseFloat(curr.amount)
+            : acc - parseFloat(curr.amount);
+        },
+        parseFloat(account.initialBalance || 0),
+      );
       return { ...account, balance };
     });
   }, [accounts, transactions]);
@@ -410,7 +413,7 @@ const Dashboard = () => {
     return calculateCashFlowForecast(
       stats.balance,
       transactions,
-      daysToProject
+      daysToProject,
     );
   }, [stats.balance, transactions]);
 
@@ -433,12 +436,12 @@ const Dashboard = () => {
     >
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">
+          <h2 className="text-2xl md:text-3xl font-bold tracking-tight">
             {t("dashboard.title")}
           </h2>
           <p className="text-muted-foreground">{t("dashboard.subtitle")}</p>
         </div>
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
           {!isSidebarCollapsed && (
             <>
               {isDraggable && !isMobile && (
@@ -446,7 +449,7 @@ const Dashboard = () => {
                   variant="default"
                   size="sm"
                   onClick={() => setIsDraggable(false)}
-                  className="bg-green-600 hover:bg-green-700"
+                  className="bg-green-600 hover:bg-green-700 h-10 touch-target"
                 >
                   <Save className="mr-2 h-4 w-4" />
                   {t("dashboard.saveLayout", "Salvar Layout")}
@@ -457,7 +460,7 @@ const Dashboard = () => {
                 variant="default"
                 size="sm"
                 onClick={() => setIsSimulateOpen(true)}
-                className="hidden md:flex"
+                className="hidden md:flex h-10 touch-target"
               >
                 <TrendingUp className="mr-2 h-4 w-4" />
                 {t("dashboard.simulate", "Simular")}
@@ -467,7 +470,7 @@ const Dashboard = () => {
                 variant="default"
                 size="icon"
                 onClick={() => setIsSimulateOpen(true)}
-                className="md:hidden"
+                className="md:hidden h-10 w-10 touch-target"
                 aria-label={t("dashboard.simulate", "Simular")}
               >
                 <TrendingUp className="h-4 w-4" />
@@ -476,9 +479,16 @@ const Dashboard = () => {
               <CustomDropdown
                 align="start"
                 trigger={
-                  <Button variant="outline" size="sm">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-10 touch-target"
+                  >
                     <Download className="mr-2 h-4 w-4" />
-                    {t("common.export", "Export")}
+                    <span className="hidden sm:inline">
+                      {t("common.export", "Export")}
+                    </span>
+                    <span className="sm:hidden">Export</span>
                   </Button>
                 }
               >
@@ -543,8 +553,8 @@ const Dashboard = () => {
               toast.success(
                 t(
                   "dashboard.simulationAdded",
-                  "Simulação adicionada ao Modo Sombra"
-                )
+                  "Simulação adicionada ao Modo Sombra",
+                ),
               );
             }}
           />

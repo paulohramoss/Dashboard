@@ -82,7 +82,7 @@ const TransactionsPage = () => {
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
       <div>
-        <h2 className="text-3xl font-bold tracking-tight">
+        <h2 className="text-2xl md:text-3xl font-bold tracking-tight">
           {t("transactions.title")}
         </h2>
         <p className="text-muted-foreground">{t("transactions.subtitle")}</p>
@@ -90,8 +90,8 @@ const TransactionsPage = () => {
 
       <TransactionFilters onFilterChange={setFilters} />
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-        <div className="col-span-4 lg:col-span-4 space-y-4">
+      <div className="grid gap-4 grid-cols-1 lg:grid-cols-7">
+        <div className="lg:col-span-4 space-y-4 order-2 lg:order-1">
           <TransactionHistory
             transactions={filteredTransactions}
             onDelete={deleteTransaction}
@@ -99,7 +99,7 @@ const TransactionsPage = () => {
             className="h-full"
           />
         </div>
-        <div className="col-span-4 lg:col-span-3 space-y-4">
+        <div className="lg:col-span-3 space-y-4 order-1 lg:order-2">
           <TransactionForm onAddTransaction={addTransaction} />
           <FileUploader onUpload={addTransactions} />
         </div>

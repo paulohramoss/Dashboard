@@ -99,3 +99,33 @@
 .privacy-blur:hover {
   filter: blur(0);
 }
+
+/* Touch-Friendly Utilities */
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Improved mobile tap targets for buttons */
+@media (max-width: 768px) {
+  button, a[role="button"] {
+    min-height: 44px;
+  }
+  
+  /* Better spacing for mobile forms */
+  input, select, textarea {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+}
+
+/* Container responsive padding */
+.container-responsive {
+  @apply px-4 md:px-6 lg:px-8;
+}
+
+/* Mobile-optimized card spacing */
+@media (max-width: 768px) {
+  .card-mobile-compact {
+    @apply px-3 py-3;
+  }
+}

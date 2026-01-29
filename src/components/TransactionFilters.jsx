@@ -53,18 +53,18 @@ const TransactionFilters = ({ onFilterChange }) => {
   return (
     <Card className="mb-6">
       <CardContent className="pt-6">
-        <div className="flex flex-wrap gap-4 items-end">
-          <div className="space-y-2 flex-1 min-w-[200px]">
+        <div className="flex flex-col md:flex-row md:flex-wrap gap-4 items-stretch md:items-end">
+          <div className="space-y-2 flex-1 min-w-full md:min-w-[200px]">
             <label className="text-sm font-medium">
               {t("transactions.search")}
             </label>
             <div className="relative">
-              <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Search className="absolute left-3 top-3.5 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder={t("transactions.searchPlaceholder")}
                 value={filters.search}
                 onChange={(e) => handleChange("search", e.target.value)}
-                className="pl-8"
+                className="pl-9 h-11"
               />
             </div>
           </div>
@@ -76,6 +76,7 @@ const TransactionFilters = ({ onFilterChange }) => {
             <Select
               value={filters.accountId}
               onChange={(e) => handleChange("accountId", e.target.value)}
+              className="h-11"
             >
               <option value="all">
                 {t("common.allAccounts") || "Todas as Contas"}
@@ -95,6 +96,7 @@ const TransactionFilters = ({ onFilterChange }) => {
             <Select
               value={filters.type}
               onChange={(e) => handleChange("type", e.target.value)}
+              className="h-11"
             >
               <option value="all">{t("transactions.allTypes")}</option>
               <option value="income">{t("transactions.form.income")}</option>
@@ -109,6 +111,7 @@ const TransactionFilters = ({ onFilterChange }) => {
             <Select
               value={filters.category}
               onChange={(e) => handleChange("category", e.target.value)}
+              className="h-11"
             >
               <option value="all">{t("transactions.allCategories")}</option>
               {uniqueCategories.map((cat) => (
@@ -121,22 +124,22 @@ const TransactionFilters = ({ onFilterChange }) => {
             </Select>
           </div>
 
-          <div className="space-y-2 w-full md:w-auto">
+          <div className="space-y-2 w-full md:w-auto md:flex-1">
             <label className="text-sm font-medium">
               {t("transactions.dateRange")}
             </label>
-            <div className="flex gap-2">
+            <div className="grid grid-cols-2 md:flex gap-2">
               <Input
                 type="date"
                 value={filters.startDate}
                 onChange={(e) => handleChange("startDate", e.target.value)}
-                className="text-xs w-[130px]"
+                className="w-full md:w-[140px] h-11"
               />
               <Input
                 type="date"
                 value={filters.endDate}
                 onChange={(e) => handleChange("endDate", e.target.value)}
-                className="text-xs w-[130px]"
+                className="w-full md:w-[140px] h-11"
               />
             </div>
           </div>
@@ -144,10 +147,10 @@ const TransactionFilters = ({ onFilterChange }) => {
           <Button
             variant="outline"
             onClick={clearFilters}
-            className="w-full md:w-auto"
+            className="w-full md:w-auto h-11 touch-target"
           >
             <X className="mr-2 h-4 w-4" />
-            {t("transactions.clearFilters")}
+            <span className="md:inline">{t("transactions.clearFilters")}</span>
           </Button>
         </div>
       </CardContent>

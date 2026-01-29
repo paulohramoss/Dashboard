@@ -152,7 +152,7 @@ const TransactionForm = ({
       if (lowerDesc.includes(rule.keyword)) {
         // Verify category exists
         const categoryExists = categories.some(
-          (c) => c.name === rule.category && c.type === rule.type
+          (c) => c.name === rule.category && c.type === rule.type,
         );
         if (categoryExists) {
           newType = rule.type;
@@ -168,7 +168,7 @@ const TransactionForm = ({
       for (const [key, mapping] of Object.entries(KEYWORD_MAP)) {
         if (lowerDesc.includes(key)) {
           const categoryExists = categories.some(
-            (c) => c.name === mapping.category && c.type === mapping.type
+            (c) => c.name === mapping.category && c.type === mapping.type,
           );
 
           if (categoryExists) {
@@ -234,7 +234,7 @@ const TransactionForm = ({
     // Check for budget overflow
     if (formData.type === "expense") {
       const category = categories.find(
-        (c) => c.name === categoryToSubmit && c.type === "expense"
+        (c) => c.name === categoryToSubmit && c.type === "expense",
       );
 
       if (category && category.budget > 0) {
@@ -248,7 +248,7 @@ const TransactionForm = ({
               t.type === "expense" &&
               t.category === categoryToSubmit &&
               new Date(t.date).getMonth() === currentMonth &&
-              new Date(t.date).getFullYear() === currentYear
+              new Date(t.date).getFullYear() === currentYear,
           )
           .reduce((acc, curr) => acc + parseFloat(curr.amount), 0);
 
@@ -289,7 +289,7 @@ const TransactionForm = ({
     checkForRuleSuggestion(
       formData.description,
       categoryToSubmit,
-      formData.type
+      formData.type,
     );
   };
 
@@ -312,7 +312,7 @@ const TransactionForm = ({
 
     // 2. Check if covered by hardcoded map
     const hasStaticRule = Object.keys(KEYWORD_MAP).some((key) =>
-      lowerDesc.includes(key)
+      lowerDesc.includes(key),
     );
     if (hasStaticRule) return;
 
@@ -350,6 +350,7 @@ const TransactionForm = ({
             value={formData.description}
             onChange={handleDescriptionChange}
             required
+            className="h-11"
           />
         </div>
         <div className="space-y-2">
@@ -363,7 +364,7 @@ const TransactionForm = ({
               onChange={(val) => setFormData({ ...formData, amount: val })}
               placeholder="R$ 0,00"
               required
-              className="flex-1"
+              className="flex-1 h-11"
             />
             <MagicScan onScanComplete={handleScanComplete} />
           </div>
@@ -372,7 +373,12 @@ const TransactionForm = ({
           <label className="text-sm font-medium" htmlFor="type">
             {t("transactions.form.type")}
           </label>
-          <Select id="type" value={formData.type} onChange={handleTypeChange}>
+          <Select
+            id="type"
+            value={formData.type}
+            onChange={handleTypeChange}
+            className="h-11"
+          >
             <option value="expense">{t("transactions.form.expense")}</option>
             <option value="income">{t("transactions.form.income")}</option>
             <option value="transfer">{t("transactions.form.transfer")}</option>
@@ -390,6 +396,7 @@ const TransactionForm = ({
               onChange={(e) =>
                 setFormData({ ...formData, category: e.target.value })
               }
+              className="h-11"
             >
               {availableCategories.map((cat) => (
                 <option key={cat.id} value={cat.name}>
@@ -415,6 +422,7 @@ const TransactionForm = ({
               setFormData({ ...formData, accountId: e.target.value })
             }
             required
+            className="h-11"
           >
             <option value="">{t("transactions.form.selectAccount")}</option>
             {accounts.map((acc) => (
@@ -446,6 +454,7 @@ const TransactionForm = ({
                 })
               }
               required
+              className="h-11"
             >
               <option value="">{t("transactions.form.selectAccount")}</option>
               {accounts
@@ -472,6 +481,7 @@ const TransactionForm = ({
             value={formData.date}
             onChange={(e) => setFormData({ ...formData, date: e.target.value })}
             required
+            className="h-11"
           />
         </div>
       </div>
@@ -556,7 +566,7 @@ const TransactionForm = ({
         )}
       </div>
 
-      <Button type="submit" className="w-full">
+      <Button type="submit" className="w-full h-11 md:h-10 touch-target">
         {isEditing ? (
           <>
             <Pencil className="mr-2 h-4 w-4" /> {t("common.save", "Salvar")}
