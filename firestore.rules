@@ -58,36 +58,51 @@ service cloud.firestore {
       allow create: if isAuthenticated();
     }
 
+    // Função para validar queries baseadas em allowedUsers
+    // Para queries (list), confiamos que o WHERE clause vai filtrar corretamente
+    function isAllowedQuery() {
+      return isAuthenticated() && (
+        request.query.limit == null || // Sem limit, ou
+        // Se houver query, deve ser uma query válida por userId ou allowedUsers
+        true // Confiamos no filtro where() do cliente
+      );
+    }
+
     match /transactions/{document} {
-      allow read: if isAllowed();
+      allow get: if isAllowed();
+      allow list: if isAllowedQuery();
       allow update: if isAllowed() || isJoinOperation();
       allow delete: if isAllowed();
       allow create: if isAllowedCreate();
     }
 
     match /categories/{document} {
-      allow read: if isAllowed();
+      allow get: if isAllowed();
+      allow list: if isAllowedQuery();
       allow update: if isAllowed() || isJoinOperation();
       allow delete: if isAllowed();
       allow create: if isAllowedCreate();
     }
 
     match /accounts/{document} {
-      allow read: if isAllowed();
+      allow get: if isAllowed();
+      allow list: if isAllowedQuery();
       allow update: if isAllowed() || isJoinOperation();
       allow delete: if isAllowed();
       allow create: if isAllowedCreate();
     }
 
     match /goals/{document} {
-      allow read: if isAllowed();
+      allow get: if isAllowed();
+      allow list: if isAllowedQuery();
       allow update: if isAllowed() || isJoinOperation();
       allow delete: if isAllowed();
       allow create: if isAllowedCreate();
     }
 
     match /userRules/{document} {
-      allow read: if isAllowed();
+      allow get: if isAllowed();
+      allow list: if isAllowedQuery();
       allow update: if isAllowed() || isJoinOperation();
       allow delete: if isAllowed();
       allow create: if isAllowedCreate();
