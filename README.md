@@ -37,7 +37,8 @@ O projeto foi construído utilizando as seguintes tecnologias e bibliotecas:
 - **Linguagem:** JavaScript (ES6+)
 - **Estilização:** [Tailwind CSS](https://tailwindcss.com/), [Shadcn UI](https://ui.shadcn.com/) (baseado em Radix UI)
 - **Ícones:** [Lucide React](https://lucide.dev/)
-- **Backend & Auth:** [Firebase](https://firebase.google.com/) (Authentication, Firestore)
+- **Backend & Auth:** [Firebase](https://firebase.google.com/) (Authentication, Firestore, Storage, AI Logic)
+- **AI/ML:** [Firebase AI Logic](https://firebase.google.com/docs/ai-logic) (Gemini API)
 - **Gráficos:** [Recharts](https://recharts.org/)
 - **Utilitários:**
   - `i18next` para internacionalização.
@@ -69,7 +70,6 @@ Antes de começar, você precisará ter instalado em sua máquina:
     ```
 
 3.  **Configure o Firebase:**
-
     - Crie um projeto no [Console do Firebase](https://console.firebase.google.com/).
     - Habilite o **Authentication** e o **Firestore Database**.
     - Crie um arquivo `.env` na raiz do projeto com as suas credenciais:
@@ -94,6 +94,59 @@ Antes de começar, você precisará ter instalado em sua máquina:
 - `npm run build`: Compila o projeto para produção.
 - `npm run preview`: Visualiza a versão de produção localmente.
 - `npm run lint`: Executa a verificação de código com ESLint.
+
+## 🤖 Firebase AI Logic (Gemini)
+
+O projeto inclui integração com o **Firebase AI Logic** para acesso aos modelos **Gemini**. Isso permite adicionar recursos de IA generativa à aplicação.
+
+### Configuração
+
+A biblioteca já está instalada e configurada em `src/lib/firebase.js`:
+
+```javascript
+import { getAI, getGenerativeModel, GoogleAIBackend } from "firebase/ai";
+
+// Inicializar o serviço Gemini Developer API
+export const ai = getAI(app, { backend: new GoogleAIBackend() });
+
+// Criar instância do modelo
+export const geminiModel = getGenerativeModel(ai, {
+  model: "gemini-2.0-flash-exp",
+});
+```
+
+### Uso Básico
+
+Utilize o módulo auxiliar `src/lib/gemini.js`:
+
+```javascript
+import { generateText, generateTextStream } from "./lib/gemini";
+
+// Geração simples de texto
+const text = await generateText(
+  "Crie um resumo financeiro baseado nos dados...",
+);
+console.log(text);
+
+// Geração com streaming (resposta incremental)
+await generateTextStream(
+  "Analise meus gastos do mês...",
+  (chunk) => console.log(chunk), // Callback para cada pedaço
+);
+```
+
+### Funções Disponíveis
+
+- **`generateText(prompt)`**: Gera texto de forma completa.
+- **`generateTextStream(prompt, onChunk)`**: Gera texto com streaming (útil para UIs interativas).
+- **`runExample()`**: Função de demonstração.
+
+### Casos de Uso no Projeto
+
+- 📊 Análise inteligente de gastos
+- 💡 Sugestões personalizadas de economia
+- 📝 Categorização automática de transações
+- 🎯 Recomendações de metas financeiras
 
 ## 📱 PWA (Progressive Web App)
 

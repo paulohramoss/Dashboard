@@ -11,6 +11,7 @@ import { useAuth } from "@/hooks/useAuth";
 import Layout from "@/components/Layout";
 import Dashboard from "@/components/Dashboard";
 import NotificationManager from "@/components/NotificationManager";
+import FinancialAssistant from "@/components/FinancialAssistant";
 import { Toaster } from "sonner";
 import VersionChecker from "@/components/VersionChecker";
 
@@ -71,6 +72,7 @@ const App = () => {
                   <ProtectedRoute>
                     <Layout>
                       <NotificationManager />
+                      <FinancialAssistant />
                       <Suspense fallback={<PageLoader />}>
                         <Routes>
                           <Route path="/" element={<Dashboard />} />

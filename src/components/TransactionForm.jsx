@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { Plus, Pencil } from "lucide-react";
+import { Plus, Pencil, Sparkles } from "lucide-react";
 import { useCategories } from "@/hooks/useCategories";
 import { useAccounts } from "@/hooks/useAccounts";
 import { useTransactions } from "@/hooks/useTransactions";
@@ -17,6 +17,7 @@ import CurrencyInput from "@/components/ui/currency-input";
 import MagicScan from "@/components/MagicScan";
 import { getCurrentLocalDate } from "@/lib/utils";
 import { parseInputDate } from "@/utils/dateUtils";
+import { suggestCategory } from "@/lib/gemini";
 
 const KEYWORD_MAP = {
   // Transport
@@ -90,7 +91,7 @@ const TransactionForm = ({
   isEditing = false,
   variant = "default", // "default" | "clean"
 }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { categories } = useCategories();
   const { accounts } = useAccounts();
   const { transactions } = useTransactions();
@@ -112,6 +113,8 @@ const TransactionForm = ({
     accountId: initialData?.accountId || "",
     destinationAccountId: initialData?.destinationAccountId || "", // Add this if missing in original state
   });
+
+  const [aiLoading, setAiLoading] = useState(false);
 
   // Filter categories based on selected type and deduplicate by name
   // Filter categories based on selected type and deduplicate by translated name
@@ -302,6 +305,61 @@ const TransactionForm = ({
     }));
   };
 
+  const handleAISuggest = async () => {
+    if (!formData.description || formData.description.trim() === "") {
+      toast.error(
+        t("transactions.ai.noDescription", "Adicione uma descrição primeiro"),
+      );
+      return;
+    }
+
+    setAiLoading(true);
+    try {
+      // Detectar idioma usando i18n do componente
+      const language = i18n.language.startsWith("pt") ? "pt" : "en";
+
+      const result = await suggestCategory(
+        formData.description,
+        availableCategories,
+        language,
+      );
+
+      // Verificar se a categoria sugerida existe
+      const suggestedCat = availableCategories.find(
+        (c) => c.name === result.category,
+      );
+
+      if (suggestedCat) {
+        setFormData({ ...formData, category: result.category });
+        toast.success(
+          t("transactions.ai.categorySuggested", "Categoria sugerida por IA"),
+          {
+            description:
+              result.reasoning || `${result.category} (${result.confidence})`,
+            duration: 4000,
+          },
+        );
+      } else {
+        toast.info(t("transactions.ai.noMatch", "Categoria não encontrada"), {
+          description: t(
+            "transactions.ai.noMatchDesc",
+            "A IA sugeriu uma categoria que não existe. Tente adicionar mais detalhes.",
+          ),
+        });
+      }
+    } catch (error) {
+      console.error("Erro ao sugerir categoria com IA:", error);
+      toast.error(t("transactions.ai.error", "Erro ao sugerir categoria"), {
+        description: t(
+          "transactions.ai.errorDesc",
+          "Tente novamente ou selecione manualmente.",
+        ),
+      });
+    } finally {
+      setAiLoading(false);
+    }
+  };
+
   const checkForRuleSuggestion = (description, category, type) => {
     const lowerDesc = description.toLowerCase().trim();
     if (!lowerDesc) return;
@@ -390,22 +448,42 @@ const TransactionForm = ({
             <label className="text-sm font-medium" htmlFor="category">
               {t("transactions.form.category")}
             </label>
-            <Select
-              id="category"
-              value={formData.category || availableCategories[0]?.name || ""}
-              onChange={(e) =>
-                setFormData({ ...formData, category: e.target.value })
-              }
-              className="h-11"
-            >
-              {availableCategories.map((cat) => (
-                <option key={cat.id} value={cat.name}>
-                  {cat.isDefault
-                    ? t(`categories.${cat.name.toLowerCase()}`)
-                    : cat.name}
-                </option>
-              ))}
-            </Select>
+            <div className="flex gap-2">
+              <Select
+                id="category"
+                value={formData.category || availableCategories[0]?.name || ""}
+                onChange={(e) =>
+                  setFormData({ ...formData, category: e.target.value })
+                }
+                className="h-11 flex-1"
+              >
+                {availableCategories.map((cat) => (
+                  <option key={cat.id} value={cat.name}>
+                    {cat.isDefault
+                      ? t(`categories.${cat.name.toLowerCase()}`)
+                      : cat.name}
+                  </option>
+                ))}
+              </Select>
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                onClick={handleAISuggest}
+                disabled={aiLoading || !formData.description}
+                className="h-11 w-11 shrink-0"
+                title={t(
+                  "transactions.ai.suggestCategory",
+                  "Sugerir categoria com IA",
+                )}
+              >
+                {aiLoading ? (
+                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+                ) : (
+                  <Sparkles className="h-4 w-4" />
+                )}
+              </Button>
+            </div>
           </div>
         )}
 
