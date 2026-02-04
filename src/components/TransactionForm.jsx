@@ -92,7 +92,7 @@ const TransactionForm = ({
   variant = "default", // "default" | "clean"
 }) => {
   const { t, i18n } = useTranslation();
-  const { categories } = useCategories();
+  const { categories, addCategory } = useCategories();
   const { accounts } = useAccounts();
   const { transactions } = useTransactions();
   const { rules, addRule } = useRules();
@@ -324,28 +324,76 @@ const TransactionForm = ({
         language,
       );
 
+      // Sanitizar o nome da categoria removendo sufixos como (expense), (income), etc.
+      const sanitizedCategoryName = result.category
+        .replace(
+          /\s*\((expense|income|transfer|despesa|receita|transferência)\)\s*/gi,
+          "",
+        )
+        .trim();
+
       // Verificar se a categoria sugerida existe
       const suggestedCat = availableCategories.find(
-        (c) => c.name === result.category,
+        (c) => c.name.toLowerCase() === sanitizedCategoryName.toLowerCase(),
       );
 
       if (suggestedCat) {
-        setFormData({ ...formData, category: result.category });
+        // Categoria existe - aplicar normalmente
+        setFormData({ ...formData, category: suggestedCat.name });
         toast.success(
           t("transactions.ai.categorySuggested", "Categoria sugerida por IA"),
           {
             description:
-              result.reasoning || `${result.category} (${result.confidence})`,
+              result.reasoning || `${suggestedCat.name} (${result.confidence})`,
             duration: 4000,
           },
         );
       } else {
-        toast.info(t("transactions.ai.noMatch", "Categoria não encontrada"), {
-          description: t(
-            "transactions.ai.noMatchDesc",
-            "A IA sugeriu uma categoria que não existe. Tente adicionar mais detalhes.",
-          ),
+        // Categoria NÃO existe - criar automaticamente
+        const colorPalette = [
+          "#ef4444",
+          "#f97316",
+          "#f59e0b",
+          "#eab308",
+          "#84cc16",
+          "#22c55e",
+          "#10b981",
+          "#14b8a6",
+          "#06b6d4",
+          "#0ea5e9",
+          "#3b82f6",
+          "#6366f1",
+          "#8b5cf6",
+          "#a855f7",
+          "#d946ef",
+          "#ec4899",
+          "#f43f5e",
+        ];
+
+        const randomColor =
+          colorPalette[Math.floor(Math.random() * colorPalette.length)];
+
+        // Criar a nova categoria com nome sanitizado
+        await addCategory({
+          name: sanitizedCategoryName,
+          type: formData.type,
+          color: randomColor,
+          isDefault: false,
         });
+
+        // Aplicar a categoria criada
+        setFormData({ ...formData, category: sanitizedCategoryName });
+
+        toast.success(
+          t(
+            "transactions.ai.categoryCreated",
+            "Nova categoria criada pela IA! 🎉",
+          ),
+          {
+            description: `${sanitizedCategoryName} - ${result.reasoning || t("transactions.ai.autoCreated", "Categoria criada automaticamente")}`,
+            duration: 5000,
+          },
+        );
       }
     } catch (error) {
       console.error("Erro ao sugerir categoria com IA:", error);

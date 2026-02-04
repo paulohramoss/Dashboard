@@ -27,5 +27,5 @@ export const ai = getAI(app, { backend: new GoogleAIBackend() });
 
 // Create a GenerativeModel instance with a model that supports text generation
 export const geminiModel = getGenerativeModel(ai, {
-  model: "gemini-2.0-flash-exp",
+  model: "gemini-2.0-flash-001",
 });

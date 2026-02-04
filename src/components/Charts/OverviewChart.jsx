@@ -53,7 +53,7 @@ const OverviewChart = ({ transactions, forecastData = [], currentBalance }) => {
 
     // Sort dates
     const sortedDates = Object.keys(grouped).sort(
-      (a, b) => new Date(a) - new Date(b)
+      (a, b) => new Date(a) - new Date(b),
     );
 
     // We want last 30 days history? Or all time?
@@ -122,7 +122,7 @@ const OverviewChart = ({ transactions, forecastData = [], currentBalance }) => {
     // Filter for last 30 days range.
 
     const historicalRange = sortedDates.filter((d) =>
-      isAfter(new Date(d), thirtyDaysAgo)
+      isAfter(new Date(d), thirtyDaysAgo),
     ); // And before today?
 
     historicalRange.forEach((date) => {
@@ -190,7 +190,7 @@ const OverviewChart = ({ transactions, forecastData = [], currentBalance }) => {
             <span>{t("charts.projectedBalance") || "Forecast"}</span>
           </div>
         </div>
-        <div style={{ width: "100%", height: 300 }}>
+        <div style={{ width: "100%", height: 300, minHeight: 300 }}>
           <ResponsiveContainer>
             <ComposedChart data={data}>
               <defs>

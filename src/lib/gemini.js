@@ -99,24 +99,40 @@ export async function suggestCategory(
 
   const categoryList =
     availableCategories.length > 0
-      ? availableCategories.map((c) => `${c.name} (${c.type})`).join(", ")
-      : "Food, Transport, Utilities, Entertainment, Salary, Freelance, Other, General";
+      ? availableCategories.map((c) => c.name).join(", ")
+      : language === "pt"
+        ? "Alimentação, Transporte, Contas, Entretenimento, Salário, Freelance, Outros, Geral"
+        : "Food, Transport, Utilities, Entertainment, Salary, Freelance, Other, General";
 
   const prompt =
     language === "pt"
-      ? `Você é um assistente de finanças pessoais. Com base na descrição da transação abaixo, sugira a categoria mais apropriada.
+      ? `Você é um especialista em categorização financeira. Analise a descrição da transação e sugira uma categoria específica e descritiva.
 
 Descrição: "${description}"
 
-Categorias disponíveis: ${categoryList}
+Categorias já existentes: ${categoryList}
+
+INSTRUÇÕES IMPORTANTES:
+1. Se a descrição se encaixa perfeitamente em uma categoria existente, use essa categoria EXATAMENTE como está na lista
+2. Se nenhuma categoria existente é específica o suficiente, CRIE uma nova categoria com um nome curto, descritivo e em português
+3. EVITE usar "Geral" ou "Outros" - sempre prefira criar uma categoria específica (ex: "Saúde", "Educação", "Pets", "Academia")
+4. Não adicione sufixos como "(expense)" ou "(despesa)"
+5. Use apenas uma palavra ou no máximo duas (ex: "Saúde", "Educação", "Cuidados Pessoais")
 
 Responda APENAS no formato JSON exato abaixo, sem texto adicional:
 {"category": "nome_da_categoria", "confidence": "high|medium|low", "reasoning": "breve explicação"}`
-      : `You are a personal finance assistant. Based on the transaction description below, suggest the most appropriate category.
+      : `You are a financial categorization expert. Analyze the transaction description and suggest a specific, descriptive category.
 
 Description: "${description}"
 
-Available categories: ${categoryList}
+Existing categories: ${categoryList}
+
+IMPORTANT INSTRUCTIONS:
+1. If the description fits perfectly into an existing category, use that category EXACTLY as it appears in the list
+2. If no existing category is specific enough, CREATE a new category with a short, descriptive name in English
+3. AVOID using "General" or "Other" - always prefer creating a specific category (e.g., "Health", "Education", "Pets", "Gym")
+4. Do not add suffixes like "(expense)" or "(income)"
+5. Use only one or at most two words (e.g., "Health", "Education", "Personal Care")
 
 Respond ONLY in the exact JSON format below, with no additional text:
 {"category": "category_name", "confidence": "high|medium|low", "reasoning": "brief explanation"}`;
@@ -156,7 +172,6 @@ Respond ONLY in the exact JSON format below, with no additional text:
  */
 export async function generateMonthlyInsights(
   transactions = [],
-  categories = [],
   language = "pt",
 ) {
   if (!transactions || transactions.length === 0) {
@@ -345,8 +360,8 @@ Provide 4-5 numbered suggestions, each with 1-2 sentences.`;
     // Tentar extrair sugestões numeradas
     const suggestions = suggestionsText
       .split(/\n/)
-      .filter((line) => /^\d+[\.\):]/.test(line.trim()))
-      .map((line) => line.replace(/^\d+[\.\):]/, "").trim())
+      .filter((line) => /^\d+[.):]/.test(line.trim()))
+      .map((line) => line.replace(/^\d+[.):]/, "").trim())
       .filter((s) => s.length > 0);
 
     return {

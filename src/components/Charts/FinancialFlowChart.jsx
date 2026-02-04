@@ -21,11 +21,11 @@ const FinancialFlowChart = ({ transactions }) => {
 
   const totalIncome = incomeTransactions.reduce(
     (acc, curr) => acc + parseFloat(curr.amount),
-    0
+    0,
   );
   const totalExpense = expenseTransactions.reduce(
     (acc, curr) => acc + parseFloat(curr.amount),
-    0
+    0,
   );
 
   const processCategories = (txs, total) => {
@@ -54,7 +54,7 @@ const FinancialFlowChart = ({ transactions }) => {
   const incomeByCategory = processCategories(incomeTransactions, totalIncome);
   const expenseByCategory = processCategories(
     expenseTransactions,
-    totalExpense
+    totalExpense,
   );
 
   // 2. Create Nodes and Links
@@ -143,11 +143,11 @@ const FinancialFlowChart = ({ transactions }) => {
         <CardDescription>
           {t(
             "reports.flowDescription",
-            "Visualize como o dinheiro entra na sua carteira e como é distribuído nas despesas."
+            "Visualize como o dinheiro entra na sua carteira e como é distribuído nas despesas.",
           )}
         </CardDescription>
       </CardHeader>
-      <CardContent className="h-[500px]">
+      <CardContent className="h-[500px]" style={{ minHeight: 500 }}>
         <ResponsiveContainer width="100%" height="100%">
           <Sankey
             data={{ nodes, links }}

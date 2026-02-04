@@ -57,7 +57,7 @@ const MonthlyEvolutionChart = ({ transactions }) => {
         <CardTitle>{t("charts.monthlyEvolution")}</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="h-[300px]">
+        <div className="h-[300px]" style={{ minHeight: 300 }}>
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
               data={data}

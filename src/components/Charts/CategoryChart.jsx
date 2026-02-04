@@ -46,7 +46,7 @@ const CategoryChart = ({ transactions }) => {
         <CardTitle>{t("charts.expensesByCategory")}</CardTitle>
       </CardHeader>
       <CardContent>
-        <div style={{ width: "100%", height: 350 }}>
+        <div style={{ width: "100%", height: 350, minHeight: 350 }}>
           <ResponsiveContainer>
             <PieChart>
               <Pie
