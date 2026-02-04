@@ -56,7 +56,6 @@ const TransactionsPage = () => {
       const matchesCategory =
         filters.category === "all" || t.category === filters.category;
       const matchesAccount =
-        !filters.accountId ||
         filters.accountId === "all" ||
         t.accountId === filters.accountId;
 
