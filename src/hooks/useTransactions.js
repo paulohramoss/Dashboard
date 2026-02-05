@@ -240,6 +240,10 @@ export const useTransactions = () => {
     )
     : transactions;
 
+  console.log("🎭 [useTransactions] Shadow mode:", isShadowMode);
+  console.log("👻 [useTransactions] Shadow transactions:", shadowTransactions.length);
+  console.log("📦 [useTransactions] All transactions (returned):", allTransactions.length);
+
   const stats = allTransactions.reduce(
     (acc, curr) => {
       const amount = parseFloat(curr.amount);
