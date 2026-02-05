@@ -51,12 +51,11 @@ export default function FinancialAssistant() {
           size="lg"
           className="h-14 w-14 rounded-full shadow-lg bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 transition-transform hover:scale-110"
           onClick={() => setIsOpen(!isOpen)}
+          aria-label={isOpen ? "Fechar chat" : "Abrir assistente de IA"}
         >
-          {isOpen ? (
-            <X className="h-6 w-6" />
-          ) : (
-            <MessageCircle className="h-6 w-6" />
-          )}
+          <span className="text-3xl animate-pulse" role="img" aria-label="IA">
+            ✨
+          </span>
         </Button>
       </div>
 
