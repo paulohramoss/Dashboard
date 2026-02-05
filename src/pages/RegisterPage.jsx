@@ -80,7 +80,7 @@ const RegisterPage = () => {
               <Label htmlFor="name">{t("auth.fullName")}</Label>
               <Input
                 id="name"
-                placeholder="John Doe"
+                placeholder={t("auth.namePlaceholder")}
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required

@@ -115,7 +115,7 @@ const AccountsPage = () => {
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
-    })
+    }),
   );
 
   const handleDragEnd = (event) => {
@@ -163,7 +163,7 @@ const AccountsPage = () => {
   const accountBalances = useMemo(() => {
     return accounts.map((account) => {
       const accountTransactions = transactions.filter(
-        (t) => t.accountId === account.id
+        (t) => t.accountId === account.id,
       );
       const income = accountTransactions
         .filter((t) => t.type === "income")
@@ -179,7 +179,7 @@ const AccountsPage = () => {
 
       const transfersIn = transactions
         .filter(
-          (t) => t.type === "transfer" && t.destinationAccountId === account.id
+          (t) => t.type === "transfer" && t.destinationAccountId === account.id,
         )
         .reduce((acc, t) => acc + parseFloat(t.amount), 0);
 
@@ -241,7 +241,7 @@ const AccountsPage = () => {
       const hasTransactions = transactions.some(
         (t) =>
           t.accountId === accountToDelete.id ||
-          t.destinationAccountId === accountToDelete.id
+          t.destinationAccountId === accountToDelete.id,
       );
 
       if (hasTransactions) {
@@ -377,7 +377,6 @@ const AccountsPage = () => {
                   onChange={(val) =>
                     setNewAccount({ ...newAccount, initialBalance: val })
                   }
-                  placeholder="R$ 0,00"
                   required
                 />
               </div>
@@ -434,7 +433,7 @@ const AccountsPage = () => {
               >
                 {orderedAccounts.map((account) => {
                   const balanceInfo = accountBalances.find(
-                    (b) => b.id === account.id
+                    (b) => b.id === account.id,
                   );
                   return (
                     <SortableAccountCard key={account.id} account={account}>
@@ -454,14 +453,14 @@ const AccountsPage = () => {
                         <CardContent>
                           <PrivacyBlur className="text-2xl font-bold">
                             {formatCurrency(
-                              balanceInfo ? balanceInfo.currentBalance : 0
+                              balanceInfo ? balanceInfo.currentBalance : 0,
                             )}
                           </PrivacyBlur>
                           <p className="text-xs text-muted-foreground capitalize">
                             {account.type === "credit"
                               ? t(
                                   "accounts.availableLimit",
-                                  "Limite Disponível"
+                                  "Limite Disponível",
                                 )
                               : t(`accounts.${account.type}`)}
                           </p>
@@ -472,7 +471,7 @@ const AccountsPage = () => {
                               </span>
                               <PrivacyBlur>
                                 {formatCurrency(
-                                  balanceInfo ? balanceInfo.invoiceValue : 0
+                                  balanceInfo ? balanceInfo.invoiceValue : 0,
                                 )}
                               </PrivacyBlur>
                             </div>
@@ -487,7 +486,7 @@ const AccountsPage = () => {
           ) : (
             accounts.map((account) => {
               const balanceInfo = accountBalances.find(
-                (b) => b.id === account.id
+                (b) => b.id === account.id,
               );
               return (
                 <Card
@@ -548,7 +547,7 @@ const AccountsPage = () => {
                         </span>
                         <PrivacyBlur className="font-medium">
                           {formatCurrency(
-                            balanceInfo ? balanceInfo.invoiceValue : 0
+                            balanceInfo ? balanceInfo.invoiceValue : 0,
                           )}
                         </PrivacyBlur>
                       </div>

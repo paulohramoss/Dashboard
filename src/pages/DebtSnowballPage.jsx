@@ -24,13 +24,16 @@ const DebtSnowballPage = () => {
   const accountsWithBalance = useMemo(() => {
     return accounts.map((account) => {
       const accountTransactions = transactions.filter(
-        (t) => t.accountId === account.id
+        (t) => t.accountId === account.id,
       );
-      const balance = accountTransactions.reduce((acc, curr) => {
-        return curr.type === "income"
-          ? acc + parseFloat(curr.amount)
-          : acc - parseFloat(curr.amount);
-      }, parseFloat(account.initialBalance || 0));
+      const balance = accountTransactions.reduce(
+        (acc, curr) => {
+          return curr.type === "income"
+            ? acc + parseFloat(curr.amount)
+            : acc - parseFloat(curr.amount);
+        },
+        parseFloat(account.initialBalance || 0),
+      );
       return { ...account, balance };
     });
   }, [accounts, transactions]);
@@ -38,7 +41,8 @@ const DebtSnowballPage = () => {
   // Filter debts: Credit Card or Loan with NEGATIVE balance
   const debts = useMemo(() => {
     return accountsWithBalance.filter(
-      (acc) => (acc.type === "credit" || acc.type === "loan") && acc.balance < 0
+      (acc) =>
+        (acc.type === "credit" || acc.type === "loan") && acc.balance < 0,
     );
   }, [accountsWithBalance]);
 
@@ -74,7 +78,7 @@ const DebtSnowballPage = () => {
 
     const months = Math.ceil(
       -Math.log(1 - (monthlyRate * principal) / payment) /
-        Math.log(1 + monthlyRate)
+        Math.log(1 + monthlyRate),
     );
 
     const totalPaid = months * payment; // Approximation
@@ -108,7 +112,7 @@ const DebtSnowballPage = () => {
         <p className="text-muted-foreground">
           {t(
             "debt.subtitle",
-            "Planeje o pagamento de suas dívidas e fique livre delas."
+            "Planeje o pagamento de suas dívidas e fique livre delas.",
           )}
         </p>
       </div>
@@ -125,7 +129,7 @@ const DebtSnowballPage = () => {
             <p className="text-muted-foreground max-w-sm mt-2">
               {t(
                 "debt.noDebtsDesc",
-                "Suas contas de cartão e empréstimo estão positivas ou zeradas."
+                "Suas contas de cartão e empréstimo estão positivas ou zeradas.",
               )}
             </p>
           </CardContent>
@@ -137,7 +141,7 @@ const DebtSnowballPage = () => {
             const result = calculatePayoff(
               debt.balance,
               parseFloat(inputs.payment),
-              parseFloat(inputs.rate) || 0
+              parseFloat(inputs.rate) || 0,
             );
 
             return (
@@ -173,7 +177,7 @@ const DebtSnowballPage = () => {
                         onChange={(val) =>
                           handleCalcChange(debt.id, "payment", val)
                         }
-                        placeholder="Ex: 500,00"
+                        placeholder={t("debt.monthlyPaymentPlaceholder")}
                       />
                     </div>
                     <div className="space-y-2">
@@ -186,7 +190,7 @@ const DebtSnowballPage = () => {
                         onChange={(e) =>
                           handleCalcChange(debt.id, "rate", e.target.value)
                         }
-                        placeholder="Ex: 12"
+                        placeholder={t("debt.interestRatePlaceholder")}
                       />
                     </div>
 
@@ -205,8 +209,8 @@ const DebtSnowballPage = () => {
                           <span className="font-bold">
                             {new Date(
                               new Date().setMonth(
-                                new Date().getMonth() + result.months
-                              )
+                                new Date().getMonth() + result.months,
+                              ),
                             ).toLocaleDateString()}
                           </span>
                         </div>
@@ -225,7 +229,7 @@ const DebtSnowballPage = () => {
                       <div className="bg-red-50 text-red-600 text-sm p-3 rounded-lg">
                         {t(
                           "debt.paymentTooLow",
-                          "Pagamento insuficiente para cobrir os juros."
+                          "Pagamento insuficiente para cobrir os juros.",
                         )}
                       </div>
                     )}
@@ -234,7 +238,7 @@ const DebtSnowballPage = () => {
                       <div className="text-xs text-center text-muted-foreground py-2">
                         {t(
                           "debt.enterPayment",
-                          "Informe um valor mensal para simular."
+                          "Informe um valor mensal para simular.",
                         )}
                       </div>
                     )}

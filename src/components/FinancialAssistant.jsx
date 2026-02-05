@@ -53,7 +53,7 @@ export default function FinancialAssistant() {
           onClick={() => setIsOpen(!isOpen)}
           aria-label={isOpen ? "Fechar chat" : "Abrir assistente de IA"}
         >
-          <span className="text-3xl animate-pulse" role="img" aria-label="IA">
+          <span className="text-3xl animate-pulse" role="img" aria-label="AI">
             ✨
           </span>
         </Button>

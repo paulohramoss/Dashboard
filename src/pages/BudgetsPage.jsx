@@ -38,7 +38,7 @@ const BudgetsPage = () => {
     const budgets = categories.filter((c) => c.budget > 0);
     return budgets.filter(
       (budget, index, self) =>
-        index === self.findIndex((b) => b.name === budget.name)
+        index === self.findIndex((b) => b.name === budget.name),
     );
   }, [categories]);
 
@@ -46,7 +46,8 @@ const BudgetsPage = () => {
     // Filter categories that don't have a budget set (or budget is 0)
     // Also deduplicate by name to avoid showing same category multiple times if it exists
     const uniqueCategories = categories.filter(
-      (cat, index, self) => index === self.findIndex((c) => c.name === cat.name)
+      (cat, index, self) =>
+        index === self.findIndex((c) => c.name === cat.name),
     );
     return uniqueCategories.filter((c) => !c.budget || c.budget <= 0);
   }, [categories]);
@@ -63,7 +64,7 @@ const BudgetsPage = () => {
           t.type === "expense" &&
           t.category === categoryName &&
           new Date(t.date).getMonth() === currentMonth &&
-          new Date(t.date).getFullYear() === currentYear
+          new Date(t.date).getFullYear() === currentYear,
       )
       .reduce((acc, curr) => acc + parseFloat(curr.amount), 0);
 
@@ -180,7 +181,6 @@ const BudgetsPage = () => {
                   onChange={(val) =>
                     setNewBudget({ ...newBudget, amount: val })
                   }
-                  placeholder="R$ 0,00"
                   required
                 />
               </div>
@@ -233,7 +233,7 @@ const BudgetsPage = () => {
                 category.name,
                 category.budget,
                 category.rollover,
-                category
+                category,
               );
 
             const getProgressColor = () => {
@@ -289,13 +289,13 @@ const BudgetsPage = () => {
                       <div
                         className={cn(
                           "h-2 w-full bg-secondary rounded-full overflow-hidden",
-                          percentage >= 100 && "bg-destructive/20"
+                          percentage >= 100 && "bg-destructive/20",
                         )}
                       >
                         <Motion.div
                           className={cn(
                             "h-full rounded-full",
-                            getProgressColor()
+                            getProgressColor(),
                           )}
                           initial={{ width: 0 }}
                           animate={{ width: `${percentage}%` }}

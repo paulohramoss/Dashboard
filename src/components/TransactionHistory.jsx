@@ -30,6 +30,7 @@ const TransactionRow = ({
   getCategoryLabel,
   formatDate,
   currentUser,
+  t,
 }) => {
   const transaction = data[index];
   const isOwner = currentUser?.id === transaction.userId;
@@ -67,7 +68,7 @@ const TransactionRow = ({
             {!isOwner && transaction.userId && (
               <div
                 className="absolute -bottom-1 -right-1 bg-background rounded-full p-0.5 border border-muted"
-                title="Created by partner"
+                title={t("transactions.createdByPartner")}
               >
                 <div className="h-4 w-4 rounded-full bg-primary flex items-center justify-center text-[10px] text-primary-foreground font-bold">
                   <Users className="h-2.5 w-2.5" />
@@ -184,6 +185,7 @@ const TransactionHistory = ({
       getCategoryLabel={getCategoryLabel}
       formatDate={formatDate}
       currentUser={user}
+      t={t}
     />
   );
 
@@ -217,6 +219,7 @@ const TransactionHistory = ({
                     getCategoryLabel={getCategoryLabel}
                     formatDate={formatDate}
                     currentUser={user}
+                    t={t}
                   />
                 ))}
             </div>

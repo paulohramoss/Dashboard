@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -16,10 +17,15 @@ const ConfirmDialog = ({
   onConfirm,
   title,
   description,
-  confirmText = "Confirm",
-  cancelText = "Cancel",
+  confirmText,
+  cancelText,
   variant = "default", // default or destructive
 }) => {
+  const { t } = useTranslation();
+
+  const finalConfirmText = confirmText || t("common.confirm");
+  const finalCancelText = cancelText || t("common.cancel");
+
   return (
     <AlertDialog open={isOpen} onOpenChange={onClose}>
       <AlertDialogContent>
@@ -28,7 +34,9 @@ const ConfirmDialog = ({
           <AlertDialogDescription>{description}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel onClick={onClose}>{cancelText}</AlertDialogCancel>
+          <AlertDialogCancel onClick={onClose}>
+            {finalCancelText}
+          </AlertDialogCancel>
           <AlertDialogAction
             onClick={() => {
               onConfirm();
@@ -40,7 +48,7 @@ const ConfirmDialog = ({
                 : ""
             }
           >
-            {confirmText}
+            {finalConfirmText}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

@@ -29,7 +29,8 @@
     "resetSentTo": "Um link de redefinição foi enviado para {{email}}.",
     "checkEmail": "Verifique seu e-mail",
     "backToLogin": "Voltar para Login",
-    "resetError": "Falha ao enviar e-mail. Verifique o endereço informado."
+    "resetError": "Falha ao enviar e-mail. Verifique o endereço informado.",
+    "namePlaceholder": "João Silva"
   },
   "nav": {
     "dashboard": "Painel",
@@ -165,7 +166,8 @@
       "missingDestination": "Selecione uma conta de destino para transferência."
     },
     "confirmDeleteTitle": "Excluir Transação",
-    "confirmDeleteDescription": "Tem certeza que deseja excluir esta transação? Esta ação não pode ser desfeita."
+    "confirmDeleteDescription": "Tem certeza que deseja excluir esta transação? Esta ação não pode ser desfeita.",
+    "createdByPartner": "Criado por parceiro"
   },
   "reports": {
     "title": "Relatórios",
@@ -376,7 +378,8 @@
     "allAccounts": "Todas as Contas",
     "back": "Voltar",
     "close": "Fechar",
-    "yes": "Sim"
+    "yes": "Sim",
+    "confirm": "Confirmar"
   },
   "tour": {
     "welcomeTitle": "Bem-vindo ao FinanceDash!",
@@ -473,7 +476,9 @@
     "timeToPayoff": "Tempo Estimado",
     "debtFreeDate": "Livre em",
     "interest": "Juros Estimados",
-    "months": "meses"
+    "months": "meses",
+    "monthlyPaymentPlaceholder": "Ex: 500,00",
+    "interestRatePlaceholder": "Ex: 12"
   },
   "theme": {
     "toggle": "Alternar tema"
