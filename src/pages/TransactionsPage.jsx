@@ -48,7 +48,10 @@ const TransactionsPage = () => {
   };
 
   const filteredTransactions = useMemo(() => {
-    const filtered = transactions.filter((t) => {
+    console.log("🔎 [TransactionsPage] Starting filter with", transactions.length, "transactions");
+    console.log("🎯 [TransactionsPage] Active filters:", filters);
+
+    const filtered = transactions.filter((t, index) => {
       const matchesSearch = t.description
         .toLowerCase()
         .includes(filters.search.toLowerCase());
@@ -68,18 +71,30 @@ const TransactionsPage = () => {
         matchesDate = t.date <= filters.endDate;
       }
 
-      return (
+      const passes = (
         matchesSearch &&
         matchesType &&
         matchesCategory &&
         matchesAccount &&
         matchesDate
       );
+
+      // Log first failed transaction for debugging
+      if (index === 0 && !passes) {
+        console.log("❌ First transaction failed filters:", {
+          transaction: t,
+          matchesSearch,
+          matchesType,
+          matchesCategory,
+          matchesAccount,
+          matchesDate
+        });
+      }
+
+      return passes;
     });
 
-    console.log("🔎 [TransactionsPage] Total transactions:", transactions.length);
-    console.log("📋 [TransactionsPage] Filtered transactions:", filtered.length);
-    console.log("🎯 [TransactionsPage] Active filters:", filters);
+    console.log("📋 [TransactionsPage] Filtered result:", filtered.length, "transactions");
 
     return filtered;
   }, [transactions, filters]);
