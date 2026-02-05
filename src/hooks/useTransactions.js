@@ -20,11 +20,7 @@ export const useTransactions = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    console.log("🔍 [useTransactions] User ID:", user?.id);
-
     if (!user?.id) {
-      // eslint-disable-next-line
-      console.log("⚠️ [useTransactions] No user authenticated");
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setTransactions([]);
       // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -53,9 +49,6 @@ export const useTransactions = () => {
 
       uniqueDocs.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-      console.log("✅ [useTransactions] Loaded transactions:", uniqueDocs.length);
-      console.log("📊 [useTransactions] Owned:", results1.length, "| Shared:", results2.length);
-
       setTransactions(uniqueDocs);
       setLoading(false);
       setLoading(false);
@@ -69,7 +62,7 @@ export const useTransactions = () => {
         handleUpdate();
       },
       (error) => {
-        console.error("❌ [useTransactions] Error fetching owned transactions:", error);
+        console.error("Error fetching owned transactions:", error);
       },
     );
 
@@ -80,7 +73,7 @@ export const useTransactions = () => {
         handleUpdate();
       },
       (error) => {
-        console.error("❌ [useTransactions] Error fetching shared transactions:", error);
+        console.error("Error fetching shared transactions:", error);
       },
     );
 
@@ -241,10 +234,6 @@ export const useTransactions = () => {
       (a, b) => new Date(b.date) - new Date(a.date),
     )
     : transactions;
-
-  console.log("🎭 [useTransactions] Shadow mode:", isShadowMode);
-  console.log("👻 [useTransactions] Shadow transactions:", shadowTransactions.length);
-  console.log("📦 [useTransactions] All transactions (returned):", allTransactions.length);
 
   const stats = allTransactions.reduce(
     (acc, curr) => {
