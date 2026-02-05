@@ -48,7 +48,7 @@ const TransactionsPage = () => {
   };
 
   const filteredTransactions = useMemo(() => {
-    return transactions.filter((t) => {
+    const filtered = transactions.filter((t) => {
       const matchesSearch = t.description
         .toLowerCase()
         .includes(filters.search.toLowerCase());
@@ -76,6 +76,12 @@ const TransactionsPage = () => {
         matchesDate
       );
     });
+
+    console.log("🔎 [TransactionsPage] Total transactions:", transactions.length);
+    console.log("📋 [TransactionsPage] Filtered transactions:", filtered.length);
+    console.log("🎯 [TransactionsPage] Active filters:", filters);
+
+    return filtered;
   }, [transactions, filters]);
 
   return (

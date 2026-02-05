@@ -20,8 +20,11 @@ export const useTransactions = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    console.log("🔍 [useTransactions] User ID:", user?.id);
+
     if (!user?.id) {
       // eslint-disable-next-line
+      console.log("⚠️ [useTransactions] No user authenticated");
       setTransactions([]);
       setLoading(false);
       return;
@@ -48,6 +51,9 @@ export const useTransactions = () => {
 
       uniqueDocs.sort((a, b) => new Date(b.date) - new Date(a.date));
 
+      console.log("✅ [useTransactions] Loaded transactions:", uniqueDocs.length);
+      console.log("📊 [useTransactions] Owned:", results1.length, "| Shared:", results2.length);
+
       setTransactions(uniqueDocs);
       setLoading(false);
       setLoading(false);
@@ -60,7 +66,9 @@ export const useTransactions = () => {
         results1 = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
         handleUpdate();
       },
-      (error) => console.error("Error fetching owned transactions:", error),
+      (error) => {
+        console.error("❌ [useTransactions] Error fetching owned transactions:", error);
+      },
     );
 
     const unsub2 = onSnapshot(
@@ -69,7 +77,9 @@ export const useTransactions = () => {
         results2 = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
         handleUpdate();
       },
-      (error) => console.error("Error fetching shared transactions:", error),
+      (error) => {
+        console.error("❌ [useTransactions] Error fetching shared transactions:", error);
+      },
     );
 
     return () => {
@@ -113,9 +123,8 @@ export const useTransactions = () => {
             ...transaction,
             userId: user.id,
             allowedUsers: [user.id],
-            description: `${transaction.description} (${
-              i + 1
-            }/${installmentsCount})`,
+            description: `${transaction.description} (${i + 1
+              }/${installmentsCount})`,
             amount: installmentAmount,
             date: installmentDate.toISOString().split("T")[0],
             createdAt: new Date().toISOString(),
@@ -227,8 +236,8 @@ export const useTransactions = () => {
 
   const allTransactions = isShadowMode
     ? [...transactions, ...shadowTransactions].sort(
-        (a, b) => new Date(b.date) - new Date(a.date),
-      )
+      (a, b) => new Date(b.date) - new Date(a.date),
+    )
     : transactions;
 
   const stats = allTransactions.reduce(
