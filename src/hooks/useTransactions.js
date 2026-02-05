@@ -25,7 +25,9 @@ export const useTransactions = () => {
     if (!user?.id) {
       // eslint-disable-next-line
       console.log("⚠️ [useTransactions] No user authenticated");
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setTransactions([]);
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setLoading(false);
       return;
     }
