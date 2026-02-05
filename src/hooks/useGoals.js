@@ -125,6 +125,7 @@ export const useGoals = () => {
       const transactionRef = doc(collection(db, "transactions"));
       batch.set(transactionRef, {
         userId: user.id,
+        allowedUsers: [user.id], // Required for Firestore security rules
         description: `Transfer to Goal: ${goalName}`,
         amount: parseFloat(amount),
         type: "expense",
@@ -134,6 +135,9 @@ export const useGoals = () => {
         createdAt: new Date().toISOString(),
         isSystem: true, // Flag to identify system generated transactions
       });
+
+      // 3. Commit the batch
+      await batch.commit();
     } catch (error) {
       console.error("Error allocation funds:", error);
       throw error;
