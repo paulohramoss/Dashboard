@@ -613,7 +613,7 @@ const TransactionForm = ({
       </div>
 
       <div className="flex flex-col space-y-4 p-4 border rounded-lg bg-muted/50">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="flex items-center space-x-2">
             <Switch
               id="recurring"
@@ -626,7 +626,7 @@ const TransactionForm = ({
                 })
               }
             />
-            <Label htmlFor="recurring">
+            <Label htmlFor="recurring" className="cursor-pointer">
               {t("transactions.form.recurring")}
             </Label>
           </div>
@@ -643,15 +643,15 @@ const TransactionForm = ({
                 })
               }
             />
-            <Label htmlFor="installment">
+            <Label htmlFor="installment" className="cursor-pointer">
               {t("transactions.form.isInstallment")}
             </Label>
           </div>
         </div>
 
         {formData.isRecurring && (
-          <div className="flex items-center space-x-2 animate-in fade-in slide-in-from-top-2">
-            <Label htmlFor="frequency">
+          <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-2 animate-in fade-in slide-in-from-top-2">
+            <Label htmlFor="frequency" className="text-sm shrink-0">
               {t("transactions.form.frequency")}:
             </Label>
             <Select
@@ -659,7 +659,7 @@ const TransactionForm = ({
               onChange={(e) =>
                 setFormData({ ...formData, frequency: e.target.value })
               }
-              className="w-[180px] h-10"
+              className="w-full sm:w-[180px] h-10"
             >
               <option value="daily">{t("transactions.form.daily")}</option>
               <option value="weekly">{t("transactions.form.weekly")}</option>
@@ -670,8 +670,8 @@ const TransactionForm = ({
         )}
 
         {formData.isInstallment && (
-          <div className="flex items-center space-x-2 animate-in fade-in slide-in-from-top-2">
-            <Label htmlFor="installments">
+          <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-2 animate-in fade-in slide-in-from-top-2">
+            <Label htmlFor="installments" className="text-sm shrink-0">
               {t("transactions.form.installments")}:
             </Label>
             <Input
@@ -686,7 +686,7 @@ const TransactionForm = ({
                   installmentsCount: parseInt(e.target.value) || 2,
                 })
               }
-              className="w-20 h-10"
+              className="w-full sm:w-20 h-10"
             />
           </div>
         )}
