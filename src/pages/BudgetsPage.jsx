@@ -131,14 +131,17 @@ const BudgetsPage = () => {
       animate="show"
       className="space-y-6"
     >
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">
+          <h2 className="text-2xl md:text-3xl font-bold tracking-tight">
             {t("budgets.title")}
           </h2>
           <p className="text-muted-foreground">{t("budgets.subtitle")}</p>
         </div>
-        <Button onClick={() => setIsAdding(!isAdding)}>
+        <Button
+          onClick={() => setIsAdding(!isAdding)}
+          className="w-full sm:w-auto"
+        >
           <Plus className="mr-2 h-4 w-4" />
           {t("budgets.addBudget")}
         </Button>
@@ -147,7 +150,10 @@ const BudgetsPage = () => {
       {isAdding && (
         <Card className="animate-in slide-in-from-top-5">
           <CardContent className="pt-6">
-            <form onSubmit={handleAddBudget} className="flex gap-4 items-end">
+            <form
+              onSubmit={handleAddBudget}
+              className="flex flex-col md:flex-row gap-4 md:items-end"
+            >
               <div className="flex-1 space-y-2">
                 <label className="text-sm font-medium">
                   {t("transactions.form.category")}
@@ -172,7 +178,7 @@ const BudgetsPage = () => {
                   ))}
                 </select>
               </div>
-              <div className="w-[200px] space-y-2">
+              <div className="w-full md:w-[200px] space-y-2">
                 <label className="text-sm font-medium">
                   {t("transactions.form.amount")}
                 </label>
@@ -184,7 +190,7 @@ const BudgetsPage = () => {
                   required
                 />
               </div>
-              <div className="flex items-center space-x-2 pb-2">
+              <div className="flex items-center space-x-2 md:pb-2">
                 <input
                   type="checkbox"
                   id="rollover"
@@ -194,11 +200,16 @@ const BudgetsPage = () => {
                     setNewBudget({ ...newBudget, rollover: e.target.checked })
                   }
                 />
-                <label htmlFor="rollover" className="text-sm font-medium">
+                <label
+                  htmlFor="rollover"
+                  className="text-sm font-medium cursor-pointer"
+                >
                   {t("budgets.rollover")}
                 </label>
               </div>
-              <Button type="submit">{t("common.save")}</Button>
+              <Button type="submit" className="w-full md:w-auto">
+                {t("common.save")}
+              </Button>
             </form>
           </CardContent>
         </Card>
