@@ -50,6 +50,7 @@ import ConfirmDialog from "@/components/ui/confirm-dialog";
 import { useNotifications } from "@/hooks/useNotifications";
 import emailjs from "@emailjs/browser";
 import { useRules } from "@/hooks/useRules";
+import { useUpdatePreferences } from "@/hooks/useUpdatePreferences";
 import InvitePartner from "@/components/InvitePartner";
 
 const SettingsPage = () => {
@@ -61,6 +62,11 @@ const SettingsPage = () => {
   const { enabled: notificationsEnabled, toggleNotifications } =
     useNotifications();
   const { rules, addRule, deleteRule } = useRules();
+  const {
+    frequency,
+    autoUpdateWhenIdle,
+    updatePreferences,
+  } = useUpdatePreferences();
 
   const [name, setName] = useState(user?.name || "");
   const [email, setEmail] = useState(user?.email || "");
@@ -601,9 +607,8 @@ const SettingsPage = () => {
                 disabled={recalculating}
               >
                 <RefreshCw
-                  className={`mr-2 h-4 w-4 ${
-                    recalculating ? "animate-spin" : ""
-                  }`}
+                  className={`mr-2 h-4 w-4 ${recalculating ? "animate-spin" : ""
+                    }`}
                 />
                 {recalculating
                   ? t("settings.recalculating")
@@ -654,6 +659,54 @@ const SettingsPage = () => {
                   id="push-notifs"
                   checked={notificationsEnabled}
                   onCheckedChange={toggleNotifications}
+                />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="mt-6">
+            <CardHeader>
+              <CardTitle>{t("pwa.settings.title", "Atualizações do App")}</CardTitle>
+              <CardDescription>
+                {t("pwa.settings.description", "Configure como e quando você deseja ser notificado sobre atualizações")}
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="update-frequency">
+                  {t("pwa.updateFrequency", "Frequência de Notificações")}
+                </Label>
+                <select
+                  id="update-frequency"
+                  className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-mute foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  value={frequency}
+                  onChange={(e) => updatePreferences({ frequency: e.target.value })}
+                >
+                  <option value="immediate">{t("pwa.immediate", "Imediato")}</option>
+                  <option value="daily">{t("pwa.daily", "Diário (máx. 1x/dia)")}</option>
+                  <option value="weekly">{t("pwa.weekly", "Semanal (máx. 1x/semana)")}</option>
+                </select>
+                <p className="text-xs text-muted-foreground">
+                  {t("pwa.settings.frequencyDesc", "Controle com que frequência você quer ver notificações de atualização")}
+                </p>
+              </div>
+
+              <div className="flex items-center justify-between space-x-2">
+                <Label
+                  htmlFor="auto-update-idle"
+                  className="flex flex-col space-y-1"
+                >
+                  <span>{t("pwa.autoUpdateIdle", "Atualizar automaticamente quando inativo")}</span>
+                  <span className="font-normal text-sm text-muted-foreground">
+                    {t("pwa.settings.autoUpdateDesc", "O app será atualizado automaticamente após 5 minutos de inatividade")}
+                  </span>
+                </Label>
+                <Switch
+                  id="auto-update-idle"
+                  checked={autoUpdateWhenIdle}
+                  onCheckedChange={(checked) =>
+                    updatePreferences({ autoUpdateWhenIdle: checked })
+                  }
                 />
               </div>
             </CardContent>
@@ -878,11 +931,10 @@ const SettingsPage = () => {
                     <div className="col-span-4">
                       {/* Try to translate if it matches a default category, else show raw name */}
                       <span
-                        className={`px-2 py-1 rounded-full text-xs font-medium ${
-                          rule.type === "income"
-                            ? "bg-green-100 text-green-700"
-                            : "bg-red-100 text-red-700"
-                        }`}
+                        className={`px-2 py-1 rounded-full text-xs font-medium ${rule.type === "income"
+                          ? "bg-green-100 text-green-700"
+                          : "bg-red-100 text-red-700"
+                          }`}
                       >
                         {rule.category}
                       </span>

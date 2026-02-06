@@ -34,9 +34,45 @@ try {
   }
 }
 
+/**
+ * Extract latest changelog from CHANGELOG.md
+ * @returns {string[]|null} Array of changelog items or null
+ */
+function getLatestChangelog() {
+  const changelogPath = path.join(__dirname, "CHANGELOG.md");
+
+  if (!fs.existsSync(changelogPath)) {
+    console.warn("CHANGELOG.md not found");
+    return null;
+  }
+
+  try {
+    const content = fs.readFileSync(changelogPath, "utf-8");
+
+    // Extract first version section (latest changes)
+    const versionMatch = content.match(/## \[.*?\]\s*-.*?\n([\s\S]*?)(?=\n## \[|$)/);
+
+    if (versionMatch) {
+      const changes = versionMatch[1]
+        .split("\n")
+        .filter((line) => line.trim().startsWith("-"))
+        .map((line) => line.replace(/^-\s*/, "").trim())
+        .slice(0, 3); // Maximum 3 items
+
+      return changes.length > 0 ? changes : null;
+    }
+
+    return null;
+  } catch (error) {
+    console.warn("Error reading CHANGELOG.md:", error.message);
+    return null;
+  }
+}
+
 const version = {
   version: versionString,
   date: new Date().toISOString(),
+  changelog: getLatestChangelog(),
 };
 
 const publicDir = path.join(__dirname, "public");

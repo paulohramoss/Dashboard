@@ -594,5 +594,26 @@
       "description": "Esta ação removerá todo o histórico de mensagens desta conversa. Você não poderá desfazer esta ação.",
       "confirm": "Limpar Conversa"
     }
+  },
+  "pwa": {
+    "updateAvailable": "Nova versão disponível!",
+    "updateDescription": "Clique para atualizar e ver as novidades",
+    "updateNow": "Atualizar Agora",
+    "later": "Depois",
+    "offlineReady": "App pronto para uso offline!",
+    "offlineDescription": "Agora você pode usar o app sem internet",
+    "whatsNew": "Novidades:",
+    "updatingInBackground": "Atualizando em segundo plano...",
+    "updateFrequency": "Frequência de Notificações",
+    "immediate": "Imediato",
+    "daily": "Diário (máx. 1x/dia)",
+    "weekly": "Semanal (máx. 1x/semana)",
+    "autoUpdateIdle": "Atualizar automaticamente quando inativo",
+    "settings": {
+      "title": "Atualizações do App",
+      "description": "Configure como e quando você deseja ser notificado sobre atualizações",
+      "frequencyDesc": "Controle com que frequência você quer ver notificações de atualização",
+      "autoUpdateDesc": "O app será atualizado automaticamente após 5 minutos de inatividade"
+    }
   }
 }

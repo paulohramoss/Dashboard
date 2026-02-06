@@ -1,10 +1,23 @@
+import { useState, useEffect } from "react";
 import { useRegisterSW } from "virtual:pwa-register/react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
-import { RefreshCw, X } from "lucide-react";
+import { RefreshCw, X, Sparkles } from "lucide-react";
+import { useUserActivity } from "@/hooks/useUserActivity";
+import { useUpdatePreferences } from "@/hooks/useUpdatePreferences";
 
 export default function UpdatePrompt() {
     const { t } = useTranslation();
+    const [versionInfo, setVersionInfo] = useState(null);
+    const [showToast, setShowToast] = useState(false);
+
+    // Hooks para gerenciar preferências e atividade
+    const isIdle = useUserActivity(5 * 60 * 1000); // 5 minutos
+    const {
+        shouldShowNotification,
+        markNotificationShown,
+        autoUpdateWhenIdle,
+    } = useUpdatePreferences();
 
     const {
         offlineReady: [offlineReady, setOfflineReady],
@@ -25,17 +38,54 @@ export default function UpdatePrompt() {
         },
     });
 
+    // Buscar informações da versão quando houver atualização
+    useEffect(() => {
+        if (needRefresh) {
+            fetch("/version.json")
+                .then((res) => res.json())
+                .then((data) => {
+                    console.log("📦 New version available:", data);
+                    setVersionInfo(data);
+                })
+                .catch((err) => {
+                    console.warn("Failed to fetch version info:", err);
+                });
+        }
+    }, [needRefresh]);
+
+    // Controlar exibição do toast baseado em preferências
+    useEffect(() => {
+        if (needRefresh) {
+            if (shouldShowNotification()) {
+                setShowToast(true);
+                markNotificationShown();
+            } else {
+                console.log("⏰ Update notification suppressed by user preferences");
+            }
+        }
+    }, [needRefresh, shouldShowNotification, markNotificationShown]);
+
+    // Atualização silenciosa quando usuário está inativo
+    useEffect(() => {
+        if (needRefresh && isIdle && autoUpdateWhenIdle && !showToast) {
+            console.log("🔄 Auto-updating silently in background...");
+            updateServiceWorker(true);
+        }
+    }, [needRefresh, isIdle, autoUpdateWhenIdle, showToast, updateServiceWorker]);
+
     const close = () => {
         setOfflineReady(false);
         setNeedRefresh(false);
+        setShowToast(false);
     };
 
     const handleUpdate = () => {
+        console.log("🚀 User initiated update");
         updateServiceWorker(true);
     };
 
     // Don't show anything if no update is needed
-    if (!needRefresh && !offlineReady) {
+    if ((!needRefresh && !offlineReady) || (needRefresh && !showToast)) {
         return null;
     }
 
@@ -44,7 +94,11 @@ export default function UpdatePrompt() {
             <div className="bg-gradient-to-r from-purple-600 to-blue-600 text-white p-4 rounded-lg shadow-2xl max-w-sm border border-white/20">
                 <div className="flex items-start gap-3">
                     <div className="h-10 w-10 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0">
-                        <RefreshCw className="h-5 w-5 animate-spin" />
+                        {needRefresh ? (
+                            <RefreshCw className="h-5 w-5 animate-spin" />
+                        ) : (
+                            <Sparkles className="h-5 w-5" />
+                        )}
                     </div>
                     <div className="flex-1">
                         <p className="font-semibold text-base">
@@ -52,6 +106,11 @@ export default function UpdatePrompt() {
                                 ? t("pwa.updateAvailable", "Nova versão disponível!")
                                 : t("pwa.offlineReady", "App pronto para uso offline!")}
                         </p>
+                        {versionInfo?.version && needRefresh && (
+                            <p className="text-xs opacity-75 mt-0.5">
+                                {versionInfo.version}
+                            </p>
+                        )}
                         <p className="text-sm opacity-90 mt-1">
                             {needRefresh
                                 ? t(
@@ -63,6 +122,23 @@ export default function UpdatePrompt() {
                                     "Agora você pode usar o app sem internet"
                                 )}
                         </p>
+
+                        {/* Changelog */}
+                        {needRefresh && versionInfo?.changelog && versionInfo.changelog.length > 0 && (
+                            <div className="mt-3 space-y-1.5">
+                                <p className="text-xs font-semibold opacity-90">
+                                    {t("pwa.whatsNew", "Novidades:")}
+                                </p>
+                                <ul className="space-y-1">
+                                    {versionInfo.changelog.map((change, i) => (
+                                        <li key={i} className="flex items-start gap-2 text-xs">
+                                            <span className="text-green-300 mt-0.5">✓</span>
+                                            <span className="opacity-90 flex-1">{change}</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
                     </div>
                     <button
                         onClick={close}

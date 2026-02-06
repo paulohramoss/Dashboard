@@ -22,7 +22,7 @@ jobs:
       run: npm ci
     
     - name: Run Linter
-      run: npm run lint # Se tiveres script de lint
+      run: npm run lint -- --ignore-path .eslintignore
       
     - name: Run Tests
       run: npm test -- --run # O flag --run garante que não fica em modo watch

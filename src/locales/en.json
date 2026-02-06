@@ -601,6 +601,19 @@
     "updateNow": "Update Now",
     "later": "Later",
     "offlineReady": "App ready for offline use!",
-    "offlineDescription": "You can now use the app without internet"
+    "offlineDescription": "You can now use the app without internet",
+    "whatsNew": "What's new:",
+    "updatingInBackground": "Updating in background...",
+    "updateFrequency": "Update Frequency",
+    "immediate": "Immediate",
+    "daily": "Daily (max 1x/day)",
+    "weekly": "Weekly (max 1x/week)",
+    "autoUpdateIdle": "Auto-update when idle",
+    "settings": {
+      "title": "App Updates",
+      "description": "Configure how and when you want to be notified about updates",
+      "frequencyDesc": "Control how often you want to see update notifications",
+      "autoUpdateDesc": "App will automatically update after 5 minutes of inactivity"
+    }
   }
 }

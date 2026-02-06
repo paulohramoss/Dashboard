@@ -19,12 +19,21 @@ export const useTransactions = () => {
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Separate effect to handle cleanup when user logs out
   useEffect(() => {
     if (!user?.id) {
       setTransactions([]);
       setLoading(false);
+    }
+  }, [user?.id]);
+
+  useEffect(() => {
+    // Early return if no user - don't set state here
+    if (!user?.id) {
       return;
     }
+
+    setLoading(true);
 
     const q1 = query(
       collection(db, "transactions"),
