@@ -12,6 +12,7 @@ import Layout from "@/components/Layout";
 import Dashboard from "@/components/Dashboard";
 import NotificationManager from "@/components/NotificationManager";
 import FinancialAssistant from "@/components/FinancialAssistant";
+import UpdatePrompt from "@/components/UpdatePrompt";
 import { Toaster } from "sonner";
 import VersionChecker from "@/components/VersionChecker";
 
@@ -55,6 +56,7 @@ const App = () => {
     <Router>
       <AuthProvider>
         <VersionChecker />
+        <UpdatePrompt />
         <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
           <Suspense fallback={<PageLoader />}>
             <Routes>

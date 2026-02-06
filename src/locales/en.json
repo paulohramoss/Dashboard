@@ -579,5 +579,28 @@
     "spendingSpike": "Hey, you spent {{percentage}}% more on '{{category}}' this month compared to your 3-month average.",
     "comparison": "Current: {{current}} vs Average: {{average}}",
     "noAnomalies": "All good! Your spending is within expected limits."
+  },
+  "assistant": {
+    "title": "Financial Assistant",
+    "placeholder": "Type your question...",
+    "suggested": "Suggested questions:",
+    "q1": "What is my current balance?",
+    "q2": "How can I save this month?",
+    "q3": "What is my biggest expense?",
+    "q4": "Tips to organize my finances",
+    "clearConfirm": "Clear conversation?",
+    "clearModal": {
+      "title": "Clear Conversation?",
+      "description": "This action will remove all message history from this conversation. You will not be able to undo this action.",
+      "confirm": "Clear Conversation"
+    }
+  },
+  "pwa": {
+    "updateAvailable": "New version available!",
+    "updateDescription": "Click to update and see what's new",
+    "updateNow": "Update Now",
+    "later": "Later",
+    "offlineReady": "App ready for offline use!",
+    "offlineDescription": "You can now use the app without internet"
   }
 }

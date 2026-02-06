@@ -14,6 +14,11 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: "autoUpdate",
+      injectRegister: "auto",
+      devOptions: {
+        enabled: true,
+        type: "module",
+      },
       includeAssets: ["favicon.ico", "apple-touch-icon.png", "masked-icon.svg"],
       manifest: {
         name: "Financial Dashboard",
@@ -35,6 +40,8 @@ export default defineConfig({
       },
       workbox: {
         maximumFileSizeToCacheInBytes: 4 * 1024 * 1024, // 4MB
+        clientsClaim: true,
+        skipWaiting: true,
         navigateFallbackDenylist: [/^\/version.json$/],
         runtimeCaching: [
           {

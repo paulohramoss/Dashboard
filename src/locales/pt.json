@@ -579,5 +579,20 @@
     "spendingSpike": "Ei, você gastou {{percentage}}% a mais em '{{category}}' este mês comparado à sua média dos últimos 3 meses.",
     "comparison": "Atual: {{current}} vs Média: {{average}}",
     "noAnomalies": "Tudo certo! Seus gastos estão dentro do esperado."
+  },
+  "assistant": {
+    "title": "Assistente Financeiro",
+    "placeholder": "Digite sua pergunta...",
+    "suggested": "Perguntas sugeridas:",
+    "q1": "Qual é o meu saldo atual?",
+    "q2": "Como posso economizar este mês?",
+    "q3": "Qual minha maior despesa?",
+    "q4": "Dicas para organizar minhas finanças",
+    "clearConfirm": "Limpar conversa?",
+    "clearModal": {
+      "title": "Limpar Conversa?",
+      "description": "Esta ação removerá todo o histórico de mensagens desta conversa. Você não poderá desfazer esta ação.",
+      "confirm": "Limpar Conversa"
+    }
   }
 }

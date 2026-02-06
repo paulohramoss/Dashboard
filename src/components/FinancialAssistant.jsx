@@ -3,12 +3,21 @@ import { useTranslation } from "react-i18next";
 import { useFinancialChat } from "@/hooks/useFinancialChat";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { MessageCircle, X, Send, Sparkles, Trash2 } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { MessageCircle, X, Send, Sparkles, Trash2, AlertTriangle } from "lucide-react";
 
 export default function FinancialAssistant() {
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
+  const [showClearModal, setShowClearModal] = useState(false);
   const { messages, sendMessage, clearChat, loading } = useFinancialChat();
   const messagesEndRef = useRef(null);
 
@@ -34,6 +43,11 @@ export default function FinancialAssistant() {
         ? "pt"
         : "en";
     await sendMessage(message, language);
+  };
+
+  const handleClearChat = () => {
+    clearChat();
+    setShowClearModal(false);
   };
 
   const suggestedQuestions = [
@@ -75,13 +89,7 @@ export default function FinancialAssistant() {
                 size="sm"
                 variant="ghost"
                 className="h-8 w-8 p-0 hover:bg-white/20 text-white"
-                onClick={() => {
-                  if (
-                    confirm(t("assistant.clearConfirm", "Limpar conversa?"))
-                  ) {
-                    clearChat();
-                  }
-                }}
+                onClick={() => setShowClearModal(true)}
               >
                 <Trash2 className="h-4 w-4" />
               </Button>
@@ -104,13 +112,12 @@ export default function FinancialAssistant() {
                 className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
               >
                 <div
-                  className={`max-w-[80%] rounded-lg px-4 py-2 ${
-                    msg.role === "user"
+                  className={`max-w-[80%] rounded-lg px-4 py-2 ${msg.role === "user"
                       ? "bg-primary text-primary-foreground"
                       : msg.isError
                         ? "bg-red-100 dark:bg-red-900/30 text-red-900 dark:text-red-100"
                         : "bg-muted text-foreground"
-                  }`}
+                    }`}
                 >
                   <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
                   <p className="text-xs opacity-60 mt-1">
@@ -191,6 +198,45 @@ export default function FinancialAssistant() {
           </form>
         </div>
       )}
+
+      {/* Clear Chat Confirmation Modal */}
+      <Dialog open={showClearModal} onOpenChange={setShowClearModal}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <div className="flex items-center gap-3 mb-2">
+              <div className="h-12 w-12 rounded-full bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center">
+                <AlertTriangle className="h-6 w-6 text-white" />
+              </div>
+              <DialogTitle className="text-xl">
+                {t("assistant.clearModal.title", "Limpar Conversa?")}
+              </DialogTitle>
+            </div>
+            <DialogDescription className="text-base pt-2">
+              {t(
+                "assistant.clearModal.description",
+                "Esta ação removerá todo o histórico de mensagens desta conversa. Você não poderá desfazer esta ação."
+              )}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="flex-col sm:flex-row gap-2 sm:gap-0">
+            <Button
+              variant="outline"
+              onClick={() => setShowClearModal(false)}
+              className="w-full sm:w-auto"
+            >
+              {t("common.cancel", "Cancelar")}
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleClearChat}
+              className="w-full sm:w-auto bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700"
+            >
+              <Trash2 className="h-4 w-4 mr-2" />
+              {t("assistant.clearModal.confirm", "Limpar Conversa")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
