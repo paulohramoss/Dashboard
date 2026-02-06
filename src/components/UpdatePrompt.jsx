@@ -73,7 +73,7 @@ export default function UpdatePrompt() {
         }
 
         return shouldShow;
-    }, [need Refresh, shouldShowNotification, markNotificationShown]);
+    }, [needRefresh, shouldShowNotification, markNotificationShown]);
 
     // Atualização silenciosa quando usuário está inativo
     useEffect(() => {
