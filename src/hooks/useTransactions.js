@@ -27,6 +27,7 @@ export const useTransactions = () => {
     }
 
     // Start loading when we have a user
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLoading(true);
 
     const q1 = query(

@@ -60,6 +60,7 @@ export default function UpdatePrompt() {
             const shouldShow = shouldShowNotification();
 
             if (shouldShow) {
+                // eslint-disable-next-line react-hooks/set-state-in-effect
                 setShowToast(true);
                 markNotificationShown();
             } else {
