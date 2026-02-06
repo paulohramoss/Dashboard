@@ -561,7 +561,7 @@ const Dashboard = () => {
       </div>
 
       <Dialog open={isSimulateOpen} onOpenChange={setIsSimulateOpen}>
-        <DialogContent>
+        <DialogContent className="w-[95vw] md:w-[600px] max-w-3xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>{t("dashboard.simulate", "Simular")}</DialogTitle>
           </DialogHeader>
@@ -585,7 +585,7 @@ const Dashboard = () => {
         open={!!editingTransaction}
         onOpenChange={(open) => !open && setEditingTransaction(null)}
       >
-        <DialogContent className="max-w-3xl">
+        <DialogContent className="w-[95vw] md:w-[600px] max-w-3xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>
               {t("transactions.editTransaction", "Editar Transação")}
