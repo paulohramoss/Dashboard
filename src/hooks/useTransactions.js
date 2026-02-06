@@ -18,22 +18,16 @@ export const useTransactions = () => {
   const { user } = useAuth();
   // Derive initial state from user  
   const [transactions, setTransactions] = useState([]);
-  const [loading, setLoading] = useState(() => !!user?.id);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // Don't subscribe if no user
+    // Don't subscribe if no user - component will naturally show empty state
     if (!user?.id) {
-      // Clean up on logout
-      setTransactions([]);
-      setLoading(false);
       return;
     }
 
-    // Only set loading if we're actually subscribing
-    let isSubscribed = true;
-    if (isSubscribed) {
-      setLoading(true);
-    }
+    // Start loading when we have a user
+    setLoading(true);
 
     const q1 = query(
       collection(db, "transactions"),
