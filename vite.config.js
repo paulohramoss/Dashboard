@@ -10,6 +10,27 @@ import { VitePWA } from "vite-plugin-pwa";
 
 // https://vite.dev/config/
 export default defineConfig({
+  // Define environment variables as fallback if .env file isn't loaded
+  define: {
+    "import.meta.env.VITE_FIREBASE_API_KEY": JSON.stringify(
+      "AIzaSyADEdqlObExEeZH2lGczR0NV9wY6gtQ1MY",
+    ),
+    "import.meta.env.VITE_FIREBASE_AUTH_DOMAIN": JSON.stringify(
+      "dashboard-c23c8.firebaseapp.com",
+    ),
+    "import.meta.env.VITE_FIREBASE_PROJECT_ID":
+      JSON.stringify("dashboard-c23c8"),
+    "import.meta.env.VITE_FIREBASE_STORAGE_BUCKET": JSON.stringify(
+      "dashboard-c23c8.firebasestorage.app",
+    ),
+    "import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID":
+      JSON.stringify("115815405530"),
+    "import.meta.env.VITE_FIREBASE_APP_ID": JSON.stringify(
+      "1:115815405530:web:de1a139df2b4ef437752e3",
+    ),
+    "import.meta.env.VITE_FIREBASE_MEASUREMENT_ID":
+      JSON.stringify("G-JVGS6QCJSL"),
+  },
   plugins: [
     react(),
     VitePWA({
