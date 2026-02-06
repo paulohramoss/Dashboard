@@ -20,6 +20,7 @@ const TransactionsPage = () => {
     addTransaction,
     addTransactions,
     updateTransaction,
+    loading,
   } = useTransactions();
   const { t } = useTranslation();
   const [filters, setFilters] = useState({
@@ -48,17 +49,31 @@ const TransactionsPage = () => {
   };
 
   const filteredTransactions = useMemo(() => {
+    // Don't filter while loading - wait for data
+    if (loading) {
+      return [];
+    }
+
     return transactions.filter((t) => {
-      const matchesSearch = t.description
+      // Safety: Handle missing or invalid description
+      const matchesSearch = (t.description || "")
         .toLowerCase()
-        .includes(filters.search.toLowerCase());
-      const matchesType = filters.type === "all" || t.type === filters.type;
+        .includes((filters.search || "").toLowerCase());
+
+      // Safety: Handle missing type
+      const matchesType = !filters.type || filters.type === "all" || t.type === filters.type;
+
+      // Safety: Handle missing category
       const matchesCategory =
-        filters.category === "all" || t.category === filters.category;
+        !filters.category || filters.category === "all" || t.category === filters.category;
+
+      // Safety: Handle missing accountId (could be null or undefined)
       const matchesAccount =
+        !filters.accountId ||
         filters.accountId === "all" ||
         t.accountId === filters.accountId;
 
+      // Safety: Handle missing dates
       let matchesDate = true;
       if (filters.startDate && filters.endDate) {
         matchesDate = t.date >= filters.startDate && t.date <= filters.endDate;
@@ -76,7 +91,7 @@ const TransactionsPage = () => {
         matchesDate
       );
     });
-  }, [transactions, filters]);
+  }, [transactions, filters, loading]);
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">

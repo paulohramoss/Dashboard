@@ -202,7 +202,7 @@ const TransactionHistory = ({
             <p className="text-center text-muted-foreground py-8">
               {t("transactions.noTransactions")}
             </p>
-          ) : limit || transactions.length < 50 ? (
+          ) : limit || transactions.length < 200 ? (
             // Simple map for Dashboard or small lists
             <div className="space-y-2">
               {transactions
@@ -224,7 +224,7 @@ const TransactionHistory = ({
                 ))}
             </div>
           ) : (
-            // Virtualized list for large history
+            // Virtualized list for very large history (200+ transactions)
             <div className="h-[600px] w-full">
               <AutoSizer>
                 {({ height, width }) => (
@@ -232,7 +232,7 @@ const TransactionHistory = ({
                     height={height}
                     width={width}
                     itemCount={transactions.length}
-                    itemSize={90} // Adjusted height + gap
+                    itemSize={90}
                     className="no-scrollbar"
                   >
                     {Row}

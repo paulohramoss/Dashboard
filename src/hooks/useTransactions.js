@@ -51,7 +51,6 @@ export const useTransactions = () => {
 
       setTransactions(uniqueDocs);
       setLoading(false);
-      setLoading(false);
       checkRecurringTransactions(uniqueDocs, user.id);
     };
 
