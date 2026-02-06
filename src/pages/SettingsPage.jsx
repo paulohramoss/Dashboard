@@ -62,11 +62,8 @@ const SettingsPage = () => {
   const { enabled: notificationsEnabled, toggleNotifications } =
     useNotifications();
   const { rules, addRule, deleteRule } = useRules();
-  const {
-    frequency,
-    autoUpdateWhenIdle,
-    updatePreferences,
-  } = useUpdatePreferences();
+  const { frequency, autoUpdateWhenIdle, updatePreferences } =
+    useUpdatePreferences();
 
   const [name, setName] = useState(user?.name || "");
   const [email, setEmail] = useState(user?.email || "");
@@ -109,7 +106,7 @@ const SettingsPage = () => {
 
     if (file.size > 5 * 1024 * 1024) {
       toast.error(
-        t("settings.imageSizeError", "A imagem deve ter no máximo 5MB")
+        t("settings.imageSizeError", "A imagem deve ter no máximo 5MB"),
       );
       return;
     }
@@ -252,11 +249,11 @@ const SettingsPage = () => {
           YOUR_SERVICE_ID,
           YOUR_TEMPLATE_ID,
           templateParams,
-          YOUR_PUBLIC_KEY
+          YOUR_PUBLIC_KEY,
         );
       } else {
         console.warn(
-          "EmailJS keys are missing. Feedback will only be saved to Firestore."
+          "EmailJS keys are missing. Feedback will only be saved to Firestore.",
         );
       }
 
@@ -287,7 +284,7 @@ const SettingsPage = () => {
     try {
       const credential = EmailAuthProvider.credential(
         user.email,
-        currentPassword
+        currentPassword,
       );
       await reauthenticateWithCredential(auth.currentUser, credential);
       await updatePassword(auth.currentUser, newPassword);
@@ -317,7 +314,8 @@ const SettingsPage = () => {
 
   const uniqueCategories = useMemo(() => {
     return categories.filter(
-      (cat, index, self) => index === self.findIndex((c) => c.name === cat.name)
+      (cat, index, self) =>
+        index === self.findIndex((c) => c.name === cat.name),
     );
   }, [categories]);
 
@@ -331,37 +329,59 @@ const SettingsPage = () => {
       </div>
 
       <Tabs defaultValue="profile" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="profile" className="flex items-center gap-2">
+        <TabsList className="w-full justify-start overflow-x-auto flex-nowrap">
+          <TabsTrigger
+            value="profile"
+            className="flex items-center gap-2 flex-shrink-0"
+          >
             <User className="h-4 w-4" />
-            {t("settings.profile")}
+            <span className="hidden sm:inline">{t("settings.profile")}</span>
           </TabsTrigger>
-          <TabsTrigger value="categories" className="flex items-center gap-2">
+          <TabsTrigger
+            value="categories"
+            className="flex items-center gap-2 flex-shrink-0"
+          >
             <Tag className="h-4 w-4" />
-            {t("settings.categories")}
+            <span className="hidden sm:inline">{t("settings.categories")}</span>
           </TabsTrigger>
           <TabsTrigger
             value="notifications"
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 flex-shrink-0"
           >
             <Bell className="h-4 w-4" />
-            {t("settings.notifications")}
+            <span className="hidden sm:inline">
+              {t("settings.notifications")}
+            </span>
           </TabsTrigger>
-          <TabsTrigger value="security" className="flex items-center gap-2">
+          <TabsTrigger
+            value="security"
+            className="flex items-center gap-2 flex-shrink-0"
+          >
             <Shield className="h-4 w-4" />
-            {t("settings.security")}
+            <span className="hidden sm:inline">{t("settings.security")}</span>
           </TabsTrigger>
-          <TabsTrigger value="rules" className="flex items-center gap-2">
+          <TabsTrigger
+            value="rules"
+            className="flex items-center gap-2 flex-shrink-0"
+          >
             <RefreshCw className="h-4 w-4" />
-            {t("settings.smartRules")}
+            <span className="hidden sm:inline">{t("settings.smartRules")}</span>
           </TabsTrigger>
-          <TabsTrigger value="feedback" className="flex items-center gap-2">
+          <TabsTrigger
+            value="feedback"
+            className="flex items-center gap-2 flex-shrink-0"
+          >
             <MessageSquare className="h-4 w-4" />
-            {t("settings.feedback")}
+            <span className="hidden sm:inline">{t("settings.feedback")}</span>
           </TabsTrigger>
-          <TabsTrigger value="sharing" className="flex items-center gap-2">
+          <TabsTrigger
+            value="sharing"
+            className="flex items-center gap-2 flex-shrink-0"
+          >
             <Users className="h-4 w-4" />
-            {t("settings.sharing", "Partilha")}
+            <span className="hidden sm:inline">
+              {t("settings.sharing", "Partilha")}
+            </span>
           </TabsTrigger>
         </TabsList>
 
@@ -418,14 +438,14 @@ const SettingsPage = () => {
                             confirm(
                               t(
                                 "settings.confirmRemovePhoto",
-                                "Remover foto de perfil?"
-                              )
+                                "Remover foto de perfil?",
+                              ),
                             )
                           ) {
                             try {
                               await removeProfilePicture();
                               toast.success(
-                                t("settings.photoRemoved", "Foto removida")
+                                t("settings.photoRemoved", "Foto removida"),
                               );
                             } catch (error) {
                               console.error(error);
@@ -442,7 +462,7 @@ const SettingsPage = () => {
                   <p className="text-xs text-muted-foreground">
                     {t(
                       "settings.photoRequirements",
-                      "JPG, GIF ou PNG. Max 5MB."
+                      "JPG, GIF ou PNG. Max 5MB.",
                     )}
                   </p>
                 </div>
@@ -485,7 +505,7 @@ const SettingsPage = () => {
             <CardContent className="space-y-6">
               <form
                 onSubmit={handleSaveCategory}
-                className="flex gap-4 items-end"
+                className="flex flex-col md:flex-row gap-4 md:items-end"
               >
                 <div className="space-y-2 flex-1">
                   <Label>{t("settings.categoryName")}</Label>
@@ -497,7 +517,7 @@ const SettingsPage = () => {
                     placeholder="e.g. Gaming"
                   />
                 </div>
-                <div className="space-y-2 w-32">
+                <div className="space-y-2 w-full md:w-32">
                   <Label>{t("settings.categoryType")}</Label>
                   <select
                     className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
@@ -510,29 +530,30 @@ const SettingsPage = () => {
                     <option value="income">{t("settings.income")}</option>
                   </select>
                 </div>
-                <div className="space-y-2 w-20">
+                <div className="space-y-2 w-full md:w-20">
                   <Label>{t("settings.categoryColor")}</Label>
                   <Input
                     type="color"
-                    className="h-10 p-1 cursor-pointer"
+                    className="h-10 p-1 cursor-pointer w-full"
                     value={newCategory.color}
                     onChange={(e) =>
                       setNewCategory({ ...newCategory, color: e.target.value })
                     }
                   />
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-2 w-full md:w-auto">
                   {editingId && (
                     <Button
                       type="button"
                       variant="outline"
                       onClick={handleCancelEdit}
+                      className="flex-1 md:flex-none"
                     >
                       <X className="h-4 w-4 mr-2" />
                       {t("settings.cancel")}
                     </Button>
                   )}
-                  <Button type="submit">
+                  <Button type="submit" className="flex-1 md:flex-none">
                     {editingId ? (
                       <>
                         <Save className="h-4 w-4 mr-2" />
@@ -607,8 +628,9 @@ const SettingsPage = () => {
                 disabled={recalculating}
               >
                 <RefreshCw
-                  className={`mr-2 h-4 w-4 ${recalculating ? "animate-spin" : ""
-                    }`}
+                  className={`mr-2 h-4 w-4 ${
+                    recalculating ? "animate-spin" : ""
+                  }`}
                 />
                 {recalculating
                   ? t("settings.recalculating")
@@ -666,9 +688,14 @@ const SettingsPage = () => {
 
           <Card className="mt-6">
             <CardHeader>
-              <CardTitle>{t("pwa.settings.title", "Atualizações do App")}</CardTitle>
+              <CardTitle>
+                {t("pwa.settings.title", "Atualizações do App")}
+              </CardTitle>
               <CardDescription>
-                {t("pwa.settings.description", "Configure como e quando você deseja ser notificado sobre atualizações")}
+                {t(
+                  "pwa.settings.description",
+                  "Configure como e quando você deseja ser notificado sobre atualizações",
+                )}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -680,14 +707,25 @@ const SettingsPage = () => {
                   id="update-frequency"
                   className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-mute foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                   value={frequency}
-                  onChange={(e) => updatePreferences({ frequency: e.target.value })}
+                  onChange={(e) =>
+                    updatePreferences({ frequency: e.target.value })
+                  }
                 >
-                  <option value="immediate">{t("pwa.immediate", "Imediato")}</option>
-                  <option value="daily">{t("pwa.daily", "Diário (máx. 1x/dia)")}</option>
-                  <option value="weekly">{t("pwa.weekly", "Semanal (máx. 1x/semana)")}</option>
+                  <option value="immediate">
+                    {t("pwa.immediate", "Imediato")}
+                  </option>
+                  <option value="daily">
+                    {t("pwa.daily", "Diário (máx. 1x/dia)")}
+                  </option>
+                  <option value="weekly">
+                    {t("pwa.weekly", "Semanal (máx. 1x/semana)")}
+                  </option>
                 </select>
                 <p className="text-xs text-muted-foreground">
-                  {t("pwa.settings.frequencyDesc", "Controle com que frequência você quer ver notificações de atualização")}
+                  {t(
+                    "pwa.settings.frequencyDesc",
+                    "Controle com que frequência você quer ver notificações de atualização",
+                  )}
                 </p>
               </div>
 
@@ -696,9 +734,17 @@ const SettingsPage = () => {
                   htmlFor="auto-update-idle"
                   className="flex flex-col space-y-1"
                 >
-                  <span>{t("pwa.autoUpdateIdle", "Atualizar automaticamente quando inativo")}</span>
+                  <span>
+                    {t(
+                      "pwa.autoUpdateIdle",
+                      "Atualizar automaticamente quando inativo",
+                    )}
+                  </span>
                   <span className="font-normal text-sm text-muted-foreground">
-                    {t("pwa.settings.autoUpdateDesc", "O app será atualizado automaticamente após 5 minutos de inatividade")}
+                    {t(
+                      "pwa.settings.autoUpdateDesc",
+                      "O app será atualizado automaticamente após 5 minutos de inatividade",
+                    )}
                   </span>
                 </Label>
                 <Switch
@@ -850,7 +896,10 @@ const SettingsPage = () => {
               <CardDescription>{t("settings.rulesDesc")}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              <form onSubmit={handleAddRule} className="flex gap-4 items-end">
+              <form
+                onSubmit={handleAddRule}
+                className="flex flex-col md:flex-row gap-4 md:items-end"
+              >
                 <div className="space-y-2 flex-1">
                   <Label>{t("settings.keyword")}</Label>
                   <Input
@@ -861,7 +910,7 @@ const SettingsPage = () => {
                     placeholder={t("settings.keywordPlaceholder")}
                   />
                 </div>
-                <div className="space-y-2 w-32">
+                <div className="space-y-2 w-full md:w-32">
                   <Label>{t("settings.categoryType")}</Label>
                   <select
                     className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
@@ -878,7 +927,7 @@ const SettingsPage = () => {
                     <option value="income">{t("settings.income")}</option>
                   </select>
                 </div>
-                <div className="space-y-2 w-48">
+                <div className="space-y-2 w-full md:w-48">
                   <Label>{t("settings.category")}</Label>
                   <select
                     className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
@@ -893,7 +942,7 @@ const SettingsPage = () => {
                       .filter(
                         // Deduplicate logic similar to other dropdowns
                         (cat, index, self) =>
-                          index === self.findIndex((c) => c.name === cat.name)
+                          index === self.findIndex((c) => c.name === cat.name),
                       )
                       .map((cat) => (
                         <option key={cat.id} value={cat.name}>
@@ -904,7 +953,7 @@ const SettingsPage = () => {
                       ))}
                   </select>
                 </div>
-                <Button type="submit">
+                <Button type="submit" className="w-full md:w-auto">
                   <Plus className="h-4 w-4 mr-2" />
                   {t("settings.addRule")}
                 </Button>
@@ -931,10 +980,11 @@ const SettingsPage = () => {
                     <div className="col-span-4">
                       {/* Try to translate if it matches a default category, else show raw name */}
                       <span
-                        className={`px-2 py-1 rounded-full text-xs font-medium ${rule.type === "income"
-                          ? "bg-green-100 text-green-700"
-                          : "bg-red-100 text-red-700"
-                          }`}
+                        className={`px-2 py-1 rounded-full text-xs font-medium ${
+                          rule.type === "income"
+                            ? "bg-green-100 text-green-700"
+                            : "bg-red-100 text-red-700"
+                        }`}
                       >
                         {rule.category}
                       </span>
