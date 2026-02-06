@@ -64,6 +64,7 @@ const Dashboard = () => {
     transactions,
     deleteTransaction,
     clearTransactions,
+    updateTransaction,
     stats,
     loading,
     isShadowMode,
@@ -151,6 +152,7 @@ const Dashboard = () => {
           <TransactionHistory
             transactions={transactions}
             onDelete={deleteTransaction}
+            onEdit={handleEdit}
             limit={10}
           />
         );
@@ -207,6 +209,22 @@ const Dashboard = () => {
   ];
 
   const [isSimulateOpen, setIsSimulateOpen] = useState(false);
+  const [editingTransaction, setEditingTransaction] = useState(null);
+
+  const handleEdit = (transaction) => {
+    setEditingTransaction(transaction);
+  };
+
+  const handleUpdate = async (updatedData) => {
+    if (editingTransaction) {
+      try {
+        await updateTransaction(editingTransaction.id, updatedData);
+        setEditingTransaction(null);
+      } catch (error) {
+        console.error("Error updating transaction:", error);
+      }
+    }
+  };
   const [layouts, setLayouts] = useState(() => {
     const savedLayout = localStorage.getItem("dashboardLayout_v4");
     return savedLayout
@@ -560,6 +578,27 @@ const Dashboard = () => {
               );
             }}
           />
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        open={!!editingTransaction}
+        onOpenChange={(open) => !open && setEditingTransaction(null)}
+      >
+        <DialogContent className="max-w-3xl">
+          <DialogHeader>
+            <DialogTitle>
+              {t("transactions.editTransaction", "Editar Transação")}
+            </DialogTitle>
+          </DialogHeader>
+          {editingTransaction && (
+            <TransactionForm
+              initialData={editingTransaction}
+              isEditing={true}
+              onAddTransaction={handleUpdate}
+              variant="clean"
+            />
+          )}
         </DialogContent>
       </Dialog>
 
