@@ -71,19 +71,34 @@ Antes de começar, você precisará ter instalado em sua máquina:
 
 3.  **Configure o Firebase:**
     - Crie um projeto no [Console do Firebase](https://console.firebase.google.com/).
-    - Habilite o **Authentication** e o **Firestore Database**.
-    - Crie um arquivo `.env` na raiz do projeto com as suas credenciais:
+    - Habilite o **Authentication** (Email/Password) e o **Firestore Database**.
+    - Habilite o **Storage** para upload de arquivos.
+    - No painel do Firebase, acesse **Configurações do Projeto** e copie suas credenciais.
 
-    ```env
-    VITE_FIREBASE_API_KEY=sua_api_key
-    VITE_FIREBASE_AUTH_DOMAIN=seu_projeto.firebaseapp.com
-    VITE_FIREBASE_PROJECT_ID=seu_project_id
-    VITE_FIREBASE_STORAGE_BUCKET=seu_projeto.appspot.com
-    VITE_FIREBASE_MESSAGING_SENDER_ID=seu_sender_id
-    VITE_FIREBASE_APP_ID=seu_app_id
-    ```
+4.  **Configure as variáveis de ambiente:**
 
-4.  **Execute o projeto:**
+    > ⚠️ **IMPORTANTE:** NUNCA commite o arquivo `.env` com suas credenciais reais ao Git. Este arquivo já está protegido pelo `.gitignore`.
+
+    - Copie o arquivo de exemplo:
+      ```bash
+      cp .env.example .env
+      ```
+    
+    - Edite o arquivo `.env` e substitua os valores pelas suas credenciais do Firebase:
+
+      ```env
+      VITE_FIREBASE_API_KEY=sua_api_key
+      VITE_FIREBASE_AUTH_DOMAIN=seu_projeto.firebaseapp.com
+      VITE_FIREBASE_PROJECT_ID=seu_project_id
+      VITE_FIREBASE_STORAGE_BUCKET=seu_projeto.firebasestorage.app
+      VITE_FIREBASE_MESSAGING_SENDER_ID=seu_sender_id
+      VITE_FIREBASE_APP_ID=seu_app_id
+      VITE_FIREBASE_MEASUREMENT_ID=seu_measurement_id
+      ```
+
+    - **Para produção/deploy:** Configure as mesmas variáveis de ambiente no painel da sua plataforma de hospedagem (Vercel, Netlify, etc.).
+
+5.  **Execute o projeto:**
     ```bash
     npm run dev
     ```
