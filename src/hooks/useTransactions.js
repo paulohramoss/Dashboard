@@ -16,24 +16,24 @@ import { getCurrentLocalDate } from "@/lib/utils";
 
 export const useTransactions = () => {
   const { user } = useAuth();
+  // Derive initial state from user  
   const [transactions, setTransactions] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(() => !!user?.id);
 
-  // Separate effect to handle cleanup when user logs out
   useEffect(() => {
+    // Don't subscribe if no user
     if (!user?.id) {
+      // Clean up on logout
       setTransactions([]);
       setLoading(false);
-    }
-  }, [user?.id]);
-
-  useEffect(() => {
-    // Early return if no user - don't set state here
-    if (!user?.id) {
       return;
     }
 
-    setLoading(true);
+    // Only set loading if we're actually subscribing
+    let isSubscribed = true;
+    if (isSubscribed) {
+      setLoading(true);
+    }
 
     const q1 = query(
       collection(db, "transactions"),

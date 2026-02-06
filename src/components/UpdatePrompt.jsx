@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { useRegisterSW } from "virtual:pwa-register/react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
@@ -9,7 +9,7 @@ import { useUpdatePreferences } from "@/hooks/useUpdatePreferences";
 export default function UpdatePrompt() {
     const { t } = useTranslation();
     const [versionInfo, setVersionInfo] = useState(null);
-    const [showToast, setShowToast] = useState(false);
+    const hasMarkedShownRef = useRef(false);
 
     // Hooks para gerenciar preferências e atividade
     const isIdle = useUserActivity(5 * 60 * 1000); // 5 minutos
@@ -53,17 +53,27 @@ export default function UpdatePrompt() {
         }
     }, [needRefresh]);
 
-    // Controlar exibição do toast baseado em preferências
-    useEffect(() => {
-        if (needRefresh) {
-            if (shouldShowNotification()) {
-                setShowToast(true);
-                markNotificationShown();
-            } else {
-                console.log("⏰ Update notification suppressed by user preferences");
-            }
+    // Derive showToast from needRefresh and preferences
+    const showToast = useMemo(() => {
+        if (!needRefresh) {
+            hasMarkedShownRef.current = false;
+            return false;
         }
-    }, [needRefresh, shouldShowNotification, markNotificationShown]);
+
+        const shouldShow = shouldShowNotification();
+
+        // Mark as shown only once when we decide to show it
+        if (shouldShow && !hasMarkedShownRef.current) {
+            hasMarkedShownRef.current = true;
+            // Use queueMicrotask to avoid setState during render
+            queueMicrotask(() => markNotificationShown());
+        } else if (!shouldShow && !hasMarkedShownRef.current) {
+            hasMarkedShownRef.current = true;
+            console.log("⏰ Update notification suppressed by user preferences");
+        }
+
+        return shouldShow;
+    }, [need Refresh, shouldShowNotification, markNotificationShown]);
 
     // Atualização silenciosa quando usuário está inativo
     useEffect(() => {
@@ -76,7 +86,7 @@ export default function UpdatePrompt() {
     const close = () => {
         setOfflineReady(false);
         setNeedRefresh(false);
-        setShowToast(false);
+        hasMarkedShownRef.current = false;
     };
 
     const handleUpdate = () => {
