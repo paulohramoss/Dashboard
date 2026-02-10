@@ -51,7 +51,7 @@ export const useCategories = () => {
 
   useEffect(() => {
     if (!user?.id) {
-      // Avoid synchronous state updates in effect
+      // Defer state updates to avoid synchronous setState in effect
       const timer = setTimeout(() => {
         setCategories([]);
         setLoading(false);
@@ -59,82 +59,101 @@ export const useCategories = () => {
       return () => clearTimeout(timer);
     }
 
+    setLoading(true); // eslint-disable-line
+
+    // Track if component is still mounted to prevent state updates after unmount
+    let isMounted = true;
+
+    // Use object refs to store results to avoid stale closures
+    const resultsRef = {
+      results1: [],
+      results2: [],
+      bothLoaded: { q1: false, q2: false },
+    };
+
+    const handleUpdate = async () => {
+      // Prevent state updates if component unmounted
+      if (!isMounted) return;
+
+      const allDocs = [...resultsRef.results1, ...resultsRef.results2];
+      const uniqueDocs = Array.from(
+        new Map(allDocs.map((item) => [item.id, item])).values(),
+      );
+
+      setCategories(uniqueDocs);
+
+      // Only set loading to false when both queries have loaded at least once
+      if (resultsRef.bothLoaded.q1 && resultsRef.bothLoaded.q2) {
+        setLoading(false);
+      }
+    };
+
     const q1 = query(
       collection(db, "categories"),
-      where("userId", "==", user.id)
+      where("userId", "==", user.id),
     );
 
     const q2 = query(
       collection(db, "categories"),
-      where("allowedUsers", "array-contains", user.id)
+      where("allowedUsers", "array-contains", user.id),
     );
-
-    let results1 = [];
-    let results2 = [];
-
-    const handleUpdate = async () => {
-      const allDocs = [...results1, ...results2];
-      const uniqueDocs = Array.from(
-        new Map(allDocs.map((item) => [item.id, item])).values()
-      );
-
-      // Only init defaults if we have loaded both and list is empty,
-      // AND specifically if we found no owned categories (to avoid loop).
-      // For simplicity/safety in this refactor, we check if distinct results1 is empty after load.
-      if (
-        results1.length === 0 &&
-        results2.length === 0 &&
-        uniqueDocs.length === 0
-      ) {
-        // It's hard to know perfectly when "both" have finished first load without complex state.
-        // But usually if uniqueDocs is empty, we might need defaults.
-        // Let's rely on a simpler check: if q1 returns empty, we might need defaults.
-      }
-
-      // Better approach for dual subs init:
-      // We'll leave the init check for a separate effect or just check if results1 (owned) is empty.
-
-      setCategories(uniqueDocs);
-      setLoading(false);
-    };
-
-    // We need to track if we've attempted init to avoid spam
 
     const unsub1 = onSnapshot(
       q1,
       async (snapshot) => {
-        results1 = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
+        if (!isMounted) return;
+        resultsRef.results1 = snapshot.docs.map((d) => ({
+          id: d.id,
+          ...d.data(),
+        }));
 
         // Only initialize if:
         // 1. We have 0 owned categories
         // 2. We haven't tried yet in this session
         // 3. The snapshot is NOT from cache (meaning we have confirmed with server that it is empty)
         if (
-          results1.length === 0 &&
+          resultsRef.results1.length === 0 &&
           !initAttempted.current &&
           !snapshot.metadata.fromCache
         ) {
           initAttempted.current = true;
-          // Double check with a one-time fetch to be absolutely sure before writing?
-          // For now, the snapshot check + ref should be enough to stop the "strict mode" double-tap.
           await initializeDefaultCategories(user.id);
         }
 
+        resultsRef.bothLoaded.q1 = true;
         handleUpdate();
       },
-      (error) => console.error("Error fetching owned categories:", error)
+      (error) => {
+        console.error("Error fetching owned categories:", error);
+        if (isMounted) {
+          setLoading(false);
+        }
+      },
     );
 
     const unsub2 = onSnapshot(
       q2,
       (snapshot) => {
-        results2 = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
+        if (!isMounted) return;
+        resultsRef.results2 = snapshot.docs.map((d) => ({
+          id: d.id,
+          ...d.data(),
+        }));
+        resultsRef.bothLoaded.q2 = true;
         handleUpdate();
       },
-      (error) => console.error("Error fetching shared categories:", error)
+      (error) => {
+        console.error("Error fetching shared categories:", error);
+        if (isMounted) {
+          setLoading(false);
+        }
+      },
     );
 
     return () => {
+      // Mark component as unmounted FIRST
+      isMounted = false;
+      // Then unsubscribe to prevent any new callbacks
       unsub1();
       unsub2();
     };

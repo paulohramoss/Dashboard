@@ -16,19 +16,52 @@ import { getCurrentLocalDate } from "@/lib/utils";
 
 export const useTransactions = () => {
   const { user } = useAuth();
-  // Derive initial state from user  
+  // Derive initial state from user
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     // Don't subscribe if no user - component will naturally show empty state
     if (!user?.id) {
-      return;
+      // Defer state updates to avoid synchronous setState in effect
+      const timer = setTimeout(() => {
+        setTransactions([]);
+        setLoading(false);
+      }, 0);
+      return () => clearTimeout(timer);
     }
 
-    // Start loading when we have a user
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setLoading(true);
+    setLoading(true); // eslint-disable-line
+
+    // Track if component is still mounted to prevent state updates after unmount
+    let isMounted = true;
+
+    // Use object refs to store results to avoid stale closures
+    const resultsRef = {
+      results1: [],
+      results2: [],
+      bothLoaded: { q1: false, q2: false },
+    };
+
+    const handleUpdate = () => {
+      // Prevent state updates if component unmounted
+      if (!isMounted) return;
+
+      const allDocs = [...resultsRef.results1, ...resultsRef.results2];
+      const uniqueDocs = Array.from(
+        new Map(allDocs.map((item) => [item.id, item])).values(),
+      );
+
+      uniqueDocs.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+      setTransactions(uniqueDocs);
+
+      // Only set loading to false when both queries have loaded at least once
+      if (resultsRef.bothLoaded.q1 && resultsRef.bothLoaded.q2) {
+        setLoading(false);
+        checkRecurringTransactions(uniqueDocs, user.id);
+      }
+    };
 
     const q1 = query(
       collection(db, "transactions"),
@@ -40,45 +73,48 @@ export const useTransactions = () => {
       where("allowedUsers", "array-contains", user.id),
     );
 
-    let results1 = [];
-    let results2 = [];
-
-    const handleUpdate = () => {
-      const allDocs = [...results1, ...results2];
-      const uniqueDocs = Array.from(
-        new Map(allDocs.map((item) => [item.id, item])).values(),
-      );
-
-      uniqueDocs.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-      setTransactions(uniqueDocs);
-      setLoading(false);
-      checkRecurringTransactions(uniqueDocs, user.id);
-    };
-
     const unsub1 = onSnapshot(
       q1,
       (snapshot) => {
-        results1 = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+        if (!isMounted) return;
+        resultsRef.results1 = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        resultsRef.bothLoaded.q1 = true;
         handleUpdate();
       },
       (error) => {
         console.error("Error fetching owned transactions:", error);
+        if (isMounted) {
+          setLoading(false);
+        }
       },
     );
 
     const unsub2 = onSnapshot(
       q2,
       (snapshot) => {
-        results2 = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+        if (!isMounted) return;
+        resultsRef.results2 = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        resultsRef.bothLoaded.q2 = true;
         handleUpdate();
       },
       (error) => {
         console.error("Error fetching shared transactions:", error);
+        if (isMounted) {
+          setLoading(false);
+        }
       },
     );
 
     return () => {
+      // Mark component as unmounted FIRST
+      isMounted = false;
+      // Then unsubscribe to prevent any new callbacks
       unsub1();
       unsub2();
     };
@@ -119,8 +155,9 @@ export const useTransactions = () => {
             ...transaction,
             userId: user.id,
             allowedUsers: [user.id],
-            description: `${transaction.description} (${i + 1
-              }/${installmentsCount})`,
+            description: `${transaction.description} (${
+              i + 1
+            }/${installmentsCount})`,
             amount: installmentAmount,
             date: installmentDate.toISOString().split("T")[0],
             createdAt: new Date().toISOString(),
@@ -232,8 +269,8 @@ export const useTransactions = () => {
 
   const allTransactions = isShadowMode
     ? [...transactions, ...shadowTransactions].sort(
-      (a, b) => new Date(b.date) - new Date(a.date),
-    )
+        (a, b) => new Date(b.date) - new Date(a.date),
+      )
     : transactions;
 
   const stats = allTransactions.reduce(
