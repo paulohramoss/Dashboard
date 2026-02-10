@@ -89,6 +89,24 @@ const Layout = ({ children }) => {
   // Desktop: Expanded if pinned OR hovered
   const isExpanded = isPinned || isHovered;
 
+  // Function to determine greeting based on time of day
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+
+    // 05:00 - 11:59: Good morning
+    if (hour >= 5 && hour < 12) {
+      return t("dashboard.goodMorning", { name: user?.name || "Usuário" });
+    }
+    // 12:00 - 17:59: Good afternoon
+    else if (hour >= 12 && hour < 18) {
+      return t("dashboard.goodAfternoon", { name: user?.name || "Usuário" });
+    }
+    // 18:00 - 04:59: Good night
+    else {
+      return t("dashboard.goodNight", { name: user?.name || "Usuário" });
+    }
+  };
+
   useEffect(() => {
     localStorage.setItem("sidebarPinned", JSON.stringify(isPinned));
   }, [isPinned]);
@@ -270,6 +288,12 @@ const Layout = ({ children }) => {
             >
               <Menu className="h-6 w-6" />
             </Button>
+            {/* Greeting */}
+            <div className="hidden lg:block">
+              <h1 className="text-xl md:text-2xl font-bold text-foreground">
+                {getGreeting()}
+              </h1>
+            </div>
             <div className="flex items-center gap-2 md:gap-4 ml-auto">
               <Button
                 variant="ghost"

@@ -85,7 +85,10 @@
     "simulationAdded": "Simulação adicionada ao Modo Sombra",
     "forecast": "Previsão (Fim do Mês)",
     "forecastDesc": "Saldo estimado",
-    "forecastWarning": "Cuidado: Risco de saldo negativo em {{date}}"
+    "forecastWarning": "Cuidado: Risco de saldo negativo em {{date}}",
+    "goodMorning": "Bom dia, {{name}}!",
+    "goodAfternoon": "Boa tarde, {{name}}!",
+    "goodNight": "Boa noite, {{name}}!"
   },
   "subscriptions": {
     "title": "Gestão de Assinaturas",

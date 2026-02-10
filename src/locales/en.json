@@ -85,7 +85,10 @@
     "simulationAdded": "Simulation added to Shadow Mode",
     "forecast": "Forecast (End of Month)",
     "forecastDesc": "Estimated balance",
-    "forecastWarning": "Warning: Risk of negative balance on {{date}}"
+    "forecastWarning": "Warning: Risk of negative balance on {{date}}",
+    "goodMorning": "Good morning, {{name}}!",
+    "goodAfternoon": "Good afternoon, {{name}}!",
+    "goodNight": "Good night, {{name}}!"
   },
   "subscriptions": {
     "title": "Subscription Hub",
