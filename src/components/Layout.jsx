@@ -279,20 +279,22 @@ const Layout = ({ children }) => {
           )}
         >
           {/* Header */}
-          <header className="min-h-16 h-auto py-3 md:py-4 border-b bg-card flex items-center px-4 md:px-6 lg:px-8 justify-between">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="lg:hidden -ml-2 touch-target"
-              onClick={toggleSidebar}
-            >
-              <Menu className="h-6 w-6" />
-            </Button>
-            {/* Greeting */}
-            <div className="hidden lg:block">
-              <h1 className="text-xl md:text-2xl font-bold text-foreground">
-                {getGreeting()}
-              </h1>
+          <header className="min-h-16 h-auto py-3 md:py-4 border-b bg-card flex items-center px-4 md:px-6 lg:px-8 justify-between gap-3">
+            <div className="flex items-center gap-3 flex-1 min-w-0">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="lg:hidden -ml-2 touch-target flex-shrink-0"
+                onClick={toggleSidebar}
+              >
+                <Menu className="h-6 w-6" />
+              </Button>
+              {/* Greeting */}
+              <div className="flex-1 min-w-0">
+                <h1 className="text-base md:text-xl lg:text-2xl font-bold text-foreground truncate">
+                  {getGreeting()}
+                </h1>
+              </div>
             </div>
             <div className="flex items-center gap-2 md:gap-4 ml-auto">
               <Button
