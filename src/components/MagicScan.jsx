@@ -19,7 +19,7 @@ function extractMerchantName(text) {
   const meaningful = lines.filter((l) => {
     const noSpaces = l.replace(/\s/g, "");
     if (/^[\d.,/:R$%*=\-+]+$/.test(noSpaces)) return false;
-    if (/^\d{2}[/.\-]\d{2}[/.\-]\d{4}/.test(l)) return false;
+    if (/^\d{2}[/.-]\d{2}[/.-]\d{4}/.test(l)) return false;
     if (/cnpj|cpf|total|subtotal|troco|cobrado|pgto|dinheiro|via\s/i.test(l))
       return false;
     return true;
