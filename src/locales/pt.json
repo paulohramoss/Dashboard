@@ -294,7 +294,7 @@
     "noBudgetableCategories": "Todas as categorias já possuem orçamentos.",
     "confirmDelete": "Tem certeza que deseja excluir este orçamento?",
     "budgetAlert": "Alerta de Orçamento",
-    "budgetExceeded": "Atenção: Esta transação excede o orçamento da categoria {category}!",
+    "budgetExceeded": "Atenção: Esta transação excede o orçamento da categoria {{category}}!",
     "deleteTitle": "Excluir Orçamento",
     "deleteDescription": "Tem certeza que deseja remover este orçamento? Esta ação não pode ser desfeita.",
     "spent": "Gasto",
@@ -604,7 +604,19 @@
   "insights": {
     "spendingSpike": "Ei, você gastou {{percentage}}% a mais em '{{category}}' este mês comparado à sua média dos últimos 3 meses.",
     "comparison": "Atual: {{current}} vs Média: {{average}}",
-    "noAnomalies": "Tudo certo! Seus gastos estão dentro do esperado."
+    "noAnomalies": "Tudo certo! Seus gastos estão dentro do esperado.",
+    "anomalyNotificationTitle": "Gasto Incomum Detectado",
+    "anomalyNotificationBody": "Você gastou {{percentage}}% a mais em '{{category}}' do que sua média mensal habitual.",
+    "largeTransactionTitle": "Transação Elevada Registrada",
+    "largeTransactionBody": "Uma transação de {{amount}} em '{{category}}' está {{times}}x acima do seu valor habitual."
+  },
+  "notifications": {
+    "dueToday": "Conta Vencendo Hoje!",
+    "dueTomorrow": "Conta Vencendo Amanhã",
+    "dueTodayBody": "A transação '{{description}}' vence hoje.",
+    "dueTomorrowBody": "A transação '{{description}}' vence amanhã.",
+    "budgetWarningTitle": "Alerta de Orçamento",
+    "budgetWarningBody": "Você usou {{percent}}% do orçamento de '{{category}}'."
   },
   "assistant": {
     "title": "Assistente Financeiro",
