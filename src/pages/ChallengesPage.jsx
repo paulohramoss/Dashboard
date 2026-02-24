@@ -363,8 +363,9 @@ const ChallengesPage = () => {
   );
 
   const handleAddTemplate = async (template) => {
-    const startDate = new Date().toISOString().split("T")[0];
-    const endDate = new Date(Date.now() + template.days * 86400000)
+    const now = new Date();
+    const startDate = now.toISOString().split("T")[0];
+    const endDate = new Date(now.getTime() + template.days * 86400000)
       .toISOString()
       .split("T")[0];
     await addChallenge({
