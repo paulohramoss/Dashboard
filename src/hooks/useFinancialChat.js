@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { answerFinancialQuestion } from "@/lib/gemini";
 import { useTransactions } from "@/hooks/useTransactions";
+import { subMonths, format, parseISO } from "date-fns";
 
 /**
  * Hook personalizado para gerenciar conversação com assistente financeiro
@@ -17,10 +18,51 @@ export const useFinancialChat = () => {
   ]);
   const [loading, setLoading] = useState(false);
 
+  // Detectar picos de gasto no mês atual vs. média dos últimos 3 meses
+  const proactiveInsights = useMemo(() => {
+    if (!transactions || transactions.length === 0) return [];
+
+    const today = new Date();
+    const getMonthKey = (date) => format(date, "yyyy-MM");
+    const currentMonthKey = getMonthKey(today);
+
+    const expensesByMonth = {};
+    transactions.forEach((tx) => {
+      if (tx.type !== "expense") return;
+      try {
+        const date = parseISO(tx.date);
+        const monthKey = getMonthKey(date);
+        if (!expensesByMonth[monthKey]) expensesByMonth[monthKey] = {};
+        if (!expensesByMonth[monthKey][tx.category])
+          expensesByMonth[monthKey][tx.category] = 0;
+        expensesByMonth[monthKey][tx.category] += parseFloat(tx.amount || 0);
+      } catch {
+        // skip invalid dates
+      }
+    });
+
+    const alerts = [];
+    const currentCategories = expensesByMonth[currentMonthKey] || {};
+
+    Object.entries(currentCategories).forEach(([category, currentAmount]) => {
+      let sum = 0;
+      for (let i = 1; i <= 3; i++) {
+        const key = getMonthKey(subMonths(today, i));
+        sum += expensesByMonth[key]?.[category] || 0;
+      }
+      const average = sum / 3;
+      if (average > 10 && currentAmount > average * 1.2) {
+        const percentage = Math.round(((currentAmount - average) / average) * 100);
+        alerts.push({ category, percentage, currentAmount, average });
+      }
+    });
+
+    return alerts;
+  }, [transactions]);
+
   const sendMessage = async (userMessage, language = "pt") => {
     if (!userMessage || userMessage.trim() === "") return;
 
-    // Adicionar mensagem do usuário
     const userMsg = {
       role: "user",
       content: userMessage,
@@ -30,7 +72,6 @@ export const useFinancialChat = () => {
 
     setLoading(true);
     try {
-      // Preparar contexto financeiro do usuário
       const userContext = {
         balance: parseFloat(stats?.balance || 0),
         income: parseFloat(stats?.income || 0),
@@ -39,14 +80,12 @@ export const useFinancialChat = () => {
         topCategory: getTopCategory(transactions),
       };
 
-      // Obter resposta do Gemini
       const answer = await answerFinancialQuestion(
         userMessage,
         userContext,
         language,
       );
 
-      // Adicionar resposta do assistente
       const assistantMsg = {
         role: "assistant",
         content: answer,
@@ -56,7 +95,6 @@ export const useFinancialChat = () => {
     } catch (error) {
       console.error("Erro no chat financeiro:", error);
 
-      // Mensagem de erro amigável
       const errorMsg = {
         role: "assistant",
         content:
@@ -70,6 +108,24 @@ export const useFinancialChat = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  // Dispara mensagem proativa do coach quando o chat é aberto pela primeira vez
+  const triggerProactiveInsight = (language = "pt") => {
+    setMessages((prev) => {
+      if (prev.length > 1 || proactiveInsights.length === 0) return prev;
+
+      const top = proactiveInsights[0];
+      const content =
+        language === "pt"
+          ? `💡 Antes de começarmos, notei algo importante: você gastou **${top.percentage}% a mais** em **${top.category}** este mês comparado à sua média dos últimos 3 meses (média: R$ ${top.average.toFixed(2)} · atual: R$ ${top.currentAmount.toFixed(2)}). Quer que eu sugira formas de reduzir esses gastos?`
+          : `💡 Before we start, I noticed something: you spent **${top.percentage}% more** on **${top.category}** this month vs. your 3-month average (avg: $${top.average.toFixed(2)} · current: $${top.currentAmount.toFixed(2)}). Want me to suggest ways to reduce these expenses?`;
+
+      return [
+        ...prev,
+        { role: "assistant", content, timestamp: new Date(), isCoach: true },
+      ];
+    });
   };
 
   const clearChat = () => {
@@ -88,6 +144,8 @@ export const useFinancialChat = () => {
     sendMessage,
     clearChat,
     loading,
+    proactiveInsights,
+    triggerProactiveInsight,
   };
 };
 

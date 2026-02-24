@@ -20,7 +20,13 @@ import {
 } from "@/components/ui/tooltip";
 import { formatDate } from "@/utils/dateUtils";
 
-const ForecastCard = ({ forecast, amount }) => {
+const confidenceConfig = {
+  high:   { labelKey: "dashboard.forecastConfidenceHigh",   fallback: "Alta confiança",  cls: "text-green-700 dark:text-green-400 bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800" },
+  medium: { labelKey: "dashboard.forecastConfidenceMedium", fallback: "Confiança média", cls: "text-yellow-700 dark:text-yellow-400 bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800" },
+  low:    { labelKey: "dashboard.forecastConfidenceLow",    fallback: "Pouco histórico", cls: "text-orange-700 dark:text-orange-400 bg-orange-50 dark:bg-orange-900/20 border-orange-200 dark:border-orange-800" },
+};
+
+const ForecastCard = ({ forecast, amount, confidence, monthsAnalyzed }) => {
   const { t } = useTranslation();
   // const { isPrivacyMode } = useLayout(); // Removed
   const formatCurrency = useCurrency();
@@ -108,6 +114,12 @@ const ForecastCard = ({ forecast, amount }) => {
           <p className="text-xs text-muted-foreground mt-1">
             {t("dashboard.forecastDesc", "Saldo estimado")}
           </p>
+          {confidence && confidence !== "none" && confidenceConfig[confidence] && (
+            <span className={cn("text-[10px] font-medium px-1.5 py-0.5 rounded border mt-1 inline-block", confidenceConfig[confidence].cls)}>
+              {t(confidenceConfig[confidence].labelKey, confidenceConfig[confidence].fallback)}
+              {monthsAnalyzed > 0 && ` • ${monthsAnalyzed} ${t("dashboard.forecastMonths", "meses")}`}
+            </span>
+          )}
           {riskDate && (
             <p className="text-[10px] text-yellow-600 dark:text-yellow-500 font-medium mt-0.5 truncate">
               {t("dashboard.forecastWarning", { date: formatDate(riskDate) })}

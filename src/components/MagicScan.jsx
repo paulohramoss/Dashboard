@@ -4,8 +4,40 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import Tesseract from "tesseract.js";
 import { useTranslation } from "react-i18next";
+import { suggestCategory } from "@/lib/gemini";
 
-const MagicScan = ({ onScanComplete, className }) => {
+/**
+ * Extrai o nome do estabelecimento do texto OCR.
+ * Busca a primeira linha legível que não seja data, valor ou código fiscal.
+ */
+function extractMerchantName(text) {
+  const lines = text
+    .split("\n")
+    .map((l) => l.trim())
+    .filter((l) => l.length > 2);
+
+  const meaningful = lines.filter((l) => {
+    const noSpaces = l.replace(/\s/g, "");
+    if (/^[\d.,/:R$%*=\-+]+$/.test(noSpaces)) return false;
+    if (/^\d{2}[/.\-]\d{2}[/.\-]\d{4}/.test(l)) return false;
+    if (/cnpj|cpf|total|subtotal|troco|cobrado|pgto|dinheiro|via\s/i.test(l))
+      return false;
+    return true;
+  });
+
+  return (meaningful[0] || "")
+    .replace(/[^\w\sÀ-ú]/gi, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .substring(0, 60);
+}
+
+const MagicScan = ({
+  onScanComplete,
+  className,
+  categories = [],
+  language = "pt",
+}) => {
   const { t } = useTranslation();
   const [isScanning, setIsScanning] = useState(false);
   const fileInputRef = useRef(null);
@@ -20,49 +52,54 @@ const MagicScan = ({ onScanComplete, className }) => {
 
     try {
       const result = await Tesseract.recognize(file, "por", {
-        logger: (m) => console.log(m), // Optional: log progress
+        logger: () => {},
       });
 
       const text = result.data.text;
-      console.log("OCR Result:", text);
 
-      // --- Extraction Logic ---
-
-      // 1. Extract Date (DD/MM/YYYY)
-      // Matches 12/05/2023 or 12-05-2023
+      // 1. Extrair data (DD/MM/YYYY)
       const dateRegex = /(\d{2})[/.-](\d{2})[/.-](\d{4})/;
       const dateMatch = text.match(dateRegex);
       let extractedDate = null;
-
       if (dateMatch) {
-        // Convert to YYYY-MM-DD for HTML input
-        const [_, day, month, year] = dateMatch;
+        const [, day, month, year] = dateMatch;
         extractedDate = `${year}-${month}-${day}`;
       }
 
-      // 2. Extract Amount
-      // Look for patterns like R$ 20,00 or 20,00
-      // We look for "Total" lines mostly, but generic search helps too
-      // Regex matches: 1.234,56 or 1234,56
+      // 2. Extrair valor (maior valor = total do recibo)
       const amountRegex = /(?:R\$\s?)?(\d{1,3}(?:\.\d{3})*,\d{2})/gi;
       const amountMatches = text.match(amountRegex);
       let extractedAmount = null;
-
       if (amountMatches) {
-        // Simple heuristic: The largest value found on the receipt is usually the total
-        // Or the last value found. Let's try to map them to numbers and find the max.
-        const values = amountMatches.map((str) => {
-          // clean string: remove R$, remove dots, replace comma with dot
-          const cleanStr = str
-            .replace(/[R$\s]/g, "")
-            .replace(/\./g, "")
-            .replace(",", ".");
-          return parseFloat(cleanStr);
-        });
-
+        const values = amountMatches.map((str) =>
+          parseFloat(
+            str.replace(/[R$\s]/g, "").replace(/\./g, "").replace(",", ".")
+          )
+        );
         const maxVal = Math.max(...values);
-        if (!isNaN(maxVal)) {
-          extractedAmount = maxVal;
+        if (!isNaN(maxVal)) extractedAmount = maxVal;
+      }
+
+      // 3. Extrair nome do estabelecimento
+      const description = extractMerchantName(text);
+
+      // 4. Categorizar com IA baseado no texto do recibo
+      let category = null;
+      const textSample = text.substring(0, 600);
+      if (textSample.trim()) {
+        toast.loading(
+          t("magicScan.categorizing", "Categorizando com IA..."),
+          { id: toastId }
+        );
+        try {
+          const aiResult = await suggestCategory(
+            textSample,
+            categories,
+            language
+          );
+          category = aiResult.category || null;
+        } catch {
+          // falha silenciosa — não bloqueia o fluxo principal
         }
       }
 
@@ -70,7 +107,9 @@ const MagicScan = ({ onScanComplete, className }) => {
         onScanComplete({
           date: extractedDate,
           amount: extractedAmount,
-          rawText: text, // Optional: useful for debugging or description
+          description,
+          category,
+          rawText: text,
         });
         toast.success(t("magicScan.success", "Dados extraídos com sucesso!"), {
           id: toastId,
@@ -88,7 +127,6 @@ const MagicScan = ({ onScanComplete, className }) => {
       });
     } finally {
       setIsScanning(false);
-      // Reset input so same file can be selected again if needed
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
       }
@@ -108,7 +146,7 @@ const MagicScan = ({ onScanComplete, className }) => {
         type="file"
         ref={fileInputRef}
         accept="image/*"
-        capture="environment" // Opens camera on mobile
+        capture="environment"
         className="hidden"
         onChange={handleFileChange}
       />
@@ -126,7 +164,6 @@ const MagicScan = ({ onScanComplete, className }) => {
         ) : (
           <Camera className="h-4 w-4 text-primary" />
         )}
-        {/* Shimmer effect for "Magic" feel */}
         {!isScanning && (
           <div className="absolute inset-0 -translate-x-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
         )}

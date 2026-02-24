@@ -7,6 +7,9 @@ import {
   isBefore,
   startOfDay,
   endOfDay,
+  startOfMonth,
+  endOfMonth,
+  differenceInDays,
   isSameDay,
   isValid,
 } from "date-fns";
@@ -126,4 +129,68 @@ export const calculateCashFlowForecast = (
   }
 
   return forecast;
+};
+
+/**
+ * Previsão preditiva que combina transações agendadas com padrão histórico de gastos.
+ * @param {number} currentBalance - Saldo atual
+ * @param {Array} transactions - Todas as transações
+ * @param {number} days - Dias a projetar
+ * @returns {{ forecast: Array, projectedBalance: number, confidence: string, avgDailyExpense: number, monthsAnalyzed: number }}
+ */
+export const calculatePredictiveForecast = (
+  currentBalance,
+  transactions,
+  days = 30
+) => {
+  const today = startOfDay(new Date());
+
+  // Calcular taxa média de gasto diário dos últimos 3 meses (excluindo recorrentes)
+  const historicalRates = [];
+  for (let m = 1; m <= 3; m++) {
+    const mDate = addMonths(today, -m);
+    const mStart = startOfMonth(mDate);
+    const mEnd = endOfMonth(mDate);
+    const daysInM = differenceInDays(mEnd, mStart) + 1;
+
+    const total = transactions
+      .filter((t) => {
+        if (t.type !== "expense" || t.isShadow || t.isRecurring) return false;
+        const d = parseInputDate(t.date);
+        return isValid(d) && !isBefore(d, mStart) && !isAfter(d, mEnd);
+      })
+      .reduce((s, t) => s + parseFloat(t.amount || 0), 0);
+
+    if (total > 0) historicalRates.push(total / daysInM);
+  }
+
+  const monthsAnalyzed = historicalRates.length;
+  const avgDailyExpense =
+    monthsAnalyzed > 0
+      ? historicalRates.reduce((s, r) => s + r, 0) / monthsAnalyzed
+      : 0;
+
+  const confidence =
+    monthsAnalyzed >= 3
+      ? "high"
+      : monthsAnalyzed >= 2
+        ? "medium"
+        : monthsAnalyzed >= 1
+          ? "low"
+          : "none";
+
+  // Previsão base das transações agendadas/recorrentes
+  const baseForecast = calculateCashFlowForecast(currentBalance, transactions, days);
+
+  // Sobrepor: subtrair o gasto diário histórico acumulado em cada dia
+  let cumulativeHistorical = 0;
+  const forecast = baseForecast.map((day) => {
+    cumulativeHistorical += avgDailyExpense;
+    return { ...day, balance: day.balance - cumulativeHistorical };
+  });
+
+  const projectedBalance =
+    forecast.length > 0 ? forecast[forecast.length - 1].balance : currentBalance;
+
+  return { forecast, projectedBalance, confidence, avgDailyExpense, monthsAnalyzed };
 };

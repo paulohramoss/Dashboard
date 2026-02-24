@@ -89,7 +89,11 @@
     "forecastWarning": "Warning: Risk of negative balance on {{date}}",
     "goodMorning": "Good morning, {{name}}!",
     "goodAfternoon": "Good afternoon, {{name}}!",
-    "goodNight": "Good night, {{name}}!"
+    "goodNight": "Good night, {{name}}!",
+    "forecastConfidenceHigh": "High confidence",
+    "forecastConfidenceMedium": "Medium confidence",
+    "forecastConfidenceLow": "Low history",
+    "forecastMonths": "months"
   },
   "subscriptions": {
     "title": "Subscription Hub",
@@ -689,5 +693,14 @@
       "frequencyDesc": "Control how often you want to see update notifications",
       "autoUpdateDesc": "App will automatically update after 5 minutes of inactivity"
     }
+  },
+  "magicScan": {
+    "processing": "Reading receipt...",
+    "categorizing": "AI categorizing...",
+    "success": "Data extracted successfully!",
+    "noData": "Could not identify date or amount.",
+    "error": "Error processing image.",
+    "buttonLabel": "Scan Receipt",
+    "autoCreated": "Transaction created automatically! 📸"
   }
 }

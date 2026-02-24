@@ -17,7 +17,7 @@ import TransactionHistory from "@/components/TransactionHistory";
 import ForecastCard from "@/components/ForecastCard";
 import FinScoreCard from "@/components/FinScoreCard";
 import SmartAlerts from "@/components/SmartAlerts";
-import { calculateCashFlowForecast } from "@/utils/forecast";
+import { calculatePredictiveForecast } from "@/utils/forecast";
 import { endOfMonth, differenceInDays, startOfDay } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
@@ -107,7 +107,7 @@ const Dashboard = () => {
         return loading ? (
           <Skeleton className="w-full h-full" />
         ) : (
-          <ForecastCard forecast={forecastData} amount={projectedBalance} />
+          <ForecastCard forecast={forecastData} amount={projectedBalance} confidence={forecastConfidence} monthsAnalyzed={forecastMonths} />
         );
       case "finscore":
         return loading ? (
@@ -420,25 +420,18 @@ const Dashboard = () => {
     },
   };
 
-  const forecastData = useMemo(() => {
+  const { forecast: forecastData, projectedBalance, confidence: forecastConfidence, monthsAnalyzed: forecastMonths } = useMemo(() => {
     const today = startOfDay(new Date());
     const endOfMonthDate = endOfMonth(today);
     const daysRemaining = differenceInDays(endOfMonthDate, today);
-
-    // Ensure at least 1 day to avoid errors or empty chart
     const daysToProject = Math.max(daysRemaining, 1);
 
-    return calculateCashFlowForecast(
+    return calculatePredictiveForecast(
       stats.balance,
       transactions,
       daysToProject,
     );
   }, [stats.balance, transactions]);
-
-  const projectedBalance =
-    forecastData.length > 0
-      ? forecastData[forecastData.length - 1].balance
-      : stats.balance;
 
   const item = {
     hidden: { opacity: 0, y: 20 },
