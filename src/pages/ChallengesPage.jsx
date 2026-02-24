@@ -387,10 +387,9 @@ const ChallengesPage = () => {
   const handleAddCustom = async (e) => {
     e.preventDefault();
     if (!customChallenge.title) return;
-    const startDate = new Date().toISOString().split("T")[0];
-    const endDate = new Date(
-      Date.now() + Number(customChallenge.days) * 86400000
-    )
+    const now = new Date();
+    const startDate = now.toISOString().split("T")[0];
+    const endDate = new Date(now.getTime() + Number(customChallenge.days) * 86400000)
       .toISOString()
       .split("T")[0];
     await addChallenge({

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { db } from "@/lib/firebase";
 import {
@@ -26,24 +26,68 @@ export const useChallenges = () => {
       return;
     }
 
-    const q = query(
+    let isMounted = true;
+    const resultsRef = { r1: [], r2: [], loaded: { q1: false, q2: false } };
+
+    const handleUpdate = () => {
+      if (!isMounted) return;
+      if (resultsRef.loaded.q1 && resultsRef.loaded.q2) {
+        const seen = new Set();
+        const merged = [...resultsRef.r1, ...resultsRef.r2].filter((d) => {
+          if (seen.has(d.id)) return false;
+          seen.add(d.id);
+          return true;
+        });
+        setChallenges(merged);
+        setLoading(false);
+      }
+    };
+
+    const q1 = query(
+      collection(db, "challenges"),
+      where("userId", "==", user.id)
+    );
+
+    const q2 = query(
       collection(db, "challenges"),
       where("allowedUsers", "array-contains", user.id)
     );
 
-    const unsub = onSnapshot(
-      q,
+    const unsub1 = onSnapshot(
+      q1,
       (snap) => {
-        setChallenges(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
-        setLoading(false);
+        if (!isMounted) return;
+        resultsRef.r1 = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+        resultsRef.loaded.q1 = true;
+        handleUpdate();
       },
       (err) => {
         console.error("Error fetching challenges:", err);
-        setLoading(false);
+        resultsRef.loaded.q1 = true;
+        if (isMounted) handleUpdate();
       }
     );
 
-    return () => unsub();
+    const unsub2 = onSnapshot(
+      q2,
+      (snap) => {
+        if (!isMounted) return;
+        resultsRef.r2 = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+        resultsRef.loaded.q2 = true;
+        handleUpdate();
+      },
+      (err) => {
+        console.error("Error fetching shared challenges:", err);
+        resultsRef.loaded.q2 = true;
+        if (isMounted) handleUpdate();
+      }
+    );
+
+    return () => {
+      isMounted = false;
+      unsub1();
+      unsub2();
+    };
   }, [user?.id]);
 
   const addChallenge = async (challenge) => {
