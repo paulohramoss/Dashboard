@@ -18,7 +18,7 @@ export default function FinancialAssistant() {
   const [isOpen, setIsOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [showClearModal, setShowClearModal] = useState(false);
-  const { messages, sendMessage, clearChat, loading } = useFinancialChat();
+  const { messages, sendMessage, clearChat, loading, proactiveInsights, triggerProactiveInsight } = useFinancialChat();
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
@@ -30,6 +30,17 @@ export default function FinancialAssistant() {
       scrollToBottom();
     }
   }, [messages, isOpen]);
+
+  useEffect(() => {
+    if (isOpen) {
+      const language =
+        t("lang") === "pt" || window.navigator.language.startsWith("pt")
+          ? "pt"
+          : "en";
+      triggerProactiveInsight(language);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen]);
 
   const handleSend = async (e) => {
     e.preventDefault();
@@ -61,16 +72,23 @@ export default function FinancialAssistant() {
     <>
       {/* Botão Flutuante */}
       <div className="fixed bottom-6 right-6 z-50">
-        <Button
-          size="lg"
-          className="h-14 w-14 rounded-full shadow-lg bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 transition-transform hover:scale-110"
-          onClick={() => setIsOpen(!isOpen)}
-          aria-label={isOpen ? "Fechar chat" : "Abrir assistente de IA"}
-        >
-          <span className="text-3xl animate-pulse" role="img" aria-label="AI">
-            ✨
-          </span>
-        </Button>
+        <div className="relative inline-flex">
+          <Button
+            size="lg"
+            className="h-14 w-14 rounded-full shadow-lg bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 transition-transform hover:scale-110"
+            onClick={() => setIsOpen(!isOpen)}
+            aria-label={isOpen ? "Fechar chat" : "Abrir assistente de IA"}
+          >
+            <span className="text-3xl animate-pulse" role="img" aria-label="AI">
+              ✨
+            </span>
+          </Button>
+          {proactiveInsights.length > 0 && !isOpen && (
+            <span className="absolute -top-1 -right-1 h-5 w-5 bg-red-500 rounded-full text-[10px] font-bold text-white flex items-center justify-center pointer-events-none shadow">
+              {proactiveInsights.length}
+            </span>
+          )}
+        </div>
       </div>
 
       {/* Chat Window */}
@@ -116,7 +134,9 @@ export default function FinancialAssistant() {
                       ? "bg-primary text-primary-foreground"
                       : msg.isError
                         ? "bg-red-100 dark:bg-red-900/30 text-red-900 dark:text-red-100"
-                        : "bg-muted text-foreground"
+                        : msg.isCoach
+                          ? "bg-amber-50 dark:bg-amber-900/20 text-amber-900 dark:text-amber-100 border border-amber-200 dark:border-amber-800"
+                          : "bg-muted text-foreground"
                     }`}
                 >
                   <p className="text-sm whitespace-pre-wrap">{msg.content}</p>

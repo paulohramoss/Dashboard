@@ -297,12 +297,75 @@ const TransactionForm = ({
   };
 
   const handleScanComplete = (data) => {
-    setFormData((prev) => ({
-      ...prev,
-      amount: data.amount || prev.amount,
-      date: data.date || prev.date,
-      description: prev.description || "Recibo Escaneado", // Optional default
-    }));
+    const expenseCategories = categories.filter((c) => c.type === "expense");
+
+    // Aplicar categoria sugerida pela IA se existir
+    let resolvedCategory = formData.category;
+    if (data.category) {
+      const matched = expenseCategories.find(
+        (c) => c.name.toLowerCase() === data.category.toLowerCase()
+      );
+      if (matched) resolvedCategory = matched.name;
+    }
+
+    const updatedForm = {
+      ...formData,
+      type: "expense",
+      amount: data.amount != null ? data.amount : formData.amount,
+      date: data.date || formData.date,
+      description: data.description || formData.description || "Recibo Escaneado",
+      category: resolvedCategory,
+    };
+
+    // Inferir conta quando há apenas uma cadastrada
+    const inferredAccountId =
+      accounts.length === 1 ? accounts[0].id : formData.accountId;
+
+    // Criação automática quando todos os campos obrigatórios estão disponíveis
+    if (data.amount != null && inferredAccountId && updatedForm.description) {
+      const autoData = {
+        ...updatedForm,
+        accountId: inferredAccountId,
+        isRecurring: false,
+        frequency: "monthly",
+        isInstallment: false,
+        installmentsCount: 2,
+        destinationAccountId: "",
+      };
+
+      onAddTransaction({ ...autoData, amount: parseFloat(autoData.amount) });
+
+      toast.success(
+        t("magicScan.autoCreated", "Transação criada automaticamente! 📸"),
+        {
+          description: `${autoData.description} • ${new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(parseFloat(autoData.amount))}`,
+          duration: 5000,
+        }
+      );
+
+      if (!isEditing) {
+        setFormData({
+          description: "",
+          amount: "",
+          type: "expense",
+          category: expenseCategories[0]?.name || "",
+          date: getCurrentLocalDate(),
+          isRecurring: false,
+          frequency: "monthly",
+          isInstallment: false,
+          installmentsCount: 2,
+          accountId: "",
+          destinationAccountId: "",
+        });
+      }
+      return;
+    }
+
+    // Fallback: pré-preencher formulário para confirmação manual
+    setFormData({
+      ...updatedForm,
+      ...(inferredAccountId && { accountId: inferredAccountId }),
+    });
   };
 
   const handleAISuggest = async () => {
@@ -472,7 +535,11 @@ const TransactionForm = ({
               required
               className="flex-1 h-11"
             />
-            <MagicScan onScanComplete={handleScanComplete} />
+            <MagicScan
+              onScanComplete={handleScanComplete}
+              categories={availableCategories}
+              language={i18n.language.startsWith("pt") ? "pt" : "en"}
+            />
           </div>
         </div>
         <div className="space-y-2">

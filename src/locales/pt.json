@@ -89,7 +89,11 @@
     "forecastWarning": "Cuidado: Risco de saldo negativo em {{date}}",
     "goodMorning": "Bom dia, {{name}}!",
     "goodAfternoon": "Boa tarde, {{name}}!",
-    "goodNight": "Boa noite, {{name}}!"
+    "goodNight": "Boa noite, {{name}}!",
+    "forecastConfidenceHigh": "Alta confiança",
+    "forecastConfidenceMedium": "Confiança média",
+    "forecastConfidenceLow": "Pouco histórico",
+    "forecastMonths": "meses"
   },
   "subscriptions": {
     "title": "Gestão de Assinaturas",
@@ -689,5 +693,14 @@
       "frequencyDesc": "Controle com que frequência você quer ver notificações de atualização",
       "autoUpdateDesc": "O app será atualizado automaticamente após 5 minutos de inatividade"
     }
+  },
+  "magicScan": {
+    "processing": "Lendo recibo...",
+    "categorizing": "Categorizando com IA...",
+    "success": "Dados extraídos com sucesso!",
+    "noData": "Não foi possível identificar data ou valor.",
+    "error": "Erro ao processar imagem.",
+    "buttonLabel": "Escanear Recibo",
+    "autoCreated": "Transação criada automaticamente! 📸"
   }
 }
