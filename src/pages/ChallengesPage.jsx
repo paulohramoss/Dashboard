@@ -9,7 +9,6 @@ import { useCategories } from "@/hooks/useCategories";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Dialog,
@@ -166,25 +165,26 @@ const computeProgress = (challenge, transactions) => {
 };
 
 const StatusBadge = ({ status, t }) => {
+  const base = "inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium border";
   if (status === "completed")
     return (
-      <Badge className="bg-green-500/10 text-green-600 border-green-500/20">
-        <CheckCircle2 className="h-3 w-3 mr-1" />
+      <span className={cn(base, "bg-green-500/10 text-green-600 border-green-500/20")}>
+        <CheckCircle2 className="h-3 w-3" />
         {t("challenges.completed")}
-      </Badge>
+      </span>
     );
   if (status === "failed")
     return (
-      <Badge className="bg-red-500/10 text-red-600 border-red-500/20">
-        <XCircle className="h-3 w-3 mr-1" />
+      <span className={cn(base, "bg-red-500/10 text-red-600 border-red-500/20")}>
+        <XCircle className="h-3 w-3" />
         {t("challenges.failed")}
-      </Badge>
+      </span>
     );
   return (
-    <Badge className="bg-blue-500/10 text-blue-600 border-blue-500/20">
-      <Flame className="h-3 w-3 mr-1" />
+    <span className={cn(base, "bg-blue-500/10 text-blue-600 border-blue-500/20")}>
+      <Flame className="h-3 w-3" />
       {t("challenges.active")}
-    </Badge>
+    </span>
   );
 };
 
