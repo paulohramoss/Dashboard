@@ -19,6 +19,7 @@ import {
   Repeat,
   TrendingDown,
   BookOpen,
+  Swords,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -121,6 +122,7 @@ const Layout = ({ children }) => {
     { icon: TrendingDown, label: t("nav.debt", "Dívidas"), path: "/debt" },
     { icon: Wallet, label: t("accounts.title"), path: "/accounts" },
     { icon: PieChart, label: t("nav.reports"), path: "/reports" },
+    { icon: Swords, label: t("nav.challenges"), path: "/challenges" },
     { icon: BookOpen, label: t("nav.tutorial"), path: "/tutorial" },
     { icon: Settings, label: t("nav.settings"), path: "/settings" },
   ];

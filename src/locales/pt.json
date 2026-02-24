@@ -43,6 +43,7 @@
     "debt": "Dívidas",
     "settings": "Configurações",
     "tutorial": "Manual do Usuário",
+    "challenges": "Desafios",
     "logout": "Sair",
     "confirmLogout": "Confirmar Saída?"
   },
@@ -180,7 +181,25 @@
     "totalTransactionsPart1": "Você tem um total de",
     "totalTransactionsPart2": "transações registradas. Seu saldo atual é",
     "financialFlow": "Fluxo Financeiro",
-    "flowDescription": "Visualize como o dinheiro entra na sua carteira e como é distribuído nas despesas."
+    "flowDescription": "Visualize como o dinheiro entra na sua carteira e como é distribuído nas despesas.",
+    "emailReport": {
+      "button": "Enviar por E-mail",
+      "sending": "Enviando...",
+      "sent": "Relatório enviado para o seu e-mail!",
+      "error": "Falha ao enviar o relatório. Tente novamente.",
+      "subject": "Relatório Financeiro — {{month}} {{year}}",
+      "body": "Relatório Financeiro — {{month}} {{year}}\n\nReceitas: {{income}}\nDespesas: {{expense}}\nSaldo: {{balance}}\n\nCategoria com maior gasto: {{villain}} ({{villainAmount}})\nTotal de transações: {{total}}\n\nGerado pelo FinanceDash."
+    },
+    "comparison": {
+      "title": "Comparativo entre Períodos",
+      "subtitle": "Como este mês se compara ao anterior e ao mesmo mês do ano passado.",
+      "metric": "Indicador",
+      "current": "atual",
+      "income": "Receitas",
+      "expense": "Despesas",
+      "balance": "Saldo",
+      "note": "↑ verde = melhor desempenho, ↓ vermelho = queda (exceto despesas: menor é melhor)."
+    }
   },
   "finscore": {
     "tooltip": "Pontuação baseada em poupança, orçamento, reserva e saúde financeira.",
@@ -596,6 +615,58 @@
       "title": "Limpar Conversa?",
       "description": "Esta ação removerá todo o histórico de mensagens desta conversa. Você não poderá desfazer esta ação.",
       "confirm": "Limpar Conversa"
+    }
+  },
+  "challenges": {
+    "title": "Desafios de Economia",
+    "subtitle": "Crie metas gamificadas e prove que você tem controle das suas finanças.",
+    "newChallenge": "Novo Desafio",
+    "active": "Ativo",
+    "completed": "Concluído",
+    "failed": "Falhou",
+    "activeSection": "Em andamento",
+    "completedSection": "Concluídos",
+    "failedSection": "Falhados",
+    "noChallenge": "Nenhum desafio ainda.",
+    "noChallengeDesc": "Crie um desafio para testar sua disciplina financeira!",
+    "challengeAdded": "Desafio criado! Boa sorte!",
+    "challengeDeleted": "Desafio removido.",
+    "deleteTitle": "Excluir Desafio",
+    "deleteDescription": "Tem certeza que deseja excluir este desafio? Esta ação não pode ser desfeita.",
+    "chooseTemplate": "Escolha um Desafio",
+    "chooseTemplateDesc": "Selecione um desafio pré-definido ou crie o seu próprio.",
+    "customChallenge": "Desafio Personalizado",
+    "customChallengeDesc": "Configure os detalhes do seu desafio.",
+    "createCustom": "Criar Desafio Personalizado",
+    "challengeTitle": "Título do Desafio",
+    "titlePlaceholder": "ex: Semana sem delivery",
+    "challengeType": "Tipo de Desafio",
+    "category": "Categoria",
+    "selectCategory": "Selecione uma categoria",
+    "targetAmount": "Valor Alvo (R$)",
+    "duration": "Duração (dias)",
+    "icon": "Ícone (emoji)",
+    "startChallenge": "Iniciar Desafio",
+    "days": "dias",
+    "noSpendIn": "Sem gastos em",
+    "violationFound": "gasto detectado!",
+    "spent": "Gasto:",
+    "saved": "Economizado:",
+    "of": "de",
+    "type": {
+      "noSpend": "Sem gastos em categoria",
+      "spendLimit": "Limite de gastos total",
+      "saveAmount": "Meta de economia"
+    },
+    "template": {
+      "noDelivery": "Semana sem delivery",
+      "noDeliveryDesc": "Não gaste com alimentação fora por 7 dias",
+      "noClothes": "Mês sem roupas",
+      "noClothesDesc": "Fique 30 dias sem comprar roupas",
+      "noLeisure": "Quinzena sem lazer",
+      "noLeisureDesc": "14 dias sem gastos com lazer e entretenimento",
+      "save500": "Economize R$500",
+      "save500Desc": "Acumule R$500 de saldo positivo em 30 dias"
     }
   },
   "pwa": {

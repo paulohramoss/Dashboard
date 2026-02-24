@@ -58,6 +58,36 @@ export default defineConfig({
             type: "image/png",
           },
         ],
+        shortcuts: [
+          {
+            name: "Painel",
+            short_name: "Painel",
+            description: "Ver resumo financeiro",
+            url: "/",
+            icons: [{ src: "pwa-192x192.png", sizes: "192x192" }],
+          },
+          {
+            name: "Nova Transação",
+            short_name: "Transação",
+            description: "Adicionar transação rapidamente",
+            url: "/transactions",
+            icons: [{ src: "pwa-192x192.png", sizes: "192x192" }],
+          },
+          {
+            name: "Relatórios",
+            short_name: "Relatórios",
+            description: "Ver relatórios financeiros",
+            url: "/reports",
+            icons: [{ src: "pwa-192x192.png", sizes: "192x192" }],
+          },
+          {
+            name: "Desafios",
+            short_name: "Desafios",
+            description: "Ver desafios de economia",
+            url: "/challenges",
+            icons: [{ src: "pwa-192x192.png", sizes: "192x192" }],
+          },
+        ],
       },
       workbox: {
         maximumFileSizeToCacheInBytes: 4 * 1024 * 1024, // 4MB

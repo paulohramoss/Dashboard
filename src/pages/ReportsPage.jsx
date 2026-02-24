@@ -1,25 +1,29 @@
-import React from "react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useTransactions } from "@/hooks/useTransactions";
+import { useAuth } from "@/hooks/useAuth";
 import SummaryCards from "@/components/SummaryCards";
 import OverviewChart from "@/components/Charts/OverviewChart";
 import CategoryChart from "@/components/Charts/CategoryChart";
 import MonthlyEvolutionChart from "@/components/Charts/MonthlyEvolutionChart";
 import FinancialFlowChart from "@/components/Charts/FinancialFlowChart";
+import MonthComparison from "@/components/MonthComparison";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import PrivacyBlur from "@/components/ui/PrivacyBlur";
+import { toast } from "sonner";
+import emailjs from "@emailjs/browser";
 
-// import { cn } from "@/lib/utils"; // Removed as unused
-
-import { FileText } from "lucide-react";
+import { FileText, Mail } from "lucide-react";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import MonthlyReportPDF from "@/components/MonthlyReportPDF";
 import { Button } from "@/components/ui/button";
 
 const ReportsPage = () => {
   const { transactions, stats, loading } = useTransactions();
+  const { user } = useAuth();
   const { t } = useTranslation();
+  const [sendingEmail, setSendingEmail] = useState(false);
   // const { isPrivacyMode } = useLayout(); // Removed
 
   // Prepare Report Data
@@ -82,6 +86,48 @@ const ReportsPage = () => {
       ? t(villainCategoryKey)
       : villainCategory;
 
+  const handleSendEmailReport = async () => {
+    if (!user?.email) return;
+    setSendingEmail(true);
+    const fmt = (v) =>
+      new Intl.NumberFormat("pt-BR", {
+        style: "currency",
+        currency: "BRL",
+      }).format(v);
+    const message = `${t("reports.emailReport.body", {
+      month: monthName,
+      year: currentYear,
+      income: fmt(income),
+      expense: fmt(expense),
+      balance: fmt(balance),
+      villain: translatedVillain,
+      villainAmount: fmt(villainAmount),
+      total: monthTransactions.length,
+    })}`;
+
+    try {
+      await emailjs.send(
+        "service_8vcx7bq",
+        "template_qamjc3i",
+        {
+          user_name: user?.name || "Usuário",
+          user_email: user?.email,
+          feedback_type: t("reports.emailReport.subject", { month: monthName, year: currentYear }),
+          message,
+          to_email: user?.email,
+          from_name: "FinanceDash",
+          reply_to: user?.email,
+        },
+        "lMkgyQ1ZogoJ0ZqwC"
+      );
+      toast.success(t("reports.emailReport.sent"));
+    } catch {
+      toast.error(t("reports.emailReport.error"));
+    } finally {
+      setSendingEmail(false);
+    }
+  };
+
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -92,28 +138,38 @@ const ReportsPage = () => {
           <p className="text-muted-foreground">{t("reports.subtitle")}</p>
         </div>
 
-        <PDFDownloadLink
-          document={
-            <MonthlyReportPDF
-              monthName={monthName}
-              year={currentYear}
-              income={income}
-              expense={expense}
-              balance={balance}
-              villainCategory={translatedVillain}
-              villainAmount={villainAmount}
-              transactions={monthTransactions}
-            />
-          }
-          fileName={`relatorio-${monthName}-${currentYear}.pdf`}
-        >
-          {({ loading }) => (
-            <Button disabled={loading} className="w-full md:w-auto">
-              <FileText className="mr-2 h-4 w-4" />
-              {loading ? "Gerando..." : t("reports.button")}
-            </Button>
-          )}
-        </PDFDownloadLink>
+        <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
+          <PDFDownloadLink
+            document={
+              <MonthlyReportPDF
+                monthName={monthName}
+                year={currentYear}
+                income={income}
+                expense={expense}
+                balance={balance}
+                villainCategory={translatedVillain}
+                villainAmount={villainAmount}
+                transactions={monthTransactions}
+              />
+            }
+            fileName={`relatorio-${monthName}-${currentYear}.pdf`}
+          >
+            {({ loading: pdfLoading }) => (
+              <Button disabled={pdfLoading} variant="outline" className="w-full sm:w-auto">
+                <FileText className="mr-2 h-4 w-4" />
+                {pdfLoading ? "Gerando..." : t("reports.button")}
+              </Button>
+            )}
+          </PDFDownloadLink>
+          <Button
+            onClick={handleSendEmailReport}
+            disabled={sendingEmail || loading}
+            className="w-full sm:w-auto"
+          >
+            <Mail className="mr-2 h-4 w-4" />
+            {sendingEmail ? t("reports.emailReport.sending") : t("reports.emailReport.button")}
+          </Button>
+        </div>
       </div>
 
       {loading ? (
@@ -170,6 +226,8 @@ const ReportsPage = () => {
           </div>
         </CardContent>
       </Card>
+
+      <MonthComparison transactions={transactions} />
     </div>
   );
 };
