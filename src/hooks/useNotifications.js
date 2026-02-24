@@ -1,26 +1,75 @@
 import { useState, useEffect, useCallback } from "react";
 
-export const useNotifications = () => {
-  const [permission, setPermission] = useState(() => {
-    if ("Notification" in window) {
-      return Notification.permission;
+const STORAGE_KEY = "notificationsEnabled";
+const SYNC_EVENT = "notifications-state-changed";
+
+// Always read live values – avoids cross-instance stale React state
+const readEnabled = () => localStorage.getItem(STORAGE_KEY) === "true";
+const readPermission = () =>
+  "Notification" in window ? Notification.permission : "default";
+
+/**
+ * Shows a notification via Service Worker when available (proper PWA push –
+ * survives background tabs and integrates with the OS notification centre),
+ * falling back to the inline Notification constructor.
+ * A 2-second timeout guards against a SW that hasn't activated yet.
+ */
+const dispatchNotification = async (title, body, options = {}) => {
+  const notifOptions = {
+    body,
+    icon: "/pwa-192x192.png",
+    badge: "/pwa-192x192.png",
+    ...options,
+  };
+
+  if ("serviceWorker" in navigator) {
+    try {
+      const swReady = Promise.race([
+        navigator.serviceWorker.ready,
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error("SW timeout")), 2000)
+        ),
+      ]);
+      const registration = await swReady;
+      await registration.showNotification(title, notifOptions);
+      return;
+    } catch {
+      // SW not ready – fall through to inline notification
     }
-    return "default";
-  });
+  }
 
-  const [enabled, setEnabled] = useState(() => {
-    return localStorage.getItem("notificationsEnabled") === "true";
-  });
+  try {
+    new Notification(title, notifOptions);
+  } catch (e) {
+    console.error("Error sending notification:", e);
+  }
+};
 
+export const useNotifications = () => {
+  const [permission, setPermission] = useState(readPermission);
+  const [enabled, setEnabled] = useState(readEnabled);
+
+  // Sync this instance whenever another instance (e.g. SettingsPage) updates
+  // the shared state in localStorage.
+  useEffect(() => {
+    const handleSync = () => {
+      setEnabled(readEnabled());
+      setPermission(readPermission());
+    };
+    window.addEventListener(SYNC_EVENT, handleSync);
+    return () => window.removeEventListener(SYNC_EVENT, handleSync);
+  }, []);
+
+  // If the user enabled notifications but permission was default, request it.
   useEffect(() => {
     if (!("Notification" in window)) return;
-
-    if (enabled && permission === "default") {
+    if (enabled && readPermission() === "default") {
       Notification.requestPermission().then((perm) => {
         setPermission(perm);
+        window.dispatchEvent(new CustomEvent(SYNC_EVENT));
       });
     }
-  }, [enabled, permission]);
+  }, [enabled]);
 
   const requestPermission = async () => {
     if (!("Notification" in window)) {
@@ -30,42 +79,25 @@ export const useNotifications = () => {
 
     const perm = await Notification.requestPermission();
     setPermission(perm);
+
     if (perm === "granted") {
       setEnabled(true);
-      localStorage.setItem("notificationsEnabled", "true");
-      // Show confirmation via SW if available, otherwise fallback
-      if ("serviceWorker" in navigator) {
-        try {
-          const registration = await navigator.serviceWorker.ready;
-          await registration.showNotification("FinanceDash", {
-            body: "Notificações ativadas com sucesso!",
-            icon: "/pwa-192x192.png",
-            badge: "/pwa-192x192.png",
-          });
-        } catch {
-          try {
-            new Notification("FinanceDash", {
-              body: "Notificações ativadas com sucesso!",
-              icon: "/pwa-192x192.png",
-            });
-          } catch (e) {
-            console.error("Error showing notification:", e);
-          }
-        }
-      } else {
-        try {
-          new Notification("FinanceDash", {
-            body: "Notificações ativadas com sucesso!",
-            icon: "/pwa-192x192.png",
-          });
-        } catch (e) {
-          console.error("Error showing notification:", e);
-        }
-      }
+      localStorage.setItem(STORAGE_KEY, "true");
     } else {
       setEnabled(false);
-      localStorage.setItem("notificationsEnabled", "false");
+      localStorage.setItem(STORAGE_KEY, "false");
     }
+
+    // Notify all other hook instances (e.g. NotificationManager)
+    window.dispatchEvent(new CustomEvent(SYNC_EVENT));
+
+    if (perm === "granted") {
+      await dispatchNotification(
+        "FinanceDash",
+        "Notificações ativadas com sucesso!"
+      );
+    }
+
     return perm;
   };
 
@@ -74,11 +106,13 @@ export const useNotifications = () => {
 
     if (enabled) {
       setEnabled(false);
-      localStorage.setItem("notificationsEnabled", "false");
+      localStorage.setItem(STORAGE_KEY, "false");
+      window.dispatchEvent(new CustomEvent(SYNC_EVENT));
     } else {
-      if (permission === "granted") {
+      if (readPermission() === "granted") {
         setEnabled(true);
-        localStorage.setItem("notificationsEnabled", "true");
+        localStorage.setItem(STORAGE_KEY, "true");
+        window.dispatchEvent(new CustomEvent(SYNC_EVENT));
       } else {
         await requestPermission();
       }
@@ -86,46 +120,14 @@ export const useNotifications = () => {
   };
 
   /**
-   * Sends a notification, preferring the Service Worker's showNotification()
-   * for proper PWA behavior (works in background, appears in system tray).
-   * Falls back to the Notification constructor if SW is unavailable.
-   *
-   * @param {string} title
-   * @param {string} body
-   * @param {object} options  Extra NotificationOptions (tag, data, actions…)
+   * Reads live state from localStorage / Notification.permission on every
+   * call, so it's never blocked by stale React state from another instance.
    */
-  const sendNotification = useCallback(
-    async (title, body, options = {}) => {
-      if (!("Notification" in window)) return;
-      if (!enabled || permission !== "granted") return;
-
-      const notifOptions = {
-        body,
-        icon: "/pwa-192x192.png",
-        badge: "/pwa-192x192.png",
-        ...options,
-      };
-
-      // Prefer SW showNotification: survives background tabs and integrates
-      // with the OS notification centre properly as a PWA push alert.
-      if ("serviceWorker" in navigator) {
-        try {
-          const registration = await navigator.serviceWorker.ready;
-          await registration.showNotification(title, notifOptions);
-          return;
-        } catch {
-          // SW not active yet – fall through to inline notification
-        }
-      }
-
-      try {
-        new Notification(title, notifOptions);
-      } catch (e) {
-        console.error("Error sending notification:", e);
-      }
-    },
-    [enabled, permission]
-  );
+  const sendNotification = useCallback(async (title, body, options = {}) => {
+    if (!("Notification" in window)) return;
+    if (!readEnabled() || readPermission() !== "granted") return;
+    await dispatchNotification(title, body, options);
+  }, []); // intentionally no deps – reads live values each call
 
   return {
     permission,

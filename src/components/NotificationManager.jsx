@@ -6,6 +6,17 @@ import { useAnomalyDetection } from "@/hooks/useAnomalyDetection";
 import { useTranslation } from "react-i18next";
 import { useCurrency } from "@/hooks/useCurrency";
 
+// ---------------------------------------------------------------------------
+// Helpers: persist tracking Sets in localStorage so they survive remounts.
+// Keys are naturally scoped by month/year (budgets, anomalies) or by tx-id
+// (due dates, large transactions), so they self-expire or grow only modestly.
+// ---------------------------------------------------------------------------
+const loadSet = (key) =>
+  new Set(JSON.parse(localStorage.getItem(key) || "[]"));
+
+const saveSet = (key, set) =>
+  localStorage.setItem(key, JSON.stringify([...set]));
+
 const NotificationManager = () => {
   const { t } = useTranslation();
   const formatCurrency = useCurrency();
@@ -14,12 +25,12 @@ const NotificationManager = () => {
   const { sendNotification, enabled } = useNotifications();
   const { monthlySpikes, largeSingleTx } = useAnomalyDetection(transactions);
 
-  // Refs to track already-sent notifications and avoid spam
-  const notifiedBudgets = useRef(new Set());
-  const notifiedBudgetWarnings = useRef(new Set());
-  const notifiedDueDates = useRef(new Set());
-  const notifiedAnomalies = useRef(new Set());
-  const notifiedLargeTx = useRef(new Set());
+  // Persisted sets – load once from localStorage on mount
+  const notifiedBudgets = useRef(loadSet("nm-notified-budgets"));
+  const notifiedBudgetWarnings = useRef(loadSet("nm-notified-budget-warnings"));
+  const notifiedDueDates = useRef(loadSet("nm-notified-due-dates"));
+  const notifiedAnomalies = useRef(loadSet("nm-notified-anomalies"));
+  const notifiedLargeTx = useRef(loadSet("nm-notified-large-tx"));
 
   // Budget exceeded (100%) and 80% warning alerts
   useEffect(() => {
@@ -53,9 +64,10 @@ const NotificationManager = () => {
           { tag: `budget-exceeded-${key}` }
         );
         notifiedBudgets.current.add(key);
+        saveSet("nm-notified-budgets", notifiedBudgets.current);
       }
 
-      // 80% warning (only fire once, before the 100% alert)
+      // 80% warning (only once per month, before the 100% alert fires)
       const warningKey = `warn-${key}`;
       if (
         percent >= 80 &&
@@ -71,6 +83,7 @@ const NotificationManager = () => {
           { tag: `budget-warning-${warningKey}` }
         );
         notifiedBudgetWarnings.current.add(warningKey);
+        saveSet("nm-notified-budget-warnings", notifiedBudgetWarnings.current);
       }
     });
   }, [transactions, categories, enabled, sendNotification, t]);
@@ -99,6 +112,7 @@ const NotificationManager = () => {
           { tag: `due-today-${tx.id}` }
         );
         notifiedDueDates.current.add(`${tx.id}-today`);
+        saveSet("nm-notified-due-dates", notifiedDueDates.current);
       } else if (
         tx.nextDueDate === tomorrowStr &&
         !notifiedDueDates.current.has(`${tx.id}-tomorrow`)
@@ -109,6 +123,7 @@ const NotificationManager = () => {
           { tag: `due-tomorrow-${tx.id}` }
         );
         notifiedDueDates.current.add(`${tx.id}-tomorrow`);
+        saveSet("nm-notified-due-dates", notifiedDueDates.current);
       }
     });
   }, [transactions, enabled, sendNotification, t]);
@@ -138,6 +153,7 @@ const NotificationManager = () => {
         { tag: `anomaly-${key}` }
       );
       notifiedAnomalies.current.add(key);
+      saveSet("nm-notified-anomalies", notifiedAnomalies.current);
     });
 
     // Large single transactions (> 3x median for their category)
@@ -159,6 +175,7 @@ const NotificationManager = () => {
         { tag: `large-tx-${key}` }
       );
       notifiedLargeTx.current.add(key);
+      saveSet("nm-notified-large-tx", notifiedLargeTx.current);
     });
   }, [
     monthlySpikes,
