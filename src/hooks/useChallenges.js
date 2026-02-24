@@ -28,7 +28,7 @@ export const useChallenges = () => {
 
     const q = query(
       collection(db, "challenges"),
-      where("userId", "==", user.id)
+      where("allowedUsers", "array-contains", user.id)
     );
 
     const unsub = onSnapshot(
@@ -51,6 +51,7 @@ export const useChallenges = () => {
     await addDoc(collection(db, "challenges"), {
       ...challenge,
       userId: user.id,
+      allowedUsers: [user.id],
       status: "active",
       createdAt: new Date().toISOString(),
     });
