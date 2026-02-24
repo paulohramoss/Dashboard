@@ -36,6 +36,7 @@ vi.mock("@/hooks/useRules", () => ({
 vi.mock("react-i18next", () => ({
   useTranslation: () => ({
     t: (key) => key,
+    i18n: { language: "en" },
   }),
 }));
 
