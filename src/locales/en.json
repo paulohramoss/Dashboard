@@ -294,7 +294,7 @@
     "noBudgetableCategories": "All categories already have budgets.",
     "confirmDelete": "Are you sure you want to delete this budget?",
     "budgetAlert": "Budget Alert",
-    "budgetExceeded": "Warning: This transaction exceeds the budget for {category}!",
+    "budgetExceeded": "Warning: This transaction exceeds the budget for {{category}}!",
     "deleteTitle": "Delete Budget",
     "deleteDescription": "Are you sure you want to remove this budget? This action cannot be undone.",
     "spent": "Spent",
@@ -604,7 +604,19 @@
   "insights": {
     "spendingSpike": "Hey, you spent {{percentage}}% more on '{{category}}' this month compared to your 3-month average.",
     "comparison": "Current: {{current}} vs Average: {{average}}",
-    "noAnomalies": "All good! Your spending is within expected limits."
+    "noAnomalies": "All good! Your spending is within expected limits.",
+    "anomalyNotificationTitle": "Unusual Spending Detected",
+    "anomalyNotificationBody": "You spent {{percentage}}% more on '{{category}}' than your usual monthly average.",
+    "largeTransactionTitle": "Large Transaction Recorded",
+    "largeTransactionBody": "A transaction of {{amount}} in '{{category}}' is {{times}}x above your usual amount."
+  },
+  "notifications": {
+    "dueToday": "Bill Due Today!",
+    "dueTomorrow": "Bill Due Tomorrow",
+    "dueTodayBody": "The transaction '{{description}}' is due today.",
+    "dueTomorrowBody": "The transaction '{{description}}' is due tomorrow.",
+    "budgetWarningTitle": "Budget Warning",
+    "budgetWarningBody": "You've used {{percent}}% of your budget for '{{category}}'."
   },
   "assistant": {
     "title": "Financial Assistant",
