@@ -2,6 +2,7 @@ import React, { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useAccounts } from "@/hooks/useAccounts";
 import { useTransactions } from "@/hooks/useTransactions";
+import { useCurrency } from "@/hooks/useCurrency";
 import {
   Card,
   CardContent,
@@ -82,6 +83,7 @@ const SortableAccountCard = ({ account, children }) => {
 
 const AccountsPage = () => {
   const { t } = useTranslation();
+  const formatCurrency = useCurrency();
   const {
     accounts,
     addAccount,
@@ -98,6 +100,7 @@ const AccountsPage = () => {
     type: "checking",
     initialBalance: 0,
     color: "#000000",
+    currency: "BRL",
     closingDay: 1, // Default closing day for credit cards
   });
 
@@ -153,6 +156,7 @@ const AccountsPage = () => {
       name: editingAccount.name,
       type: editingAccount.type,
       color: editingAccount.color,
+      currency: editingAccount.currency || "BRL",
       closingDay: editingAccount.closingDay,
     });
 
@@ -225,6 +229,7 @@ const AccountsPage = () => {
       type: "checking",
       initialBalance: 0,
       color: "#000000",
+      currency: "BRL",
       closingDay: 1,
     });
     setIsAdding(false);
@@ -364,6 +369,23 @@ const AccountsPage = () => {
                   <option value="loan">
                     {t("accounts.loan", "Empréstimo")}
                   </option>
+                </select>
+              </div>
+              <div className="w-[120px] space-y-2">
+                <Label>{t("accounts.currency", "Moeda")}</Label>
+                <select
+                  className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                  value={newAccount.currency}
+                  onChange={(e) =>
+                    setNewAccount({ ...newAccount, currency: e.target.value })
+                  }
+                >
+                  <option value="BRL">BRL</option>
+                  <option value="USD">USD</option>
+                  <option value="EUR">EUR</option>
+                  <option value="GBP">GBP</option>
+                  <option value="JPY">JPY</option>
+                  <option value="ARS">ARS</option>
                 </select>
               </div>
               <div className="w-[150px] space-y-2">
@@ -523,10 +545,10 @@ const AccountsPage = () => {
                   </CardHeader>
                   <CardContent>
                     <PrivacyBlur className="text-2xl font-bold">
-                      {new Intl.NumberFormat("pt-BR", {
-                        style: "currency",
-                        currency: "BRL",
-                      }).format(balanceInfo ? balanceInfo.currentBalance : 0)}
+                      {formatCurrency(
+                        balanceInfo ? balanceInfo.currentBalance : 0,
+                        account.currency || "BRL"
+                      )}
                     </PrivacyBlur>
                     <div className="flex items-center gap-2 mt-2">
                       <div
@@ -613,6 +635,26 @@ const AccountsPage = () => {
                       "Credit card type cannot be changed."}
                   </p>
                 )}
+              </div>
+              <div className="space-y-2">
+                <Label>{t("accounts.currency", "Moeda")}</Label>
+                <select
+                  className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                  value={editingAccount.currency || "BRL"}
+                  onChange={(e) =>
+                    setEditingAccount({
+                      ...editingAccount,
+                      currency: e.target.value,
+                    })
+                  }
+                >
+                  <option value="BRL">BRL — Real Brasileiro</option>
+                  <option value="USD">USD — Dólar Americano</option>
+                  <option value="EUR">EUR — Euro</option>
+                  <option value="GBP">GBP — Libra Esterlina</option>
+                  <option value="JPY">JPY — Iene Japonês</option>
+                  <option value="ARS">ARS — Peso Argentino</option>
+                </select>
               </div>
               <div className="space-y-2">
                 <Label>{t("accounts.color")}</Label>

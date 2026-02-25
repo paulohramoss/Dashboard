@@ -706,6 +706,26 @@
       "autoUpdateDesc": "O app será atualizado automaticamente após 5 minutos de inatividade"
     }
   },
+  "backup": {
+    "tab": "Backup",
+    "title": "Backup de Dados",
+    "description": "Exporte todos os seus dados ou restaure a partir de um arquivo de backup.",
+    "exportTitle": "Exportar Dados",
+    "exportDesc": "Baixe um backup completo em JSON com todas as suas transações, categorias, contas, objetivos e regras.",
+    "exportButton": "Exportar JSON",
+    "exportSuccess": "Dados exportados com sucesso!",
+    "importTitle": "Importar Dados",
+    "importDesc": "Restaure dados de um backup exportado anteriormente. Documentos com o mesmo ID serão sobrescritos.",
+    "importButton": "Selecionar Arquivo de Backup",
+    "importing": "Importando...",
+    "importSuccess": "Dados importados! Recarregue a página para ver todas as alterações.",
+    "importError": "Falha ao importar. Verifique se o arquivo é um backup válido do FinanceDash.",
+    "importInvalidFormat": "Formato inválido. O arquivo pode estar corrompido ou ser de uma versão incompatível."
+  },
+  "offline": {
+    "banner": "Você está offline. As alterações serão salvas e sincronizadas ao reconectar.",
+    "reconnected": "Conexão restaurada! Seus dados estão sendo sincronizados."
+  },
   "magicScan": {
     "processing": "Lendo recibo...",
     "categorizing": "Categorizando com IA...",
