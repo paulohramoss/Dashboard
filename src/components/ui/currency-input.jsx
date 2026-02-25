@@ -7,6 +7,7 @@ const CurrencyInput = ({
   onChange,
   placeholder,
   className,
+  currency = "BRL",
   ...props
 }) => {
   const { i18n } = useTranslation();
@@ -14,9 +15,10 @@ const CurrencyInput = ({
   const formatCurrency = (val) => {
     if (val === undefined || val === null || val === "") return "";
     const number = Number(val);
-    return new Intl.NumberFormat(i18n.language, {
+    const locale = i18n.language?.startsWith("pt") ? "pt-BR" : "en-US";
+    return new Intl.NumberFormat(locale, {
       style: "currency",
-      currency: "BRL",
+      currency,
     }).format(number);
   };
 

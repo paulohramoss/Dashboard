@@ -2,6 +2,7 @@ import React, { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/hooks/useAuth";
 import { useCategories } from "@/hooks/useCategories";
+import { useBackup } from "@/hooks/useBackup";
 import {
   Card,
   CardContent,
@@ -34,6 +35,8 @@ import {
   Loader2,
   Upload,
   Users,
+  Download,
+  HardDriveDownload,
 } from "lucide-react";
 import { toast } from "sonner";
 import { db } from "@/lib/firebase";
@@ -166,6 +169,10 @@ const SettingsPage = () => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [recalculating, setRecalculating] = useState(false);
   const [recalculateDialogOpen, setRecalculateDialogOpen] = useState(false);
+
+  const { exportData, importData } = useBackup();
+  const [exporting, setExporting] = useState(false);
+  const [importing, setImporting] = useState(false);
 
   const handleRecalculateRollovers = async () => {
     try {
@@ -307,6 +314,40 @@ const SettingsPage = () => {
     }
   };
 
+  const handleExport = async () => {
+    setExporting(true);
+    try {
+      await exportData();
+      toast.success(t("backup.exportSuccess", "Dados exportados com sucesso!"));
+    } catch {
+      toast.error(t("common.error"));
+    } finally {
+      setExporting(false);
+    }
+  };
+
+  const handleImport = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    // Reset the input so the same file can be re-selected if needed
+    e.target.value = "";
+    setImporting(true);
+    try {
+      const result = await importData(file);
+      if (result.success) {
+        toast.success(t("backup.importSuccess", "Dados importados! Recarregue a página para ver todas as alterações."));
+      } else if (result.error === "invalid_format") {
+        toast.error(t("backup.importInvalidFormat", "Formato inválido. O arquivo pode estar corrompido."));
+      } else {
+        toast.error(t("backup.importError", "Falha ao importar. Verifique se o arquivo é um backup válido."));
+      }
+    } catch {
+      toast.error(t("backup.importError", "Falha ao importar. Verifique se o arquivo é um backup válido."));
+    } finally {
+      setImporting(false);
+    }
+  };
+
   const handleCancelEdit = () => {
     setNewCategory({ name: "", type: "expense", color: "#000000" });
     setEditingId(null);
@@ -381,6 +422,15 @@ const SettingsPage = () => {
             <Users className="h-4 w-4" />
             <span className="hidden sm:inline">
               {t("settings.sharing", "Partilha")}
+            </span>
+          </TabsTrigger>
+          <TabsTrigger
+            value="backup"
+            className="flex items-center gap-2 flex-shrink-0"
+          >
+            <HardDriveDownload className="h-4 w-4" />
+            <span className="hidden sm:inline">
+              {t("backup.tab", "Backup")}
             </span>
           </TabsTrigger>
         </TabsList>
@@ -1062,6 +1112,81 @@ const SettingsPage = () => {
                   </Button>
                 </div>
               </form>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="backup">
+          <Card>
+            <CardHeader>
+              <CardTitle>{t("backup.title", "Backup de Dados")}</CardTitle>
+              <CardDescription>
+                {t("backup.description", "Exporte todos os seus dados ou restaure a partir de um arquivo de backup.")}
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {/* Export */}
+              <div className="rounded-lg border p-4 space-y-3">
+                <div className="flex items-center gap-2">
+                  <Download className="h-5 w-5 text-primary" />
+                  <h3 className="font-medium">
+                    {t("backup.exportTitle", "Exportar Dados")}
+                  </h3>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  {t("backup.exportDesc", "Baixe um backup completo em JSON com todas as suas transações, categorias, contas, objetivos e regras.")}
+                </p>
+                <Button onClick={handleExport} disabled={exporting}>
+                  {exporting ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      {t("common.loading")}
+                    </>
+                  ) : (
+                    <>
+                      <Download className="mr-2 h-4 w-4" />
+                      {t("backup.exportButton", "Exportar JSON")}
+                    </>
+                  )}
+                </Button>
+              </div>
+
+              {/* Import */}
+              <div className="rounded-lg border p-4 space-y-3">
+                <div className="flex items-center gap-2">
+                  <Upload className="h-5 w-5 text-primary" />
+                  <h3 className="font-medium">
+                    {t("backup.importTitle", "Importar Dados")}
+                  </h3>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  {t("backup.importDesc", "Restaure dados de um backup exportado anteriormente. Documentos com o mesmo ID serão sobrescritos.")}
+                </p>
+                <Button
+                  variant="outline"
+                  disabled={importing}
+                  className="relative"
+                >
+                  {importing ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      {t("backup.importing", "Importando...")}
+                    </>
+                  ) : (
+                    <>
+                      <Upload className="mr-2 h-4 w-4" />
+                      {t("backup.importButton", "Selecionar Arquivo de Backup")}
+                    </>
+                  )}
+                  <input
+                    type="file"
+                    accept=".json,application/json"
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed"
+                    onChange={handleImport}
+                    disabled={importing}
+                  />
+                </Button>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
