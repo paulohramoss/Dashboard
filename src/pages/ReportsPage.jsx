@@ -15,13 +15,7 @@ import PrivacyBlur from "@/components/ui/PrivacyBlur";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select } from "@/components/ui/select";
 import { toast } from "sonner";
 import emailjs from "@emailjs/browser";
 
@@ -279,17 +273,14 @@ const ReportsPage = () => {
             {/* Type */}
             <div className="space-y-1.5">
               <Label className="text-xs">{t("reports.filters.type")}</Label>
-              <Select value={filterType} onValueChange={setFilterType}>
-                <SelectTrigger className="h-9 text-sm">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">
-                    {t("reports.filters.allTypes")}
-                  </SelectItem>
-                  <SelectItem value="income">{t("export.income")}</SelectItem>
-                  <SelectItem value="expense">{t("export.expense")}</SelectItem>
-                </SelectContent>
+              <Select
+                value={filterType}
+                onChange={(e) => setFilterType(e.target.value)}
+                className="h-9 text-sm"
+              >
+                <option value="all">{t("reports.filters.allTypes")}</option>
+                <option value="income">{t("export.income")}</option>
+                <option value="expense">{t("export.expense")}</option>
               </Select>
             </div>
 
@@ -298,40 +289,38 @@ const ReportsPage = () => {
               <Label className="text-xs">
                 {t("reports.filters.category")}
               </Label>
-              <Select value={filterCategory} onValueChange={setFilterCategory}>
-                <SelectTrigger className="h-9 text-sm">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">
-                    {t("reports.filters.allCategories")}
-                  </SelectItem>
-                  {uniqueCategories.map((cat) => (
-                    <SelectItem key={cat} value={cat}>
-                      {cat}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
+              <Select
+                value={filterCategory}
+                onChange={(e) => setFilterCategory(e.target.value)}
+                className="h-9 text-sm"
+              >
+                <option value="all">
+                  {t("reports.filters.allCategories")}
+                </option>
+                {uniqueCategories.map((cat) => (
+                  <option key={cat} value={cat}>
+                    {cat}
+                  </option>
+                ))}
               </Select>
             </div>
 
             {/* Account */}
             <div className="space-y-1.5">
               <Label className="text-xs">{t("reports.filters.account")}</Label>
-              <Select value={filterAccount} onValueChange={setFilterAccount}>
-                <SelectTrigger className="h-9 text-sm">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">
-                    {t("reports.filters.allAccounts")}
-                  </SelectItem>
-                  {accounts.map((acc) => (
-                    <SelectItem key={acc.id} value={acc.id}>
-                      {acc.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
+              <Select
+                value={filterAccount}
+                onChange={(e) => setFilterAccount(e.target.value)}
+                className="h-9 text-sm"
+              >
+                <option value="all">
+                  {t("reports.filters.allAccounts")}
+                </option>
+                {accounts.map((acc) => (
+                  <option key={acc.id} value={acc.id}>
+                    {acc.name}
+                  </option>
+                ))}
               </Select>
             </div>
           </div>
