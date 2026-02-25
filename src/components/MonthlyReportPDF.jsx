@@ -5,11 +5,7 @@ import {
   View,
   Document,
   StyleSheet,
-  Font,
 } from "@react-pdf/renderer";
-
-// Register a standard font (optional, using built-in Helvetica usually works fine)
-// Font.register({ family: 'Roboto', src: 'https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto/roboto-light-webfont.ttf' });
 
 const styles = StyleSheet.create({
   page: {
@@ -18,7 +14,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffffff",
   },
   header: {
-    backgroundColor: "#1e40af", // blue-800
+    backgroundColor: "#1e40af",
     padding: 20,
     marginBottom: 20,
     flexDirection: "row",
@@ -30,15 +26,22 @@ const styles = StyleSheet.create({
   logoText: {
     fontSize: 24,
     fontWeight: "bold",
+    color: "#ffffff",
+  },
+  headerRight: {
+    alignItems: "flex-end",
   },
   headerTitle: {
     fontSize: 16,
     textAlign: "right",
+    color: "#ffffff",
   },
   headerSubtitle: {
     fontSize: 10,
     textAlign: "right",
-    opacity: 0.8,
+    color: "#ffffff",
+    opacity: 0.85,
+    marginTop: 2,
   },
   sectionTitle: {
     fontSize: 14,
@@ -50,6 +53,22 @@ const styles = StyleSheet.create({
     borderBottomColor: "#cccccc",
     paddingBottom: 5,
   },
+  filtersRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 6,
+    marginBottom: 16,
+  },
+  filterBadge: {
+    backgroundColor: "#eff6ff",
+    borderWidth: 1,
+    borderColor: "#bfdbfe",
+    borderRadius: 4,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    fontSize: 8,
+    color: "#1d4ed8",
+  },
   summaryCardsContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -60,37 +79,35 @@ const styles = StyleSheet.create({
     padding: 10,
     marginHorizontal: 5,
     borderRadius: 4,
-    backgroundColor: "#f3f4f6", // gray-100
+    backgroundColor: "#f3f4f6",
     alignItems: "center",
   },
   cardTitle: {
     fontSize: 10,
-    color: "#6b7280", // gray-500
+    color: "#6b7280",
     marginBottom: 5,
   },
   cardValue: {
     fontSize: 14,
     fontWeight: "bold",
-    color: "#111827", // gray-900
+    color: "#111827",
   },
-  cardIncome: { borderLeftWidth: 4, borderLeftColor: "#22c55e" }, // green
-  cardExpense: { borderLeftWidth: 4, borderLeftColor: "#ef4444" }, // red
-  cardBalance: { borderLeftWidth: 4, borderLeftColor: "#3b82f6" }, // blue
-
+  cardIncome: { borderLeftWidth: 4, borderLeftColor: "#22c55e" },
+  cardExpense: { borderLeftWidth: 4, borderLeftColor: "#ef4444" },
+  cardBalance: { borderLeftWidth: 4, borderLeftColor: "#3b82f6" },
   villainContainer: {
-    backgroundColor: "#fff1f2", // red-50
+    backgroundColor: "#fff1f2",
     padding: 15,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: "#fecdd3", // red-200
+    borderColor: "#fecdd3",
     marginBottom: 20,
   },
   villainText: {
     fontSize: 12,
-    color: "#be123c", // rose-700
+    color: "#be123c",
     textAlign: "center",
   },
-
   table: {
     display: "table",
     width: "auto",
@@ -104,7 +121,31 @@ const styles = StyleSheet.create({
     margin: "auto",
     flexDirection: "row",
   },
-  tableCol: {
+  tableColDate: {
+    width: "15%",
+    borderStyle: "solid",
+    borderWidth: 1,
+    borderLeftWidth: 0,
+    borderTopWidth: 0,
+    borderColor: "#e5e7eb",
+  },
+  tableColDesc: {
+    width: "35%",
+    borderStyle: "solid",
+    borderWidth: 1,
+    borderLeftWidth: 0,
+    borderTopWidth: 0,
+    borderColor: "#e5e7eb",
+  },
+  tableColCat: {
+    width: "25%",
+    borderStyle: "solid",
+    borderWidth: 1,
+    borderLeftWidth: 0,
+    borderTopWidth: 0,
+    borderColor: "#e5e7eb",
+  },
+  tableColAmt: {
     width: "25%",
     borderStyle: "solid",
     borderWidth: 1,
@@ -134,9 +175,23 @@ const styles = StyleSheet.create({
   },
 });
 
+const formatDate = (dateVal) => {
+  if (typeof dateVal === "string" && dateVal.includes("-")) {
+    return dateVal.split("-").reverse().join("/");
+  }
+  try {
+    return new Date(dateVal).toLocaleDateString("pt-BR");
+  } catch {
+    return String(dateVal);
+  }
+};
+
 const MonthlyReportPDF = ({
-  monthName,
-  year,
+  periodStart,
+  periodEnd,
+  filterType,
+  filterCategory,
+  filterAccount,
   income,
   expense,
   balance,
@@ -148,24 +203,58 @@ const MonthlyReportPDF = ({
     new Intl.NumberFormat("pt-BR", {
       style: "currency",
       currency: "BRL",
-    }).format(val);
-  const savingsRate = income > 0 ? ((balance / income) * 100).toFixed(1) : 0;
+    }).format(val ?? 0);
+
+  const savingsRate =
+    income > 0 ? ((balance / income) * 100).toFixed(1) : "0.0";
   const villainPercentage =
-    expense > 0 ? ((villainAmount / expense) * 100).toFixed(1) : 0;
+    expense > 0 ? ((villainAmount / expense) * 100).toFixed(1) : "0.0";
+
+  // Build active filters list for display in PDF
+  const activeFilters = [];
+  if (periodStart && periodEnd) {
+    activeFilters.push(
+      `Período: ${formatDate(periodStart)} – ${formatDate(periodEnd)}`
+    );
+  }
+  if (filterType && filterType !== "all") {
+    activeFilters.push(
+      `Tipo: ${filterType === "income" ? "Receitas" : "Despesas"}`
+    );
+  }
+  if (filterCategory && filterCategory !== "all") {
+    activeFilters.push(`Categoria: ${filterCategory}`);
+  }
+  if (filterAccount && filterAccount !== "all") {
+    activeFilters.push("Conta: filtrada");
+  }
 
   return (
     <Document>
-      <Page size="A4" style={styles.page}>
+      <Page size="A4" style={styles.page} wrap>
         {/* Header */}
-        <View style={styles.header}>
+        <View style={styles.header} fixed>
           <Text style={styles.logoText}>FinanceDash</Text>
-          <View>
-            <Text style={styles.headerTitle}>Relatório Mensal</Text>
-            <Text style={styles.headerSubtitle}>
-              {monthName} {year}
-            </Text>
+          <View style={styles.headerRight}>
+            <Text style={styles.headerTitle}>Relatório Financeiro</Text>
+            {periodStart && periodEnd && (
+              <Text style={styles.headerSubtitle}>
+                {formatDate(periodStart)} – {formatDate(periodEnd)}
+              </Text>
+            )}
           </View>
         </View>
+
+        {/* Applied Filters badges */}
+        {activeFilters.length > 0 && (
+          <View style={styles.filtersRow}>
+            {activeFilters.map((f, i) => (
+              <Text key={i} style={styles.filterBadge}>
+                {f}
+              </Text>
+            ))}
+          </View>
+        )}
 
         {/* Executive Summary */}
         <Text style={styles.sectionTitle}>Resumo Executivo</Text>
@@ -202,56 +291,70 @@ const MonthlyReportPDF = ({
         {villainAmount > 0 && (
           <View style={styles.villainContainer}>
             <Text style={styles.villainText}>
-              A sua categoria de maior gasto este mês foi {villainCategory},
-              representando {villainPercentage}% das despesas totais (
+              A categoria de maior gasto foi {villainCategory}, representando{" "}
+              {villainPercentage}% das despesas totais (
               {formatCurrency(villainAmount)}).
             </Text>
           </View>
         )}
 
-        {/* Transactions Table */}
-        <Text style={styles.sectionTitle}>Últimas Transações (Top 20)</Text>
+        {/* Transactions Table — all rows, no limit */}
+        <Text style={styles.sectionTitle}>
+          Transações ({transactions.length} no total)
+        </Text>
         <View style={styles.table}>
           {/* Header Row */}
-          <View style={[styles.tableRow, styles.tableHeader]}>
-            <View style={styles.tableCol}>
-              <Text style={styles.tableCell}>Data</Text>
+          <View style={[styles.tableRow, styles.tableHeader]} fixed>
+            <View style={styles.tableColDate}>
+              <Text style={[styles.tableCell, { fontWeight: "bold" }]}>
+                Data
+              </Text>
             </View>
-            <View style={styles.tableCol}>
-              <Text style={styles.tableCell}>Descrição</Text>
+            <View style={styles.tableColDesc}>
+              <Text style={[styles.tableCell, { fontWeight: "bold" }]}>
+                Descrição
+              </Text>
             </View>
-            <View style={styles.tableCol}>
-              <Text style={styles.tableCell}>Categoria</Text>
+            <View style={styles.tableColCat}>
+              <Text style={[styles.tableCell, { fontWeight: "bold" }]}>
+                Categoria
+              </Text>
             </View>
-            <View style={styles.tableCol}>
-              <Text style={styles.tableCell}>Valor</Text>
+            <View style={styles.tableColAmt}>
+              <Text style={[styles.tableCell, { fontWeight: "bold" }]}>
+                Valor
+              </Text>
             </View>
           </View>
 
-          {/* Rows */}
-          {transactions.slice(0, 20).map((t, i) => (
-            <View key={i} style={styles.tableRow}>
-              <View style={styles.tableCol}>
-                <Text style={styles.tableCell}>
-                  {typeof t.date === "string"
-                    ? t.date.split("-").reverse().join("/")
-                    : new Date(t.date).toLocaleDateString("pt-BR")}
-                </Text>
+          {/* Data rows */}
+          {transactions.map((tx, i) => (
+            <View
+              key={i}
+              style={[
+                styles.tableRow,
+                i % 2 === 1 ? { backgroundColor: "#f9fafb" } : {},
+              ]}
+              wrap={false}
+            >
+              <View style={styles.tableColDate}>
+                <Text style={styles.tableCell}>{formatDate(tx.date)}</Text>
               </View>
-              <View style={styles.tableCol}>
-                <Text style={styles.tableCell}>{t.description}</Text>
+              <View style={styles.tableColDesc}>
+                <Text style={styles.tableCell}>{tx.description}</Text>
               </View>
-              <View style={styles.tableCol}>
-                <Text style={styles.tableCell}>{t.category}</Text>
+              <View style={styles.tableColCat}>
+                <Text style={styles.tableCell}>{tx.category}</Text>
               </View>
-              <View style={styles.tableCol}>
+              <View style={styles.tableColAmt}>
                 <Text
                   style={[
                     styles.tableCell,
-                    { color: t.type === "expense" ? "#ef4444" : "#22c55e" },
+                    { color: tx.type === "expense" ? "#ef4444" : "#22c55e" },
                   ]}
                 >
-                  {t.type === "expense" ? "-" : "+"} {formatCurrency(t.amount)}
+                  {tx.type === "expense" ? "-" : "+"}{" "}
+                  {formatCurrency(tx.amount)}
                 </Text>
               </View>
             </View>
@@ -262,7 +365,7 @@ const MonthlyReportPDF = ({
         <Text
           style={styles.footer}
           render={({ pageNumber, totalPages }) =>
-            `Gerado automaticamente por FinanceDash - Página ${pageNumber} de ${totalPages}`
+            `Gerado automaticamente por FinanceDash — Página ${pageNumber} de ${totalPages}`
           }
           fixed
         />

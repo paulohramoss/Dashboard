@@ -194,6 +194,20 @@
       "subject": "Relatório Financeiro — {{month}} {{year}}",
       "body": "Relatório Financeiro — {{month}} {{year}}\n\nReceitas: {{income}}\nDespesas: {{expense}}\nSaldo: {{balance}}\n\nCategoria com maior gasto: {{villain}} ({{villainAmount}})\nTotal de transações: {{total}}\n\nGerado pelo FinanceDash."
     },
+    "filters": {
+      "title": "Filtros do Relatório",
+      "startDate": "Data Inicial",
+      "endDate": "Data Final",
+      "type": "Tipo",
+      "allTypes": "Todos os Tipos",
+      "category": "Categoria",
+      "allCategories": "Todas as Categorias",
+      "account": "Conta",
+      "allAccounts": "Todas as Contas",
+      "reset": "Limpar Filtros",
+      "period": "Período",
+      "count": "{{count}} transação(ões) encontrada(s)"
+    },
     "comparison": {
       "title": "Comparativo entre Períodos",
       "subtitle": "Como este mês se compara ao anterior e ao mesmo mês do ano passado.",
