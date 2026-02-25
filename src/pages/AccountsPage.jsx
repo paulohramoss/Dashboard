@@ -699,12 +699,4 @@ const AccountsPage = () => {
   );
 };
 
-// Helper for formatting currency (can be moved to utils or shared)
-const formatCurrency = (amount) => {
-  return new Intl.NumberFormat("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-  }).format(amount);
-};
-
 export default AccountsPage;
