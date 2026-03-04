@@ -18,9 +18,11 @@ export const usePremium = () => {
 
   useEffect(() => {
     if (!user?.id) {
-      setIsPremium(false);
-      setLoading(false);
-      return;
+      const timer = setTimeout(() => {
+        setIsPremium(false);
+        setLoading(false);
+      }, 0);
+      return () => clearTimeout(timer);
     }
 
     const userRef = doc(db, "users", user.id);
@@ -45,11 +47,11 @@ export const usePremium = () => {
       (error) => {
         console.error("Error fetching premium status:", error);
         setLoading(false);
-      }
+      },
     );
 
     return () => unsub();
-  }, [user?.id]);
+  }, [user?.id, user?.email]);
 
   return { isPremium, loading };
 };

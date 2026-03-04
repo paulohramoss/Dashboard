@@ -33,7 +33,7 @@ export const useTransactions = () => {
       return () => clearTimeout(timer);
     }
 
-    setLoading(true); // eslint-disable-line
+    setLoading(true);
 
     // Track if component is still mounted to prevent state updates after unmount
     let isMounted = true;
@@ -133,7 +133,9 @@ export const useTransactions = () => {
         const thisMonthCount = transactions.filter((t) => {
           if (t.isSystem || t.isShadow) return false;
           const d = new Date(t.date);
-          return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
+          return (
+            d.getMonth() === currentMonth && d.getFullYear() === currentYear
+          );
         }).length;
         if (thisMonthCount >= FREE_LIMITS.transactionsPerMonth) {
           const error = new Error("LIMIT_REACHED");
