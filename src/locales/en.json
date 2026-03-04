@@ -147,7 +147,17 @@
       "weekly": "Weekly",
       "monthly": "Monthly",
       "yearly": "Yearly",
-      "add": "Add Transaction"
+      "add": "Add Transaction",
+      "paymentInfo": "Pay Credit Card Bill:"
+    },
+    "ai": {
+      "noDescription": "Please add a description first",
+      "suggestCategory": "Suggest category with AI",
+      "categorySuggested": "Category suggested by AI",
+      "categoryCreated": "New category created by AI! 🎉",
+      "autoCreated": "Automatically created category",
+      "error": "Error suggesting category",
+      "errorDesc": "Try again or select manually."
     },
     "table": {
       "description": "Description",
@@ -158,6 +168,7 @@
       "actions": "Actions"
     },
     "noTransactions": "No transactions found. Add one manually or import a file.",
+    "editTransaction": "Edit Transaction",
     "search": "Search",
     "searchPlaceholder": "Search by description...",
     "allTypes": "All Types",
@@ -295,7 +306,24 @@
     "keywordPlaceholder": "e.g. Starbucks, Uber",
     "selectCategory": "Select Category",
     "addRule": "Add Rule",
-    "noRules": "No custom rules defined yet."
+    "noRules": "No custom rules defined yet.",
+    "imageSizeError": "Image must be a maximum of 5MB"
+  },
+  "join": {
+    "title": "Finance Invitation",
+    "subtitle": "Join to manage the budget together.",
+    "invited": "invited you to collaborate.",
+    "description": "By accepting, you will be able to view and add transactions, categories and goals together.",
+    "accept": "Accept & Join Finances",
+    "joining": "Joining finances...",
+    "cancel": "Cancel",
+    "goToDashboard": "Go to Dashboard",
+    "invalidCode": "Invalid invitation code.",
+    "notFound": "This invitation does not exist or has expired.",
+    "loadError": "Error loading invitation.",
+    "success": "Success! Finances joined.",
+    "noDataYet": "Invitation accepted, but there was no data to share yet.",
+    "acceptError": "Error accepting invitation. Please try again."
   },
   "budgets": {
     "title": "Budgets",
@@ -398,7 +426,12 @@
     "lgpd": "100% compliant with",
     "reorder": "Reorder Accounts",
     "cancelReorder": "Cancel Reorder",
-    "saveOrder": "Save Order"
+    "saveOrder": "Save Order",
+    "availableLimit": "Available Limit",
+    "invoice": "Current Invoice",
+    "closingDay": "Closing Day",
+    "currency": "Currency",
+    "limit": "Limit"
   },
   "common": {
     "loading": "Loading...",
@@ -630,7 +663,8 @@
     "dueTodayBody": "The transaction '{{description}}' is due today.",
     "dueTomorrowBody": "The transaction '{{description}}' is due tomorrow.",
     "budgetWarningTitle": "Budget Warning",
-    "budgetWarningBody": "You've used {{percent}}% of your budget for '{{category}}'."
+    "budgetWarningBody": "You've used {{percent}}% of your budget for '{{category}}'.",
+    "enabledSuccess": "Notifications enabled successfully!"
   },
   "assistant": {
     "title": "Financial Assistant",

@@ -141,7 +141,17 @@
       "weekly": "Semanal",
       "monthly": "Mensal",
       "yearly": "Anual",
-      "add": "Adicionar Transação"
+      "add": "Adicionar Transação",
+      "paymentInfo": "Pagar Fatura do Cartão:"
+    },
+    "ai": {
+      "noDescription": "Adicione uma descrição primeiro",
+      "suggestCategory": "Sugerir categoria com IA",
+      "categorySuggested": "Categoria sugerida por IA",
+      "categoryCreated": "Nova categoria criada pela IA! 🎉",
+      "autoCreated": "Categoria criada automaticamente",
+      "error": "Erro ao sugerir categoria",
+      "errorDesc": "Tente novamente ou selecione manualmente."
     },
     "table": {
       "description": "Descrição",
@@ -152,6 +162,7 @@
       "actions": "Ações"
     },
     "noTransactions": "Nenhuma transação encontrada. Adicione manualmente ou importe um arquivo.",
+    "editTransaction": "Editar Transação",
     "search": "Buscar",
     "searchPlaceholder": "Buscar por descrição...",
     "allTypes": "Todos os Tipos",
@@ -295,7 +306,24 @@
     "keywordPlaceholder": "ex: Starbucks, Uber",
     "selectCategory": "Selecione uma categoria",
     "addRule": "Adicionar Regra",
-    "noRules": "Nenhuma regra personalizada definida ainda."
+    "noRules": "Nenhuma regra personalizada definida ainda.",
+    "imageSizeError": "A imagem deve ter no máximo 5MB"
+  },
+  "join": {
+    "title": "Convite de Finanças",
+    "subtitle": "Junte-se para gerir o orçamento em equipa.",
+    "invited": "convidou você para colaborar.",
+    "description": "Ao aceitar, você poderá ver e adicionar transações, categorias e objetivos em conjunto.",
+    "accept": "Aceitar e Unir Finanças",
+    "joining": "A unir finanças...",
+    "cancel": "Cancelar",
+    "goToDashboard": "Ir para o Painel",
+    "invalidCode": "Código de convite inválido.",
+    "notFound": "Este convite não existe ou expirou.",
+    "loadError": "Erro ao carregar convite.",
+    "success": "Sucesso! Finanças unidas.",
+    "noDataYet": "Convite aceite, mas não havia dados para partilhar ainda.",
+    "acceptError": "Erro ao aceitar convite. Tente novamente."
   },
   "budgets": {
     "title": "Orçamentos",
@@ -398,7 +426,12 @@
     "lgpd": "100% em conformidade com a",
     "reorder": "Reordenar Contas",
     "cancelReorder": "Cancelar Reordenação",
-    "saveOrder": "Salvar Ordem"
+    "saveOrder": "Salvar Ordem",
+    "availableLimit": "Limite Disponível",
+    "invoice": "Fatura Atual",
+    "closingDay": "Fechamento",
+    "currency": "Moeda",
+    "limit": "Limite"
   },
   "common": {
     "loading": "Carregando...",
@@ -630,7 +663,8 @@
     "dueTodayBody": "A transação '{{description}}' vence hoje.",
     "dueTomorrowBody": "A transação '{{description}}' vence amanhã.",
     "budgetWarningTitle": "Alerta de Orçamento",
-    "budgetWarningBody": "Você usou {{percent}}% do orçamento de '{{category}}'."
+    "budgetWarningBody": "Você usou {{percent}}% do orçamento de '{{category}}'.",
+    "enabledSuccess": "Notificações ativadas com sucesso!"
   },
   "assistant": {
     "title": "Assistente Financeiro",

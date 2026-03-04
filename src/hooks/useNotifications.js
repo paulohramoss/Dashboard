@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import i18n from "@/i18n";
 
 const STORAGE_KEY = "notificationsEnabled";
 const SYNC_EVENT = "notifications-state-changed";
@@ -27,7 +28,7 @@ const dispatchNotification = async (title, body, options = {}) => {
       const swReady = Promise.race([
         navigator.serviceWorker.ready,
         new Promise((_, reject) =>
-          setTimeout(() => reject(new Error("SW timeout")), 2000)
+          setTimeout(() => reject(new Error("SW timeout")), 2000),
         ),
       ]);
       const registration = await swReady;
@@ -94,7 +95,10 @@ export const useNotifications = () => {
     if (perm === "granted") {
       await dispatchNotification(
         "FinanceDash",
-        "Notificações ativadas com sucesso!"
+        i18n.t(
+          "notifications.enabledSuccess",
+          "Notifications enabled successfully!",
+        ),
       );
     }
 
