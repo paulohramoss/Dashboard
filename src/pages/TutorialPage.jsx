@@ -30,6 +30,16 @@ import {
   ChevronUp,
   ExternalLink,
   Sparkles,
+  Play,
+  Pause,
+  Shield,
+  TrendingUp,
+  Upload,
+  Bell,
+  Link,
+  Repeat,
+  ScanLine,
+  Brain,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -102,7 +112,251 @@ const SECTION_COLORS = {
   },
 };
 
-// ─── TipsCarousel ─────────────────────────────────────────────────────────────
+// ─── Point icons per position ─────────────────────────────────────────────────
+const POINT_ICONS = [Star, Zap, Shield, Target, Trophy];
+
+// ─── Tour Slides ─────────────────────────────────────────────────────────────
+const TOUR_SLIDES = [
+  {
+    id: "dashboard",
+    icon: LayoutDashboard,
+    color: "from-blue-600 to-cyan-500",
+    cardBg: "from-blue-500/15 to-cyan-500/10",
+    textColor: "text-blue-400",
+    highlights: ["TrendingUp", "PieChart", "Bell"],
+  },
+  {
+    id: "transactions",
+    icon: Wallet,
+    color: "from-emerald-600 to-green-500",
+    cardBg: "from-emerald-500/15 to-green-500/10",
+    textColor: "text-emerald-400",
+    highlights: ["Upload", "Repeat", "ScanLine"],
+  },
+  {
+    id: "planning",
+    icon: Target,
+    color: "from-amber-600 to-yellow-500",
+    cardBg: "from-amber-500/15 to-yellow-500/10",
+    textColor: "text-amber-400",
+    highlights: ["Star", "Trophy", "Zap"],
+  },
+  {
+    id: "reports",
+    icon: PieChart,
+    color: "from-rose-600 to-pink-500",
+    cardBg: "from-rose-500/15 to-pink-500/10",
+    textColor: "text-rose-400",
+    highlights: ["TrendingUp", "ExternalLink", "Bell"],
+  },
+  {
+    id: "rules",
+    icon: Zap,
+    color: "from-indigo-600 to-violet-500",
+    cardBg: "from-indigo-500/15 to-violet-500/10",
+    textColor: "text-indigo-400",
+    highlights: ["Brain", "Upload", "CheckCircle2"],
+  },
+  {
+    id: "shared",
+    icon: Users,
+    color: "from-teal-600 to-emerald-500",
+    cardBg: "from-teal-500/15 to-emerald-500/10",
+    textColor: "text-teal-400",
+    highlights: ["Link", "Repeat", "Shield"],
+  },
+];
+
+const HIGHLIGHT_ICON_MAP = {
+  TrendingUp,
+  PieChart,
+  Bell,
+  Upload,
+  Repeat,
+  ScanLine,
+  Star,
+  Trophy,
+  Zap,
+  ExternalLink,
+  Brain,
+  Link,
+  Shield,
+  CheckCircle2,
+};
+
+// ─── OnboardingTour ───────────────────────────────────────────────────────────
+const OnboardingTour = () => {
+  const { t } = useTranslation();
+  const [current, setCurrent] = useState(0);
+  const [playing, setPlaying] = useState(true);
+  const [progress, setProgress] = useState(0);
+  const SLIDE_DURATION = 5000;
+
+  useEffect(() => {
+    let cancelled = false;
+    const start = Date.now();
+    const tick = setInterval(() => {
+      if (cancelled) return;
+      const elapsed = Date.now() - start;
+      if (!playing) {
+        setProgress(0);
+        clearInterval(tick);
+        return;
+      }
+      const pct = Math.min((elapsed / SLIDE_DURATION) * 100, 100);
+      setProgress(pct);
+      if (elapsed >= SLIDE_DURATION) {
+        setCurrent((c) => (c + 1) % TOUR_SLIDES.length);
+        clearInterval(tick);
+      }
+    }, 50);
+    return () => {
+      cancelled = true;
+      clearInterval(tick);
+    };
+  }, [current, playing]);
+
+  const go = (idx) => {
+    setCurrent(idx);
+    setProgress(0);
+  };
+  const prev = () =>
+    go((current - 1 + TOUR_SLIDES.length) % TOUR_SLIDES.length);
+  const next = () => go((current + 1) % TOUR_SLIDES.length);
+
+  const slide = TOUR_SLIDES[current];
+  const Icon = slide.icon;
+  const sectionKey = `tutorialPage.sections.${slide.id}`;
+
+  return (
+    <div
+      className={`relative rounded-2xl overflow-hidden border border-border/50 bg-gradient-to-br ${slide.cardBg} shadow-lg`}
+    >
+      {/* Animated top progress bar */}
+      <div className="h-1 bg-muted/40">
+        <div
+          className="h-full bg-gradient-to-r from-primary to-primary/60 transition-none"
+          style={{ width: `${progress}%` }}
+        />
+      </div>
+
+      <div className="p-6 md:p-8">
+        <div className="flex flex-col md:flex-row gap-6 md:gap-10 items-center">
+          {/* Left – large animated icon */}
+          <div className="shrink-0 flex flex-col items-center gap-3">
+            <div
+              className={`relative w-24 h-24 md:w-32 md:h-32 rounded-3xl bg-gradient-to-br ${slide.color} shadow-2xl flex items-center justify-center`}
+            >
+              <Icon className="h-12 w-12 md:h-16 md:h-16 text-white drop-shadow" />
+              {/* Floating halo pulse */}
+              <div
+                className={`absolute inset-0 rounded-3xl bg-gradient-to-br ${slide.color} animate-ping opacity-10`}
+              />
+            </div>
+            {/* Highlight mini-icons */}
+            <div className="flex gap-2">
+              {slide.highlights.map((hk) => {
+                const HIcon = HIGHLIGHT_ICON_MAP[hk];
+                return HIcon ? (
+                  <div
+                    key={hk}
+                    className="w-8 h-8 rounded-xl bg-background/50 border border-border/60 flex items-center justify-center"
+                  >
+                    <HIcon className={`h-4 w-4 ${slide.textColor}`} />
+                  </div>
+                ) : null;
+              })}
+            </div>
+          </div>
+
+          {/* Right – text */}
+          <div className="flex-1 min-w-0 text-center md:text-left">
+            <p
+              className={`text-xs font-bold uppercase tracking-widest mb-1 ${slide.textColor}`}
+            >
+              {t("nav.tutorial", "Guide")} · {current + 1}/{TOUR_SLIDES.length}
+            </p>
+            <h3 className="text-2xl md:text-3xl font-bold tracking-tight mb-2">
+              {t(`${sectionKey}.title`)}
+            </h3>
+            <p className="text-muted-foreground text-sm md:text-base leading-relaxed mb-4">
+              {t(`${sectionKey}.description`)}
+            </p>
+            {/* 3 feature pills */}
+            {[1, 2, 3].map((n) => {
+              const raw = t(`${sectionKey}.points.${n}`, { defaultValue: "" });
+              if (!raw) return null;
+              const [label, ...rest] = raw.split(":");
+              return (
+                <div
+                  key={n}
+                  className="inline-flex items-center gap-1.5 mr-2 mb-2 px-3 py-1 rounded-full bg-background/60 border border-border/60 text-xs font-medium"
+                >
+                  <span
+                    className={`w-1.5 h-1.5 rounded-full bg-current ${slide.textColor}`}
+                  />
+                  <span className="font-semibold">{label.trim()}</span>
+                  {rest.length > 0 && (
+                    <span className="text-muted-foreground hidden sm:inline">
+                      — {rest.join(":").trim().slice(0, 40)}
+                      {rest.join(":").trim().length > 40 ? "..." : ""}
+                    </span>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Controls */}
+        <div className="flex items-center justify-between mt-5">
+          <div className="flex gap-1.5">
+            {TOUR_SLIDES.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => go(i)}
+                className={`h-1.5 rounded-full transition-all duration-300 ${
+                  i === current ? "w-8 bg-primary" : "w-1.5 bg-primary/30"
+                }`}
+              />
+            ))}
+          </div>
+          <div className="flex items-center gap-1">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8"
+              onClick={prev}
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8"
+              onClick={() => setPlaying((p) => !p)}
+            >
+              {playing ? (
+                <Pause className="h-4 w-4" />
+              ) : (
+                <Play className="h-4 w-4" />
+              )}
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8"
+              onClick={next}
+            >
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const TipsCarousel = () => {
   const { t } = useTranslation();
   const [current, setCurrent] = useState(0);
@@ -307,6 +561,55 @@ const FAQItem = ({ qKey, aKey, index, openIndex, setOpenIndex }) => {
   );
 };
 
+// ─── FeatureCard ──────────────────────────────────────────────────────────────
+const FeatureCard = ({ point, idx, colors }) => {
+  const PointIcon = POINT_ICONS[idx % POINT_ICONS.length];
+  const colonIdx = point.indexOf(":");
+  const hasLabel = colonIdx > 0 && colonIdx < 30;
+  const label = hasLabel ? point.slice(0, colonIdx).trim() : null;
+  const desc = hasLabel ? point.slice(colonIdx + 1).trim() : point;
+
+  // Derive inline color styles from Tailwind class name
+  const iconColorMap = {
+    "text-violet-500": "#8b5cf6",
+    "text-blue-500": "#3b82f6",
+    "text-emerald-500": "#10b981",
+    "text-amber-500": "#f59e0b",
+    "text-rose-500": "#f43f5e",
+    "text-sky-500": "#0ea5e9",
+    "text-orange-500": "#f97316",
+    "text-teal-500": "#14b8a6",
+    "text-indigo-500": "#6366f1",
+    "text-fuchsia-500": "#d946ef",
+  };
+  const iconColor = iconColorMap[colors.icon] || "#6366f1";
+
+  return (
+    <li className="flex items-start gap-3.5 p-4 rounded-xl bg-background/60 backdrop-blur border border-border/50 hover:border-primary/20 hover:shadow-sm transition-all duration-200 group">
+      <div
+        className="shrink-0 w-9 h-9 rounded-xl flex items-center justify-center mt-0.5 shadow-sm"
+        style={{
+          backgroundColor: `${iconColor}20`,
+          border: `1.5px solid ${iconColor}40`,
+        }}
+      >
+        <PointIcon className="h-4 w-4" style={{ color: iconColor }} />
+      </div>
+      <div className="flex-1 min-w-0">
+        {label && (
+          <p
+            className="text-sm font-semibold leading-snug mb-0.5"
+            style={{ color: iconColor }}
+          >
+            {label}
+          </p>
+        )}
+        <p className="text-sm text-muted-foreground leading-snug">{desc}</p>
+      </div>
+    </li>
+  );
+};
+
 // ─── SectionCard ──────────────────────────────────────────────────────────────
 const SectionCard = ({ section, navigate }) => {
   const { t } = useTranslation();
@@ -338,34 +641,17 @@ const SectionCard = ({ section, navigate }) => {
       </CardHeader>
 
       <CardContent className="space-y-5">
-        {/* Intro content paragraph */}
         {section.content && (
           <p className="text-sm leading-relaxed text-foreground/80">
             {section.content}
           </p>
         )}
 
-        {/* Feature Points */}
+        {/* Feature Cards Grid */}
         {section.points && section.points.length > 0 && (
           <ul className="grid gap-2.5 sm:grid-cols-2">
             {section.points.map((point, idx) => (
-              <li
-                key={idx}
-                className="flex items-start gap-3 p-3.5 rounded-xl bg-background/50 backdrop-blur border border-border/50"
-              >
-                <span
-                  className={`mt-0.5 text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${colors.icon} bg-current/10`}
-                  style={{ backgroundColor: "currentColor", opacity: 1 }}
-                >
-                  <span
-                    className="text-white text-xs font-bold"
-                    style={{ opacity: 1 }}
-                  >
-                    {idx + 1}
-                  </span>
-                </span>
-                <span className="text-sm leading-snug">{point}</span>
-              </li>
+              <FeatureCard key={idx} point={point} idx={idx} colors={colors} />
             ))}
           </ul>
         )}
@@ -392,7 +678,6 @@ const SectionCard = ({ section, navigate }) => {
           </div>
         )}
 
-        {/* Action Button */}
         {section.action && (
           <div className="pt-2 flex justify-end">
             <Button
@@ -547,18 +832,6 @@ const TutorialPage = () => {
     },
   ];
 
-  const faqPairs = [
-    ["q1", "a1"],
-    ["q2", "a2"],
-    ["q3", "a3"],
-    ["q4", "a4"],
-    ["q5", "a5"],
-    ["q6", "a6"],
-    ["q7", "a7"],
-    ["q8", "a8"],
-  ];
-  const [openFaqIndex, setOpenFaqIndex] = useState(null);
-
   const totalSections = sections.length;
   const visitedCount = visited.length;
 
@@ -617,6 +890,9 @@ const TutorialPage = () => {
         </div>
       </div>
 
+      {/* Onboarding Tour */}
+      <OnboardingTour />
+
       {/* Tips Carousel */}
       <TipsCarousel />
 
@@ -658,31 +934,21 @@ const TutorialPage = () => {
         ))}
       </Tabs>
 
-      {/* FAQ Section */}
-      <div className="space-y-4 pt-4">
-        <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-primary/10 text-primary">
-            <HelpCircle className="h-5 w-5" />
-          </div>
-          <div>
-            <h3 className="text-xl font-bold">{t("tutorialPage.faq.title")}</h3>
-            <p className="text-sm text-muted-foreground">
-              {t("tutorialPage.faq.subtitle")}
-            </p>
-          </div>
+      {/* FAQ CTA — now a dedicated page */}
+      <div className="flex flex-col sm:flex-row items-center gap-4 rounded-2xl border border-primary/20 bg-gradient-to-r from-primary/5 to-transparent p-5">
+        <div className="p-3 rounded-xl bg-primary/10 text-primary shrink-0">
+          <HelpCircle className="h-6 w-6" />
         </div>
-        <div className="grid gap-2">
-          {faqPairs.map(([q, a], idx) => (
-            <FAQItem
-              key={q}
-              qKey={q}
-              aKey={a}
-              index={idx}
-              openIndex={openFaqIndex}
-              setOpenIndex={setOpenFaqIndex}
-            />
-          ))}
+        <div className="flex-1 text-center sm:text-left">
+          <p className="font-semibold">{t("tutorialPage.faq.title")}</p>
+          <p className="text-sm text-muted-foreground">
+            {t("tutorialPage.faq.subtitle")}
+          </p>
         </div>
+        <Button onClick={() => navigate("/faq")} className="gap-2 shrink-0">
+          {t("nav.faq")}
+          <ExternalLink className="h-3.5 w-3.5" />
+        </Button>
       </div>
     </div>
   );

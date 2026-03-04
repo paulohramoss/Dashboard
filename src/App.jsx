@@ -37,6 +37,7 @@ const DebtSnowballPage = lazy(() => import("@/pages/DebtSnowballPage"));
 const TutorialPage = lazy(() => import("@/pages/TutorialPage"));
 const JoinPage = lazy(() => import("@/pages/JoinPage")); // New Route
 const ChallengesPage = lazy(() => import("@/pages/ChallengesPage"));
+const FAQPage = lazy(() => import("@/pages/FAQPage"));
 
 const ProtectedRoute = ({ children }) => {
   const { user } = useAuth();
@@ -97,7 +98,11 @@ const App = () => {
                           <Route path="/reports" element={<ReportsPage />} />
                           <Route path="/settings" element={<SettingsPage />} />
                           <Route path="/tutorial" element={<TutorialPage />} />
-                          <Route path="/challenges" element={<ChallengesPage />} />
+                          <Route path="/faq" element={<FAQPage />} />
+                          <Route
+                            path="/challenges"
+                            element={<ChallengesPage />}
+                          />
                         </Routes>
                       </Suspense>
                     </Layout>
