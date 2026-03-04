@@ -127,6 +127,7 @@ const Layout = ({ children }) => {
     { icon: PieChart, label: t("nav.reports"), path: "/reports" },
     { icon: Swords, label: t("nav.challenges"), path: "/challenges", premiumOnly: true },
     { icon: BookOpen, label: t("nav.tutorial"), path: "/tutorial" },
+    { icon: HelpCircle, label: t("nav.faq"), path: "/faq" },
     { icon: Settings, label: t("nav.settings"), path: "/settings" },
   ];
 
