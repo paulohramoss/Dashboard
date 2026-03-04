@@ -558,65 +558,183 @@
   },
   "tutorialPage": {
     "title": "Manual do Usuário",
-    "subtitle": "Aprenda a dominar suas finanças com o FinanceDash.",
+    "subtitle": "Tudo que você precisa para dominar suas finanças.",
+    "readingProgress": "Seu progresso",
+    "sectionsRead": "{{count}} de {{total}} seções visitadas",
+    "checklist": {
+      "title": "Primeiros Passos",
+      "subtitle": "Complete estas etapas para aproveitar tudo que o FinanceDash tem a oferecer.",
+      "progress": "{{done}} de {{total}} concluídos",
+      "completed": "Tudo pronto! Você é um pro do FinanceDash. 🎉",
+      "items": {
+        "account": "Adicione sua primeira conta (corrente, poupança ou cartão de crédito)",
+        "transaction": "Registre sua primeira transação",
+        "category": "Crie uma categoria personalizada",
+        "budget": "Defina um orçamento mensal para uma categoria",
+        "goal": "Crie um objetivo de poupança",
+        "import": "Importe um extrato bancário (OFX, Excel ou CSV)",
+        "report": "Visualize seu relatório mensal"
+      }
+    },
+    "tips": {
+      "title": "💡 Você sabia?",
+      "items": {
+        "1": "Você pode importar seu extrato bancário diretamente em OFX, Excel ou CSV — sem digitar nada manualmente!",
+        "2": "As Regras Inteligentes categorizam automaticamente as transações quando você importa extratos.",
+        "3": "O Modo Sombra permite simular transações futuras sem afetar seu saldo real.",
+        "4": "O assistente de IA analisa seus gastos e oferece dicas personalizadas de economia.",
+        "5": "Você pode compartilhar suas finanças com um parceiro via link seguro de convite.",
+        "6": "O Modo Privacidade oculta todos os valores com um clique — perfeito para usar em público.",
+        "7": "A seção de Desafios de Economia transforma a disciplina financeira em um jogo!",
+        "8": "Transações recorrentes se repetem automaticamente — ótimo para salário e assinaturas."
+      }
+    },
     "sections": {
       "intro": {
         "title": "Introdução",
-        "content": "Bem-vindo ao FinanceDash! Este guia foi criado para ajudar você a explorar todas as funcionalidades da sua nova ferramenta de gestão financeira. Nosso objetivo é simplificar o controle do seu dinheiro, permitindo que você tome decisões mais inteligentes e alcance seus objetivos."
+        "content": "Bem-vindo ao FinanceDash! Este guia cobre tudo que você precisa para ter controle total das suas finanças. Navegue pelas abas para descobrir cada recurso — desde registrar transações até automação avançada com Regras Inteligentes.",
+        "tip": "Dica: Comece adicionando suas contas bancárias e registrando sua primeira transação!"
       },
       "dashboard": {
         "title": "Painel Principal",
-        "description": "O Painel é o seu centro de comando. Aqui você tem uma visão imediata da saúde das suas finanças.",
+        "description": "Seu centro de comando financeiro — veja tudo de uma vez.",
         "points": {
-          "1": "Resumo de Cartões: Veja seu saldo atual, receitas e despesas do mês.",
-          "2": "Gráfico Visão Geral: Acompanhe a evolução do seu saldo ao longo do tempo.",
-          "3": "Despesas por Categoria: Entenda para onde seu dinheiro está indo."
-        }
+          "1": "Cartões de Resumo: Saldo total, receitas e despesas mensais atualizados em tempo real.",
+          "2": "Gráfico Mensal: Visualize como seu saldo evoluiu nos últimos meses.",
+          "3": "Despesas por Categoria: Identifique quais categorias consomem mais do seu dinheiro.",
+          "4": "Score Financeiro: Uma pontuação de 0 a 100 que mede sua saúde financeira geral.",
+          "5": "Previsão do Mês: Estima seu saldo de fim de mês com base nas transações recorrentes."
+        },
+        "tip": "Use o Modo Sombra para simular uma grande compra antes de realizá-la!",
+        "example": "Exemplo: Se as despesas com Alimentação estão sempre altas, considere criar um orçamento para essa categoria."
       },
       "transactions": {
         "title": "Transações",
-        "description": "O coração do sistema. Registre cada movimentação para manter seu controle preciso.",
+        "description": "O coração do sistema — registre cada movimentação financeira com precisão.",
         "points": {
-          "1": "Adicionar: Clique no botão '+' ou 'Adicionar Transação' para registrar gastos ou ganhos.",
-          "2": "Importar: Use a função de importação para trazer dados do seu banco (OFX, Excel, CSV).",
-          "3": "Recorrência: Configure transações que se repetem (assinaturas, salário) ou parcelamentos."
-        }
+          "1": "Adicionar: Clique em '+ Adicionar Transação' para registrar rapidamente receitas ou despesas.",
+          "2": "Importar: Envie arquivos do banco (OFX, Excel, CSV) e importe centenas de transações de uma vez.",
+          "3": "Recorrente: Configure transações que se repetem automaticamente (assinaturas, salário, aluguel).",
+          "4": "Parcelado: Divida uma compra em várias parcelas automaticamente.",
+          "5": "Scan IA: Fotografe um recibo e deixe a IA preencher os detalhes automaticamente."
+        },
+        "tip": "Use as Regras Inteligentes para categorizar automaticamente as transações importadas.",
+        "example": "Exemplo: Importe o extrato do seu cartão de crédito e todas as transações serão categorizadas automaticamente pelas suas regras."
       },
       "planning": {
         "title": "Planejamento",
-        "description": "Ferramentas poderosas para organizar seu futuro financeiro.",
-        "budgets": "Orçamentos: Defina limites de gastos para cada categoria e receba alertas.",
-        "goals": "Objetivos: Crie metas de poupança (ex: Viagem, Carro) e acompanhe seu progresso.",
-        "debt": "Dívidas: Use o método 'Bola de Neve' para planejar a quitação de empréstimos e cartões."
+        "description": "Ferramentas poderosas para organizar seu presente e futuro financeiro.",
+        "budgets": "Orçamentos: Defina limites de gastos mensais por categoria. Receba alertas em tempo real ao se aproximar do limite.",
+        "goals": "Objetivos: Defina um valor e prazo alvo (ex: Viagem Japão R$ 8.000 até dezembro). Acompanhe o progresso com gráficos visuais.",
+        "debt": "Dívidas: Use o método Bola de Neve para simular e planejar a quitação de cartões e empréstimos.",
+        "subscriptions": "Assinaturas: Controle todas as suas despesas fixas recorrentes (streaming, academia, seguro) em um só lugar.",
+        "challenges": "Desafios: Crie desafios gamificados de economia — ex: 'Sem delivery por 7 dias'.",
+        "tip": "O recurso de Orçamento Acumulativo carrega o valor não gasto para o próximo mês.",
+        "example": "Exemplo: Defina R$ 500 de orçamento para Alimentação. Ao atingir 80%, você recebe um alerta automático."
       },
       "reports": {
         "title": "Relatórios",
-        "description": "Analise seus dados com profundidade.",
-        "content": "Os relatórios oferecem gráficos detalhados sobre seus hábitos de consumo, permitindo identificar tendências e áreas de economia."
+        "description": "Analise suas finanças em profundidade e identifique oportunidades.",
+        "content": "Os relatórios oferecem gráficos detalhados sobre seus hábitos de consumo. Você pode filtrar por período, categoria e conta para ter um panorama completo da sua saúde financeira.",
+        "points": {
+          "1": "Fluxo Financeiro: Veja exatamente de onde vem e para onde vai seu dinheiro.",
+          "2": "Comparativo de Período: Compare o mês atual com o anterior e com o mesmo mês do ano passado.",
+          "3": "Exportar PDF: Baixe um relatório financeiro completo para compartilhar ou arquivar.",
+          "4": "Enviar por E-mail: Receba o relatório diretamente na sua caixa de entrada.",
+          "5": "Insights Inteligentes: Alertas automáticos quando os gastos de uma categoria estão acima da sua média."
+        },
+        "tip": "Use a visão comparativa para identificar meses em que você gastou mais do que devia.",
+        "example": "Exemplo: Na comparação, se Alimentação em março está 40% acima de fevereiro, é um sinal de gasto atípico."
       },
       "accounts": {
         "title": "Contas",
-        "description": "Gerencie todas as suas fontes de recursos.",
-        "content": "Cadastre suas contas bancárias, carteiras físicas e cartões de crédito. Mantenha os saldos atualizados para um controle fidedigno."
+        "description": "Gerencie todas as suas fontes financeiras em um só lugar.",
+        "content": "Cadastre suas contas correntes, poupanças, cartões de crédito, dinheiro em espécie e investimentos. O FinanceDash calcula os saldos automaticamente com base nas transações.",
+        "points": {
+          "1": "Múltiplas Contas: Corrente, poupança, cartão de crédito, dinheiro, investimento ou empréstimo.",
+          "2": "Saldo Automático: Calculado em tempo real com base em todas as transações.",
+          "3": "Fatura do Cartão: Veja o valor da fatura atual de cada cartão de crédito.",
+          "4": "Moeda: Cada conta pode ter uma moeda diferente (BRL, USD, EUR, etc.).",
+          "5": "Reordenar: Arraste e solte para organizar as contas na ordem que preferir."
+        },
+        "tip": "Defina o saldo inicial ao criar a conta para que o saldo atual seja sempre preciso.",
+        "example": "Exemplo: Crie uma conta 'Nubank' do tipo Cartão de Crédito, informe o limite inicial e veja a fatura atualizar automaticamente."
       },
       "goals": {
         "title": "Objetivos e Metas",
-        "description": "Transforme sonhos em realidade com planejamento.",
+        "description": "Transforme seus sonhos em planos concretos e alcançáveis.",
         "points": {
-          "1": "Criar Meta: Defina um valor alvo e uma data (ex: Viagem, Carro Novo).",
-          "2": "Acompanhamento: Veja o progresso percentual e quanto falta economizar.",
-          "3": "Alocação: Reserve dinheiro especificamente para cada objetivo."
-        }
+          "1": "Criar Meta: Defina um nome, valor alvo e data (ex: 'Viagem Japão — R$ 8.000 — Dezembro').",
+          "2": "Progresso: Barra visual mostrando o percentual atingido e o valor restante.",
+          "3": "Alocação: Reserve valores específicos das suas contas diretamente para o objetivo.",
+          "4": "Automático: Cada alocação é registrada como uma transação no histórico.",
+          "5": "Celebre: Ao atingir 100%, o FinanceDash comemora com você! 🎉"
+        },
+        "tip": "Crie uma conta poupança separada exclusivamente para os objetivos para facilitar o acompanhamento.",
+        "example": "Exemplo: Reserve R$ 300/mês para a meta Viagem Japão de R$ 3.600 e tenha um plano de 12 meses."
       },
       "shared": {
         "title": "Finanças Compartilhadas",
-        "description": "Gerencie o orçamento familiar ou de casal em conjunto.",
-        "content": "Convide parceiros via link seguro para visualizar e editar as mesmas transações, contas e categorias. Ideal para casais ou sócios."
+        "description": "Gerencie finanças de família ou casal juntos em tempo real.",
+        "content": "Convide seu parceiro, cônjuge ou sócio via link seguro de uso único. Após conectados, ambos visualizam e podem editar as mesmas transações, categorias, contas e objetivos.",
+        "points": {
+          "1": "Convite Seguro: Gere um link que expira após o primeiro uso.",
+          "2": "Sincronização em Tempo Real: Alterações feitas por uma pessoa aparecem imediatamente para a outra.",
+          "3": "Controle Compartilhado: Ambos podem adicionar, editar e excluir transações.",
+          "4": "Tag de Autor: As transações mostram quem as adicionou — 'Criado por parceiro'.",
+          "5": "Ideal para: Casais, famílias ou sócios que compartilham despesas."
+        },
+        "tip": "Mantenha as categorias organizadas para que ambas as pessoas encontrem as transações facilmente.",
+        "example": "Exemplo: Você registra a despesa do mercado no celular. Seu parceiro vê imediatamente no dele."
       },
       "rules": {
         "title": "Regras Inteligentes",
         "description": "Automatize sua organização financeira e economize tempo.",
-        "content": "Crie regras automáticas (ex: 'Se a descrição tiver Uber, categorizar como Transporte'). Isso é especialmente útil ao importar extratos bancários, categorizando tudo automaticamente."
+        "content": "Crie regras de categorização automática com base em palavras-chave. Toda vez que a descrição de uma transação corresponder a uma palavra-chave, o FinanceDash categoriza automaticamente.",
+        "points": {
+          "1": "Criar Regra: Defina uma palavra-chave (ex: 'Uber') e sua categoria (Transporte).",
+          "2": "Auto-categorizar: Aplicada automaticamente ao adicionar ou importar transações.",
+          "3": "Prioridade: Regras personalizadas têm preferência sobre o mapa de palavras-chave embutido.",
+          "4": "Poder de Importação: Importe 200 transações do banco — todas categorizadas instantaneamente.",
+          "5": "Sugestão IA: O FinanceDash sugere salvar uma regra quando você categoriza a mesma descrição repetidamente."
+        },
+        "tip": "Após importar seu primeiro extrato bancário, crie regras para os estabelecimentos mais frequentes.",
+        "example": "Exemplo: Regra 'ifood' → Alimentação. Regra 'Nubank' → Cartão. Agora cada importação é automática!"
+      },
+      "challenges": {
+        "title": "Desafios de Economia",
+        "description": "Gamifique sua disciplina financeira e prove para si mesmo que você consegue.",
+        "points": {
+          "1": "Escolha um Modelo: 'Sem delivery por 7 dias', 'Sem roupas por 30 dias', e muito mais.",
+          "2": "Criar Personalizado: Defina sua própria categoria, meta e duração.",
+          "3": "Acompanhamento Automático: O FinanceDash monitora suas transações e alerta sobre violações.",
+          "4": "Resultados: Veja quanto gastou vs. quanto economizou durante o desafio.",
+          "5": "Motivação: Desafios concluídos ficam no seu histórico de disciplina financeira."
+        },
+        "tip": "Comece com um desafio curto de 7 dias para criar o hábito antes de se comprometer com um mais longo.",
+        "example": "Exemplo: 'Sem Lazer por 14 dias' — se você gastar em cinema ou streaming neste período, será notificado imediatamente."
+      }
+    },
+    "faq": {
+      "title": "Perguntas Frequentes",
+      "subtitle": "Respostas rápidas para as dúvidas mais comuns.",
+      "items": {
+        "q1": "Por que meu saldo não bate com o extrato do banco?",
+        "a1": "Verifique se você adicionou todas as transações e se o saldo inicial ao criar a conta está correto. Use 'Recalcular Saldos' nas Configurações, se necessário.",
+        "q2": "Como excluir uma transação recorrente?",
+        "a2": "Vá em Transações, encontre a transação recorrente e clique em excluir. Você pode escolher excluir apenas aquela ocorrência ou todas as futuras.",
+        "q3": "Posso usar o FinanceDash no celular?",
+        "a3": "Sim! Instale o app diretamente pelo navegador — clique no ícone de instalação na barra de endereço ou use a opção 'Instalar Aplicativo'.",
+        "q4": "Como importar com categorização automática?",
+        "a4": "Primeiro crie suas Regras Inteligentes em Configurações → Regras Inteligentes. Depois importe o arquivo em Transações → Enviar Arquivo. Todas as regras são aplicadas automaticamente.",
+        "q5": "Meus dados estão seguros?",
+        "a5": "Sim. Seus dados são armazenados exclusivamente na sua conta Firebase, com criptografia total. Nunca acessamos suas informações financeiras.",
+        "q6": "Como funciona o gerenciamento do cartão de crédito?",
+        "a6": "Crie uma conta do tipo 'Cartão de Crédito'. A fatura atual é calculada automaticamente a partir das suas despesas. Você pode fazer uma transferência para pagar a fatura.",
+        "q7": "O que é o Modo Sombra?",
+        "a7": "O Modo Sombra permite adicionar transações simuladas para ver como elas afetariam seu saldo — sem que essas despesas apareçam no seu histórico real.",
+        "q8": "Posso usar o app sem internet?",
+        "a8": "Sim! Após o primeiro carregamento, o FinanceDash funciona offline. As alterações são sincronizadas automaticamente quando a conexão for restaurada."
       }
     }
   },
