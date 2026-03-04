@@ -16,6 +16,7 @@ import OfflineBanner from "@/components/OfflineBanner";
 import UpdatePrompt from "@/components/UpdatePrompt";
 import { Toaster } from "sonner";
 import VersionChecker from "@/components/VersionChecker";
+import PremiumGate from "@/components/PremiumGate";
 
 // Lazy loaded pages
 const TransactionsPage = lazy(() => import("@/pages/TransactionsPage"));
@@ -37,7 +38,7 @@ const DebtSnowballPage = lazy(() => import("@/pages/DebtSnowballPage"));
 const TutorialPage = lazy(() => import("@/pages/TutorialPage"));
 const JoinPage = lazy(() => import("@/pages/JoinPage")); // New Route
 const ChallengesPage = lazy(() => import("@/pages/ChallengesPage"));
-const FAQPage = lazy(() => import("@/pages/FAQPage"));
+const UpgradePage = lazy(() => import("@/pages/UpgradePage"));
 
 const ProtectedRoute = ({ children }) => {
   const { user } = useAuth();
@@ -89,7 +90,17 @@ const App = () => {
                           <Route path="/calendar" element={<CalendarPage />} />
                           <Route path="/budgets" element={<BudgetsPage />} />
                           <Route path="/goals" element={<GoalsPage />} />
-                          <Route path="/debt" element={<DebtSnowballPage />} />
+                          <Route
+                            path="/debt"
+                            element={
+                              <PremiumGate
+                                feature="Calculadora de Dívidas"
+                                description="Visualize e planeje o pagamento das suas dívidas com o método Snowball. Disponível no Premium."
+                              >
+                                <DebtSnowballPage />
+                              </PremiumGate>
+                            }
+                          />
                           <Route
                             path="/subscriptions"
                             element={<SubscriptionsPage />}
@@ -98,11 +109,18 @@ const App = () => {
                           <Route path="/reports" element={<ReportsPage />} />
                           <Route path="/settings" element={<SettingsPage />} />
                           <Route path="/tutorial" element={<TutorialPage />} />
-                          <Route path="/faq" element={<FAQPage />} />
                           <Route
                             path="/challenges"
-                            element={<ChallengesPage />}
+                            element={
+                              <PremiumGate
+                                feature="Desafios Financeiros"
+                                description="Crie e participe de desafios de gastos para criar novos hábitos financeiros. Disponível no Premium."
+                              >
+                                <ChallengesPage />
+                              </PremiumGate>
+                            }
                           />
+                          <Route path="/upgrade" element={<UpgradePage />} />
                         </Routes>
                       </Suspense>
                     </Layout>
