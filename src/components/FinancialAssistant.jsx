@@ -12,17 +12,23 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { MessageCircle, X, Send, Sparkles, Trash2, AlertTriangle, Lock } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { MessageCircle, X, Send, Trash2, AlertTriangle } from "lucide-react";
 
 export default function FinancialAssistant() {
   const { t } = useTranslation();
   const { isPremium } = usePremium();
-  const navigate = useNavigate();
+
   const [isOpen, setIsOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [showClearModal, setShowClearModal] = useState(false);
-  const { messages, sendMessage, clearChat, loading, proactiveInsights, triggerProactiveInsight } = useFinancialChat();
+  const {
+    messages,
+    sendMessage,
+    clearChat,
+    loading,
+    proactiveInsights,
+    triggerProactiveInsight,
+  } = useFinancialChat();
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
@@ -43,7 +49,7 @@ export default function FinancialAssistant() {
           : "en";
       triggerProactiveInsight(language);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
 
   const handleSend = async (e) => {
@@ -73,24 +79,7 @@ export default function FinancialAssistant() {
   ];
 
   if (!isPremium) {
-    return (
-      <div className="fixed bottom-6 right-6 z-50 group">
-        <div className="relative inline-flex">
-          <Button
-            size="lg"
-            className="h-14 w-14 rounded-full shadow-lg bg-gradient-to-r from-purple-600/40 to-blue-600/40 border border-purple-500/30 transition-transform hover:scale-110"
-            onClick={() => navigate("/upgrade")}
-            aria-label={t("premium.feature")}
-          >
-            <Lock className="h-5 w-5 text-white/70" />
-          </Button>
-          <div className="absolute bottom-16 right-0 w-44 p-2 bg-card border rounded-lg shadow-lg text-xs text-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-            <Sparkles className="h-3 w-3 text-primary inline mr-1" />
-            {t("assistant.premiumOnly", "Assistente de IA — Premium")}
-          </div>
-        </div>
-      </div>
-    );
+    return null;
   }
 
   return (
@@ -152,17 +141,20 @@ export default function FinancialAssistant() {
             {messages.map((msg, idx) => (
               <div
                 key={idx}
-                className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
+                className={`flex ${
+                  msg.role === "user" ? "justify-end" : "justify-start"
+                }`}
               >
                 <div
-                  className={`max-w-[80%] rounded-lg px-4 py-2 ${msg.role === "user"
+                  className={`max-w-[80%] rounded-lg px-4 py-2 ${
+                    msg.role === "user"
                       ? "bg-primary text-primary-foreground"
                       : msg.isError
-                        ? "bg-red-100 dark:bg-red-900/30 text-red-900 dark:text-red-100"
-                        : msg.isCoach
-                          ? "bg-amber-50 dark:bg-amber-900/20 text-amber-900 dark:text-amber-100 border border-amber-200 dark:border-amber-800"
-                          : "bg-muted text-foreground"
-                    }`}
+                      ? "bg-red-100 dark:bg-red-900/30 text-red-900 dark:text-red-100"
+                      : msg.isCoach
+                      ? "bg-amber-50 dark:bg-amber-900/20 text-amber-900 dark:text-amber-100 border border-amber-200 dark:border-amber-800"
+                      : "bg-muted text-foreground"
+                  }`}
                 >
                   <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
                   <p className="text-xs opacity-60 mt-1">
@@ -259,7 +251,7 @@ export default function FinancialAssistant() {
             <DialogDescription className="text-base pt-2">
               {t(
                 "assistant.clearModal.description",
-                "Esta ação removerá todo o histórico de mensagens desta conversa. Você não poderá desfazer esta ação."
+                "Esta ação removerá todo o histórico de mensagens desta conversa. Você não poderá desfazer esta ação.",
               )}
             </DialogDescription>
           </DialogHeader>

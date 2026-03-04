@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useTranslation } from "react-i18next";
 import { usePremium, FREE_LIMITS } from "@/hooks/usePremium";
 import { Button } from "@/components/ui/button";
@@ -48,7 +48,7 @@ const PlanCard = ({ plan, isCurrentPlan, isRecommended }) => {
         "relative flex flex-col rounded-2xl border bg-card p-6 gap-6 transition-all duration-200",
         isRecommended
           ? "border-primary shadow-lg shadow-primary/10 scale-105"
-          : "border-border hover:border-primary/40"
+          : "border-border hover:border-primary/40",
       )}
     >
       {isRecommended && (
@@ -69,7 +69,9 @@ const PlanCard = ({ plan, isCurrentPlan, isRecommended }) => {
           )}
         </div>
         {plan.yearlyNote && (
-          <p className="text-xs text-muted-foreground mt-1">{plan.yearlyNote}</p>
+          <p className="text-xs text-muted-foreground mt-1">
+            {plan.yearlyNote}
+          </p>
         )}
         {plan.discount && (
           <span className="inline-block mt-2 bg-green-500/10 text-green-600 dark:text-green-400 text-xs font-semibold px-2 py-0.5 rounded-full">
@@ -97,9 +99,14 @@ const PlanCard = ({ plan, isCurrentPlan, isRecommended }) => {
         variant={isCurrentPlan ? "outline" : "default"}
         disabled={isCurrentPlan}
         className="w-full"
-        onClick={() =>
-          window.open("mailto:contato@financedash.app?subject=Premium", "_blank")
-        }
+        onClick={() => {
+          if (!isCurrentPlan) {
+            const msg = encodeURIComponent(
+              `Olá! Tenho interesse em assinar o plano ${plan.name} do FinanceDash. 😊`,
+            );
+            window.open(`https://wa.me/5549989011318?text=${msg}`, "_blank");
+          }
+        }}
       >
         {isCurrentPlan ? (
           t("upgrade.currentPlan")
@@ -117,13 +124,28 @@ const PlanCard = ({ plan, isCurrentPlan, isRecommended }) => {
 const UpgradePage = () => {
   const { t } = useTranslation();
   const { isPremium } = usePremium();
-  const [billing, setBilling] = useState("yearly");
 
   const freeFeatures = [
-    { label: t("upgrade.features.transactions", { count: FREE_LIMITS.transactionsPerMonth }), included: true },
-    { label: t("upgrade.features.accounts", { count: FREE_LIMITS.accounts }), included: true },
-    { label: t("upgrade.features.goals", { count: FREE_LIMITS.goals }), included: true },
-    { label: t("upgrade.features.categories", { count: FREE_LIMITS.customCategories }), included: true },
+    {
+      label: t("upgrade.features.transactions", {
+        count: FREE_LIMITS.transactionsPerMonth,
+      }),
+      included: true,
+    },
+    {
+      label: t("upgrade.features.accounts", { count: FREE_LIMITS.accounts }),
+      included: true,
+    },
+    {
+      label: t("upgrade.features.goals", { count: FREE_LIMITS.goals }),
+      included: true,
+    },
+    {
+      label: t("upgrade.features.categories", {
+        count: FREE_LIMITS.customCategories,
+      }),
+      included: true,
+    },
     { label: t("upgrade.features.basicReports"), included: true },
     { label: t("upgrade.features.calendar"), included: true },
     { label: t("upgrade.features.pwa"), included: true },
@@ -222,7 +244,7 @@ const UpgradePage = () => {
           {t("upgrade.featuresTitle")}
         </h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-          {PREMIUM_FEATURES.map(({ icon: Icon, key }) => (
+          {PREMIUM_FEATURES.map(({ key }) => (
             <div
               key={key}
               className="flex flex-col items-center gap-2 p-4 rounded-xl bg-card border hover:border-primary/40 transition-colors text-center"
@@ -240,11 +262,15 @@ const UpgradePage = () => {
 
       {/* FAQ */}
       <div className="space-y-4 max-w-2xl mx-auto">
-        <h2 className="text-xl font-bold text-center">{t("upgrade.faqTitle")}</h2>
+        <h2 className="text-xl font-bold text-center">
+          {t("upgrade.faqTitle")}
+        </h2>
         {[1, 2, 3].map((n) => (
           <div key={n} className="rounded-xl border bg-card p-4 space-y-1">
             <p className="font-semibold text-sm">{t(`upgrade.faq.q${n}`)}</p>
-            <p className="text-sm text-muted-foreground">{t(`upgrade.faq.a${n}`)}</p>
+            <p className="text-sm text-muted-foreground">
+              {t(`upgrade.faq.a${n}`)}
+            </p>
           </div>
         ))}
       </div>

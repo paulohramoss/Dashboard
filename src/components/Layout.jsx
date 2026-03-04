@@ -21,6 +21,7 @@ import {
   BookOpen,
   Swords,
   Sparkles,
+  HelpCircle,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -122,10 +123,20 @@ const Layout = ({ children }) => {
     { icon: Repeat, label: t("nav.subscriptions"), path: "/subscriptions" },
     { icon: Target, label: t("nav.budgets"), path: "/budgets" },
     { icon: Star, label: t("nav.goals"), path: "/goals" },
-    { icon: TrendingDown, label: t("nav.debt", "Dívidas"), path: "/debt", premiumOnly: true },
+    {
+      icon: TrendingDown,
+      label: t("nav.debt", "Dívidas"),
+      path: "/debt",
+      premiumOnly: true,
+    },
     { icon: Wallet, label: t("accounts.title"), path: "/accounts" },
     { icon: PieChart, label: t("nav.reports"), path: "/reports" },
-    { icon: Swords, label: t("nav.challenges"), path: "/challenges", premiumOnly: true },
+    {
+      icon: Swords,
+      label: t("nav.challenges"),
+      path: "/challenges",
+      premiumOnly: true,
+    },
     { icon: BookOpen, label: t("nav.tutorial"), path: "/tutorial" },
     { icon: HelpCircle, label: t("nav.faq"), path: "/faq" },
     { icon: Settings, label: t("nav.settings"), path: "/settings" },
@@ -221,7 +232,9 @@ const Layout = ({ children }) => {
                   to={item.path}
                   onClick={() => setIsSidebarOpen(false)}
                   id={
-                    item.path === "/transactions" ? "nav-transactions" : undefined
+                    item.path === "/transactions"
+                      ? "nav-transactions"
+                      : undefined
                   }
                   className={cn(
                     "flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-md transition-all duration-200 overflow-hidden",
