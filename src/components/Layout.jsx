@@ -20,6 +20,7 @@ import {
   TrendingDown,
   BookOpen,
   Swords,
+  Sparkles,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -119,10 +120,10 @@ const Layout = ({ children }) => {
     { icon: Repeat, label: t("nav.subscriptions"), path: "/subscriptions" },
     { icon: Target, label: t("nav.budgets"), path: "/budgets" },
     { icon: Star, label: t("nav.goals"), path: "/goals" },
-    { icon: TrendingDown, label: t("nav.debt", "Dívidas"), path: "/debt" },
+    { icon: TrendingDown, label: t("nav.debt", "Dívidas"), path: "/debt", premiumOnly: true },
     { icon: Wallet, label: t("accounts.title"), path: "/accounts" },
     { icon: PieChart, label: t("nav.reports"), path: "/reports" },
-    { icon: Swords, label: t("nav.challenges"), path: "/challenges" },
+    { icon: Swords, label: t("nav.challenges"), path: "/challenges", premiumOnly: true },
     { icon: BookOpen, label: t("nav.tutorial"), path: "/tutorial" },
     { icon: Settings, label: t("nav.settings"), path: "/settings" },
   ];
@@ -209,23 +210,53 @@ const Layout = ({ children }) => {
             id="sidebar-nav"
             className="p-4 space-y-2 flex-1 overflow-y-auto"
           >
-            {navItems.map((item, index) => (
+            {navItems.map((item, index) => {
+              const isLocked = item.premiumOnly && !isPremium;
+              return (
+                <Link
+                  key={index}
+                  to={item.path}
+                  onClick={() => setIsSidebarOpen(false)}
+                  id={
+                    item.path === "/transactions" ? "nav-transactions" : undefined
+                  }
+                  className={cn(
+                    "flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-md transition-all duration-200 overflow-hidden",
+                    location.pathname === item.path
+                      ? "bg-primary text-primary-foreground"
+                      : isLocked
+                      ? "text-muted-foreground/50 hover:bg-accent hover:text-accent-foreground"
+                      : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
+                    !isExpanded && "lg:justify-center lg:px-2",
+                  )}
+                >
+                  <item.icon className={cn("h-5 w-5 flex-shrink-0")} />
+                  <span
+                    className={cn(
+                      "flex-1 transition-all duration-300 opacity-100",
+                      !isExpanded && "lg:opacity-0 lg:w-0 lg:hidden",
+                    )}
+                  >
+                    {item.label}
+                  </span>
+                  {isLocked && (isExpanded || isSidebarOpen) && (
+                    <Sparkles className="h-3 w-3 text-primary/70 flex-shrink-0" />
+                  )}
+                </Link>
+              );
+            })}
+
+            {!isPremium && (
               <Link
-                key={index}
-                to={item.path}
+                to="/upgrade"
                 onClick={() => setIsSidebarOpen(false)}
-                id={
-                  item.path === "/transactions" ? "nav-transactions" : undefined
-                }
                 className={cn(
-                  "flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-md transition-all duration-200 overflow-hidden",
-                  location.pathname === item.path
-                    ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
+                  "flex items-center gap-3 px-4 py-3 text-sm font-semibold rounded-md transition-all duration-200 overflow-hidden",
+                  "bg-primary/10 text-primary hover:bg-primary/20 border border-primary/20",
                   !isExpanded && "lg:justify-center lg:px-2",
                 )}
               >
-                <item.icon className={cn("h-5 w-5 flex-shrink-0")} />
+                <Sparkles className="h-5 w-5 flex-shrink-0" />
                 <span
                   className={cn(
                     "transition-all duration-300 opacity-100",
