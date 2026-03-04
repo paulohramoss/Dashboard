@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
-import { usePremium, FREE_LIMITS } from "@/hooks/usePremium";
 import { db } from "@/lib/firebase";
 import {
   collection,
@@ -17,7 +16,6 @@ import {
 
 export const useGoals = () => {
   const { user } = useAuth();
-  const { isPremium } = usePremium();
   const [goals, setGoals] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -74,12 +72,6 @@ export const useGoals = () => {
 
   const addGoal = async (goal) => {
     if (!user?.id) return;
-    if (!isPremium && goals.length >= FREE_LIMITS.goals) {
-      const error = new Error("LIMIT_REACHED");
-      error.limitKey = "goals";
-      error.limit = FREE_LIMITS.goals;
-      throw error;
-    }
     try {
       await addDoc(collection(db, "goals"), {
         ...goal,

@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useFinancialChat } from "@/hooks/useFinancialChat";
-import { usePremium } from "@/hooks/usePremium";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -12,13 +11,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { MessageCircle, X, Send, Sparkles, Trash2, AlertTriangle, Lock } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { MessageCircle, X, Send, Sparkles, Trash2, AlertTriangle } from "lucide-react";
 
 export default function FinancialAssistant() {
   const { t } = useTranslation();
-  const { isPremium } = usePremium();
-  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [showClearModal, setShowClearModal] = useState(false);
@@ -71,27 +67,6 @@ export default function FinancialAssistant() {
     t("assistant.q3", "Qual minha maior despesa?"),
     t("assistant.q4", "Dicas para organizar minhas finanças"),
   ];
-
-  if (!isPremium) {
-    return (
-      <div className="fixed bottom-6 right-6 z-50 group">
-        <div className="relative inline-flex">
-          <Button
-            size="lg"
-            className="h-14 w-14 rounded-full shadow-lg bg-gradient-to-r from-purple-600/40 to-blue-600/40 border border-purple-500/30 transition-transform hover:scale-110"
-            onClick={() => navigate("/upgrade")}
-            aria-label={t("premium.feature")}
-          >
-            <Lock className="h-5 w-5 text-white/70" />
-          </Button>
-          <div className="absolute bottom-16 right-0 w-44 p-2 bg-card border rounded-lg shadow-lg text-xs text-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-            <Sparkles className="h-3 w-3 text-primary inline mr-1" />
-            {t("assistant.premiumOnly", "Assistente de IA — Premium")}
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <>
