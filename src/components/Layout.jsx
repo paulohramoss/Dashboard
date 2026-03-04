@@ -30,6 +30,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { usePremium } from "@/hooks/usePremium";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageToggle } from "@/components/LanguageToggle";
+import { usePremium } from "@/hooks/usePremium";
 import { Analytics } from "@vercel/analytics/react";
 
 import { toast } from "sonner";
@@ -76,6 +77,7 @@ const Layout = ({ children }) => {
   const { user, logout } = useAuth();
   const { isPremium } = usePremium();
   const { t } = useTranslation();
+  const { isPremium } = usePremium();
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
@@ -279,7 +281,7 @@ const Layout = ({ children }) => {
                     !isExpanded && "lg:opacity-0 lg:w-0 lg:hidden",
                   )}
                 >
-                  {t("premium.nav")}
+                  {item.label}
                 </span>
               </Link>
             )}
