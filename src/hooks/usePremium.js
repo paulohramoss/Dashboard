@@ -30,7 +30,7 @@ export const usePremium = () => {
     const unsub = onSnapshot(
       userRef,
       async (snap) => {
-        if (!snap.exists()) {
+        if (!snap.exists) {
           await setDoc(userRef, {
             uid: user.id,
             email: user.email,
