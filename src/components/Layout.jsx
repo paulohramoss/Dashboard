@@ -279,7 +279,7 @@ const Layout = ({ children }) => {
                     !isExpanded && "lg:opacity-0 lg:w-0 lg:hidden",
                   )}
                 >
-                  {item.label}
+                  {t("premium.nav")}
                 </span>
               </Link>
             )}
