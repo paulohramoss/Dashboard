@@ -18,12 +18,15 @@ export const usePremium = () => {
 
   useEffect(() => {
     if (!user?.id) {
-      setIsPremium(false);
-      setLoading(false);
-      return;
+      const timer = setTimeout(() => {
+        setIsPremium(false);
+        setLoading(false);
+      }, 0);
+      return () => clearTimeout(timer);
     }
 
     const userRef = doc(db, "users", user.id);
+    const userEmail = user.email;
 
     const unsub = onSnapshot(
       userRef,
@@ -31,7 +34,7 @@ export const usePremium = () => {
         if (!snap.exists()) {
           await setDoc(userRef, {
             uid: user.id,
-            email: user.email,
+            email: userEmail,
             isPremium: false,
             createdAt: serverTimestamp(),
             updatedAt: serverTimestamp(),
@@ -49,6 +52,7 @@ export const usePremium = () => {
     );
 
     return () => unsub();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id]);
 
   return { isPremium, loading };
