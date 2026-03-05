@@ -30,7 +30,9 @@
     "checkEmail": "Verifique seu e-mail",
     "backToLogin": "Voltar para Login",
     "resetError": "Falha ao enviar e-mail. Verifique o endereço informado.",
-    "namePlaceholder": "João Silva"
+    "namePlaceholder": "João Silva",
+    "continueWithGoogle": "Continuar com o Google",
+    "orDivider": "ou"
   },
   "nav": {
     "dashboard": "Painel",

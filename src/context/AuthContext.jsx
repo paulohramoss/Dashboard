@@ -8,6 +8,8 @@ import {
   onAuthStateChanged,
   updateProfile,
   sendPasswordResetEmail,
+  GoogleAuthProvider,
+  signInWithPopup,
 } from "firebase/auth";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
@@ -48,7 +50,7 @@ export const AuthProvider = ({ children }) => {
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         email,
-        password
+        password,
       );
       await updateProfile(userCredential.user, {
         displayName: name,
@@ -72,6 +74,24 @@ export const AuthProvider = ({ children }) => {
       await signOut(auth);
     } catch (error) {
       console.error("Logout error:", error);
+    }
+  };
+
+  const loginWithGoogle = async () => {
+    try {
+      const provider = new GoogleAuthProvider();
+      const result = await signInWithPopup(auth, provider);
+      const u = result.user;
+      setUser({
+        id: u.uid,
+        email: u.email,
+        name: u.displayName || u.email.split("@")[0],
+        photoURL: u.photoURL,
+      });
+      return true;
+    } catch (error) {
+      console.error("Google login error:", error);
+      throw error;
     }
   };
 
@@ -144,6 +164,7 @@ export const AuthProvider = ({ children }) => {
       value={{
         user,
         login,
+        loginWithGoogle,
         logout,
         register,
         updateUser,

@@ -30,7 +30,9 @@
     "checkEmail": "Check your email",
     "backToLogin": "Back to Login",
     "resetError": "Failed to send reset email. Verify the email address.",
-    "namePlaceholder": "John Doe"
+    "namePlaceholder": "John Doe",
+    "continueWithGoogle": "Continue with Google",
+    "orDivider": "or"
   },
   "nav": {
     "dashboard": "Dashboard",
