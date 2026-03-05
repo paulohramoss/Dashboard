@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
-import { usePremium, FREE_LIMITS } from "@/hooks/usePremium";
 import { db } from "@/lib/firebase";
 import {
   collection,
@@ -17,7 +16,6 @@ import { getCurrentLocalDate } from "@/lib/utils";
 
 export const useTransactions = () => {
   const { user } = useAuth();
-  const { isPremium } = usePremium();
   // Derive initial state from user
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -125,26 +123,6 @@ export const useTransactions = () => {
   const addTransaction = async (transaction) => {
     if (!user?.id) return;
     try {
-      // Free tier limit: max transactions per month (non-system, non-shadow)
-      if (!isPremium && !transaction.isSystem) {
-        const now = new Date();
-        const currentMonth = now.getMonth();
-        const currentYear = now.getFullYear();
-        const thisMonthCount = transactions.filter((t) => {
-          if (t.isSystem || t.isShadow) return false;
-          const d = new Date(t.date);
-          return (
-            d.getMonth() === currentMonth && d.getFullYear() === currentYear
-          );
-        }).length;
-        if (thisMonthCount >= FREE_LIMITS.transactionsPerMonth) {
-          const error = new Error("LIMIT_REACHED");
-          error.limitKey = "transactions";
-          error.limit = FREE_LIMITS.transactionsPerMonth;
-          throw error;
-        }
-      }
-
       // Handle Installments
       if (transaction.isInstallment && transaction.installmentsCount > 1) {
         const batch = writeBatch(db);
@@ -191,17 +169,6 @@ export const useTransactions = () => {
         }
         await batch.commit();
         return;
-      }
-
-      // Free tier limit: max recurring transactions
-      if (!isPremium && transaction.isRecurring) {
-        const recurringCount = transactions.filter((t) => t.isRecurring).length;
-        if (recurringCount >= FREE_LIMITS.recurringTransactions) {
-          const error = new Error("LIMIT_REACHED");
-          error.limitKey = "recurring";
-          error.limit = FREE_LIMITS.recurringTransactions;
-          throw error;
-        }
       }
 
       // Normal Transaction

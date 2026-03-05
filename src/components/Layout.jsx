@@ -20,14 +20,12 @@ import {
   TrendingDown,
   BookOpen,
   Swords,
-  Sparkles,
   HelpCircle,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
-import { usePremium } from "@/hooks/usePremium";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { Analytics } from "@vercel/analytics/react";
@@ -74,7 +72,6 @@ const Layout = ({ children }) => {
 
   const location = useLocation();
   const { user, logout } = useAuth();
-  const { isPremium } = usePremium();
   const { t } = useTranslation();
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
@@ -123,20 +120,10 @@ const Layout = ({ children }) => {
     { icon: Repeat, label: t("nav.subscriptions"), path: "/subscriptions" },
     { icon: Target, label: t("nav.budgets"), path: "/budgets" },
     { icon: Star, label: t("nav.goals"), path: "/goals" },
-    {
-      icon: TrendingDown,
-      label: t("nav.debt", "Dívidas"),
-      path: "/debt",
-      premiumOnly: true,
-    },
+    { icon: TrendingDown, label: t("nav.debt", "Dívidas"), path: "/debt" },
     { icon: Wallet, label: t("accounts.title"), path: "/accounts" },
     { icon: PieChart, label: t("nav.reports"), path: "/reports" },
-    {
-      icon: Swords,
-      label: t("nav.challenges"),
-      path: "/challenges",
-      premiumOnly: true,
-    },
+    { icon: Swords, label: t("nav.challenges"), path: "/challenges" },
     { icon: BookOpen, label: t("nav.tutorial"), path: "/tutorial" },
     { icon: HelpCircle, label: t("nav.faq"), path: "/faq" },
     { icon: Settings, label: t("nav.settings"), path: "/settings" },
@@ -224,9 +211,7 @@ const Layout = ({ children }) => {
             id="sidebar-nav"
             className="p-4 space-y-2 flex-1 overflow-y-auto"
           >
-            {navItems.map((item, index) => {
-              const isLocked = item.premiumOnly && !isPremium;
-              return (
+            {navItems.map((item, index) => (
                 <Link
                   key={index}
                   to={item.path}
@@ -240,8 +225,6 @@ const Layout = ({ children }) => {
                     "flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-md transition-all duration-200 overflow-hidden",
                     location.pathname === item.path
                       ? "bg-primary text-primary-foreground"
-                      : isLocked
-                      ? "text-muted-foreground/50 hover:bg-accent hover:text-accent-foreground"
                       : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
                     !isExpanded && "lg:justify-center lg:px-2",
                   )}
@@ -255,34 +238,8 @@ const Layout = ({ children }) => {
                   >
                     {item.label}
                   </span>
-                  {isLocked && (isExpanded || isSidebarOpen) && (
-                    <Sparkles className="h-3 w-3 text-primary/70 flex-shrink-0" />
-                  )}
                 </Link>
-              );
-            })}
-
-            {!isPremium && (
-              <Link
-                to="/upgrade"
-                onClick={() => setIsSidebarOpen(false)}
-                className={cn(
-                  "flex items-center gap-3 px-4 py-3 text-sm font-semibold rounded-md transition-all duration-200 overflow-hidden",
-                  "bg-primary/10 text-primary hover:bg-primary/20 border border-primary/20",
-                  !isExpanded && "lg:justify-center lg:px-2",
-                )}
-              >
-                <Sparkles className="h-5 w-5 flex-shrink-0" />
-                <span
-                  className={cn(
-                    "transition-all duration-300 opacity-100",
-                    !isExpanded && "lg:opacity-0 lg:w-0 lg:hidden",
-                  )}
-                >
-                  {t("premium.nav")}
-                </span>
-              </Link>
-            )}
+              ))}
 
             <button
               onClick={() => {

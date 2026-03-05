@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useFinancialChat } from "@/hooks/useFinancialChat";
-import { usePremium } from "@/hooks/usePremium";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -16,8 +15,6 @@ import { MessageCircle, X, Send, Trash2, AlertTriangle } from "lucide-react";
 
 export default function FinancialAssistant() {
   const { t } = useTranslation();
-  const { isPremium } = usePremium();
-
   const [isOpen, setIsOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [showClearModal, setShowClearModal] = useState(false);
@@ -77,10 +74,6 @@ export default function FinancialAssistant() {
     t("assistant.q3", "Qual minha maior despesa?"),
     t("assistant.q4", "Dicas para organizar minhas finanças"),
   ];
-
-  if (!isPremium) {
-    return null;
-  }
 
   return (
     <>
