@@ -31,7 +31,7 @@ export const useTransactions = () => {
       return () => clearTimeout(timer);
     }
 
-    setLoading(true);
+    const loadingTimer = setTimeout(() => setLoading(true), 0);
 
     // Track if component is still mounted to prevent state updates after unmount
     let isMounted = true;
@@ -114,6 +114,7 @@ export const useTransactions = () => {
     return () => {
       // Mark component as unmounted FIRST
       isMounted = false;
+      clearTimeout(loadingTimer);
       // Then unsubscribe to prevent any new callbacks
       unsub1();
       unsub2();
