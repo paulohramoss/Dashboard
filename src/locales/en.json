@@ -43,9 +43,11 @@
     "debt": "Debts",
     "settings": "Settings",
     "tutorial": "User Guide",
+    "faq": "FAQ",
     "challenges": "Challenges",
     "logout": "Logout",
-    "confirmLogout": "Confirm Logout?"
+    "confirmLogout": "Confirm Logout?",
+    "upgrade": "Premium"
   },
   "sidebar": {
     "pinned": "Sidebar Pinned",
@@ -147,7 +149,17 @@
       "weekly": "Weekly",
       "monthly": "Monthly",
       "yearly": "Yearly",
-      "add": "Add Transaction"
+      "add": "Add Transaction",
+      "paymentInfo": "Pay Credit Card Bill:"
+    },
+    "ai": {
+      "noDescription": "Please add a description first",
+      "suggestCategory": "Suggest category with AI",
+      "categorySuggested": "Category suggested by AI",
+      "categoryCreated": "New category created by AI! 🎉",
+      "autoCreated": "Automatically created category",
+      "error": "Error suggesting category",
+      "errorDesc": "Try again or select manually."
     },
     "table": {
       "description": "Description",
@@ -158,6 +170,7 @@
       "actions": "Actions"
     },
     "noTransactions": "No transactions found. Add one manually or import a file.",
+    "editTransaction": "Edit Transaction",
     "search": "Search",
     "searchPlaceholder": "Search by description...",
     "allTypes": "All Types",
@@ -295,7 +308,24 @@
     "keywordPlaceholder": "e.g. Starbucks, Uber",
     "selectCategory": "Select Category",
     "addRule": "Add Rule",
-    "noRules": "No custom rules defined yet."
+    "noRules": "No custom rules defined yet.",
+    "imageSizeError": "Image must be a maximum of 5MB"
+  },
+  "join": {
+    "title": "Finance Invitation",
+    "subtitle": "Join to manage the budget together.",
+    "invited": "invited you to collaborate.",
+    "description": "By accepting, you will be able to view and add transactions, categories and goals together.",
+    "accept": "Accept & Join Finances",
+    "joining": "Joining finances...",
+    "cancel": "Cancel",
+    "goToDashboard": "Go to Dashboard",
+    "invalidCode": "Invalid invitation code.",
+    "notFound": "This invitation does not exist or has expired.",
+    "loadError": "Error loading invitation.",
+    "success": "Success! Finances joined.",
+    "noDataYet": "Invitation accepted, but there was no data to share yet.",
+    "acceptError": "Error accepting invitation. Please try again."
   },
   "budgets": {
     "title": "Budgets",
@@ -398,7 +428,12 @@
     "lgpd": "100% compliant with",
     "reorder": "Reorder Accounts",
     "cancelReorder": "Cancel Reorder",
-    "saveOrder": "Save Order"
+    "saveOrder": "Save Order",
+    "availableLimit": "Available Limit",
+    "invoice": "Current Invoice",
+    "closingDay": "Closing Day",
+    "currency": "Currency",
+    "limit": "Limit"
   },
   "common": {
     "loading": "Loading...",
@@ -525,65 +560,183 @@
   },
   "tutorialPage": {
     "title": "User Guide",
-    "subtitle": "Master your finances with FinanceDash.",
+    "subtitle": "Everything you need to master your finances.",
+    "readingProgress": "Your progress",
+    "sectionsRead": "{{count}} of {{total}} sections visited",
+    "checklist": {
+      "title": "Getting Started",
+      "subtitle": "Complete these steps to unlock the full potential of FinanceDash.",
+      "progress": "{{done}} of {{total}} completed",
+      "completed": "All done! You're a FinanceDash pro. 🎉",
+      "items": {
+        "account": "Add your first account (checking, savings or credit card)",
+        "transaction": "Register your first transaction",
+        "category": "Create a custom category",
+        "budget": "Set a monthly budget for a category",
+        "goal": "Create a savings goal",
+        "import": "Import a bank statement (OFX, Excel or CSV)",
+        "report": "View your monthly report"
+      }
+    },
+    "tips": {
+      "title": "💡 Did you know?",
+      "items": {
+        "1": "You can import your bank statement directly in OFX, Excel or CSV format — no manual typing!",
+        "2": "Smart Rules automatically categorize transactions when you import bank statements.",
+        "3": "Shadow Mode lets you simulate future transactions without affecting your real balance.",
+        "4": "The AI assistant can analyze your spending and give personalized savings tips.",
+        "5": "You can share your finances with a partner via a secure invite link.",
+        "6": "Privacy Mode hides all values with a click — perfect for using in public.",
+        "7": "The Savings Challenges section lets you gamify your financial discipline!",
+        "8": "Recurring transactions automatically repeat — great for salary and subscriptions."
+      }
+    },
     "sections": {
       "intro": {
         "title": "Introduction",
-        "content": "Welcome to FinanceDash! This guide is designed to help you explore all the features of your new financial management tool. Our goal is to simplify your money management, allowing you to make smarter decisions and reach your goals."
+        "content": "Welcome to FinanceDash! This guide covers everything you need to take full control of your finances. Navigate the tabs to discover each feature — from registering transactions to advanced automation with Smart Rules.",
+        "tip": "Tip: Start by adding your bank accounts and registering your first transaction!"
       },
       "dashboard": {
         "title": "Main Dashboard",
-        "description": "The Dashboard is your command center. Here you get an immediate view of your financial health.",
+        "description": "Your financial command center — see everything at a glance.",
         "points": {
-          "1": "Summary Cards: See your current balance, income, and expenses for the month.",
-          "2": "Overview Chart: Track your balance evolution over time.",
-          "3": "Expenses by Category: Understand where your money is going."
-        }
+          "1": "Summary Cards: Total balance, monthly income and expenses updated in real time.",
+          "2": "Monthly Chart: Visualize how your balance evolved over the past months.",
+          "3": "Expenses by Category: Identify which categories consume most of your money.",
+          "4": "Financial Score: A score from 0–100 that measures your overall financial health.",
+          "5": "Month-end Forecast: Predicts your balance based on recurring transactions."
+        },
+        "tip": "Use Shadow Mode to simulate a big purchase before making it!",
+        "example": "Example: If food expenses are consistently high, consider creating a budget for that category."
       },
       "transactions": {
         "title": "Transactions",
-        "description": "The heart of the system. Record every movement to keep accurate control.",
+        "description": "The heart of the system — register every financial movement accurately.",
         "points": {
-          "1": "Add: Click the '+' or 'Add Transaction' button to log expenses or income.",
-          "2": "Import: Use the import function to bring data from your bank (OFX, Excel, CSV).",
-          "3": "Recurring: Set up repeating transactions (subscriptions, salary) or installments."
-        }
+          "1": "Add: Click '+ Add Transaction' to quickly record income or expenses.",
+          "2": "Import: Upload bank files (OFX, Excel, CSV) to import hundreds of transactions at once.",
+          "3": "Recurring: Configure transactions that repeat automatically (subscriptions, salary, rent).",
+          "4": "Installments: Split a purchase across several months automatically.",
+          "5": "AI Scan: Photograph a receipt and let the AI fill in the details automatically."
+        },
+        "tip": "Use Smart Rules to automatically categorize imported transactions.",
+        "example": "Example: Import your credit card statement and all transactions will be categorized automatically using your rules."
       },
       "planning": {
         "title": "Planning",
-        "description": "Powerful tools to organize your financial future.",
-        "budgets": "Budgets: Set spending limits for each category and receive alerts.",
-        "goals": "Goals: Create savings targets (e.g., Trip, Car) and track your progress.",
-        "debt": "Debts: Use the 'Snowball' method to plan the payoff of loans and credit cards."
+        "description": "Powerful tools to organize your financial present and future.",
+        "budgets": "Budgets: Set monthly spending limits per category. You get a real-time alert when approaching the limit.",
+        "goals": "Goals: Set a target amount and date (e.g., Japan trip for $5,000 by December). Track progress with visual charts.",
+        "debt": "Debts: Use the Snowball method to simulate and plan credit card and loan payoff.",
+        "subscriptions": "Subscriptions: Control all your recurring fixed expenses (streaming, gym, insurance) in one place.",
+        "challenges": "Challenges: Create gamified savings challenges — e.g., 'No food delivery for 7 days'.",
+        "tip": "The Rollover Budget feature carries unspent amounts forward to the next month.",
+        "example": "Example: Set a $500 budget for Food. When you reach 80%, you'll get an automatic alert."
       },
       "reports": {
         "title": "Reports",
-        "description": "Analyze your data in depth.",
-        "content": "Reports offer detailed charts on your spending habits, allowing you to identify trends and areas for savings."
+        "description": "Analyze your finances in depth and identify opportunities.",
+        "content": "Reports offer detailed charts on your spending habits. You can filter by period, category and account to get a complete picture of your financial health.",
+        "points": {
+          "1": "Financial Flow: See exactly where your money comes from and where it goes.",
+          "2": "Period Comparison: Compare current month vs. previous month and same month last year.",
+          "3": "Export PDF: Download a complete financial report to share or archive.",
+          "4": "Send by Email: Receive the report directly in your inbox.",
+          "5": "Smart Insights: Automatic alerts when a category spending is above your average."
+        },
+        "tip": "Use the comparison view to identify months where you overspent.",
+        "example": "Example: In the comparison view, if Food in March is 40% higher than February, it signals an unusual spending."
       },
       "accounts": {
         "title": "Accounts",
-        "description": "Manage all your resource sources.",
-        "content": "Register your bank accounts, physical wallets, and credit cards. Keep balances updated for trustworthy control."
+        "description": "Manage all your financial sources in one place.",
+        "content": "Register your checking accounts, savings, credit cards, cash, and investments. FinanceDash calculates balances automatically based on your transactions.",
+        "points": {
+          "1": "Multiple Accounts: Checking, savings, credit card, cash, investment or loan.",
+          "2": "Automatic Balance: Calculated in real time based on all transactions.",
+          "3": "Credit Card Invoice: See the outstanding invoice value for each credit card.",
+          "4": "Currency: Each account can have a different currency (BRL, USD, EUR, etc.).",
+          "5": "Reorder: Drag and drop to organize accounts in your preferred order."
+        },
+        "tip": "Set the initial balance when creating an account so the current balance is always accurate.",
+        "example": "Example: Create a 'Nubank' account of type Credit Card, set the limit as initial balance, and see the invoice updated automatically."
       },
       "goals": {
         "title": "Goals and Targets",
-        "description": "Turn dreams into reality with planning.",
+        "description": "Turn your dreams into concrete, achievable plans.",
         "points": {
-          "1": "Create Goal: Set a target amount and date (e.g., Trip, New Car).",
-          "2": "Tracking: See percentage progress and how much is left to save.",
-          "3": "Allocation: Reserve money specifically for each goal."
-        }
+          "1": "Create Goal: Set a name, target amount and date (e.g., 'Japan Trip — $8,000 — December').",
+          "2": "Progress: Visual bar showing percentage achieved and amount remaining.",
+          "3": "Allocation: Reserve specific amounts from your accounts directly to the goal.",
+          "4": "Automatic: Each allocation is recorded as a transaction in your history.",
+          "5": "Celebrate: When you reach 100%, FinanceDash celebrates with you! 🎉"
+        },
+        "tip": "Create a separate savings account exclusively for goals to make tracking easier.",
+        "example": "Example: Set aside $300/month toward a Japan trip goal of $3,600 for a 12-month plan."
       },
       "shared": {
         "title": "Shared Finances",
-        "description": "Manage family or couple budgets together.",
-        "content": "Invite partners via secure link to view and edit the same transactions, accounts and categories. Ideal for couples or business partners."
+        "description": "Manage family or couple finances together in real time.",
+        "content": "Invite your partner, spouse or business partner via a secure one-time link. Once connected, you both see and can edit the same transactions, categories, accounts and goals.",
+        "points": {
+          "1": "Secure Invite: Generate a link that expires after first use.",
+          "2": "Real-time Sync: Changes made by one person appear immediately for the other.",
+          "3": "Shared Control: Both can add, edit and delete transactions.",
+          "4": "Author Tag: Transactions show who added them — 'Created by partner'.",
+          "5": "Ideal for: Couples, families, or business partners sharing expenses."
+        },
+        "tip": "Keep categories organized so both people can find transactions easily.",
+        "example": "Example: You add the grocery expense on your phone. Your partner sees it immediately on theirs."
       },
       "rules": {
         "title": "Smart Rules",
         "description": "Automate your financial organization and save time.",
-        "content": "Create automatic rules (e.g., 'If description contains Uber, categorize as Transport'). This is especially useful when importing bank statements, categorizing everything automatically."
+        "content": "Create automatic categorization rules based on keywords. Every time a transaction description matches a keyword, FinanceDash categorizes it automatically.",
+        "points": {
+          "1": "Create Rule: Define a keyword (e.g., 'Uber') and its category (Transport).",
+          "2": "Auto-categorize: Applied automatically when adding or importing transactions.",
+          "3": "Priority: Custom rules take precedence over the built-in keyword map.",
+          "4": "Import Power: Import 200 transactions from your bank — all categorized instantly.",
+          "5": "AI Suggestion: FinanceDash suggests saving a rule when you repeatedly categorize the same description."
+        },
+        "tip": "After importing your first bank statement, create rules for your most frequent merchants.",
+        "example": "Example: Rule 'ifood' → Food. Rule 'Nubank' → Credit Card. Now every import is automatic!"
+      },
+      "challenges": {
+        "title": "Savings Challenges",
+        "description": "Gamify your financial discipline and prove to yourself you can do it.",
+        "points": {
+          "1": "Choose a Template: 'No delivery for 7 days', 'No clothes for 30 days', and more.",
+          "2": "Create Custom: Set your own category, target and duration.",
+          "3": "Automatic Tracking: FinanceDash monitors your transactions and alerts you to violations.",
+          "4": "Results: See how much you spent vs. how much you saved during the challenge.",
+          "5": "Motivation: Completed challenges add to your financial discipline history."
+        },
+        "tip": "Start with a short 7-day challenge to build the habit before committing to longer ones.",
+        "example": "Example: 'No Leisure for 14 days' — if you spend on cinema or streaming during the period, you'll be notified immediately."
+      }
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "subtitle": "Quick answers to the most common questions.",
+      "items": {
+        "q1": "Why doesn't my balance match my bank statement?",
+        "a1": "Make sure you've added all transactions and set the correct initial balance when creating the account. Use 'Recalculate Balances' in Settings if needed.",
+        "q2": "How do I delete a recurring transaction?",
+        "a2": "Go to Transactions, find the recurring transaction and click delete. You can choose to delete only that occurrence or all future ones.",
+        "q3": "Can I use FinanceDash on my phone?",
+        "a3": "Yes! Install the app directly from the browser — click the install icon in the address bar or use the 'Install App' option.",
+        "q4": "How do I import with automatic categorization?",
+        "a4": "First create your Smart Rules in Settings → Smart Rules. Then import the file in Transactions → Upload File. All matching rules are applied automatically.",
+        "q5": "Is my data secure?",
+        "a5": "Yes. Your data is stored exclusively in your Firebase account, fully encrypted. We never access your financial information.",
+        "q6": "How does credit card management work?",
+        "a6": "Create an account of type 'Credit Card'. The current invoice is automatically calculated from your expenses. You can transfer to pay the bill.",
+        "q7": "What is Shadow Mode?",
+        "a7": "Shadow Mode lets you add simulated transactions to see how they would affect your balance — without those expenses appearing in your real history.",
+        "q8": "Can I use the app without internet?",
+        "a8": "Yes! After the first load, FinanceDash works offline. Changes are synced automatically when the connection is restored."
       }
     }
   },
@@ -630,7 +783,8 @@
     "dueTodayBody": "The transaction '{{description}}' is due today.",
     "dueTomorrowBody": "The transaction '{{description}}' is due tomorrow.",
     "budgetWarningTitle": "Budget Warning",
-    "budgetWarningBody": "You've used {{percent}}% of your budget for '{{category}}'."
+    "budgetWarningBody": "You've used {{percent}}% of your budget for '{{category}}'.",
+    "enabledSuccess": "Notifications enabled successfully!"
   },
   "assistant": {
     "title": "Financial Assistant",
@@ -645,7 +799,8 @@
       "title": "Clear Conversation?",
       "description": "This action will remove all message history from this conversation. You will not be able to undo this action.",
       "confirm": "Clear Conversation"
-    }
+    },
+    "premiumOnly": "AI Assistant — Premium"
   },
   "challenges": {
     "title": "Savings Challenges",
@@ -748,5 +903,87 @@
     "error": "Error processing image.",
     "buttonLabel": "Scan Receipt",
     "autoCreated": "Transaction created automatically! 📸"
+  },
+  "premium": {
+    "feature": "Premium Feature",
+    "description": "This feature is available on the Premium plan only. Upgrade to unlock it.",
+    "upgrade": "Upgrade",
+    "viewPlans": "View Plans",
+    "limitReached": "Free plan limit reached",
+    "upgradeToAdd": "Upgrade to Premium to add more.",
+    "badge": "Premium",
+    "nav": "Upgrade to Premium"
+  },
+  "upgrade": {
+    "badge": "FinanceDash Premium",
+    "title": "Choose the plan that's right for you",
+    "subtitle": "Unlock the full potential of FinanceDash with Premium and take complete control of your finances.",
+    "alreadyPremium": "You're already Premium! Enjoy all features.",
+    "recommended": "Most popular",
+    "currentPlan": "Current plan",
+    "choosePlan": "Subscribe now",
+    "month": "month",
+    "year": "year",
+    "perMonth": "~{{value}}/month",
+    "discount": "{{pct}}% discount",
+    "featuresTitle": "Everything Premium includes",
+    "faqTitle": "Frequently asked questions",
+    "plans": {
+      "free": "Free",
+      "premiumMonthly": "Premium Monthly",
+      "premiumYearly": "Premium Yearly"
+    },
+    "features": {
+      "transactions": "Up to {{count}} transactions/month",
+      "accounts": "Up to {{count}} accounts",
+      "goals": "Up to {{count}} goals",
+      "categories": "Up to {{count}} custom categories",
+      "basicReports": "Basic reports (monthly)",
+      "calendar": "Financial calendar",
+      "pwa": "Installable app (PWA)",
+      "ai": "AI Assistant (Gemini)",
+      "import": "Import CSV / Excel / OFX",
+      "export": "Export PDF / Excel",
+      "debt": "Debt calculator",
+      "challenges": "Spending challenges",
+      "sharedFinance": "Shared finances",
+      "emailReports": "Email reports",
+      "unlimitedAll": "Unlimited everything",
+      "unlimitedTransactions": "Unlimited transactions",
+      "unlimitedAccounts": "Unlimited accounts",
+      "unlimitedGoals": "Unlimited goals",
+      "unlimitedCategories": "Unlimited categories",
+      "advancedReports": "Advanced reports (Sankey, comparison)"
+    },
+    "highlight": {
+      "ai": "Financial AI",
+      "advancedReports": "Advanced Reports",
+      "import": "Import",
+      "export": "Export",
+      "unlimitedRecurring": "Unlimited Recurring",
+      "unlimitedGoals": "Unlimited Goals",
+      "debt": "Debt Calculator",
+      "challenges": "Challenges",
+      "sharedFinance": "Shared Finances",
+      "autoCateg": "Auto-categorization",
+      "emailReports": "Email Reports",
+      "ocr": "Receipt Scanner",
+      "forecast": "Balance Forecast"
+    },
+    "faq": {
+      "q1": "Can I cancel at any time?",
+      "a1": "Yes! You can cancel your subscription at any time and will retain Premium access until the end of the paid period.",
+      "q2": "Are my data safe on the free plan?",
+      "a2": "Absolutely. Your data is always yours, regardless of plan. On Free, only some features are disabled.",
+      "q3": "How does the upgrade work?",
+      "a3": "Just click 'Subscribe now' and you'll be redirected to complete payment securely. Premium access is activated immediately."
+    }
+  },
+  "limitReached": {
+    "transactions": "Limit of {{limit}} transactions/month reached. Upgrade to Premium.",
+    "accounts": "Limit of {{limit}} accounts reached. Upgrade to Premium.",
+    "goals": "Limit of {{limit}} goals reached. Upgrade to Premium.",
+    "categories": "Limit of {{limit}} custom categories reached. Upgrade to Premium.",
+    "recurring": "Limit of {{limit}} recurring transactions reached. Upgrade to Premium."
   }
 }

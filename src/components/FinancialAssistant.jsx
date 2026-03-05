@@ -11,14 +11,28 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { MessageCircle, X, Send, Sparkles, Trash2, AlertTriangle } from "lucide-react";
+import {
+  MessageCircle,
+  X,
+  Send,
+  Trash2,
+  AlertTriangle,
+  Sparkles,
+} from "lucide-react";
 
 export default function FinancialAssistant() {
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [showClearModal, setShowClearModal] = useState(false);
-  const { messages, sendMessage, clearChat, loading, proactiveInsights, triggerProactiveInsight } = useFinancialChat();
+  const {
+    messages,
+    sendMessage,
+    clearChat,
+    loading,
+    proactiveInsights,
+    triggerProactiveInsight,
+  } = useFinancialChat();
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
@@ -39,7 +53,7 @@ export default function FinancialAssistant() {
           : "en";
       triggerProactiveInsight(language);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
 
   const handleSend = async (e) => {
@@ -127,17 +141,20 @@ export default function FinancialAssistant() {
             {messages.map((msg, idx) => (
               <div
                 key={idx}
-                className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
+                className={`flex ${
+                  msg.role === "user" ? "justify-end" : "justify-start"
+                }`}
               >
                 <div
-                  className={`max-w-[80%] rounded-lg px-4 py-2 ${msg.role === "user"
+                  className={`max-w-[80%] rounded-lg px-4 py-2 ${
+                    msg.role === "user"
                       ? "bg-primary text-primary-foreground"
                       : msg.isError
-                        ? "bg-red-100 dark:bg-red-900/30 text-red-900 dark:text-red-100"
-                        : msg.isCoach
-                          ? "bg-amber-50 dark:bg-amber-900/20 text-amber-900 dark:text-amber-100 border border-amber-200 dark:border-amber-800"
-                          : "bg-muted text-foreground"
-                    }`}
+                      ? "bg-red-100 dark:bg-red-900/30 text-red-900 dark:text-red-100"
+                      : msg.isCoach
+                      ? "bg-amber-50 dark:bg-amber-900/20 text-amber-900 dark:text-amber-100 border border-amber-200 dark:border-amber-800"
+                      : "bg-muted text-foreground"
+                  }`}
                 >
                   <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
                   <p className="text-xs opacity-60 mt-1">
@@ -234,7 +251,7 @@ export default function FinancialAssistant() {
             <DialogDescription className="text-base pt-2">
               {t(
                 "assistant.clearModal.description",
-                "Esta ação removerá todo o histórico de mensagens desta conversa. Você não poderá desfazer esta ação."
+                "Esta ação removerá todo o histórico de mensagens desta conversa. Você não poderá desfazer esta ação.",
               )}
             </DialogDescription>
           </DialogHeader>

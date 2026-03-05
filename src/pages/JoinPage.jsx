@@ -23,8 +23,10 @@ import {
 } from "@/components/ui/card";
 import { Loader2, CheckCircle, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 const JoinPage = () => {
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const inviteCode = searchParams.get("code");
   const navigate = useNavigate();
@@ -41,14 +43,14 @@ const JoinPage = () => {
       // Save current URL to redirect back after login
       sessionStorage.setItem(
         "redirectAfterLogin",
-        window.location.pathname + window.location.search
+        window.location.pathname + window.location.search,
       );
       navigate("/login");
       return;
     }
 
     if (!inviteCode) {
-      setError("Código de convite inválido.");
+      setError(t("join.invalidCode"));
       setLoading(false);
       return;
     }
@@ -61,18 +63,18 @@ const JoinPage = () => {
         if (snapshot.exists()) {
           setInviteData({ id: snapshot.id, ...snapshot.data() });
         } else {
-          setError("Este convite não existe ou expirou.");
+          setError(t("join.notFound"));
         }
       } catch (err) {
         console.error(err);
-        setError("Erro ao carregar convite.");
+        setError(t("join.loadError"));
       } finally {
         setLoading(false);
       }
     };
 
     fetchInvite();
-  }, [user, authLoading, inviteCode, navigate]);
+  }, [user, authLoading, inviteCode, navigate, t]);
 
   const handleAccept = async () => {
     if (!user || !inviteData) return;
@@ -81,10 +83,6 @@ const JoinPage = () => {
     try {
       const batch = writeBatch(db);
       const ownerId = inviteData.createdBy;
-
-      // 1. Fetch Key Collections of the Owner
-      // Note: We are limiting to prevent massive reads, but assuming reasonable usage.
-      // Ideally, specific "shared" config docs would be better, but we are patching "self-join".
 
       const collectionsToUpdate = [
         "categories",
@@ -97,7 +95,7 @@ const JoinPage = () => {
       for (const colName of collectionsToUpdate) {
         const q = query(
           collection(db, colName),
-          where("userId", "==", ownerId)
+          where("userId", "==", ownerId),
         );
         const snapshot = await getDocs(q);
 
@@ -114,19 +112,17 @@ const JoinPage = () => {
 
       if (operationCount > 0) {
         await batch.commit();
-        toast.success("Sucesso! Finanças unidas.");
+        toast.success(t("join.success"));
       } else {
         // Even if no docs, we delete invite
         await deleteDoc(doc(db, "invites", inviteCode));
-        toast.success(
-          "Convite aceite, mas não havia dados para partilhar ainda."
-        );
+        toast.success(t("join.noDataYet"));
       }
 
       navigate("/");
     } catch (err) {
       console.error("Error accepting invite:", err);
-      toast.error("Erro ao aceitar convite. Tente novamente.");
+      toast.error(t("join.acceptError"));
     } finally {
       setProcessing(false);
     }
@@ -144,10 +140,8 @@ const JoinPage = () => {
     <div className="flex items-center justify-center min-h-screen bg-background p-4">
       <Card className="max-w-md w-full border-2 shadow-lg">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl">Convite de Finanças</CardTitle>
-          <CardDescription>
-            Junte-se para gerir o orçamento em equipa.
-          </CardDescription>
+          <CardTitle className="text-2xl">{t("join.title")}</CardTitle>
+          <CardDescription>{t("join.subtitle")}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           {error ? (
@@ -157,7 +151,7 @@ const JoinPage = () => {
               </div>
               <p className="text-destructive font-medium">{error}</p>
               <Button onClick={() => navigate("/")} variant="outline">
-                Ir para Dashboard
+                {t("join.goToDashboard")}
               </Button>
             </div>
           ) : (
@@ -168,12 +162,10 @@ const JoinPage = () => {
 
               <div className="space-y-2">
                 <p className="text-lg">
-                  <strong>{inviteData?.ownerName}</strong> convidou você para
-                  colaborar.
+                  <strong>{inviteData?.ownerName}</strong> {t("join.invited")}
                 </p>
                 <p className="text-muted-foreground text-sm">
-                  Ao aceitar, você poderá ver e adicionar transações, categorias
-                  e objetivos em conjunto.
+                  {t("join.description")}
                 </p>
               </div>
 
@@ -186,11 +178,11 @@ const JoinPage = () => {
                 >
                   {processing ? (
                     <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />A unir
-                      finanças...
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      {t("join.joining")}
                     </>
                   ) : (
-                    "Aceitar e Unir Finanças"
+                    t("join.accept")
                   )}
                 </Button>
                 <Button
@@ -198,7 +190,7 @@ const JoinPage = () => {
                   onClick={() => navigate("/")}
                   disabled={processing}
                 >
-                  Cancelar
+                  {t("join.cancel")}
                 </Button>
               </div>
             </div>

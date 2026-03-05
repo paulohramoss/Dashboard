@@ -16,7 +16,6 @@ import OfflineBanner from "@/components/OfflineBanner";
 import UpdatePrompt from "@/components/UpdatePrompt";
 import { Toaster } from "sonner";
 import VersionChecker from "@/components/VersionChecker";
-
 // Lazy loaded pages
 const TransactionsPage = lazy(() => import("@/pages/TransactionsPage"));
 const ReportsPage = lazy(() => import("@/pages/ReportsPage"));
@@ -37,7 +36,6 @@ const DebtSnowballPage = lazy(() => import("@/pages/DebtSnowballPage"));
 const TutorialPage = lazy(() => import("@/pages/TutorialPage"));
 const JoinPage = lazy(() => import("@/pages/JoinPage")); // New Route
 const ChallengesPage = lazy(() => import("@/pages/ChallengesPage"));
-
 const ProtectedRoute = ({ children }) => {
   const { user } = useAuth();
   if (!user) {

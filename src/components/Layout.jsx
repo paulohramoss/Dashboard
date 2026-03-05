@@ -20,6 +20,7 @@ import {
   TrendingDown,
   BookOpen,
   Swords,
+  HelpCircle,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -124,6 +125,7 @@ const Layout = ({ children }) => {
     { icon: PieChart, label: t("nav.reports"), path: "/reports" },
     { icon: Swords, label: t("nav.challenges"), path: "/challenges" },
     { icon: BookOpen, label: t("nav.tutorial"), path: "/tutorial" },
+    { icon: HelpCircle, label: t("nav.faq"), path: "/faq" },
     { icon: Settings, label: t("nav.settings"), path: "/settings" },
   ];
 
@@ -210,32 +212,34 @@ const Layout = ({ children }) => {
             className="p-4 space-y-2 flex-1 overflow-y-auto"
           >
             {navItems.map((item, index) => (
-              <Link
-                key={index}
-                to={item.path}
-                onClick={() => setIsSidebarOpen(false)}
-                id={
-                  item.path === "/transactions" ? "nav-transactions" : undefined
-                }
-                className={cn(
-                  "flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-md transition-all duration-200 overflow-hidden",
-                  location.pathname === item.path
-                    ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
-                  !isExpanded && "lg:justify-center lg:px-2",
-                )}
-              >
-                <item.icon className={cn("h-5 w-5 flex-shrink-0")} />
-                <span
+                <Link
+                  key={index}
+                  to={item.path}
+                  onClick={() => setIsSidebarOpen(false)}
+                  id={
+                    item.path === "/transactions"
+                      ? "nav-transactions"
+                      : undefined
+                  }
                   className={cn(
-                    "transition-all duration-300 opacity-100",
-                    !isExpanded && "lg:opacity-0 lg:w-0 lg:hidden",
+                    "flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-md transition-all duration-200 overflow-hidden",
+                    location.pathname === item.path
+                      ? "bg-primary text-primary-foreground"
+                      : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
+                    !isExpanded && "lg:justify-center lg:px-2",
                   )}
                 >
-                  {item.label}
-                </span>
-              </Link>
-            ))}
+                  <item.icon className={cn("h-5 w-5 flex-shrink-0")} />
+                  <span
+                    className={cn(
+                      "flex-1 transition-all duration-300 opacity-100",
+                      !isExpanded && "lg:opacity-0 lg:w-0 lg:hidden",
+                    )}
+                  >
+                    {item.label}
+                  </span>
+                </Link>
+              ))}
 
             <button
               onClick={() => {
