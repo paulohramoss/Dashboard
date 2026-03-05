@@ -61,7 +61,12 @@ export const useGoals = () => {
         results2 = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
         handleUpdate();
       },
-      (err) => console.error("Error fetching shared goals:", err),
+      (err) => {
+        if (err.code !== "permission-denied") {
+          console.error("Error fetching shared goals:", err);
+        }
+        setLoading(false);
+      },
     );
 
     return () => {

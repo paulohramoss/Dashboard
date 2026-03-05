@@ -80,10 +80,9 @@ const RegisterPage = () => {
     setGoogleLoading(true);
     try {
       await loginWithGoogle();
-      navigate("/");
+      // signInWithRedirect will navigate away — no further action needed here
     } catch {
       setError(t("auth.createAccountError"));
-    } finally {
       setGoogleLoading(false);
     }
   };

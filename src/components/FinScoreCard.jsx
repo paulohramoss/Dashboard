@@ -67,7 +67,7 @@ const FinScoreCard = () => {
               t.type === "expense" &&
               t.category === cat.name &&
               new Date(t.date).getMonth() === currentMonth &&
-              new Date(t.date).getFullYear() === currentYear
+              new Date(t.date).getFullYear() === currentYear,
           )
           .reduce((acc, curr) => acc + parseFloat(curr.amount), 0);
 
@@ -159,7 +159,7 @@ const FinScoreCard = () => {
                   <p>
                     {t(
                       "finscore.tooltip",
-                      "Pontuação baseada em poupança, orçamento, reserva e dívidas."
+                      "Pontuação baseada em poupança, orçamento, reserva e dívidas.",
                     )}
                   </p>
                 </TooltipContent>
@@ -169,8 +169,11 @@ const FinScoreCard = () => {
         </div>
       </CardHeader>
       <CardContent className="flex-1 flex flex-col items-center justify-center min-h-[160px] relative">
-        <div className="w-full h-full absolute inset-0 flex items-center justify-center">
-          <ResponsiveContainer width="100%" height="100%">
+        <div
+          className="w-full h-full absolute inset-0 flex items-center justify-center"
+          style={{ minHeight: 160 }}
+        >
+          <ResponsiveContainer width="100%" height="100%" minHeight={160}>
             <PieChart>
               <Pie
                 data={data}

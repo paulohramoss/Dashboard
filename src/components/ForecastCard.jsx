@@ -21,9 +21,21 @@ import {
 import { formatDate } from "@/utils/dateUtils";
 
 const confidenceConfig = {
-  high:   { labelKey: "dashboard.forecastConfidenceHigh",   fallback: "Alta confiança",  cls: "text-green-700 dark:text-green-400 bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800" },
-  medium: { labelKey: "dashboard.forecastConfidenceMedium", fallback: "Confiança média", cls: "text-yellow-700 dark:text-yellow-400 bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800" },
-  low:    { labelKey: "dashboard.forecastConfidenceLow",    fallback: "Pouco histórico", cls: "text-orange-700 dark:text-orange-400 bg-orange-50 dark:bg-orange-900/20 border-orange-200 dark:border-orange-800" },
+  high: {
+    labelKey: "dashboard.forecastConfidenceHigh",
+    fallback: "Alta confiança",
+    cls: "text-green-700 dark:text-green-400 bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800",
+  },
+  medium: {
+    labelKey: "dashboard.forecastConfidenceMedium",
+    fallback: "Confiança média",
+    cls: "text-yellow-700 dark:text-yellow-400 bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800",
+  },
+  low: {
+    labelKey: "dashboard.forecastConfidenceLow",
+    fallback: "Pouco histórico",
+    cls: "text-orange-700 dark:text-orange-400 bg-orange-50 dark:bg-orange-900/20 border-orange-200 dark:border-orange-800",
+  },
 };
 
 const ForecastCard = ({ forecast, amount, confidence, monthsAnalyzed }) => {
@@ -80,21 +92,21 @@ const ForecastCard = ({ forecast, amount, confidence, monthsAnalyzed }) => {
             "h-8 w-8 rounded-full flex items-center justify-center bg-gray-50 dark:bg-gray-800",
             isPositive
               ? "bg-green-100 dark:bg-green-900/30"
-              : "bg-red-100 dark:bg-red-900/30"
+              : "bg-red-100 dark:bg-red-900/30",
           )}
         >
           {isPositive ? (
             <TrendingUp
               className={cn(
                 "h-4 w-4",
-                isPositive ? "text-green-600" : "text-red-600"
+                isPositive ? "text-green-600" : "text-red-600",
               )}
             />
           ) : (
             <TrendingDown
               className={cn(
                 "h-4 w-4",
-                isPositive ? "text-green-600" : "text-red-600"
+                isPositive ? "text-green-600" : "text-red-600",
               )}
             />
           )}
@@ -105,7 +117,7 @@ const ForecastCard = ({ forecast, amount, confidence, monthsAnalyzed }) => {
           className={cn(
             "font-bold flex items-center gap-2 tracking-tight",
             getFontSize(formattedAmount),
-            isPositive ? "text-green-600" : "text-red-600"
+            isPositive ? "text-green-600" : "text-red-600",
           )}
         >
           {formattedAmount}
@@ -114,12 +126,26 @@ const ForecastCard = ({ forecast, amount, confidence, monthsAnalyzed }) => {
           <p className="text-xs text-muted-foreground mt-1">
             {t("dashboard.forecastDesc", "Saldo estimado")}
           </p>
-          {confidence && confidence !== "none" && confidenceConfig[confidence] && (
-            <span className={cn("text-[10px] font-medium px-1.5 py-0.5 rounded border mt-1 inline-block", confidenceConfig[confidence].cls)}>
-              {t(confidenceConfig[confidence].labelKey, confidenceConfig[confidence].fallback)}
-              {monthsAnalyzed > 0 && ` • ${monthsAnalyzed} ${t("dashboard.forecastMonths", "meses")}`}
-            </span>
-          )}
+          {confidence &&
+            confidence !== "none" &&
+            confidenceConfig[confidence] && (
+              <span
+                className={cn(
+                  "text-[10px] font-medium px-1.5 py-0.5 rounded border mt-1 inline-block",
+                  confidenceConfig[confidence].cls,
+                )}
+              >
+                {t(
+                  confidenceConfig[confidence].labelKey,
+                  confidenceConfig[confidence].fallback,
+                )}
+                {monthsAnalyzed > 0 &&
+                  ` • ${monthsAnalyzed} ${t(
+                    "dashboard.forecastMonths",
+                    "meses",
+                  )}`}
+              </span>
+            )}
           {riskDate && (
             <p className="text-[10px] text-yellow-600 dark:text-yellow-500 font-medium mt-0.5 truncate">
               {t("dashboard.forecastWarning", { date: formatDate(riskDate) })}
@@ -129,8 +155,11 @@ const ForecastCard = ({ forecast, amount, confidence, monthsAnalyzed }) => {
       </CardContent>
 
       {/* Mini Chart Background */}
-      <div className="absolute bottom-0 left-0 right-0 h-16 opacity-20 pointer-events-none">
-        <ResponsiveContainer width="100%" height="100%">
+      <div
+        className="absolute bottom-0 left-0 right-0 h-16 opacity-20 pointer-events-none"
+        style={{ minHeight: 64 }}
+      >
+        <ResponsiveContainer width="100%" height="100%" minHeight={64}>
           <AreaChart data={forecast}>
             <defs>
               <linearGradient id="colorBalance" x1="0" y1="0" x2="0" y2="1">

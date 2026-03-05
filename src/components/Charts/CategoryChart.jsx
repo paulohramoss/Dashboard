@@ -47,7 +47,7 @@ const CategoryChart = ({ transactions }) => {
       </CardHeader>
       <CardContent>
         <div style={{ width: "100%", height: 350, minHeight: 350 }}>
-          <ResponsiveContainer>
+          <ResponsiveContainer width="100%" height="100%" minHeight={350}>
             <PieChart>
               <Pie
                 data={data}

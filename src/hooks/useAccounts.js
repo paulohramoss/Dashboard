@@ -90,9 +90,13 @@ export const useAccounts = () => {
         handleUpdate();
       },
       (err) => {
-        console.error("Error fetching shared accounts:", err);
+        // Silently ignore: new users without a partner always get permission denied here
+        if (err.code !== "permission-denied") {
+          console.error("Error fetching shared accounts:", err);
+        }
         if (isMounted) {
-          setLoading(false);
+          resultsRef.bothLoaded.q2 = true;
+          handleUpdate();
         }
       },
     );

@@ -104,9 +104,13 @@ export const useTransactions = () => {
         handleUpdate();
       },
       (error) => {
-        console.error("Error fetching shared transactions:", error);
+        // Silently ignore: new users without a partner always get permission denied here
+        if (error.code !== "permission-denied") {
+          console.error("Error fetching shared transactions:", error);
+        }
         if (isMounted) {
-          setLoading(false);
+          resultsRef.bothLoaded.q2 = true;
+          handleUpdate();
         }
       },
     );

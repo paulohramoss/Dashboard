@@ -31,12 +31,12 @@ export const useRules = () => {
 
     const q1 = query(
       collection(db, "userRules"),
-      where("userId", "==", user.id)
+      where("userId", "==", user.id),
     );
 
     const q2 = query(
       collection(db, "userRules"),
-      where("allowedUsers", "array-contains", user.id)
+      where("allowedUsers", "array-contains", user.id),
     );
 
     let results1 = [];
@@ -45,7 +45,7 @@ export const useRules = () => {
     const handleUpdate = () => {
       const allDocs = [...results1, ...results2];
       const uniqueDocs = Array.from(
-        new Map(allDocs.map((item) => [item.id, item])).values()
+        new Map(allDocs.map((item) => [item.id, item])).values(),
       );
       uniqueDocs.sort((a, b) => a.keyword.localeCompare(b.keyword));
       setRules(uniqueDocs);
@@ -58,7 +58,7 @@ export const useRules = () => {
         results1 = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
         handleUpdate();
       },
-      (err) => console.error("Error fetching owned rules:", err)
+      (err) => console.error("Error fetching owned rules:", err),
     );
 
     const unsub2 = onSnapshot(
@@ -67,7 +67,12 @@ export const useRules = () => {
         results2 = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
         handleUpdate();
       },
-      (err) => console.error("Error fetching shared rules:", err)
+      (err) => {
+        if (err.code !== "permission-denied") {
+          console.error("Error fetching shared rules:", err);
+        }
+        setLoading(false);
+      },
     );
 
     return () => {
@@ -82,7 +87,7 @@ export const useRules = () => {
 
       // Check for duplicates
       const exists = rules.some(
-        (r) => r.keyword.toLowerCase() === rule.keyword.toLowerCase()
+        (r) => r.keyword.toLowerCase() === rule.keyword.toLowerCase(),
       );
       if (exists) {
         toast.error(t("rules.exists"));

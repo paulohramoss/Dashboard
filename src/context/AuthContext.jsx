@@ -9,7 +9,8 @@ import {
   updateProfile,
   sendPasswordResetEmail,
   GoogleAuthProvider,
-  signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
 } from "firebase/auth";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
@@ -18,6 +19,11 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Handle the result of a Google redirect sign-in
+    getRedirectResult(auth).catch(() => {
+      // Ignore — no redirect in progress or user cancelled
+    });
+
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       if (currentUser) {
         setUser({
@@ -80,14 +86,8 @@ export const AuthProvider = ({ children }) => {
   const loginWithGoogle = async () => {
     try {
       const provider = new GoogleAuthProvider();
-      const result = await signInWithPopup(auth, provider);
-      const u = result.user;
-      setUser({
-        id: u.uid,
-        email: u.email,
-        name: u.displayName || u.email.split("@")[0],
-        photoURL: u.photoURL,
-      });
+      await signInWithRedirect(auth, provider);
+      // Navigation happens after redirect returns (onAuthStateChanged handles it)
       return true;
     } catch (error) {
       console.error("Google login error:", error);

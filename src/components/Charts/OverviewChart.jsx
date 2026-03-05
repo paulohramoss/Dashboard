@@ -191,7 +191,7 @@ const OverviewChart = ({ transactions, forecastData = [], currentBalance }) => {
           </div>
         </div>
         <div style={{ width: "100%", height: 300, minHeight: 300 }}>
-          <ResponsiveContainer>
+          <ResponsiveContainer width="100%" height="100%" minHeight={300}>
             <ComposedChart data={data}>
               <defs>
                 <linearGradient id="colorIncome" x1="0" y1="0" x2="0" y2="1">
