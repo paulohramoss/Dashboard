@@ -143,9 +143,13 @@ export const useCategories = () => {
         handleUpdate();
       },
       (error) => {
-        console.error("Error fetching shared categories:", error);
+        // Silently ignore: new users without a partner always get permission denied here
+        if (error.code !== "permission-denied") {
+          console.error("Error fetching shared categories:", error);
+        }
         if (isMounted) {
-          setLoading(false);
+          resultsRef.bothLoaded.q2 = true;
+          handleUpdate();
         }
       },
     );

@@ -45,12 +45,12 @@ export const useChallenges = () => {
 
     const q1 = query(
       collection(db, "challenges"),
-      where("userId", "==", user.id)
+      where("userId", "==", user.id),
     );
 
     const q2 = query(
       collection(db, "challenges"),
-      where("allowedUsers", "array-contains", user.id)
+      where("allowedUsers", "array-contains", user.id),
     );
 
     const unsub1 = onSnapshot(
@@ -65,7 +65,7 @@ export const useChallenges = () => {
         console.error("Error fetching challenges:", err);
         resultsRef.loaded.q1 = true;
         if (isMounted) handleUpdate();
-      }
+      },
     );
 
     const unsub2 = onSnapshot(
@@ -77,10 +77,12 @@ export const useChallenges = () => {
         handleUpdate();
       },
       (err) => {
-        console.error("Error fetching shared challenges:", err);
+        if (err.code !== "permission-denied") {
+          console.error("Error fetching shared challenges:", err);
+        }
         resultsRef.loaded.q2 = true;
         if (isMounted) handleUpdate();
-      }
+      },
     );
 
     return () => {
@@ -111,5 +113,11 @@ export const useChallenges = () => {
     await deleteDoc(doc(db, "challenges", id));
   };
 
-  return { challenges, loading, addChallenge, updateChallenge, deleteChallenge };
+  return {
+    challenges,
+    loading,
+    addChallenge,
+    updateChallenge,
+    deleteChallenge,
+  };
 };

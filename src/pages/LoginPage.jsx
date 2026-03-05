@@ -63,10 +63,9 @@ const LoginPage = () => {
     setGoogleLoading(true);
     try {
       await loginWithGoogle();
-      navigate("/");
+      // signInWithRedirect will navigate away — no further action needed here
     } catch {
       setError(t("auth.invalidCredentials"));
-    } finally {
       setGoogleLoading(false);
     }
   };
