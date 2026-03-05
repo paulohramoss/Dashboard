@@ -11,7 +11,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { MessageCircle, X, Send, Trash2, AlertTriangle } from "lucide-react";
+import {
+  MessageCircle,
+  X,
+  Send,
+  Trash2,
+  AlertTriangle,
+  Sparkles,
+} from "lucide-react";
 
 export default function FinancialAssistant() {
   const { t } = useTranslation();
