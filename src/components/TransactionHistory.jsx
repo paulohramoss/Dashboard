@@ -196,15 +196,15 @@ const TransactionHistory = ({
       <CardHeader>
         <CardTitle>{t("transactions.title")}</CardTitle>
       </CardHeader>
-      <CardContent className="flex-1 p-0 md:p-6 pt-0">
-        <div className="space-y-4 h-full">
+      <CardContent className="flex-1 p-0 md:p-6 pt-0 overflow-hidden">
+        <div className="h-full flex flex-col overflow-hidden">
           {transactions.length === 0 ? (
             <p className="text-center text-muted-foreground py-8">
               {t("transactions.noTransactions")}
             </p>
           ) : limit || transactions.length < 200 ? (
             // Simple map for Dashboard or small lists
-            <div className="space-y-2">
+            <div className="space-y-2 overflow-y-auto flex-1 pr-1">
               {transactions
                 .slice(0, limit || transactions.length)
                 .map((transaction, index) => (
