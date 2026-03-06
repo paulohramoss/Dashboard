@@ -16,11 +16,16 @@ export const usePremium = () => {
   const { user } = useAuth();
   const [isPremium, setIsPremium] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [prevUserId, setPrevUserId] = useState(user?.id);
+
+  if (user?.id !== prevUserId) {
+    setPrevUserId(user?.id);
+    setIsPremium(false);
+    setLoading(true);
+  }
 
   useEffect(() => {
     if (!user?.id) {
-      setIsPremium(false);
-      setLoading(false);
       return;
     }
 
@@ -44,6 +49,10 @@ export const usePremium = () => {
 
     return () => unsubscribe();
   }, [user?.id]);
+
+  if (!user?.id) {
+    return { isPremium: false, loading: false };
+  }
 
   return { isPremium, loading };
 };

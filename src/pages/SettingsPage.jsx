@@ -54,7 +54,7 @@ import { useNotifications } from "@/hooks/useNotifications";
 import emailjs from "@emailjs/browser";
 import { useRules } from "@/hooks/useRules";
 import { useUpdatePreferences } from "@/hooks/useUpdatePreferences";
-import InvitePartner from "@/components/InvitePartner";
+import ProGate from "@/components/ProGate";
 
 const SettingsPage = () => {
   const { t } = useTranslation();
@@ -335,14 +335,34 @@ const SettingsPage = () => {
     try {
       const result = await importData(file);
       if (result.success) {
-        toast.success(t("backup.importSuccess", "Dados importados! Recarregue a página para ver todas as alterações."));
+        toast.success(
+          t(
+            "backup.importSuccess",
+            "Dados importados! Recarregue a página para ver todas as alterações.",
+          ),
+        );
       } else if (result.error === "invalid_format") {
-        toast.error(t("backup.importInvalidFormat", "Formato inválido. O arquivo pode estar corrompido."));
+        toast.error(
+          t(
+            "backup.importInvalidFormat",
+            "Formato inválido. O arquivo pode estar corrompido.",
+          ),
+        );
       } else {
-        toast.error(t("backup.importError", "Falha ao importar. Verifique se o arquivo é um backup válido."));
+        toast.error(
+          t(
+            "backup.importError",
+            "Falha ao importar. Verifique se o arquivo é um backup válido.",
+          ),
+        );
       }
     } catch {
-      toast.error(t("backup.importError", "Falha ao importar. Verifique se o arquivo é um backup válido."));
+      toast.error(
+        t(
+          "backup.importError",
+          "Falha ao importar. Verifique se o arquivo é um backup válido.",
+        ),
+      );
     } finally {
       setImporting(false);
     }
@@ -936,7 +956,9 @@ const SettingsPage = () => {
         </TabsContent>
 
         <TabsContent value="sharing">
-          <InvitePartner />
+          <ProGate>
+            <InvitePartner />
+          </ProGate>
         </TabsContent>
 
         <TabsContent value="rules">
@@ -1036,7 +1058,10 @@ const SettingsPage = () => {
                             : "bg-red-100 text-red-700"
                         }`}
                       >
-                        {t(`categories.${rule.category.toLowerCase()}`, rule.category)}
+                        {t(
+                          `categories.${rule.category.toLowerCase()}`,
+                          rule.category,
+                        )}
                       </span>
                     </div>
                     <div className="col-span-2 capitalize text-muted-foreground">
@@ -1117,78 +1142,92 @@ const SettingsPage = () => {
         </TabsContent>
 
         <TabsContent value="backup">
-          <Card>
-            <CardHeader>
-              <CardTitle>{t("backup.title", "Backup de Dados")}</CardTitle>
-              <CardDescription>
-                {t("backup.description", "Exporte todos os seus dados ou restaure a partir de um arquivo de backup.")}
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              {/* Export */}
-              <div className="rounded-lg border p-4 space-y-3">
-                <div className="flex items-center gap-2">
-                  <Download className="h-5 w-5 text-primary" />
-                  <h3 className="font-medium">
-                    {t("backup.exportTitle", "Exportar Dados")}
-                  </h3>
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  {t("backup.exportDesc", "Baixe um backup completo em JSON com todas as suas transações, categorias, contas, objetivos e regras.")}
-                </p>
-                <Button onClick={handleExport} disabled={exporting}>
-                  {exporting ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      {t("common.loading")}
-                    </>
-                  ) : (
-                    <>
-                      <Download className="mr-2 h-4 w-4" />
-                      {t("backup.exportButton", "Exportar JSON")}
-                    </>
+          <ProGate fullWidth>
+            <Card>
+              <CardHeader>
+                <CardTitle>{t("backup.title", "Backup de Dados")}</CardTitle>
+                <CardDescription>
+                  {t(
+                    "backup.description",
+                    "Exporte todos os seus dados ou restaure a partir de um arquivo de backup.",
                   )}
-                </Button>
-              </div>
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Export */}
+                <div className="rounded-lg border p-4 space-y-3">
+                  <div className="flex items-center gap-2">
+                    <Download className="h-5 w-5 text-primary" />
+                    <h3 className="font-medium">
+                      {t("backup.exportTitle", "Exportar Dados")}
+                    </h3>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    {t(
+                      "backup.exportDesc",
+                      "Baixe um backup completo em JSON com todas as suas transações, categorias, contas, objetivos e regras.",
+                    )}
+                  </p>
+                  <Button onClick={handleExport} disabled={exporting}>
+                    {exporting ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        {t("common.loading")}
+                      </>
+                    ) : (
+                      <>
+                        <Download className="mr-2 h-4 w-4" />
+                        {t("backup.exportButton", "Exportar JSON")}
+                      </>
+                    )}
+                  </Button>
+                </div>
 
-              {/* Import */}
-              <div className="rounded-lg border p-4 space-y-3">
-                <div className="flex items-center gap-2">
-                  <Upload className="h-5 w-5 text-primary" />
-                  <h3 className="font-medium">
-                    {t("backup.importTitle", "Importar Dados")}
-                  </h3>
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  {t("backup.importDesc", "Restaure dados de um backup exportado anteriormente. Documentos com o mesmo ID serão sobrescritos.")}
-                </p>
-                <Button
-                  variant="outline"
-                  disabled={importing}
-                  className="relative"
-                >
-                  {importing ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      {t("backup.importing", "Importando...")}
-                    </>
-                  ) : (
-                    <>
-                      <Upload className="mr-2 h-4 w-4" />
-                      {t("backup.importButton", "Selecionar Arquivo de Backup")}
-                    </>
-                  )}
-                  <input
-                    type="file"
-                    accept=".json,application/json"
-                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed"
-                    onChange={handleImport}
+                {/* Import */}
+                <div className="rounded-lg border p-4 space-y-3">
+                  <div className="flex items-center gap-2">
+                    <Upload className="h-5 w-5 text-primary" />
+                    <h3 className="font-medium">
+                      {t("backup.importTitle", "Importar Dados")}
+                    </h3>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    {t(
+                      "backup.importDesc",
+                      "Restaure dados de um backup exportado anteriormente. Documentos com o mesmo ID serão sobrescritos.",
+                    )}
+                  </p>
+                  <Button
+                    variant="outline"
                     disabled={importing}
-                  />
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+                    className="relative"
+                  >
+                    {importing ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        {t("backup.importing", "Importando...")}
+                      </>
+                    ) : (
+                      <>
+                        <Upload className="mr-2 h-4 w-4" />
+                        {t(
+                          "backup.importButton",
+                          "Selecionar Arquivo de Backup",
+                        )}
+                      </>
+                    )}
+                    <input
+                      type="file"
+                      accept=".json,application/json"
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed"
+                      onChange={handleImport}
+                      disabled={importing}
+                    />
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </ProGate>
         </TabsContent>
       </Tabs>
 

@@ -177,26 +177,32 @@ const UpgradePage = () => {
 
   const plans = [
     {
-      name: t("upgrade.plans.free"),
+      name: t("upgrade.plans.free", "Free"),
       price: "R$ 0",
       period: null,
       features: freeFeatures,
       isFree: true,
     },
     {
-      name: t("upgrade.plans.premiumMonthly"),
+      name: t("upgrade.plans.premiumMonthly", "Premium Mensal"),
       price: "R$ 10,00",
-      period: `/${t("upgrade.month")}`,
+      period: `/${t("upgrade.month", "mês")}`,
       features: premiumFeatures,
       isFree: false,
       billing: "monthly",
     },
     {
-      name: t("upgrade.plans.premiumYearly"),
+      name: t("upgrade.plans.premiumYearly", "Premium Anual"),
       price: "R$ 80,00",
-      period: `/${t("upgrade.year")}`,
-      yearlyNote: t("upgrade.perMonth", { value: "R$ 6,60" }),
-      discount: t("upgrade.discount", { pct: 34 }),
+      period: `/${t("upgrade.year", "ano")}`,
+      yearlyNote: t("upgrade.perMonth", {
+        defaultValue: "Equivalente a {{value}}/mês",
+        value: "R$ 6,60",
+      }),
+      discount: t("upgrade.discount", {
+        defaultValue: "Economize {{pct}}%",
+        pct: 33,
+      }),
       features: premiumFeatures,
       isFree: false,
       billing: "yearly",
@@ -210,10 +216,10 @@ const UpgradePage = () => {
       <div className="text-center space-y-3">
         <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-medium">
           <Crown className="h-4 w-4" />
-          {t("upgrade.badge")}
+          {t("upgrade.badge", "Planos FinanceDash")}
         </div>
         <h1 className="text-3xl md:text-4xl font-extrabold">
-          {t("upgrade.title")}
+          {t("upgrade.title", "Assuma o controle total")}
         </h1>
         <p className="text-muted-foreground max-w-xl mx-auto">
           {t("upgrade.subtitle")}
@@ -241,22 +247,25 @@ const UpgradePage = () => {
       {/* Premium feature highlights */}
       <div className="space-y-4">
         <h2 className="text-xl font-bold text-center">
-          {t("upgrade.featuresTitle")}
+          {t("upgrade.featuresTitle", "Tudo incluído no Premium")}
         </h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-          {PREMIUM_FEATURES.map(({ icon: Icon, key }) => (
-            <div
-              key={key}
-              className="flex flex-col items-center gap-2 p-4 rounded-xl bg-card border hover:border-primary/40 transition-colors text-center"
-            >
-              <div className="p-2 rounded-lg bg-primary/10">
-                <Icon className="h-5 w-5 text-primary" />
+          {PREMIUM_FEATURES.map((feature) => {
+            const FeatIcon = feature.icon;
+            return (
+              <div
+                key={feature.key}
+                className="flex flex-col items-center gap-2 p-4 rounded-xl bg-card border hover:border-primary/40 transition-colors text-center"
+              >
+                <div className="p-2 rounded-lg bg-primary/10">
+                  <FeatIcon className="h-5 w-5 text-primary" />
+                </div>
+                <span className="text-xs font-medium">
+                  {t(`upgrade.highlight.${feature.key}`)}
+                </span>
               </div>
-              <span className="text-xs font-medium">
-                {t(`upgrade.highlight.${key}`)}
-              </span>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 

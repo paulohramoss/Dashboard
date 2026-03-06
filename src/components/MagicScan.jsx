@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import Tesseract from "tesseract.js";
 import { useTranslation } from "react-i18next";
 import { suggestCategory } from "@/lib/gemini";
+import ProGate from "@/components/ProGate";
 
 /**
  * Extrai o nome do estabelecimento do texto OCR.
@@ -73,8 +74,11 @@ const MagicScan = ({
       if (amountMatches) {
         const values = amountMatches.map((str) =>
           parseFloat(
-            str.replace(/[R$\s]/g, "").replace(/\./g, "").replace(",", ".")
-          )
+            str
+              .replace(/[R$\s]/g, "")
+              .replace(/\./g, "")
+              .replace(",", "."),
+          ),
         );
         const maxVal = Math.max(...values);
         if (!isNaN(maxVal)) extractedAmount = maxVal;
@@ -87,15 +91,14 @@ const MagicScan = ({
       let category = null;
       const textSample = text.substring(0, 600);
       if (textSample.trim()) {
-        toast.loading(
-          t("magicScan.categorizing", "Categorizando com IA..."),
-          { id: toastId }
-        );
+        toast.loading(t("magicScan.categorizing", "Categorizando com IA..."), {
+          id: toastId,
+        });
         try {
           const aiResult = await suggestCategory(
             textSample,
             categories,
-            language
+            language,
           );
           category = aiResult.category || null;
         } catch {
@@ -117,7 +120,7 @@ const MagicScan = ({
       } else {
         toast.warning(
           t("magicScan.noData", "Não foi possível identificar data ou valor."),
-          { id: toastId }
+          { id: toastId },
         );
       }
     } catch (error) {
@@ -141,34 +144,36 @@ const MagicScan = ({
   };
 
   return (
-    <div className={className}>
-      <input
-        type="file"
-        ref={fileInputRef}
-        accept="image/*"
-        capture="environment"
-        className="hidden"
-        onChange={handleFileChange}
-      />
-      <Button
-        type="button"
-        variant="outline"
-        size="icon"
-        onClick={handleButtonClick}
-        disabled={isScanning}
-        className="relative overflow-hidden"
-        aria-label={t("magicScan.buttonLabel", "Escanear Recibo")}
-      >
-        {isScanning ? (
-          <Loader2 className="h-4 w-4 animate-spin text-primary" />
-        ) : (
-          <Camera className="h-4 w-4 text-primary" />
-        )}
-        {!isScanning && (
-          <div className="absolute inset-0 -translate-x-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-        )}
-      </Button>
-    </div>
+    <ProGate>
+      <div className={className}>
+        <input
+          type="file"
+          ref={fileInputRef}
+          accept="image/*"
+          capture="environment"
+          className="hidden"
+          onChange={handleFileChange}
+        />
+        <Button
+          type="button"
+          variant="outline"
+          size="icon"
+          onClick={handleButtonClick}
+          disabled={isScanning}
+          className="relative overflow-hidden"
+          aria-label={t("magicScan.buttonLabel", "Escanear Recibo")}
+        >
+          {isScanning ? (
+            <Loader2 className="h-4 w-4 animate-spin text-primary" />
+          ) : (
+            <Camera className="h-4 w-4 text-primary" />
+          )}
+          {!isScanning && (
+            <div className="absolute inset-0 -translate-x-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+          )}
+        </Button>
+      </div>
+    </ProGate>
   );
 };
 

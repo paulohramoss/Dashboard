@@ -12,6 +12,7 @@ import MonthComparison from "@/components/MonthComparison";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import PrivacyBlur from "@/components/ui/PrivacyBlur";
+import ProGate from "@/components/ProGate";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -172,7 +173,7 @@ const ReportsPage = () => {
           from_name: "FinanceDash",
           reply_to: user?.email,
         },
-        "lMkgyQ1ZogoJ0ZqwC"
+        "lMkgyQ1ZogoJ0ZqwC",
       );
       toast.success(t("reports.emailReport.sent"));
     } catch {
@@ -196,45 +197,71 @@ const ReportsPage = () => {
         </div>
 
         <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
-          <PDFDownloadLink
-            document={
-              <MonthlyReportPDF
-                periodStart={filterStartDate}
-                periodEnd={filterEndDate}
-                filterType={filterType}
-                filterCategory={filterCategory}
-                filterAccount={filterAccount}
-                income={income}
-                expense={expense}
-                balance={balance}
-                villainCategory={translatedVillain}
-                villainAmount={villainAmount}
-                transactions={filteredTransactions}
-              />
-            }
-            fileName={pdfFileName}
-          >
-            {({ loading: pdfLoading }) => (
+          <ProGate
+            fallback={
               <Button
-                disabled={pdfLoading}
+                disabled
                 variant="outline"
-                className="w-full sm:w-auto"
+                className="w-full sm:w-auto opacity-50 relative group"
               >
                 <FileText className="mr-2 h-4 w-4" />
-                {pdfLoading ? "Gerando..." : t("reports.button")}
+                {t("reports.button", "Exportar PDF")}
               </Button>
-            )}
-          </PDFDownloadLink>
-          <Button
-            onClick={handleSendEmailReport}
-            disabled={sendingEmail || loading}
-            className="w-full sm:w-auto"
+            }
           >
-            <Mail className="mr-2 h-4 w-4" />
-            {sendingEmail
-              ? t("reports.emailReport.sending")
-              : t("reports.emailReport.button")}
-          </Button>
+            <PDFDownloadLink
+              document={
+                <MonthlyReportPDF
+                  periodStart={filterStartDate}
+                  periodEnd={filterEndDate}
+                  filterType={filterType}
+                  filterCategory={filterCategory}
+                  filterAccount={filterAccount}
+                  income={income}
+                  expense={expense}
+                  balance={balance}
+                  villainCategory={translatedVillain}
+                  villainAmount={villainAmount}
+                  transactions={filteredTransactions}
+                />
+              }
+              fileName={pdfFileName}
+            >
+              {({ loading: pdfLoading }) => (
+                <Button
+                  disabled={pdfLoading}
+                  variant="outline"
+                  className="w-full sm:w-auto"
+                >
+                  <FileText className="mr-2 h-4 w-4" />
+                  {pdfLoading ? "Gerando..." : t("reports.button")}
+                </Button>
+              )}
+            </PDFDownloadLink>
+          </ProGate>
+
+          <ProGate
+            fallback={
+              <Button
+                disabled
+                className="w-full sm:w-auto opacity-50 relative group"
+              >
+                <Mail className="mr-2 h-4 w-4" />
+                {t("reports.emailReport.button", "Enviar por Email")}
+              </Button>
+            }
+          >
+            <Button
+              onClick={handleSendEmailReport}
+              disabled={sendingEmail || loading}
+              className="w-full sm:w-auto"
+            >
+              <Mail className="mr-2 h-4 w-4" />
+              {sendingEmail
+                ? t("reports.emailReport.sending")
+                : t("reports.emailReport.button")}
+            </Button>
+          </ProGate>
         </div>
       </div>
 
@@ -250,7 +277,9 @@ const ReportsPage = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
             {/* Start Date */}
             <div className="space-y-1.5">
-              <Label className="text-xs">{t("reports.filters.startDate")}</Label>
+              <Label className="text-xs">
+                {t("reports.filters.startDate")}
+              </Label>
               <Input
                 type="date"
                 value={filterStartDate}
@@ -286,9 +315,7 @@ const ReportsPage = () => {
 
             {/* Category */}
             <div className="space-y-1.5">
-              <Label className="text-xs">
-                {t("reports.filters.category")}
-              </Label>
+              <Label className="text-xs">{t("reports.filters.category")}</Label>
               <Select
                 value={filterCategory}
                 onChange={(e) => setFilterCategory(e.target.value)}
@@ -313,9 +340,7 @@ const ReportsPage = () => {
                 onChange={(e) => setFilterAccount(e.target.value)}
                 className="h-9 text-sm"
               >
-                <option value="all">
-                  {t("reports.filters.allAccounts")}
-                </option>
+                <option value="all">{t("reports.filters.allAccounts")}</option>
                 {accounts.map((acc) => (
                   <option key={acc.id} value={acc.id}>
                     {acc.name}
@@ -364,9 +389,16 @@ const ReportsPage = () => {
         ) : (
           <>
             <OverviewChart transactions={transactions} />
-            <FinancialFlowChart transactions={transactions} />
             <CategoryChart transactions={transactions} />
-            <MonthlyEvolutionChart transactions={transactions} />
+
+            <div className="col-span-1 md:col-span-2 grid gap-4 md:grid-cols-2">
+              <ProGate className="h-full">
+                <FinancialFlowChart transactions={transactions} />
+              </ProGate>
+              <ProGate className="h-full">
+                <MonthlyEvolutionChart transactions={transactions} />
+              </ProGate>
+            </div>
           </>
         )}
       </div>
@@ -399,7 +431,9 @@ const ReportsPage = () => {
         </CardContent>
       </Card>
 
-      <MonthComparison transactions={transactions} />
+      <ProGate fullWidth>
+        <MonthComparison transactions={transactions} />
+      </ProGate>
     </div>
   );
 };
