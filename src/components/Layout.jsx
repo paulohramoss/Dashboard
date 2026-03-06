@@ -21,6 +21,7 @@ import {
   BookOpen,
   Swords,
   HelpCircle,
+  CalendarCheck,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -124,6 +125,7 @@ const Layout = ({ children }) => {
     { icon: Wallet, label: t("accounts.title"), path: "/accounts" },
     { icon: PieChart, label: t("nav.reports"), path: "/reports" },
     { icon: Swords, label: t("nav.challenges"), path: "/challenges" },
+    { icon: CalendarCheck, label: t("nav.planner"), path: "/planner" },
     { icon: BookOpen, label: t("nav.tutorial"), path: "/tutorial" },
     { icon: HelpCircle, label: t("nav.faq"), path: "/faq" },
     { icon: Settings, label: t("nav.settings"), path: "/settings" },

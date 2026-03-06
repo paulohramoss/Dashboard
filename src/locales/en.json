@@ -47,6 +47,7 @@
     "tutorial": "User Guide",
     "faq": "FAQ",
     "challenges": "Challenges",
+    "planner": "Planner",
     "logout": "Logout",
     "confirmLogout": "Confirm Logout?",
     "upgrade": "Premium"
@@ -987,5 +988,39 @@
     "goals": "Limit of {{limit}} goals reached. Upgrade to Premium.",
     "categories": "Limit of {{limit}} custom categories reached. Upgrade to Premium.",
     "recurring": "Limit of {{limit}} recurring transactions reached. Upgrade to Premium."
+  },
+  "planner": {
+    "title": "My Planner",
+    "completed": "completed",
+    "noItems": "No items yet. Click + to add one.",
+    "noBooks": "No books yet. Click + to add one.",
+    "books": "books",
+    "page": "Page",
+    "bookCompleted": "\"{{title}}\" completed! Congratulations! 🎉",
+    "addHabit": "Add Item",
+    "addBook": "Add Book",
+    "habitName": "Item name",
+    "habitNamePlaceholder": "E.g. Read for 20 minutes",
+    "category": "Category",
+    "bookTitle": "Title",
+    "bookTitlePlaceholder": "E.g. Atomic Habits",
+    "bookAuthor": "Author",
+    "bookAuthorPlaceholder": "E.g. James Clear",
+    "bookPages": "Total pages",
+    "habitAdded": "Item added successfully!",
+    "habitDeleted": "Item removed.",
+    "bookAdded": "Book added successfully!",
+    "bookDeleted": "Book removed.",
+    "deleteHabitTitle": "Remove item",
+    "deleteHabitDescription": "Are you sure you want to remove this item? This action cannot be undone.",
+    "deleteBookTitle": "Remove book",
+    "deleteBookDescription": "Are you sure you want to remove this book? This action cannot be undone.",
+    "categories": {
+      "routine": "Routine",
+      "devotional": "Devotional",
+      "study": "Studies",
+      "workout": "Workouts",
+      "reading": "Reading"
+    }
   }
 }
