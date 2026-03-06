@@ -10,23 +10,48 @@ import {
   query,
   where,
   onSnapshot,
+  writeBatch,
 } from "firebase/firestore";
 import { format } from "date-fns";
+
+const DEFAULT_SECTIONS = [
+  { id: "routine",    name: "Rotina",     icon: "ListChecks",    color: "blue",   order: 0 },
+  { id: "devotional", name: "Devocional", icon: "Sunrise",       color: "yellow", order: 1 },
+  { id: "study",      name: "Estudos",    icon: "GraduationCap", color: "purple", order: 2 },
+  { id: "workout",    name: "Treinos",    icon: "Dumbbell",      color: "green",  order: 3 },
+  { id: "reading",    name: "Leitura",    icon: "BookOpen",      color: "orange", order: 4, type: "books" },
+];
 
 export const usePlanner = () => {
   const { user } = useAuth();
   const [habits, setHabits] = useState([]);
   const [completions, setCompletions] = useState([]);
   const [books, setBooks] = useState([]);
+  const [sections, setSections] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const today = format(new Date(), "yyyy-MM-dd");
+
+  const initDefaultSections = async (userId) => {
+    try {
+      const batch = writeBatch(db);
+      DEFAULT_SECTIONS.forEach((s) => {
+        const { id, ...data } = s;
+        const docRef = doc(db, "plannerSections", id);
+        batch.set(docRef, { ...data, userId, createdAt: new Date().toISOString() });
+      });
+      await batch.commit();
+    } catch (error) {
+      console.error("Error initializing sections:", error);
+    }
+  };
 
   useEffect(() => {
     if (!user?.id) {
       setHabits([]);
       setCompletions([]);
       setBooks([]);
+      setSections([]);
       setLoading(false);
       return;
     }
@@ -34,9 +59,13 @@ export const usePlanner = () => {
     let habitsDone = false;
     let completionsDone = false;
     let booksDone = false;
+    let sectionsDone = false;
+    let isMounted = true;
 
     const checkDone = () => {
-      if (habitsDone && completionsDone && booksDone) setLoading(false);
+      if (habitsDone && completionsDone && booksDone && sectionsDone) {
+        if (isMounted) setLoading(false);
+      }
     };
 
     const habitsQ = query(
@@ -46,14 +75,12 @@ export const usePlanner = () => {
     const unsub1 = onSnapshot(
       habitsQ,
       (snap) => {
+        if (!isMounted) return;
         setHabits(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
         habitsDone = true;
         checkDone();
       },
-      () => {
-        habitsDone = true;
-        checkDone();
-      }
+      () => { habitsDone = true; checkDone(); }
     );
 
     const completionsQ = query(
@@ -64,14 +91,12 @@ export const usePlanner = () => {
     const unsub2 = onSnapshot(
       completionsQ,
       (snap) => {
+        if (!isMounted) return;
         setCompletions(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
         completionsDone = true;
         checkDone();
       },
-      () => {
-        completionsDone = true;
-        checkDone();
-      }
+      () => { completionsDone = true; checkDone(); }
     );
 
     const booksQ = query(
@@ -81,20 +106,40 @@ export const usePlanner = () => {
     const unsub3 = onSnapshot(
       booksQ,
       (snap) => {
+        if (!isMounted) return;
         setBooks(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
         booksDone = true;
         checkDone();
       },
-      () => {
-        booksDone = true;
+      () => { booksDone = true; checkDone(); }
+    );
+
+    const sectionsQ = query(
+      collection(db, "plannerSections"),
+      where("userId", "==", user.id)
+    );
+    const unsub4 = onSnapshot(
+      sectionsQ,
+      async (snap) => {
+        if (!isMounted) return;
+        const docs = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+        if (docs.length === 0 && !snap.metadata.fromCache) {
+          await initDefaultSections(user.id);
+        } else {
+          setSections([...docs].sort((a, b) => (a.order ?? 0) - (b.order ?? 0)));
+        }
+        sectionsDone = true;
         checkDone();
-      }
+      },
+      () => { sectionsDone = true; checkDone(); }
     );
 
     return () => {
+      isMounted = false;
       unsub1();
       unsub2();
       unsub3();
+      unsub4();
     };
   }, [user?.id, today]);
 
@@ -178,6 +223,45 @@ export const usePlanner = () => {
     }
   };
 
+  const addSection = async (section) => {
+    if (!user?.id) return;
+    try {
+      await addDoc(collection(db, "plannerSections"), {
+        ...section,
+        userId: user.id,
+        order: sections.length,
+        createdAt: new Date().toISOString(),
+      });
+    } catch (error) {
+      console.error("Error adding section:", error);
+      throw error;
+    }
+  };
+
+  const updateSection = async (id, data) => {
+    if (!user?.id) return;
+    try {
+      await updateDoc(doc(db, "plannerSections", id), data);
+    } catch (error) {
+      console.error("Error updating section:", error);
+      throw error;
+    }
+  };
+
+  const deleteSection = async (id) => {
+    if (!user?.id) return;
+    try {
+      const habitsToDelete = habits.filter((h) => h.category === id);
+      const batch = writeBatch(db);
+      habitsToDelete.forEach((h) => batch.delete(doc(db, "plannerHabits", h.id)));
+      batch.delete(doc(db, "plannerSections", id));
+      await batch.commit();
+    } catch (error) {
+      console.error("Error deleting section:", error);
+      throw error;
+    }
+  };
+
   const isCompleted = (habitId) =>
     completions.some((c) => c.habitId === habitId);
 
@@ -198,6 +282,7 @@ export const usePlanner = () => {
     habits,
     completions,
     books,
+    sections,
     loading,
     addHabit,
     deleteHabit,
@@ -205,6 +290,9 @@ export const usePlanner = () => {
     addBook,
     updateBook,
     deleteBook,
+    addSection,
+    updateSection,
+    deleteSection,
     isCompleted,
     getHabitsByCategory,
     getTodayProgress,
