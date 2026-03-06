@@ -79,33 +79,27 @@ const ICON_MAP = {
   Brain,
 };
 
-const COLOR_OPTIONS = [
-  { id: "blue",   tw: "bg-blue-500" },
-  { id: "yellow", tw: "bg-yellow-500" },
-  { id: "purple", tw: "bg-purple-500" },
-  { id: "green",  tw: "bg-green-500" },
-  { id: "orange", tw: "bg-orange-500" },
-  { id: "red",    tw: "bg-red-500" },
-  { id: "pink",   tw: "bg-pink-500" },
-  { id: "teal",   tw: "bg-teal-500" },
-  { id: "indigo", tw: "bg-indigo-500" },
-  { id: "cyan",   tw: "bg-cyan-500" },
-];
-
-const COLOR_MAP = {
-  blue:   { color: "text-blue-500",   bg: "bg-blue-500/10",   border: "border-blue-500/20" },
-  yellow: { color: "text-yellow-500", bg: "bg-yellow-500/10", border: "border-yellow-500/20" },
-  purple: { color: "text-purple-500", bg: "bg-purple-500/10", border: "border-purple-500/20" },
-  green:  { color: "text-green-500",  bg: "bg-green-500/10",  border: "border-green-500/20" },
-  orange: { color: "text-orange-500", bg: "bg-orange-500/10", border: "border-orange-500/20" },
-  red:    { color: "text-red-500",    bg: "bg-red-500/10",    border: "border-red-500/20" },
-  pink:   { color: "text-pink-500",   bg: "bg-pink-500/10",   border: "border-pink-500/20" },
-  teal:   { color: "text-teal-500",   bg: "bg-teal-500/10",   border: "border-teal-500/20" },
-  indigo: { color: "text-indigo-500", bg: "bg-indigo-500/10", border: "border-indigo-500/20" },
-  cyan:   { color: "text-cyan-500",   bg: "bg-cyan-500/10",   border: "border-cyan-500/20" },
+// Legacy string-name → hex (backward compat for users with older Firestore data)
+const LEGACY_COLOR_MAP = {
+  blue: "#3b82f6", yellow: "#eab308", purple: "#a855f7", green: "#22c55e",
+  orange: "#f97316", red: "#ef4444", pink: "#ec4899", teal: "#14b2a6",
+  indigo: "#6366f1", cyan: "#06b6d4",
 };
 
-const getSectionColors = (color) => COLOR_MAP[color] || COLOR_MAP.blue;
+const resolveColor = (color) => {
+  if (!color) return "#3b82f6";
+  if (color.startsWith("#")) return color;
+  return LEGACY_COLOR_MAP[color] || "#3b82f6";
+};
+
+const getSectionStyles = (color) => {
+  const hex = resolveColor(color);
+  return {
+    card:   { borderColor: `${hex}33` },
+    iconBg: { backgroundColor: `${hex}1a` },
+    icon:   { color: hex },
+  };
+};
 
 const HabitItem = ({ habit, isCompleted, onToggle, onDelete, onEdit }) => {
   return (
@@ -162,17 +156,17 @@ const CategoryCard = ({
   t,
 }) => {
   const [collapsed, setCollapsed] = useState(false);
-  const colors = getSectionColors(section.color);
+  const styles = getSectionStyles(section.color);
   const Icon = ICON_MAP[section.icon] || ListChecks;
   const completed = habits.filter((h) => isCompleted(h.id)).length;
 
   return (
-    <Card className={cn("border", colors.border)}>
+    <Card className="border" style={styles.card}>
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className={cn("p-2 rounded-lg", colors.bg)}>
-              <Icon className={cn("h-4 w-4", colors.color)} />
+            <div className="p-2 rounded-lg" style={styles.iconBg}>
+              <Icon className="h-4 w-4" style={styles.icon} />
             </div>
             <CardTitle className="text-base">{section.name}</CardTitle>
             {habits.length > 0 && (
@@ -361,16 +355,16 @@ const BookCard = ({ book, onUpdate, onDelete, t }) => {
 
 const ReadingCard = ({ section, books, onAddBook, onUpdateBook, onDeleteBook, onEditCard, onDeleteCard, t }) => {
   const [collapsed, setCollapsed] = useState(false);
-  const colors = getSectionColors(section.color);
+  const styles = getSectionStyles(section.color);
   const Icon = ICON_MAP[section.icon] || BookOpen;
 
   return (
-    <Card className={cn("border", colors.border)}>
+    <Card className="border" style={styles.card}>
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className={cn("p-2 rounded-lg", colors.bg)}>
-              <Icon className={cn("h-4 w-4", colors.color)} />
+            <div className="p-2 rounded-lg" style={styles.iconBg}>
+              <Icon className="h-4 w-4" style={styles.icon} />
             </div>
             <CardTitle className="text-base">{section.name}</CardTitle>
             <span className="text-xs text-muted-foreground">
@@ -440,7 +434,7 @@ const ReadingCard = ({ section, books, onAddBook, onUpdateBook, onDeleteBook, on
   );
 };
 
-const EMPTY_SECTION_FORM = { name: "", icon: "ListChecks", color: "blue" };
+const EMPTY_SECTION_FORM = { name: "", icon: "ListChecks", color: "#3b82f6" };
 
 const PlannerPage = () => {
   const { t, i18n } = useTranslation();
@@ -568,7 +562,7 @@ const PlannerPage = () => {
   };
 
   const openEditSection = (section) => {
-    setSectionForm({ name: section.name, icon: section.icon || "ListChecks", color: section.color || "blue" });
+    setSectionForm({ name: section.name, icon: section.icon || "ListChecks", color: resolveColor(section.color) });
     setSectionDialog({ open: true, mode: "edit", data: section });
   };
 
@@ -725,18 +719,18 @@ const PlannerPage = () => {
               <div className="grid grid-cols-2 gap-2">
                 {habitSections.map((section) => {
                   const Icon = ICON_MAP[section.icon] || ListChecks;
-                  const colors = getSectionColors(section.color);
+                  const hex = resolveColor(section.color);
+                  const isSelected = selectedCategory === section.id;
                   return (
                     <button
                       key={section.id}
                       type="button"
                       onClick={() => setSelectedCategory(section.id)}
-                      className={cn(
-                        "flex items-center gap-2 px-3 py-2 rounded-lg border text-sm transition-all",
-                        selectedCategory === section.id
-                          ? `${colors.bg} ${colors.border} ${colors.color} font-medium`
-                          : "border-border text-muted-foreground hover:bg-accent"
-                      )}
+                      className="flex items-center gap-2 px-3 py-2 rounded-lg border text-sm transition-all"
+                      style={isSelected
+                        ? { borderColor: `${hex}66`, backgroundColor: `${hex}1a`, color: hex }
+                        : undefined
+                      }
                     >
                       <Icon className="h-4 w-4" />
                       {section.name}
@@ -878,21 +872,14 @@ const PlannerPage = () => {
             </div>
             <div className="space-y-2">
               <Label>{t("planner.sectionColor")}</Label>
-              <div className="flex flex-wrap gap-2">
-                {COLOR_OPTIONS.map((c) => (
-                  <button
-                    key={c.id}
-                    type="button"
-                    onClick={() => setSectionForm({ ...sectionForm, color: c.id })}
-                    className={cn(
-                      "h-7 w-7 rounded-full transition-all ring-2 ring-offset-2",
-                      c.tw,
-                      sectionForm.color === c.id
-                        ? "ring-foreground"
-                        : "ring-transparent hover:ring-border"
-                    )}
-                  />
-                ))}
+              <div className="flex items-center gap-3">
+                <Input
+                  type="color"
+                  className="h-10 w-20 p-1 cursor-pointer"
+                  value={sectionForm.color}
+                  onChange={(e) => setSectionForm({ ...sectionForm, color: e.target.value })}
+                />
+                <span className="text-sm text-muted-foreground">{sectionForm.color}</span>
               </div>
             </div>
             <Button type="submit" className="w-full">
