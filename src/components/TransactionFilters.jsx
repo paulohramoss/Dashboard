@@ -8,6 +8,17 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Search, Filter, X } from "lucide-react";
 
+const getCurrentMonthRange = () => {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const lastDay = new Date(year, now.getMonth() + 1, 0).getDate();
+  return {
+    startDate: `${year}-${month}-01`,
+    endDate: `${year}-${month}-${String(lastDay).padStart(2, "0")}`,
+  };
+};
+
 const TransactionFilters = ({ onFilterChange }) => {
   const { t } = useTranslation();
   const { categories } = useCategories();
@@ -17,8 +28,7 @@ const TransactionFilters = ({ onFilterChange }) => {
     type: "all",
     category: "all",
     accountId: "all",
-    startDate: "",
-    endDate: "",
+    ...getCurrentMonthRange(),
   });
 
   // Deduplicate categories based on name
@@ -45,8 +55,7 @@ const TransactionFilters = ({ onFilterChange }) => {
       type: "all",
       category: "all",
       accountId: "all",
-      startDate: "",
-      endDate: "",
+      ...getCurrentMonthRange(),
     });
   };
 

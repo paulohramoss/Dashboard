@@ -179,42 +179,42 @@ const CalendarPage = () => {
           </DialogHeader>
           <div className="space-y-4 mt-4 max-h-[60vh] overflow-y-auto pr-2">
             {selectedDate &&
-              getDayTransactions(selectedDate).map((t) => (
+              getDayTransactions(selectedDate).map((transaction) => (
                 <div
-                  key={t.id}
+                  key={transaction.id}
                   className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50 transition-colors"
                 >
                   <div className="flex items-center gap-3">
                     <div
                       className={`p-2 rounded-full ${
-                        t.type === "income"
+                        transaction.type === "income"
                           ? "bg-green-100 text-green-600"
                           : "bg-red-100 text-red-600"
                       }`}
                     >
-                      {t.type === "income" ? (
+                      {transaction.type === "income" ? (
                         <TrendingUp className="h-4 w-4" />
                       ) : (
                         <TrendingDown className="h-4 w-4" />
                       )}
                     </div>
                     <div>
-                      <p className="font-medium">{t.description}</p>
+                      <p className="font-medium">{transaction.description}</p>
                       <p className="text-xs text-muted-foreground">
-                        {t.category}
+                        {t(`categories.${(transaction.category || "").toLowerCase()}`, transaction.category)}
                       </p>
                     </div>
                   </div>
                   <span
                     className={`font-medium ${
-                      t.type === "income" ? "text-green-600" : "text-red-600"
+                      transaction.type === "income" ? "text-green-600" : "text-red-600"
                     }`}
                   >
-                    {t.type === "income" ? "+" : "-"}
+                    {transaction.type === "income" ? "+" : "-"}
                     {new Intl.NumberFormat("pt-BR", {
                       style: "currency",
                       currency: "BRL",
-                    }).format(t.amount)}
+                    }).format(transaction.amount)}
                   </span>
                 </div>
               ))}
