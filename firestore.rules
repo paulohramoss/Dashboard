@@ -108,6 +108,38 @@ service cloud.firestore {
       allow create: if isAllowedCreate();
     }
 
+    // Planner collections (personal, userId-only)
+    function isPlannerOwner() {
+      return isAuthenticated() && resource.data.userId == request.auth.uid;
+    }
+    function isPlannerOwnerCreate() {
+      return isAuthenticated() && request.resource.data.userId == request.auth.uid;
+    }
+
+    match /plannerHabits/{document} {
+      allow get: if isPlannerOwner();
+      allow list: if isAuthenticated();
+      allow create: if isPlannerOwnerCreate();
+      allow update: if isPlannerOwner();
+      allow delete: if isPlannerOwner();
+    }
+
+    match /plannerCompletions/{document} {
+      allow get: if isPlannerOwner();
+      allow list: if isAuthenticated();
+      allow create: if isPlannerOwnerCreate();
+      allow update: if isPlannerOwner();
+      allow delete: if isPlannerOwner();
+    }
+
+    match /plannerBooks/{document} {
+      allow get: if isPlannerOwner();
+      allow list: if isAuthenticated();
+      allow create: if isPlannerOwnerCreate();
+      allow update: if isPlannerOwner();
+      allow delete: if isPlannerOwner();
+    }
+
     // Bloqueia tudo o resto
     match /{document=**} {
       allow read, write: if false;

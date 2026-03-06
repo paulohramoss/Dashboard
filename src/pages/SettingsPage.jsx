@@ -1036,7 +1036,7 @@ const SettingsPage = () => {
                             : "bg-red-100 text-red-700"
                         }`}
                       >
-                        {rule.category}
+                        {t(`categories.${rule.category.toLowerCase()}`, rule.category)}
                       </span>
                     </div>
                     <div className="col-span-2 capitalize text-muted-foreground">
