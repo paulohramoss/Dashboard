@@ -100,52 +100,82 @@ export const usePlanner = () => {
 
   const addHabit = async (habit) => {
     if (!user?.id) return;
-    await addDoc(collection(db, "plannerHabits"), {
-      ...habit,
-      userId: user.id,
-      createdAt: new Date().toISOString(),
-    });
+    try {
+      await addDoc(collection(db, "plannerHabits"), {
+        ...habit,
+        userId: user.id,
+        createdAt: new Date().toISOString(),
+      });
+    } catch (error) {
+      console.error("Error adding habit:", error);
+      throw error;
+    }
   };
 
   const deleteHabit = async (id) => {
     if (!user?.id) return;
-    await deleteDoc(doc(db, "plannerHabits", id));
+    try {
+      await deleteDoc(doc(db, "plannerHabits", id));
+    } catch (error) {
+      console.error("Error deleting habit:", error);
+      throw error;
+    }
   };
 
   const toggleCompletion = async (habitId) => {
     if (!user?.id) return;
-    const existing = completions.find((c) => c.habitId === habitId);
-    if (existing) {
-      await deleteDoc(doc(db, "plannerCompletions", existing.id));
-    } else {
-      await addDoc(collection(db, "plannerCompletions"), {
-        userId: user.id,
-        habitId,
-        date: today,
-        createdAt: new Date().toISOString(),
-      });
+    try {
+      const existing = completions.find((c) => c.habitId === habitId);
+      if (existing) {
+        await deleteDoc(doc(db, "plannerCompletions", existing.id));
+      } else {
+        await addDoc(collection(db, "plannerCompletions"), {
+          userId: user.id,
+          habitId,
+          date: today,
+          createdAt: new Date().toISOString(),
+        });
+      }
+    } catch (error) {
+      console.error("Error toggling completion:", error);
+      throw error;
     }
   };
 
   const addBook = async (book) => {
     if (!user?.id) return;
-    await addDoc(collection(db, "plannerBooks"), {
-      ...book,
-      userId: user.id,
-      currentPage: 0,
-      status: "reading",
-      createdAt: new Date().toISOString(),
-    });
+    try {
+      await addDoc(collection(db, "plannerBooks"), {
+        ...book,
+        userId: user.id,
+        currentPage: 0,
+        status: "reading",
+        createdAt: new Date().toISOString(),
+      });
+    } catch (error) {
+      console.error("Error adding book:", error);
+      throw error;
+    }
   };
 
   const updateBook = async (id, data) => {
     if (!user?.id) return;
-    await updateDoc(doc(db, "plannerBooks", id), data);
+    try {
+      await updateDoc(doc(db, "plannerBooks", id), data);
+    } catch (error) {
+      console.error("Error updating book:", error);
+      throw error;
+    }
   };
 
   const deleteBook = async (id) => {
     if (!user?.id) return;
-    await deleteDoc(doc(db, "plannerBooks", id));
+    try {
+      await deleteDoc(doc(db, "plannerBooks", id));
+    } catch (error) {
+      console.error("Error deleting book:", error);
+      throw error;
+    }
   };
 
   const isCompleted = (habitId) =>

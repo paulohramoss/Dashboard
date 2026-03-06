@@ -322,23 +322,33 @@ const PlannerPage = () => {
   const handleAddHabit = async (e) => {
     e.preventDefault();
     if (!newHabitName.trim()) return;
-    await addHabit({ category: selectedCategory, name: newHabitName.trim() });
-    toast.success(t("planner.habitAdded"));
-    setNewHabitName("");
-    setAddHabitOpen(false);
+    try {
+      await addHabit({ category: selectedCategory, name: newHabitName.trim() });
+      toast.success(t("planner.habitAdded"));
+      setNewHabitName("");
+      setAddHabitOpen(false);
+    } catch (error) {
+      toast.error(t("common.genericError"));
+      console.error("handleAddHabit:", error);
+    }
   };
 
   const handleAddBook = async (e) => {
     e.preventDefault();
     if (!newBook.title.trim()) return;
-    await addBook({
-      title: newBook.title.trim(),
-      author: newBook.author.trim(),
-      totalPages: parseInt(newBook.totalPages, 10) || 0,
-    });
-    toast.success(t("planner.bookAdded"));
-    setNewBook({ title: "", author: "", totalPages: "" });
-    setAddBookOpen(false);
+    try {
+      await addBook({
+        title: newBook.title.trim(),
+        author: newBook.author.trim(),
+        totalPages: parseInt(newBook.totalPages, 10) || 0,
+      });
+      toast.success(t("planner.bookAdded"));
+      setNewBook({ title: "", author: "", totalPages: "" });
+      setAddBookOpen(false);
+    } catch (error) {
+      toast.error(t("common.genericError"));
+      console.error("handleAddBook:", error);
+    }
   };
 
   const openAddHabit = (categoryId) => {
@@ -348,16 +358,24 @@ const PlannerPage = () => {
 
   const handleDeleteHabit = async () => {
     if (deleteHabitDialog.id) {
-      await deleteHabit(deleteHabitDialog.id);
-      toast.success(t("planner.habitDeleted"));
+      try {
+        await deleteHabit(deleteHabitDialog.id);
+        toast.success(t("planner.habitDeleted"));
+      } catch {
+        toast.error(t("common.genericError"));
+      }
     }
     setDeleteHabitDialog({ open: false, id: null });
   };
 
   const handleDeleteBook = async () => {
     if (deleteBookDialog.id) {
-      await deleteBook(deleteBookDialog.id);
-      toast.success(t("planner.bookDeleted"));
+      try {
+        await deleteBook(deleteBookDialog.id);
+        toast.success(t("planner.bookDeleted"));
+      } catch {
+        toast.error(t("common.genericError"));
+      }
     }
     setDeleteBookDialog({ open: false, id: null });
   };
