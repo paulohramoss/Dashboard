@@ -29,43 +29,85 @@ import {
   BookMarked,
   ChevronDown,
   ChevronUp,
+  Pencil,
+  Heart,
+  Star,
+  Music,
+  Coffee,
+  Code,
+  Briefcase,
+  Home,
+  Target,
+  Zap,
+  Trophy,
+  Flame,
+  Clock,
+  Leaf,
+  Globe,
+  Palette,
+  ShoppingCart,
+  Plane,
+  Brain,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
-const CATEGORIES = [
-  {
-    id: "routine",
-    icon: ListChecks,
-    color: "text-blue-500",
-    bg: "bg-blue-500/10",
-    border: "border-blue-500/20",
-  },
-  {
-    id: "devotional",
-    icon: Sunrise,
-    color: "text-yellow-500",
-    bg: "bg-yellow-500/10",
-    border: "border-yellow-500/20",
-  },
-  {
-    id: "study",
-    icon: GraduationCap,
-    color: "text-purple-500",
-    bg: "bg-purple-500/10",
-    border: "border-purple-500/20",
-  },
-  {
-    id: "workout",
-    icon: Dumbbell,
-    color: "text-green-500",
-    bg: "bg-green-500/10",
-    border: "border-green-500/20",
-  },
+const ICON_MAP = {
+  ListChecks,
+  Sunrise,
+  GraduationCap,
+  Dumbbell,
+  BookOpen,
+  Heart,
+  Star,
+  Music,
+  Coffee,
+  Code,
+  Briefcase,
+  Home,
+  Target,
+  Zap,
+  Trophy,
+  Flame,
+  Clock,
+  Leaf,
+  Globe,
+  Palette,
+  ShoppingCart,
+  Plane,
+  Brain,
+};
+
+const COLOR_OPTIONS = [
+  { id: "blue",   tw: "bg-blue-500" },
+  { id: "yellow", tw: "bg-yellow-500" },
+  { id: "purple", tw: "bg-purple-500" },
+  { id: "green",  tw: "bg-green-500" },
+  { id: "orange", tw: "bg-orange-500" },
+  { id: "red",    tw: "bg-red-500" },
+  { id: "pink",   tw: "bg-pink-500" },
+  { id: "teal",   tw: "bg-teal-500" },
+  { id: "indigo", tw: "bg-indigo-500" },
+  { id: "cyan",   tw: "bg-cyan-500" },
 ];
 
-const HabitItem = ({ habit, isCompleted, onToggle, onDelete }) => {
+const COLOR_MAP = {
+  blue:   { color: "text-blue-500",   bg: "bg-blue-500/10",   border: "border-blue-500/20" },
+  yellow: { color: "text-yellow-500", bg: "bg-yellow-500/10", border: "border-yellow-500/20" },
+  purple: { color: "text-purple-500", bg: "bg-purple-500/10", border: "border-purple-500/20" },
+  green:  { color: "text-green-500",  bg: "bg-green-500/10",  border: "border-green-500/20" },
+  orange: { color: "text-orange-500", bg: "bg-orange-500/10", border: "border-orange-500/20" },
+  red:    { color: "text-red-500",    bg: "bg-red-500/10",    border: "border-red-500/20" },
+  pink:   { color: "text-pink-500",   bg: "bg-pink-500/10",   border: "border-pink-500/20" },
+  teal:   { color: "text-teal-500",   bg: "bg-teal-500/10",   border: "border-teal-500/20" },
+  indigo: { color: "text-indigo-500", bg: "bg-indigo-500/10", border: "border-indigo-500/20" },
+  cyan:   { color: "text-cyan-500",   bg: "bg-cyan-500/10",   border: "border-cyan-500/20" },
+};
+
+const getSectionColors = (color) => COLOR_MAP[color] || COLOR_MAP.blue;
+
+const HabitItem = ({ habit, isCompleted, onToggle, onDelete, onEdit }) => {
   return (
     <div className="flex items-center gap-3 py-2 group">
       <button
@@ -89,40 +131,50 @@ const HabitItem = ({ habit, isCompleted, onToggle, onDelete }) => {
       >
         {habit.name}
       </span>
-      <button
-        onClick={() => onDelete(habit.id)}
-        className="opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-destructive"
-      >
-        <Trash2 className="h-4 w-4" />
-      </button>
+      <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+        <button
+          onClick={() => onEdit(habit)}
+          className="text-muted-foreground hover:text-foreground"
+        >
+          <Pencil className="h-3.5 w-3.5" />
+        </button>
+        <button
+          onClick={() => onDelete(habit.id)}
+          className="text-muted-foreground hover:text-destructive"
+        >
+          <Trash2 className="h-4 w-4" />
+        </button>
+      </div>
     </div>
   );
 };
 
 const CategoryCard = ({
-  category,
+  section,
   habits,
   isCompleted,
   onToggle,
-  onDelete,
+  onDeleteHabit,
+  onEditHabit,
   onAdd,
+  onEditCard,
+  onDeleteCard,
   t,
 }) => {
   const [collapsed, setCollapsed] = useState(false);
-  const Icon = category.icon;
+  const colors = getSectionColors(section.color);
+  const Icon = ICON_MAP[section.icon] || ListChecks;
   const completed = habits.filter((h) => isCompleted(h.id)).length;
 
   return (
-    <Card className={cn("border", category.border)}>
+    <Card className={cn("border", colors.border)}>
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className={cn("p-2 rounded-lg", category.bg)}>
-              <Icon className={cn("h-4 w-4", category.color)} />
+            <div className={cn("p-2 rounded-lg", colors.bg)}>
+              <Icon className={cn("h-4 w-4", colors.color)} />
             </div>
-            <CardTitle className="text-base">
-              {t(`planner.categories.${category.id}`)}
-            </CardTitle>
+            <CardTitle className="text-base">{section.name}</CardTitle>
             {habits.length > 0 && (
               <span className="text-xs text-muted-foreground">
                 {completed}/{habits.length}
@@ -134,9 +186,28 @@ const CategoryCard = ({
               variant="ghost"
               size="icon"
               className="h-7 w-7"
-              onClick={() => onAdd(category.id)}
+              onClick={() => onAdd(section.id)}
+              title={t("planner.addHabit")}
             >
               <Plus className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-7 w-7"
+              onClick={() => onEditCard(section)}
+              title={t("planner.editSection")}
+            >
+              <Pencil className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-7 w-7 hover:text-destructive"
+              onClick={() => onDeleteCard(section.id)}
+              title={t("planner.deleteSection")}
+            >
+              <Trash2 className="h-4 w-4" />
             </Button>
             <Button
               variant="ghost"
@@ -173,7 +244,8 @@ const CategoryCard = ({
                   habit={habit}
                   isCompleted={isCompleted(habit.id)}
                   onToggle={onToggle}
-                  onDelete={onDelete}
+                  onDelete={onDeleteHabit}
+                  onEdit={onEditHabit}
                 />
               ))}
             </div>
@@ -287,11 +359,95 @@ const BookCard = ({ book, onUpdate, onDelete, t }) => {
   );
 };
 
+const ReadingCard = ({ section, books, onAddBook, onUpdateBook, onDeleteBook, onEditCard, onDeleteCard, t }) => {
+  const [collapsed, setCollapsed] = useState(false);
+  const colors = getSectionColors(section.color);
+  const Icon = ICON_MAP[section.icon] || BookOpen;
+
+  return (
+    <Card className={cn("border", colors.border)}>
+      <CardHeader className="pb-2">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className={cn("p-2 rounded-lg", colors.bg)}>
+              <Icon className={cn("h-4 w-4", colors.color)} />
+            </div>
+            <CardTitle className="text-base">{section.name}</CardTitle>
+            <span className="text-xs text-muted-foreground">
+              {books.length} {t("planner.books")}
+            </span>
+          </div>
+          <div className="flex items-center gap-1">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-7 w-7"
+              onClick={onAddBook}
+            >
+              <Plus className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-7 w-7"
+              onClick={() => onEditCard(section)}
+              title={t("planner.editSection")}
+            >
+              <Pencil className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-7 w-7 hover:text-destructive"
+              onClick={() => onDeleteCard(section.id)}
+              title={t("planner.deleteSection")}
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-7 w-7"
+              onClick={() => setCollapsed(!collapsed)}
+            >
+              {collapsed ? <ChevronDown className="h-4 w-4" /> : <ChevronUp className="h-4 w-4" />}
+            </Button>
+          </div>
+        </div>
+      </CardHeader>
+      {!collapsed && (
+        <CardContent className="pt-0">
+          {books.length === 0 ? (
+            <p className="text-xs text-muted-foreground py-2">
+              {t("planner.noBooks")}
+            </p>
+          ) : (
+            <div>
+              {books.map((book) => (
+                <BookCard
+                  key={book.id}
+                  book={book}
+                  onUpdate={onUpdateBook}
+                  onDelete={onDeleteBook}
+                  t={t}
+                />
+              ))}
+            </div>
+          )}
+        </CardContent>
+      )}
+    </Card>
+  );
+};
+
+const EMPTY_SECTION_FORM = { name: "", icon: "ListChecks", color: "blue" };
+
 const PlannerPage = () => {
   const { t, i18n } = useTranslation();
   const {
     habits,
     books,
+    sections,
     loading,
     addHabit,
     deleteHabit,
@@ -299,6 +455,9 @@ const PlannerPage = () => {
     addBook,
     updateBook,
     deleteBook,
+    addSection,
+    updateSection,
+    deleteSection,
     isCompleted,
     getHabitsByCategory,
     getTodayProgress,
@@ -307,17 +466,28 @@ const PlannerPage = () => {
 
   const [addHabitOpen, setAddHabitOpen] = useState(false);
   const [addBookOpen, setAddBookOpen] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState("routine");
+  const [selectedCategory, setSelectedCategory] = useState("");
   const [newHabitName, setNewHabitName] = useState("");
   const [newBook, setNewBook] = useState({ title: "", author: "", totalPages: "" });
+
   const [deleteHabitDialog, setDeleteHabitDialog] = useState({ open: false, id: null });
   const [deleteBookDialog, setDeleteBookDialog] = useState({ open: false, id: null });
+  const [deleteSectionDialog, setDeleteSectionDialog] = useState({ open: false, id: null });
+
+  const [sectionDialog, setSectionDialog] = useState({ open: false, mode: "add", data: null });
+  const [sectionForm, setSectionForm] = useState(EMPTY_SECTION_FORM);
+
+  const [editHabitDialog, setEditHabitDialog] = useState({ open: false, habit: null });
+  const [editHabitName, setEditHabitName] = useState("");
 
   const progress = getTodayProgress();
 
   const todayFormatted = format(parseISO(today), "EEEE, d 'de' MMMM", {
     locale: i18n.language === "pt" ? ptBR : undefined,
   });
+
+  const habitSections = sections.filter((s) => s.type !== "books");
+  const bookSections = sections.filter((s) => s.type === "books");
 
   const handleAddHabit = async (e) => {
     e.preventDefault();
@@ -380,6 +550,71 @@ const PlannerPage = () => {
     setDeleteBookDialog({ open: false, id: null });
   };
 
+  const handleDeleteSection = async () => {
+    if (deleteSectionDialog.id) {
+      try {
+        await deleteSection(deleteSectionDialog.id);
+        toast.success(t("planner.sectionDeleted"));
+      } catch {
+        toast.error(t("common.genericError"));
+      }
+    }
+    setDeleteSectionDialog({ open: false, id: null });
+  };
+
+  const openAddSection = () => {
+    setSectionForm(EMPTY_SECTION_FORM);
+    setSectionDialog({ open: true, mode: "add", data: null });
+  };
+
+  const openEditSection = (section) => {
+    setSectionForm({ name: section.name, icon: section.icon || "ListChecks", color: section.color || "blue" });
+    setSectionDialog({ open: true, mode: "edit", data: section });
+  };
+
+  const handleSectionSubmit = async (e) => {
+    e.preventDefault();
+    if (!sectionForm.name.trim()) return;
+    try {
+      if (sectionDialog.mode === "add") {
+        await addSection({ ...sectionForm, name: sectionForm.name.trim() });
+        toast.success(t("planner.sectionAdded"));
+      } else {
+        await updateSection(sectionDialog.data.id, { ...sectionForm, name: sectionForm.name.trim() });
+        toast.success(t("planner.sectionUpdated"));
+      }
+      setSectionDialog({ open: false, mode: "add", data: null });
+    } catch {
+      toast.error(t("common.genericError"));
+    }
+  };
+
+  const openEditHabit = (habit) => {
+    setEditHabitName(habit.name);
+    setEditHabitDialog({ open: true, habit });
+  };
+
+  const handleEditHabitSubmit = async (e) => {
+    e.preventDefault();
+    if (!editHabitName.trim() || !editHabitDialog.habit) return;
+    try {
+      // We use updateHabit via a direct firestore call — but usePlanner doesn't expose updateHabit
+      // We'll add the name update via a workaround: delete old + add new isn't ideal,
+      // so let's check if we have updateHabit... we don't. Let's import directly.
+      // For now call through the hook's updateSection pattern — actually we need updateHabit.
+      // Since usePlanner doesn't have it, we'll handle it in the page directly.
+      const { db } = await import("@/lib/firebase");
+      const { doc, updateDoc } = await import("firebase/firestore");
+      await updateDoc(doc(db, "plannerHabits", editHabitDialog.habit.id), {
+        name: editHabitName.trim(),
+      });
+      toast.success(t("planner.habitUpdated"));
+      setEditHabitDialog({ open: false, habit: null });
+    } catch {
+      toast.error(t("common.genericError"));
+    }
+  };
+
   const fadeUp = { initial: { opacity: 0, y: 16 }, animate: { opacity: 1, y: 0 } };
 
   return (
@@ -427,71 +662,53 @@ const PlannerPage = () => {
         </div>
       ) : (
         <>
-          {/* Habit Categories Grid */}
-          <div className="grid gap-4 md:grid-cols-2">
-            {CATEGORIES.map((cat) => (
-              <Motion.div key={cat.id} {...fadeUp}>
-                <CategoryCard
-                  category={cat}
-                  habits={getHabitsByCategory(cat.id)}
-                  isCompleted={isCompleted}
-                  onToggle={toggleCompletion}
-                  onDelete={(id) => setDeleteHabitDialog({ open: true, id })}
-                  onAdd={openAddHabit}
-                  t={t}
-                />
-              </Motion.div>
-            ))}
-          </div>
+          {/* Habit Sections Grid */}
+          {habitSections.length > 0 && (
+            <div className="grid gap-4 md:grid-cols-2">
+              {habitSections.map((section) => (
+                <Motion.div key={section.id} {...fadeUp}>
+                  <CategoryCard
+                    section={section}
+                    habits={getHabitsByCategory(section.id)}
+                    isCompleted={isCompleted}
+                    onToggle={toggleCompletion}
+                    onDeleteHabit={(id) => setDeleteHabitDialog({ open: true, id })}
+                    onEditHabit={openEditHabit}
+                    onAdd={openAddHabit}
+                    onEditCard={openEditSection}
+                    onDeleteCard={(id) => setDeleteSectionDialog({ open: true, id })}
+                    t={t}
+                  />
+                </Motion.div>
+              ))}
+            </div>
+          )}
 
-          {/* Reading Section */}
+          {/* Book Sections */}
+          {bookSections.map((section) => (
+            <Motion.div key={section.id} {...fadeUp}>
+              <ReadingCard
+                section={section}
+                books={books}
+                onAddBook={() => setAddBookOpen(true)}
+                onUpdateBook={updateBook}
+                onDeleteBook={(id) => setDeleteBookDialog({ open: true, id })}
+                onEditCard={openEditSection}
+                onDeleteCard={(id) => setDeleteSectionDialog({ open: true, id })}
+                t={t}
+              />
+            </Motion.div>
+          ))}
+
+          {/* Add New Card Button */}
           <Motion.div {...fadeUp}>
-            <Card className="border border-orange-500/20">
-              <CardHeader className="pb-2">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="p-2 rounded-lg bg-orange-500/10">
-                      <BookOpen className="h-4 w-4 text-orange-500" />
-                    </div>
-                    <CardTitle className="text-base">
-                      {t("planner.categories.reading")}
-                    </CardTitle>
-                    <span className="text-xs text-muted-foreground">
-                      {books.length} {t("planner.books")}
-                    </span>
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-7 w-7"
-                    onClick={() => setAddBookOpen(true)}
-                  >
-                    <Plus className="h-4 w-4" />
-                  </Button>
-                </div>
-              </CardHeader>
-              <CardContent className="pt-0">
-                {books.length === 0 ? (
-                  <p className="text-xs text-muted-foreground py-2">
-                    {t("planner.noBooks")}
-                  </p>
-                ) : (
-                  <div>
-                    {books.map((book) => (
-                      <BookCard
-                        key={book.id}
-                        book={book}
-                        onUpdate={updateBook}
-                        onDelete={(id) =>
-                          setDeleteBookDialog({ open: true, id })
-                        }
-                        t={t}
-                      />
-                    ))}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+            <button
+              onClick={openAddSection}
+              className="w-full min-h-[80px] rounded-lg border-2 border-dashed border-border hover:border-primary hover:bg-primary/5 transition-colors flex items-center justify-center gap-2 text-muted-foreground hover:text-primary"
+            >
+              <Plus className="h-5 w-5" />
+              <span className="text-sm font-medium">{t("planner.addSection")}</span>
+            </button>
           </Motion.div>
         </>
       )}
@@ -506,22 +723,23 @@ const PlannerPage = () => {
             <div className="space-y-2">
               <Label>{t("planner.category")}</Label>
               <div className="grid grid-cols-2 gap-2">
-                {CATEGORIES.map((cat) => {
-                  const Icon = cat.icon;
+                {habitSections.map((section) => {
+                  const Icon = ICON_MAP[section.icon] || ListChecks;
+                  const colors = getSectionColors(section.color);
                   return (
                     <button
-                      key={cat.id}
+                      key={section.id}
                       type="button"
-                      onClick={() => setSelectedCategory(cat.id)}
+                      onClick={() => setSelectedCategory(section.id)}
                       className={cn(
                         "flex items-center gap-2 px-3 py-2 rounded-lg border text-sm transition-all",
-                        selectedCategory === cat.id
-                          ? `${cat.bg} ${cat.border} ${cat.color} font-medium`
+                        selectedCategory === section.id
+                          ? `${colors.bg} ${colors.border} ${colors.color} font-medium`
                           : "border-border text-muted-foreground hover:bg-accent"
                       )}
                     >
                       <Icon className="h-4 w-4" />
-                      {t(`planner.categories.${cat.id}`)}
+                      {section.name}
                     </button>
                   );
                 })}
@@ -535,6 +753,29 @@ const PlannerPage = () => {
                 placeholder={t("planner.habitNamePlaceholder")}
                 autoFocus
                 required
+              />
+            </div>
+            <Button type="submit" className="w-full">
+              {t("common.save")}
+            </Button>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Habit Dialog */}
+      <Dialog open={editHabitDialog.open} onOpenChange={(open) => !open && setEditHabitDialog({ open: false, habit: null })}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t("planner.editHabit")}</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleEditHabitSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Label>{t("planner.habitName")}</Label>
+              <Input
+                value={editHabitName}
+                onChange={(e) => setEditHabitName(e.target.value)}
+                required
+                autoFocus
               />
             </div>
             <Button type="submit" className="w-full">
@@ -592,6 +833,75 @@ const PlannerPage = () => {
         </DialogContent>
       </Dialog>
 
+      {/* Add/Edit Section Dialog */}
+      <Dialog
+        open={sectionDialog.open}
+        onOpenChange={(open) => !open && setSectionDialog({ ...sectionDialog, open: false })}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              {sectionDialog.mode === "add" ? t("planner.addSection") : t("planner.editSection")}
+            </DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleSectionSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Label>{t("planner.sectionName")}</Label>
+              <Input
+                value={sectionForm.name}
+                onChange={(e) => setSectionForm({ ...sectionForm, name: e.target.value })}
+                placeholder={t("planner.sectionNamePlaceholder")}
+                required
+                autoFocus
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>{t("planner.sectionIcon")}</Label>
+              <div className="grid grid-cols-8 gap-1">
+                {Object.entries(ICON_MAP).map(([key, IconComp]) => (
+                  <button
+                    key={key}
+                    type="button"
+                    onClick={() => setSectionForm({ ...sectionForm, icon: key })}
+                    className={cn(
+                      "p-2 rounded-lg border transition-all flex items-center justify-center",
+                      sectionForm.icon === key
+                        ? "border-primary bg-primary/10 text-primary"
+                        : "border-border hover:bg-accent text-muted-foreground"
+                    )}
+                    title={key}
+                  >
+                    <IconComp className="h-4 w-4" />
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label>{t("planner.sectionColor")}</Label>
+              <div className="flex flex-wrap gap-2">
+                {COLOR_OPTIONS.map((c) => (
+                  <button
+                    key={c.id}
+                    type="button"
+                    onClick={() => setSectionForm({ ...sectionForm, color: c.id })}
+                    className={cn(
+                      "h-7 w-7 rounded-full transition-all ring-2 ring-offset-2",
+                      c.tw,
+                      sectionForm.color === c.id
+                        ? "ring-foreground"
+                        : "ring-transparent hover:ring-border"
+                    )}
+                  />
+                ))}
+              </div>
+            </div>
+            <Button type="submit" className="w-full">
+              {t("common.save")}
+            </Button>
+          </form>
+        </DialogContent>
+      </Dialog>
+
       {/* Delete Habit Confirm */}
       <ConfirmDialog
         isOpen={deleteHabitDialog.open}
@@ -611,6 +921,18 @@ const PlannerPage = () => {
         onConfirm={handleDeleteBook}
         title={t("planner.deleteBookTitle")}
         description={t("planner.deleteBookDescription")}
+        confirmText={t("common.delete")}
+        cancelText={t("common.cancel")}
+        variant="destructive"
+      />
+
+      {/* Delete Section Confirm */}
+      <ConfirmDialog
+        isOpen={deleteSectionDialog.open}
+        onClose={() => setDeleteSectionDialog({ open: false, id: null })}
+        onConfirm={handleDeleteSection}
+        title={t("planner.deleteSectionTitle")}
+        description={t("planner.deleteSectionDescription")}
         confirmText={t("common.delete")}
         cancelText={t("common.cancel")}
         variant="destructive"
