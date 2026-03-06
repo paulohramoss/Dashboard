@@ -47,6 +47,7 @@
     "tutorial": "Manual do Usuário",
     "faq": "FAQ",
     "challenges": "Desafios",
+    "planner": "Planner",
     "logout": "Sair",
     "confirmLogout": "Confirmar Saída?",
     "upgrade": "Premium"
@@ -987,5 +988,39 @@
     "goals": "Limite de {{limit}} objetivos atingido. Faça upgrade para o Premium.",
     "categories": "Limite de {{limit}} categorias customizadas atingido. Faça upgrade para o Premium.",
     "recurring": "Limite de {{limit}} transações recorrentes atingido. Faça upgrade para o Premium."
+  },
+  "planner": {
+    "title": "Meu Planner",
+    "completed": "concluídos",
+    "noItems": "Nenhum item ainda. Clique em + para adicionar.",
+    "noBooks": "Nenhum livro ainda. Clique em + para adicionar.",
+    "books": "livros",
+    "page": "Página",
+    "bookCompleted": "\"{{title}}\" concluído! Parabéns! 🎉",
+    "addHabit": "Adicionar Item",
+    "addBook": "Adicionar Livro",
+    "habitName": "Nome do item",
+    "habitNamePlaceholder": "Ex: Ler por 20 minutos",
+    "category": "Categoria",
+    "bookTitle": "Título",
+    "bookTitlePlaceholder": "Ex: Hábitos Atômicos",
+    "bookAuthor": "Autor",
+    "bookAuthorPlaceholder": "Ex: James Clear",
+    "bookPages": "Total de páginas",
+    "habitAdded": "Item adicionado com sucesso!",
+    "habitDeleted": "Item removido.",
+    "bookAdded": "Livro adicionado com sucesso!",
+    "bookDeleted": "Livro removido.",
+    "deleteHabitTitle": "Remover item",
+    "deleteHabitDescription": "Tem certeza que deseja remover este item? Esta ação não pode ser desfeita.",
+    "deleteBookTitle": "Remover livro",
+    "deleteBookDescription": "Tem certeza que deseja remover este livro? Esta ação não pode ser desfeita.",
+    "categories": {
+      "routine": "Rotina",
+      "devotional": "Devocional",
+      "study": "Estudos",
+      "workout": "Treinos",
+      "reading": "Leitura"
+    }
   }
 }
