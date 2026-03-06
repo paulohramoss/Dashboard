@@ -15,11 +15,11 @@ import {
 import { format } from "date-fns";
 
 const DEFAULT_SECTIONS = [
-  { id: "routine",    name: "Rotina",     icon: "ListChecks",    color: "blue",   order: 0 },
-  { id: "devotional", name: "Devocional", icon: "Sunrise",       color: "yellow", order: 1 },
-  { id: "study",      name: "Estudos",    icon: "GraduationCap", color: "purple", order: 2 },
-  { id: "workout",    name: "Treinos",    icon: "Dumbbell",      color: "green",  order: 3 },
-  { id: "reading",    name: "Leitura",    icon: "BookOpen",      color: "orange", order: 4, type: "books" },
+  { id: "routine",    name: "Rotina",     icon: "ListChecks",    color: "#3b82f6", order: 0 },
+  { id: "devotional", name: "Devocional", icon: "Sunrise",       color: "#eab308", order: 1 },
+  { id: "study",      name: "Estudos",    icon: "GraduationCap", color: "#a855f7", order: 2 },
+  { id: "workout",    name: "Treinos",    icon: "Dumbbell",      color: "#22c55e", order: 3 },
+  { id: "reading",    name: "Leitura",    icon: "BookOpen",      color: "#f97316", order: 4, type: "books" },
 ];
 
 export const usePlanner = () => {
@@ -47,14 +47,7 @@ export const usePlanner = () => {
   };
 
   useEffect(() => {
-    if (!user?.id) {
-      setHabits([]);
-      setCompletions([]);
-      setBooks([]);
-      setSections([]);
-      setLoading(false);
-      return;
-    }
+    if (!user?.id) return;
 
     let habitsDone = false;
     let completionsDone = false;

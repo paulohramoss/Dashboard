@@ -140,6 +140,14 @@ service cloud.firestore {
       allow delete: if isPlannerOwner();
     }
 
+    match /plannerSections/{document} {
+      allow get: if isPlannerOwner();
+      allow list: if isAuthenticated();
+      allow create: if isPlannerOwnerCreate();
+      allow update: if isPlannerOwner();
+      allow delete: if isPlannerOwner();
+    }
+
     // Bloqueia tudo o resto
     match /{document=**} {
       allow read, write: if false;
