@@ -1,12 +1,11 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    
+
     // Verifica se o utilizador está logado
     function isAuthenticated() {
       return request.auth != null;
     }
-
     // Regra Híbrida: Aceita "Modo Casal" (allowedUsers) OU "Modo Solteiro" (userId)
     function isAllowed() {
       return isAuthenticated() && (
@@ -14,141 +13,104 @@ service cloud.firestore {
         ('allowedUsers' in resource.data && resource.data.allowedUsers is list && request.auth.uid in resource.data.allowedUsers)
       );
     }
-    
-    // Verifica se é uma operação de "Self-Join" segura
-    // Permite ATUALIZAR se o usuário estiver ADICIONANDO apenas a si mesmo ao array allowedUsers
-    // E não estiver removendo ninguém nem alterando outros campos críticos
-    function isJoinOperation() {
-      return isAuthenticated() && 
-        // Apenas update
-        request.method == 'update' &&
-        // Deve ter allowedUsers no recurso original ou no request
-        (resource.data.allowedUsers is list) &&
-        // O uid do usuário deve estar no NOVO allowedUsers
-        (request.auth.uid in request.resource.data.allowedUsers) &&
-        // O tamanho do array deve aumentar em exatos 1 (ou manter se já estiver lá, mas a lógica de invite assume que ainda não está)
-        // Simplificação: vamos garantir que todos os users originais AINDA estejam lá
-        (resource.data.allowedUsers.hasAll(request.resource.data.allowedUsers.removeAll([request.auth.uid]))) &&
-        // Garante que o usuário NÃO está alterando o userId (proprietário)
-        request.resource.data.userId == resource.data.userId;
-    }
 
-    // Na criação, obriga a definir o array allowedUsers
+    // Regra de Criação Segura
     function isAllowedCreate() {
       return isAuthenticated() && (
         request.resource.data.userId == request.auth.uid &&
-        request.resource.data.allowedUsers is list && 
+        request.resource.data.allowedUsers is list &&
         request.auth.uid in request.resource.data.allowedUsers
       );
     }
-
-    // Coleção de Convites (Segurança por Obscuridade de ID + Auth)
-    match /invites/{document} {
-      // Quem cria é o dono.
-      allow create: if isAuthenticated() && request.resource.data.createdBy == request.auth.uid;
-      // Leitura pública se souber o ID (para validar o código)
-      // Listagem negada (ninguém pode listar todos os convites)
-      allow get: if true;
-      allow list: if false;
-      // Deletar: Apenas quem criou (opcional: ou quem aceitou, mas deixaremos o frontend deletar após uso)
-      allow delete: if isAuthenticated(); 
+    // Lógica de Join (Mantive a tua, está excelente!)
+    function isJoinOperation() {
+      return isAuthenticated() &&
+        request.method == 'update' &&
+        (resource.data.allowedUsers is list) &&
+        (request.auth.uid in request.resource.data.allowedUsers) &&
+        // Garante que não remove ninguém existente
+        (resource.data.allowedUsers.hasAll(request.resource.data.allowedUsers.removeAll([request.auth.uid]))) &&
+        request.resource.data.userId == resource.data.userId;
     }
-
-    match /suggestions/{document} {
-      allow create: if isAuthenticated();
-    }
-
-    // Função para validar queries baseadas em allowedUsers
-    // Para queries (list), confiamos que o WHERE clause vai filtrar corretamente
-    function isAllowedQuery() {
-      return isAuthenticated() && (
-        request.query.limit == null || // Sem limit, ou
-        // Se houver query, deve ser uma query válida por userId ou allowedUsers
-        true // Confiamos no filtro where() do cliente
-      );
-    }
-
-    match /transactions/{document} {
-      allow get: if isAllowed();
-      allow list: if isAllowedQuery();
-      allow update: if isAllowed() || isJoinOperation();
-      allow delete: if isAllowed();
-      allow create: if isAllowedCreate();
-    }
-
-    match /categories/{document} {
-      allow get: if isAllowed();
-      allow list: if isAllowedQuery();
-      allow update: if isAllowed() || isJoinOperation();
-      allow delete: if isAllowed();
-      allow create: if isAllowedCreate();
-    }
-
-    match /accounts/{document} {
-      allow get: if isAllowed();
-      allow list: if isAllowedQuery();
-      allow update: if isAllowed() || isJoinOperation();
-      allow delete: if isAllowed();
-      allow create: if isAllowedCreate();
-    }
-
-    match /goals/{document} {
-      allow get: if isAllowed();
-      allow list: if isAllowedQuery();
-      allow update: if isAllowed() || isJoinOperation();
-      allow delete: if isAllowed();
-      allow create: if isAllowedCreate();
-    }
-
-    match /userRules/{document} {
-      allow get: if isAllowed();
-      allow list: if isAllowedQuery();
-      allow update: if isAllowed() || isJoinOperation();
-      allow delete: if isAllowed();
-      allow create: if isAllowedCreate();
-    }
-
-    // Planner collections (personal, userId-only)
+    // Planner: pessoal, apenas o dono acede
     function isPlannerOwner() {
       return isAuthenticated() && resource.data.userId == request.auth.uid;
     }
     function isPlannerOwnerCreate() {
       return isAuthenticated() && request.resource.data.userId == request.auth.uid;
     }
+    // --- REGRAS POR COLEÇÃO ---
+    match /invites/{document} {
+      allow create: if isAuthenticated() && request.resource.data.createdBy == request.auth.uid;
+      allow get: if true;
+      allow list: if false;
+      allow delete: if isAuthenticated();
+    }
+    match /suggestions/{document} {
+      allow create: if isAuthenticated();
+    }
 
+    match /transactions/{document} {
+      allow read: if isAllowed();
+      allow create: if isAllowedCreate();
+      allow update: if isAllowed() || isJoinOperation();
+      allow delete: if isAllowed();
+    }
+    match /categories/{document} {
+      allow read: if isAllowed();
+      allow create: if isAllowedCreate();
+      allow update: if isAllowed() || isJoinOperation();
+      allow delete: if isAllowed();
+    }
+    match /accounts/{document} {
+      allow read: if isAllowed();
+      allow create: if isAllowedCreate();
+      allow update: if isAllowed() || isJoinOperation();
+      allow delete: if isAllowed();
+    }
+    match /goals/{document} {
+      allow read: if isAllowed();
+      allow create: if isAllowedCreate();
+      allow update: if isAllowed() || isJoinOperation();
+      allow delete: if isAllowed();
+    }
+    match /userRules/{document} {
+      allow read: if isAllowed();
+      allow create: if isAllowedCreate();
+      allow update: if isAllowed() || isJoinOperation();
+      allow delete: if isAllowed();
+    }
+    match /challenges/{document} {
+      allow read: if isAllowed();
+      allow create: if isAllowedCreate();
+      allow update: if isAllowed() || isJoinOperation();
+      allow delete: if isAllowed();
+    }
+    // Planner (pessoal — sem allowedUsers)
     match /plannerHabits/{document} {
-      allow get: if isPlannerOwner();
-      allow list: if isAuthenticated();
+      allow read: if isPlannerOwner();
       allow create: if isPlannerOwnerCreate();
       allow update: if isPlannerOwner();
       allow delete: if isPlannerOwner();
     }
-
     match /plannerCompletions/{document} {
-      allow get: if isPlannerOwner();
-      allow list: if isAuthenticated();
+      allow read: if isPlannerOwner();
       allow create: if isPlannerOwnerCreate();
       allow update: if isPlannerOwner();
       allow delete: if isPlannerOwner();
     }
-
     match /plannerBooks/{document} {
-      allow get: if isPlannerOwner();
-      allow list: if isAuthenticated();
+      allow read: if isPlannerOwner();
       allow create: if isPlannerOwnerCreate();
       allow update: if isPlannerOwner();
       allow delete: if isPlannerOwner();
     }
-
     match /plannerSections/{document} {
-      allow get: if isPlannerOwner();
-      allow list: if isAuthenticated();
+      allow read: if isPlannerOwner();
       allow create: if isPlannerOwnerCreate();
       allow update: if isPlannerOwner();
       allow delete: if isPlannerOwner();
     }
-
-    // Bloqueia tudo o resto
     match /{document=**} {
       allow read, write: if false;
     }
