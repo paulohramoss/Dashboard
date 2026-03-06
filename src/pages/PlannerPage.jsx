@@ -852,22 +852,25 @@ const PlannerPage = () => {
             <div className="space-y-2">
               <Label>{t("planner.sectionIcon")}</Label>
               <div className="grid grid-cols-8 gap-1">
-                {Object.entries(ICON_MAP).map(([key, IconComp]) => (
-                  <button
-                    key={key}
-                    type="button"
-                    onClick={() => setSectionForm({ ...sectionForm, icon: key })}
-                    className={cn(
-                      "p-2 rounded-lg border transition-all flex items-center justify-center",
-                      sectionForm.icon === key
-                        ? "border-primary bg-primary/10 text-primary"
-                        : "border-border hover:bg-accent text-muted-foreground"
-                    )}
-                    title={key}
-                  >
-                    <IconComp className="h-4 w-4" />
-                  </button>
-                ))}
+                {Object.entries(ICON_MAP).map(([key]) => {
+                  const Icon = ICON_MAP[key];
+                  return (
+                    <button
+                      key={key}
+                      type="button"
+                      onClick={() => setSectionForm({ ...sectionForm, icon: key })}
+                      className={cn(
+                        "p-2 rounded-lg border transition-all flex items-center justify-center",
+                        sectionForm.icon === key
+                          ? "border-primary bg-primary/10 text-primary"
+                          : "border-border hover:bg-accent text-muted-foreground"
+                      )}
+                      title={key}
+                    >
+                      <Icon className="h-4 w-4" />
+                    </button>
+                  );
+                })}
               </div>
             </div>
             <div className="space-y-2">
