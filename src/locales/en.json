@@ -987,7 +987,8 @@
     "accounts": "Limit of {{limit}} accounts reached. Upgrade to Premium.",
     "goals": "Limit of {{limit}} goals reached. Upgrade to Premium.",
     "categories": "Limit of {{limit}} custom categories reached. Upgrade to Premium.",
-    "recurring": "Limit of {{limit}} recurring transactions reached. Upgrade to Premium."
+    "recurring": "Limit of {{limit}} recurring transactions reached. Upgrade to Premium.",
+    "budgets": "Limit of {{limit}} budgets reached. Upgrade to Premium."
   },
   "planner": {
     "title": "My Planner",

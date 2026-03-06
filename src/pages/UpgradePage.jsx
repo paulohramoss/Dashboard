@@ -185,7 +185,7 @@ const UpgradePage = () => {
     },
     {
       name: t("upgrade.plans.premiumMonthly"),
-      price: "R$ 14,90",
+      price: "R$ 10,00",
       period: `/${t("upgrade.month")}`,
       features: premiumFeatures,
       isFree: false,
@@ -193,10 +193,10 @@ const UpgradePage = () => {
     },
     {
       name: t("upgrade.plans.premiumYearly"),
-      price: "R$ 99,90",
+      price: "R$ 80,00",
       period: `/${t("upgrade.year")}`,
-      yearlyNote: t("upgrade.perMonth", { value: "R$ 8,32" }),
-      discount: t("upgrade.discount", { pct: 44 }),
+      yearlyNote: t("upgrade.perMonth", { value: "R$ 6,60" }),
+      discount: t("upgrade.discount", { pct: 34 }),
       features: premiumFeatures,
       isFree: false,
       billing: "yearly",
@@ -244,7 +244,7 @@ const UpgradePage = () => {
           {t("upgrade.featuresTitle")}
         </h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-          {PREMIUM_FEATURES.map(({ key }) => (
+          {PREMIUM_FEATURES.map(({ icon: Icon, key }) => (
             <div
               key={key}
               className="flex flex-col items-center gap-2 p-4 rounded-xl bg-card border hover:border-primary/40 transition-colors text-center"

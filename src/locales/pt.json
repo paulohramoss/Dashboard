@@ -987,7 +987,8 @@
     "accounts": "Limite de {{limit}} contas atingido. Faça upgrade para o Premium.",
     "goals": "Limite de {{limit}} objetivos atingido. Faça upgrade para o Premium.",
     "categories": "Limite de {{limit}} categorias customizadas atingido. Faça upgrade para o Premium.",
-    "recurring": "Limite de {{limit}} transações recorrentes atingido. Faça upgrade para o Premium."
+    "recurring": "Limite de {{limit}} transações recorrentes atingido. Faça upgrade para o Premium.",
+    "budgets": "Limite de {{limit}} orçamentos atingido. Faça upgrade para o Premium."
   },
   "planner": {
     "title": "Meu Planner",
