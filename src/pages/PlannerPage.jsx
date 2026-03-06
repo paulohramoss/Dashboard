@@ -362,25 +362,12 @@ const PlannerPage = () => {
     setDeleteBookDialog({ open: false, id: null });
   };
 
-  const container = {
-    hidden: { opacity: 0 },
-    show: { opacity: 1, transition: { staggerChildren: 0.08 } },
-  };
-
-  const item = {
-    hidden: { opacity: 0, y: 16 },
-    show: { opacity: 1, y: 0 },
-  };
+  const fadeUp = { initial: { opacity: 0, y: 16 }, animate: { opacity: 1, y: 0 } };
 
   return (
-    <Motion.div
-      variants={container}
-      initial="hidden"
-      animate="show"
-      className="space-y-6"
-    >
+    <div className="space-y-6">
       {/* Header */}
-      <Motion.div variants={item} className="flex items-start justify-between gap-4">
+      <Motion.div {...fadeUp} className="flex items-start justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">
             {t("planner.title")}
@@ -401,7 +388,7 @@ const PlannerPage = () => {
 
       {/* Overall progress bar */}
       {!loading && habits.length > 0 && (
-        <Motion.div variants={item}>
+        <Motion.div {...fadeUp}>
           <Progress value={progress.percentage} className="h-2" />
         </Motion.div>
       )}
@@ -425,7 +412,7 @@ const PlannerPage = () => {
           {/* Habit Categories Grid */}
           <div className="grid gap-4 md:grid-cols-2">
             {CATEGORIES.map((cat) => (
-              <Motion.div key={cat.id} variants={item}>
+              <Motion.div key={cat.id} {...fadeUp}>
                 <CategoryCard
                   category={cat}
                   habits={getHabitsByCategory(cat.id)}
@@ -440,7 +427,7 @@ const PlannerPage = () => {
           </div>
 
           {/* Reading Section */}
-          <Motion.div variants={item}>
+          <Motion.div {...fadeUp}>
             <Card className="border border-orange-500/20">
               <CardHeader className="pb-2">
                 <div className="flex items-center justify-between">
@@ -610,7 +597,7 @@ const PlannerPage = () => {
         cancelText={t("common.cancel")}
         variant="destructive"
       />
-    </Motion.div>
+    </div>
   );
 };
 
