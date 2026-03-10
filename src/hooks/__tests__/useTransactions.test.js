@@ -31,6 +31,11 @@ vi.mock("@/hooks/useAuth", () => ({
   }),
 }));
 
+// Mock usePartners
+vi.mock("@/hooks/usePartners", () => ({
+  usePartners: () => [],
+}));
+
 // Mock usePremium
 vi.mock("@/hooks/usePremium", () => ({
   usePremium: () => ({ isPremium: true, loading: false }),
