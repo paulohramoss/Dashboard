@@ -13,7 +13,6 @@ export const usePartners = () => {
 
   useEffect(() => {
     if (!user?.id) {
-      setPartners([]);
       return;
     }
 
@@ -37,5 +36,5 @@ export const usePartners = () => {
     return () => unsubscribe();
   }, [user?.id]);
 
-  return partners;
+  return user?.id ? partners : [];
 };
