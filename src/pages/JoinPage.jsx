@@ -7,10 +7,6 @@ import {
   getDoc,
   deleteDoc,
   writeBatch,
-  collection,
-  getDocs,
-  query,
-  where,
   arrayUnion,
 } from "firebase/firestore";
 import { Button } from "@/components/ui/button";
@@ -82,8 +78,7 @@ const JoinPage = () => {
 
     try {
       const batch = writeBatch(db);
-      const ownerId = inviteData.createdBy;
-
+      const documentIds = inviteData.documentIds || {};
       const collectionsToUpdate = [
         "categories",
         "accounts",
@@ -92,22 +87,19 @@ const JoinPage = () => {
       ];
       let operationCount = 0;
 
+      // Use pre-stored document IDs from the invite to avoid querying
+      // collections the joiner doesn't yet have read permission for
       for (const colName of collectionsToUpdate) {
-        const q = query(
-          collection(db, colName),
-          where("userId", "==", ownerId),
-        );
-        const snapshot = await getDocs(q);
-
-        snapshot.docs.forEach((d) => {
-          batch.update(d.ref, {
+        const ids = documentIds[colName] || [];
+        for (const id of ids) {
+          batch.update(doc(db, colName, id), {
             allowedUsers: arrayUnion(user.id),
           });
           operationCount++;
-        });
+        }
       }
 
-      // 2. Delete the Invite (One-time use)
+      // Delete the Invite (one-time use)
       batch.delete(doc(db, "invites", inviteCode));
 
       if (operationCount > 0) {
