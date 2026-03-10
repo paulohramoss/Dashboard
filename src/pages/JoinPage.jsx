@@ -6,6 +6,7 @@ import {
   doc,
   getDoc,
   deleteDoc,
+  setDoc,
   writeBatch,
   arrayUnion,
 } from "firebase/firestore";
@@ -77,40 +78,58 @@ const JoinPage = () => {
     setProcessing(true);
 
     try {
-      const batch = writeBatch(db);
       const documentIds = inviteData.documentIds || {};
       const collectionsToUpdate = [
         "categories",
         "accounts",
         "goals",
         "userRules",
+        "transactions",
       ];
-      let operationCount = 0;
 
-      // Use pre-stored document IDs from the invite to avoid querying
-      // collections the joiner doesn't yet have read permission for
+      // Build all update operations from pre-stored document IDs
+      const operations = [];
       for (const colName of collectionsToUpdate) {
         const ids = documentIds[colName] || [];
         for (const id of ids) {
-          batch.update(doc(db, colName, id), {
-            allowedUsers: arrayUnion(user.id),
-          });
-          operationCount++;
+          operations.push({ colName, id });
         }
       }
 
-      // Delete the Invite (one-time use)
-      batch.delete(doc(db, "invites", inviteCode));
-
-      if (operationCount > 0) {
-        await batch.commit();
-        toast.success(t("join.success"));
-      } else {
-        // Even if no docs, we delete invite
-        await deleteDoc(doc(db, "invites", inviteCode));
-        toast.success(t("join.noDataYet"));
+      // Execute in chunks of 499 to stay within Firestore batch limit
+      const CHUNK_SIZE = 499;
+      if (operations.length > 0) {
+        for (let i = 0; i < operations.length; i += CHUNK_SIZE) {
+          const chunk = operations.slice(i, i + CHUNK_SIZE);
+          const batch = writeBatch(db);
+          for (const { colName, id } of chunk) {
+            batch.update(doc(db, colName, id), {
+              allowedUsers: arrayUnion(user.id),
+            });
+          }
+          await batch.commit();
+        }
       }
 
+      // Delete the invite (one-time use)
+      await deleteDoc(doc(db, "invites", inviteCode));
+
+      // Store the partnership relationship so future documents auto-share
+      const inviteOwnerId = inviteData.createdBy;
+      await Promise.all([
+        setDoc(
+          doc(db, "partnerships", inviteOwnerId),
+          { partners: arrayUnion(user.id) },
+          { merge: true },
+        ),
+        setDoc(
+          doc(db, "partnerships", user.id),
+          { partners: arrayUnion(inviteOwnerId) },
+          { merge: true },
+        ),
+      ]);
+
+      toast.success(t("join.success"));
       navigate("/");
     } catch (err) {
       console.error("Error accepting invite:", err);

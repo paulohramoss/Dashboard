@@ -56,7 +56,7 @@ const InvitePartner = () => {
     setInviting(true);
     try {
       // Pre-fetch owner's document IDs so the joiner won't need to query
-      const collectionsToShare = ["categories", "accounts", "goals", "userRules"];
+      const collectionsToShare = ["categories", "accounts", "goals", "userRules", "transactions"];
       const documentIds = {};
       for (const colName of collectionsToShare) {
         const q = query(

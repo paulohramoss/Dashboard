@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { usePartners } from "@/hooks/usePartners";
 import { db } from "@/lib/firebase";
 import {
   collection,
@@ -16,9 +17,13 @@ import { getCurrentLocalDate } from "@/lib/utils";
 
 export const useTransactions = () => {
   const { user } = useAuth();
+  const partners = usePartners();
   // Derive initial state from user
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(false);
+  // Track IDs that were optimistically deleted to prevent flicker between
+  // q1 and q2 snapshot updates after a delete operation
+  const deletedIdsRef = useRef(new Set());
 
   useEffect(() => {
     // Don't subscribe if no user - component will naturally show empty state
@@ -48,8 +53,18 @@ export const useTransactions = () => {
       if (!isMounted) return;
 
       const allDocs = [...resultsRef.results1, ...resultsRef.results2];
-      const uniqueDocs = Array.from(
-        new Map(allDocs.map((item) => [item.id, item])).values(),
+      const uniqueMap = new Map(allDocs.map((item) => [item.id, item]));
+
+      // Clean up deletedIdsRef for items confirmed removed from Firestore
+      deletedIdsRef.current.forEach((id) => {
+        if (!uniqueMap.has(id)) {
+          deletedIdsRef.current.delete(id);
+        }
+      });
+
+      // Filter out optimistically deleted items that q2 may still contain
+      const uniqueDocs = Array.from(uniqueMap.values()).filter(
+        (item) => !deletedIdsRef.current.has(item.id),
       );
 
       uniqueDocs.sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -127,6 +142,8 @@ export const useTransactions = () => {
 
   const addTransaction = async (transaction) => {
     if (!user?.id) return;
+    // Include partner IDs so shared transactions are visible to all partners
+    const allowedUsers = [user.id, ...partners];
     try {
       // Handle Installments
       if (transaction.isInstallment && transaction.installmentsCount > 1) {
@@ -159,7 +176,7 @@ export const useTransactions = () => {
           batch.set(docRef, {
             ...transaction,
             userId: user.id,
-            allowedUsers: [user.id],
+            allowedUsers,
             description: `${transaction.description} (${
               i + 1
             }/${installmentsCount})`,
@@ -180,7 +197,7 @@ export const useTransactions = () => {
       const transactionData = {
         ...transaction,
         userId: user.id,
-        allowedUsers: [user.id],
+        allowedUsers,
         date: transaction.date || getCurrentLocalDate(),
         createdAt: new Date().toISOString(),
         accountId: transaction.accountId || null,
@@ -201,6 +218,7 @@ export const useTransactions = () => {
 
   const addTransactions = async (newTransactions) => {
     if (!user?.id) return;
+    const allowedUsers = [user.id, ...partners];
     try {
       const batch = writeBatch(db);
       newTransactions.forEach((t) => {
@@ -208,7 +226,7 @@ export const useTransactions = () => {
         batch.set(docRef, {
           ...t,
           userId: user.id,
-          allowedUsers: [user.id],
+          allowedUsers,
           date: t.date || getCurrentLocalDate(),
           createdAt: new Date().toISOString(),
         });
@@ -232,10 +250,16 @@ export const useTransactions = () => {
 
   const deleteTransaction = async (id) => {
     if (!user?.id) return;
+    // Optimistically remove from UI immediately so both q1 and q2 snapshot
+    // delays don't cause a visible flicker where the deleted item reappears
+    deletedIdsRef.current.add(id);
+    setTransactions((prev) => prev.filter((t) => t.id !== id));
     try {
       await deleteDoc(doc(db, "transactions", id));
     } catch (error) {
       console.error("Error deleting transaction:", error);
+      // Restore on failure — let onSnapshot bring the item back
+      deletedIdsRef.current.delete(id);
     }
   };
 
