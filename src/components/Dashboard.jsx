@@ -16,6 +16,7 @@ import CategoryChart from "@/components/Charts/CategoryChart";
 import TransactionHistory from "@/components/TransactionHistory";
 import ForecastCard from "@/components/ForecastCard";
 import FinScoreCard from "@/components/FinScoreCard";
+import FinancialMonthCard from "@/components/FinancialMonthCard";
 import SmartAlerts from "@/components/SmartAlerts";
 import { calculatePredictiveForecast } from "@/utils/forecast";
 import { endOfMonth, differenceInDays, startOfDay } from "date-fns";
@@ -97,6 +98,16 @@ const Dashboard = () => {
 
   const renderCardContent = (key) => {
     switch (key) {
+      case "financialmonth":
+        return loading ? (
+          <Skeleton className="w-full h-full" />
+        ) : (
+          <FinancialMonthCard
+            balance={stats.balance}
+            income={stats.income}
+            expense={stats.expense}
+          />
+        );
       case "balance":
         return loading ? (
           <Skeleton className="w-full h-full" />
@@ -196,6 +207,7 @@ const Dashboard = () => {
   };
 
   const mobileOrder = [
+    "financialmonth",
     "balance",
     "forecast",
     "insights",
@@ -226,69 +238,74 @@ const Dashboard = () => {
     }
   };
   const [layouts, setLayouts] = useState(() => {
-    const savedLayout = localStorage.getItem("dashboardLayout_v4");
+    const savedLayout = localStorage.getItem("dashboardLayout_v5");
     return savedLayout
       ? JSON.parse(savedLayout)
       : {
           lg: [
-            { i: "balance", x: 0, y: 0, w: 6, h: 2, minH: 2 },
-            { i: "forecast", x: 6, y: 0, w: 3, h: 2, minH: 2 },
-            { i: "finscore", x: 9, y: 0, w: 3, h: 2, minH: 2 },
-            { i: "income", x: 0, y: 2, w: 6, h: 2, minH: 2 },
-            { i: "expense", x: 6, y: 2, w: 6, h: 2, minH: 2 },
-            { i: "insights", x: 0, y: 4, w: 12, h: 2, minH: 2 },
-            { i: "overview", x: 0, y: 6, w: 8, h: 4, minH: 4 },
-            { i: "category", x: 8, y: 6, w: 4, h: 4, minH: 4 },
-            { i: "history", x: 0, y: 10, w: 9, h: 5, minH: 5 },
-            { i: "accounts", x: 9, y: 10, w: 3, h: 5, minH: 5 },
+            { i: "financialmonth", x: 0, y: 0, w: 12, h: 2, minH: 2 },
+            { i: "balance", x: 0, y: 2, w: 6, h: 2, minH: 2 },
+            { i: "forecast", x: 6, y: 2, w: 3, h: 2, minH: 2 },
+            { i: "finscore", x: 9, y: 2, w: 3, h: 2, minH: 2 },
+            { i: "income", x: 0, y: 4, w: 6, h: 2, minH: 2 },
+            { i: "expense", x: 6, y: 4, w: 6, h: 2, minH: 2 },
+            { i: "insights", x: 0, y: 6, w: 12, h: 2, minH: 2 },
+            { i: "overview", x: 0, y: 8, w: 8, h: 4, minH: 4 },
+            { i: "category", x: 8, y: 8, w: 4, h: 4, minH: 4 },
+            { i: "history", x: 0, y: 12, w: 9, h: 5, minH: 5 },
+            { i: "accounts", x: 9, y: 12, w: 3, h: 5, minH: 5 },
           ],
           md: [
-            { i: "balance", x: 0, y: 0, w: 6, h: 2 },
-            { i: "forecast", x: 6, y: 0, w: 3, h: 2 },
-            { i: "finscore", x: 9, y: 0, w: 3, h: 2 },
-            { i: "income", x: 0, y: 2, w: 6, h: 2 },
-            { i: "expense", x: 6, y: 2, w: 6, h: 2 },
-            { i: "insights", x: 0, y: 4, w: 12, h: 2 },
-            { i: "overview", x: 0, y: 6, w: 8, h: 4 },
-            { i: "category", x: 8, y: 6, w: 4, h: 4 },
-            { i: "history", x: 0, y: 10, w: 8, h: 5 },
-            { i: "accounts", x: 8, y: 10, w: 4, h: 5 },
+            { i: "financialmonth", x: 0, y: 0, w: 12, h: 2 },
+            { i: "balance", x: 0, y: 2, w: 6, h: 2 },
+            { i: "forecast", x: 6, y: 2, w: 3, h: 2 },
+            { i: "finscore", x: 9, y: 2, w: 3, h: 2 },
+            { i: "income", x: 0, y: 4, w: 6, h: 2 },
+            { i: "expense", x: 6, y: 4, w: 6, h: 2 },
+            { i: "insights", x: 0, y: 6, w: 12, h: 2 },
+            { i: "overview", x: 0, y: 8, w: 8, h: 4 },
+            { i: "category", x: 8, y: 8, w: 4, h: 4 },
+            { i: "history", x: 0, y: 12, w: 8, h: 5 },
+            { i: "accounts", x: 8, y: 12, w: 4, h: 5 },
           ],
           sm: [
-            { i: "balance", x: 0, y: 0, w: 12, h: 2 },
-            { i: "forecast", x: 0, y: 2, w: 12, h: 2 },
-            { i: "finscore", x: 0, y: 4, w: 12, h: 2 },
-            { i: "income", x: 0, y: 6, w: 12, h: 2 },
-            { i: "expense", x: 0, y: 8, w: 12, h: 2 },
-            { i: "insights", x: 0, y: 10, w: 12, h: 2 },
-            { i: "overview", x: 0, y: 12, w: 12, h: 4 },
-            { i: "category", x: 0, y: 16, w: 12, h: 4 },
-            { i: "history", x: 0, y: 20, w: 12, h: 5 },
-            { i: "accounts", x: 0, y: 25, w: 12, h: 5 },
+            { i: "financialmonth", x: 0, y: 0, w: 12, h: 2 },
+            { i: "balance", x: 0, y: 2, w: 12, h: 2 },
+            { i: "forecast", x: 0, y: 4, w: 12, h: 2 },
+            { i: "finscore", x: 0, y: 6, w: 12, h: 2 },
+            { i: "income", x: 0, y: 8, w: 12, h: 2 },
+            { i: "expense", x: 0, y: 10, w: 12, h: 2 },
+            { i: "insights", x: 0, y: 12, w: 12, h: 2 },
+            { i: "overview", x: 0, y: 14, w: 12, h: 4 },
+            { i: "category", x: 0, y: 18, w: 12, h: 4 },
+            { i: "history", x: 0, y: 22, w: 12, h: 5 },
+            { i: "accounts", x: 0, y: 27, w: 12, h: 5 },
           ],
           xs: [
-            { i: "balance", x: 0, y: 0, w: 12, h: 2 },
-            { i: "forecast", x: 0, y: 2, w: 12, h: 2 },
-            { i: "finscore", x: 0, y: 4, w: 12, h: 2 },
-            { i: "income", x: 0, y: 6, w: 12, h: 2 },
-            { i: "expense", x: 0, y: 8, w: 12, h: 2 },
-            { i: "insights", x: 0, y: 10, w: 12, h: 2 },
-            { i: "overview", x: 0, y: 12, w: 12, h: 4 },
-            { i: "category", x: 0, y: 16, w: 12, h: 4 },
-            { i: "history", x: 0, y: 20, w: 12, h: 5 },
-            { i: "accounts", x: 0, y: 25, w: 12, h: 5 },
+            { i: "financialmonth", x: 0, y: 0, w: 12, h: 2 },
+            { i: "balance", x: 0, y: 2, w: 12, h: 2 },
+            { i: "forecast", x: 0, y: 4, w: 12, h: 2 },
+            { i: "finscore", x: 0, y: 6, w: 12, h: 2 },
+            { i: "income", x: 0, y: 8, w: 12, h: 2 },
+            { i: "expense", x: 0, y: 10, w: 12, h: 2 },
+            { i: "insights", x: 0, y: 12, w: 12, h: 2 },
+            { i: "overview", x: 0, y: 14, w: 12, h: 4 },
+            { i: "category", x: 0, y: 18, w: 12, h: 4 },
+            { i: "history", x: 0, y: 22, w: 12, h: 5 },
+            { i: "accounts", x: 0, y: 27, w: 12, h: 5 },
           ],
           xxs: [
-            { i: "balance", x: 0, y: 0, w: 12, h: 2 },
-            { i: "forecast", x: 0, y: 2, w: 12, h: 2 },
-            { i: "finscore", x: 0, y: 4, w: 12, h: 2 },
-            { i: "income", x: 0, y: 6, w: 12, h: 2 },
-            { i: "expense", x: 0, y: 8, w: 12, h: 2 },
-            { i: "insights", x: 0, y: 10, w: 12, h: 2 },
-            { i: "overview", x: 0, y: 12, w: 12, h: 4 },
-            { i: "category", x: 0, y: 16, w: 12, h: 4 },
-            { i: "history", x: 0, y: 20, w: 12, h: 5 },
-            { i: "accounts", x: 0, y: 25, w: 12, h: 5 },
+            { i: "financialmonth", x: 0, y: 0, w: 12, h: 2 },
+            { i: "balance", x: 0, y: 2, w: 12, h: 2 },
+            { i: "forecast", x: 0, y: 4, w: 12, h: 2 },
+            { i: "finscore", x: 0, y: 6, w: 12, h: 2 },
+            { i: "income", x: 0, y: 8, w: 12, h: 2 },
+            { i: "expense", x: 0, y: 10, w: 12, h: 2 },
+            { i: "insights", x: 0, y: 12, w: 12, h: 2 },
+            { i: "overview", x: 0, y: 14, w: 12, h: 4 },
+            { i: "category", x: 0, y: 18, w: 12, h: 4 },
+            { i: "history", x: 0, y: 22, w: 12, h: 5 },
+            { i: "accounts", x: 0, y: 27, w: 12, h: 5 },
           ],
         };
   });
@@ -297,7 +314,7 @@ const Dashboard = () => {
 
   const onLayoutChange = (layout, allLayouts) => {
     setLayouts(allLayouts);
-    localStorage.setItem("dashboardLayout_v3", JSON.stringify(allLayouts));
+    localStorage.setItem("dashboardLayout_v5", JSON.stringify(allLayouts));
   };
 
   const exportToExcel = () => {
@@ -616,6 +633,7 @@ const Dashboard = () => {
           draggableHandle=".drag-handle"
         >
           {[
+            "financialmonth",
             "balance",
             "forecast",
             "finscore",
