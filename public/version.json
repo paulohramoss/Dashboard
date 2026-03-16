@@ -1,5 +1,9 @@
 {
-  "version": "v1.0.233",
-  "date": "2026-03-06T20:59:56.507Z",
-  "changelog": null
+  "version": "v1.0.99",
+  "date": "2026-03-16T16:58:44.789Z",
+  "changelog": [
+    "Sistema de atualização automática para PWA instalado",
+    "Notificação elegante quando nova versão está disponível",
+    "Changelog visível no toast de atualização"
+  ]
 }
