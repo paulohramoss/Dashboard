@@ -160,6 +160,16 @@ export const usePlanner = () => {
     }
   };
 
+  const updateHabit = async (id, data) => {
+    if (!user?.id) return;
+    try {
+      await updateDoc(doc(db, "plannerHabits", id), data);
+    } catch (error) {
+      console.error("Error updating habit:", error);
+      throw error;
+    }
+  };
+
   const toggleCompletion = async (habitId) => {
     if (!user?.id) return;
     try {
@@ -278,6 +288,7 @@ export const usePlanner = () => {
     sections,
     loading,
     addHabit,
+    updateHabit,
     deleteHabit,
     toggleCompletion,
     addBook,
