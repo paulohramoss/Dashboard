@@ -218,6 +218,13 @@ const Dashboard = () => {
     }
   };
 
+  const activeBudgets = useMemo(() => {
+    const withBudget = categories.filter((c) => c.budget > 0);
+    return withBudget.filter(
+      (c, idx, self) => idx === self.findIndex((b) => b.name === c.name),
+    );
+  }, [categories]);
+
   const mobileOrder = [
     "financialmonth",
     ...(activeBudgets.length > 0 ? ["budgetoverview"] : []),
@@ -428,13 +435,6 @@ const Dashboard = () => {
   };
 
   // Accounts with balance calculation
-  const activeBudgets = useMemo(() => {
-    const withBudget = categories.filter((c) => c.budget > 0);
-    return withBudget.filter(
-      (c, idx, self) => idx === self.findIndex((b) => b.name === c.name),
-    );
-  }, [categories]);
-
   const accountsWithBalance = useMemo(() => {
     return accounts.map((account) => {
       const accountTransactions = transactions.filter(
