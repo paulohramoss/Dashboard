@@ -107,6 +107,10 @@
     "canStillSpend": "You can still spend",
     "budgetExhausted": "Monthly budget exhausted"
   },
+  "budgetOverview": {
+    "title": "Your budgets",
+    "manage": "Manage"
+  },
   "subscriptions": {
     "title": "Subscription Hub",
     "subtitle": "Manage your recurring expenses and fixed costs.",

@@ -107,6 +107,10 @@
     "canStillSpend": "Você ainda pode gastar",
     "budgetExhausted": "Limite do mês atingido"
   },
+  "budgetOverview": {
+    "title": "Seus orçamentos",
+    "manage": "Gerenciar"
+  },
   "subscriptions": {
     "title": "Gestão de Assinaturas",
     "subtitle": "Gerencie suas despesas recorrentes e custos fixos.",
