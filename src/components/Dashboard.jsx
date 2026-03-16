@@ -106,9 +106,9 @@ const Dashboard = () => {
           <Skeleton className="w-full h-full" />
         ) : (
           <FinancialMonthCard
-            balance={stats.balance}
-            income={stats.income}
-            expense={stats.expense}
+            stats={stats}
+            categories={categories}
+            transactions={transactions}
           />
         );
       case "budgetoverview":

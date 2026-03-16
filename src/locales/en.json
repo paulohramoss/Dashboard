@@ -105,7 +105,10 @@
     "currentBalance": "Current balance",
     "alreadySpent": "You've already spent",
     "canStillSpend": "You can still spend",
-    "budgetExhausted": "Monthly budget exhausted"
+    "budgetExhausted": "Budget exhausted",
+    "allCategories": "All categories",
+    "categoryBudget": "Category budget",
+    "noBudget": "No budget set"
   },
   "budgetOverview": {
     "title": "Your budgets",
