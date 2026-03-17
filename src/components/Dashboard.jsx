@@ -18,7 +18,6 @@ import TransactionHistory from "@/components/TransactionHistory";
 import ForecastCard from "@/components/ForecastCard";
 import FinScoreCard from "@/components/FinScoreCard";
 import FinancialMonthCard from "@/components/FinancialMonthCard";
-import BudgetOverviewCard from "@/components/BudgetOverviewCard";
 import SmartAlerts from "@/components/SmartAlerts";
 import SpendingSimulatorCard from "@/components/SpendingSimulatorCard";
 import { calculatePredictiveForecast } from "@/utils/forecast";
@@ -108,15 +107,6 @@ const Dashboard = () => {
         ) : (
           <FinancialMonthCard
             stats={stats}
-            categories={categories}
-            transactions={transactions}
-          />
-        );
-      case "budgetoverview":
-        return loading ? (
-          <Skeleton className="w-full h-full" />
-        ) : (
-          <BudgetOverviewCard
             categories={categories}
             transactions={transactions}
           />
@@ -225,16 +215,8 @@ case "simulator":
     }
   };
 
-  const activeBudgets = useMemo(() => {
-    const withBudget = categories.filter((c) => c.budget > 0);
-    return withBudget.filter(
-      (c, idx, self) => idx === self.findIndex((b) => b.name === c.name),
-    );
-  }, [categories]);
-
   const mobileOrder = [
     "financialmonth",
-    ...(activeBudgets.length > 0 ? ["budgetoverview"] : []),
     "simulator",
     "balance",
     "forecast",
@@ -672,7 +654,6 @@ case "simulator":
         >
           {[
             "financialmonth",
-            ...(activeBudgets.length > 0 ? ["budgetoverview"] : []),
             "simulator",
             "balance",
             "forecast",
@@ -695,7 +676,7 @@ case "simulator":
             >
               <Motion.div
                 variants={item}
-                className="h-full relative overflow-y-auto"
+                className="h-full relative overflow-hidden"
               >
                 {isDraggable && (
                   <div className="drag-handle absolute top-0 left-0 right-0 h-6 bg-gray-200/50 cursor-move z-50 rounded-t-lg flex justify-center items-center">
