@@ -32,20 +32,6 @@ export const usePlanner = () => {
 
   const today = format(new Date(), "yyyy-MM-dd");
 
-  const initDefaultSections = async (userId) => {
-    try {
-      const batch = writeBatch(db);
-      DEFAULT_SECTIONS.forEach((s) => {
-        const { id, ...data } = s;
-        const docRef = doc(db, "plannerSections", id);
-        batch.set(docRef, { ...data, userId, createdAt: new Date().toISOString() });
-      });
-      await batch.commit();
-    } catch (error) {
-      console.error("Error initializing sections:", error);
-    }
-  };
-
   useEffect(() => {
     if (!user?.id) return;
 

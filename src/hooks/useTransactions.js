@@ -19,6 +19,7 @@ import { usePremium, FREE_LIMITS } from "@/hooks/usePremium";
 export const useTransactions = () => {
   const { user } = useAuth();
   const { isPremium } = usePremium();
+  const partners = usePartners();
   // Derive initial state from user
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(false);
