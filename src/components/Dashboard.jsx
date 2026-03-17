@@ -18,7 +18,6 @@ import TransactionHistory from "@/components/TransactionHistory";
 import ForecastCard from "@/components/ForecastCard";
 import FinScoreCard from "@/components/FinScoreCard";
 import FinancialMonthCard from "@/components/FinancialMonthCard";
-import BudgetOverviewCard from "@/components/BudgetOverviewCard";
 import SmartAlerts from "@/components/SmartAlerts";
 import SpendingSimulatorCard from "@/components/SpendingSimulatorCard";
 import { calculatePredictiveForecast } from "@/utils/forecast";
@@ -108,15 +107,6 @@ const Dashboard = () => {
         ) : (
           <FinancialMonthCard
             stats={stats}
-            categories={categories}
-            transactions={transactions}
-          />
-        );
-      case "budgetoverview":
-        return loading ? (
-          <Skeleton className="w-full h-full" />
-        ) : (
-          <BudgetOverviewCard
             categories={categories}
             transactions={transactions}
           />
@@ -225,16 +215,8 @@ case "simulator":
     }
   };
 
-  const activeBudgets = useMemo(() => {
-    const withBudget = categories.filter((c) => c.budget > 0);
-    return withBudget.filter(
-      (c, idx, self) => idx === self.findIndex((b) => b.name === c.name),
-    );
-  }, [categories]);
-
   const mobileOrder = [
     "financialmonth",
-    ...(activeBudgets.length > 0 ? ["budgetoverview"] : []),
     "simulator",
     "balance",
     "forecast",
@@ -266,13 +248,13 @@ case "simulator":
     }
   };
   const [layouts, setLayouts] = useState(() => {
-    const savedLayout = localStorage.getItem("dashboardLayout_v7");
+    const savedLayout = localStorage.getItem("dashboardLayout_v8");
     return savedLayout
       ? JSON.parse(savedLayout)
       : {
           lg: [
             { i: "financialmonth", x: 0, y: 0, w: 12, h: 2, minH: 2 },
-            { i: "budgetoverview", x: 0, y: 2, w: 12, h: 2, minH: 2 },
+            { i: "budgetoverview", x: 0, y: 2, w: 12, h: 3, minH: 3 },
             { i: "balance", x: 0, y: 4, w: 6, h: 2, minH: 2 },
             { i: "simulator", x: 6, y: 4, w: 6, h: 2, minH: 2 },
             { i: "income", x: 0, y: 6, w: 6, h: 2, minH: 2 },
@@ -287,7 +269,7 @@ case "simulator":
           ],
           md: [
             { i: "financialmonth", x: 0, y: 0, w: 12, h: 2 },
-            { i: "budgetoverview", x: 0, y: 2, w: 12, h: 2 },
+            { i: "budgetoverview", x: 0, y: 2, w: 12, h: 3 },
             { i: "balance", x: 0, y: 4, w: 6, h: 2 },
             { i: "simulator", x: 6, y: 4, w: 6, h: 2 },
             { i: "income", x: 0, y: 6, w: 6, h: 2 },
@@ -302,7 +284,7 @@ case "simulator":
           ],
           sm: [
             { i: "financialmonth", x: 0, y: 0, w: 12, h: 2 },
-            { i: "budgetoverview", x: 0, y: 2, w: 12, h: 2 },
+            { i: "budgetoverview", x: 0, y: 2, w: 12, h: 3 },
             { i: "simulator", x: 0, y: 4, w: 12, h: 2 },
             { i: "balance", x: 0, y: 6, w: 12, h: 2 },
             { i: "forecast", x: 0, y: 8, w: 12, h: 2 },
@@ -317,7 +299,7 @@ case "simulator":
           ],
           xs: [
             { i: "financialmonth", x: 0, y: 0, w: 12, h: 2 },
-            { i: "budgetoverview", x: 0, y: 2, w: 12, h: 2 },
+            { i: "budgetoverview", x: 0, y: 2, w: 12, h: 3 },
             { i: "simulator", x: 0, y: 4, w: 12, h: 2 },
             { i: "balance", x: 0, y: 6, w: 12, h: 2 },
             { i: "forecast", x: 0, y: 8, w: 12, h: 2 },
@@ -332,7 +314,7 @@ case "simulator":
           ],
           xxs: [
             { i: "financialmonth", x: 0, y: 0, w: 12, h: 2 },
-            { i: "budgetoverview", x: 0, y: 2, w: 12, h: 2 },
+            { i: "budgetoverview", x: 0, y: 2, w: 12, h: 3 },
             { i: "simulator", x: 0, y: 4, w: 12, h: 2 },
             { i: "balance", x: 0, y: 6, w: 12, h: 2 },
             { i: "forecast", x: 0, y: 8, w: 12, h: 2 },
@@ -352,7 +334,7 @@ case "simulator":
 
   const onLayoutChange = (layout, allLayouts) => {
     setLayouts(allLayouts);
-    localStorage.setItem("dashboardLayout_v6", JSON.stringify(allLayouts));
+    localStorage.setItem("dashboardLayout_v8", JSON.stringify(allLayouts));
   };
 
   const exportToExcel = () => {
@@ -672,7 +654,6 @@ case "simulator":
         >
           {[
             "financialmonth",
-            ...(activeBudgets.length > 0 ? ["budgetoverview"] : []),
             "simulator",
             "balance",
             "forecast",
@@ -695,7 +676,7 @@ case "simulator":
             >
               <Motion.div
                 variants={item}
-                className="h-full relative overflow-y-auto"
+                className="h-full relative overflow-hidden"
               >
                 {isDraggable && (
                   <div className="drag-handle absolute top-0 left-0 right-0 h-6 bg-gray-200/50 cursor-move z-50 rounded-t-lg flex justify-center items-center">
