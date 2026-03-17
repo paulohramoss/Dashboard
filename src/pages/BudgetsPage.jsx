@@ -7,7 +7,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Plus, Trash2 } from "lucide-react";
-import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
 import CurrencyInput from "@/components/ui/currency-input";
 import ConfirmDialog from "@/components/ui/confirm-dialog";
