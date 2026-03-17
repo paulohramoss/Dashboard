@@ -1051,5 +1051,12 @@
       "workout": "Workouts",
       "reading": "Reading"
     }
+  },
+  "spendingSimulator": {
+    "title": "Can I spend this?",
+    "placeholder": "Enter amount...",
+    "hint": "Monthly available: {{available}}",
+    "canSpend": "If you spend this now, you'll still have {{amount}} left this month.",
+    "cannotSpend": "If you spend this, you'll exceed your monthly budget by {{amount}}."
   }
 }
