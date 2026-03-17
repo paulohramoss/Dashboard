@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -41,7 +43,7 @@
     --input: 86 15% 87%;
     --ring: 167 67% 18%;
 
-    --radius: 0.5rem;
+    --radius: 0.875rem;
   }
 
   .dark {
@@ -84,7 +86,34 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
+}
+
+/* Progress bar animation */
+@keyframes progress-fill {
+  from { width: 0; }
+}
+
+/* Smooth card lift */
+.card-hover {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.card-hover:hover {
+  transform: translateY(-2px);
+}
+
+/* Gradient progress bars */
+.progress-gradient-green {
+  background: linear-gradient(90deg, #10b981, #34d399);
+}
+.progress-gradient-yellow {
+  background: linear-gradient(90deg, #f59e0b, #fbbf24);
+}
+.progress-gradient-red {
+  background: linear-gradient(90deg, #ef4444, #f87171);
 }
 
 /* Custom Scrollbar */

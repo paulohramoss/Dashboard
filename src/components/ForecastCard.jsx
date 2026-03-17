@@ -66,15 +66,15 @@ const ForecastCard = ({ forecast, amount, confidence, monthsAnalyzed }) => {
   };
 
   return (
-    <Card className="hover:shadow-md transition-all duration-200 h-full overflow-hidden relative flex flex-col justify-between">
+    <Card className="hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 h-full overflow-hidden relative flex flex-col justify-between">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative z-10">
-        <CardTitle className="text-sm font-medium whitespace-nowrap flex items-center gap-2">
+        <CardTitle className="text-xs font-semibold uppercase tracking-widest text-muted-foreground whitespace-nowrap flex items-center gap-2">
           {t("dashboard.forecast", "Previsão (Fim do Mês)")}
           {riskDate && (
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <AlertTriangle className="h-4 w-4 text-yellow-500 animate-pulse cursor-help" />
+                  <AlertTriangle className="h-4 w-4 text-amber-500 animate-pulse cursor-help" />
                 </TooltipTrigger>
                 <TooltipContent>
                   <p>
@@ -89,26 +89,16 @@ const ForecastCard = ({ forecast, amount, confidence, monthsAnalyzed }) => {
         </CardTitle>
         <div
           className={cn(
-            "h-8 w-8 rounded-full flex items-center justify-center bg-gray-50 dark:bg-gray-800",
+            "h-10 w-10 rounded-2xl flex items-center justify-center shadow-sm",
             isPositive
-              ? "bg-green-100 dark:bg-green-900/30"
-              : "bg-red-100 dark:bg-red-900/30",
+              ? "bg-emerald-100 dark:bg-emerald-900/40"
+              : "bg-rose-100 dark:bg-rose-900/40",
           )}
         >
           {isPositive ? (
-            <TrendingUp
-              className={cn(
-                "h-4 w-4",
-                isPositive ? "text-green-600" : "text-red-600",
-              )}
-            />
+            <TrendingUp className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
           ) : (
-            <TrendingDown
-              className={cn(
-                "h-4 w-4",
-                isPositive ? "text-green-600" : "text-red-600",
-              )}
-            />
+            <TrendingDown className="h-5 w-5 text-rose-600 dark:text-rose-400" />
           )}
         </div>
       </CardHeader>
@@ -117,7 +107,9 @@ const ForecastCard = ({ forecast, amount, confidence, monthsAnalyzed }) => {
           className={cn(
             "font-bold flex items-center gap-2 tracking-tight",
             getFontSize(formattedAmount),
-            isPositive ? "text-green-600" : "text-red-600",
+            isPositive
+              ? "text-emerald-700 dark:text-emerald-300"
+              : "text-rose-700 dark:text-rose-300",
           )}
         >
           {formattedAmount}
@@ -131,7 +123,7 @@ const ForecastCard = ({ forecast, amount, confidence, monthsAnalyzed }) => {
             confidenceConfig[confidence] && (
               <span
                 className={cn(
-                  "text-[10px] font-medium px-1.5 py-0.5 rounded border mt-1 inline-block",
+                  "text-[10px] font-semibold px-2 py-0.5 rounded-full border mt-1.5 inline-block w-fit",
                   confidenceConfig[confidence].cls,
                 )}
               >
@@ -147,7 +139,7 @@ const ForecastCard = ({ forecast, amount, confidence, monthsAnalyzed }) => {
               </span>
             )}
           {riskDate && (
-            <p className="text-[10px] text-yellow-600 dark:text-yellow-500 font-medium mt-0.5 truncate">
+            <p className="text-[10px] text-amber-600 dark:text-amber-500 font-medium mt-0.5 truncate">
               {t("dashboard.forecastWarning", { date: formatDate(riskDate) })}
             </p>
           )}
