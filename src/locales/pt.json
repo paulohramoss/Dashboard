@@ -815,7 +815,7 @@
       "title": "Limpar Conversa?",
       "description": "Esta ação removerá todo o histórico de mensagens desta conversa. Você não poderá desfazer esta ação.",
       "confirm": "Limpar Conversa"
-    },
+    }
   },
   "challenges": {
     "title": "Desafios de Economia",

@@ -815,7 +815,7 @@
       "title": "Clear Conversation?",
       "description": "This action will remove all message history from this conversation. You will not be able to undo this action.",
       "confirm": "Clear Conversation"
-    },
+    }
   },
   "challenges": {
     "title": "Savings Challenges",
