@@ -122,15 +122,15 @@ export default function MonthlyInsights() {
                 </div>
               </div>
               <div
-                className={`${insights.balance >= 0 ? "bg-blue-50 dark:bg-blue-900/20" : "bg-orange-50 dark:bg-orange-900/20"} p-3 rounded-lg`}
+                className={`${insights.balance >= 0 ? "bg-green-50 dark:bg-green-900/20" : "bg-orange-50 dark:bg-orange-900/20"} p-3 rounded-lg`}
               >
                 <div
-                  className={`text-xs ${insights.balance >= 0 ? "text-blue-700 dark:text-blue-300" : "text-orange-700 dark:text-orange-300"} font-medium`}
+                  className={`text-xs ${insights.balance >= 0 ? "text-green-700 dark:text-green-300" : "text-orange-700 dark:text-orange-300"} font-medium`}
                 >
                   {t("insights.balance", "Saldo")}
                 </div>
                 <div
-                  className={`text-lg font-bold ${insights.balance >= 0 ? "text-blue-600 dark:text-blue-400" : "text-orange-600 dark:text-orange-400"}`}
+                  className={`text-lg font-bold ${insights.balance >= 0 ? "text-green-600 dark:text-green-400" : "text-orange-600 dark:text-orange-400"}`}
                 >
                   R$ {insights.balance?.toFixed(2) || "0.00"}
                 </div>

@@ -87,9 +87,9 @@ const LEGACY_COLOR_MAP = {
 };
 
 const resolveColor = (color) => {
-  if (!color) return "#3b82f6";
+  if (!color) return "#0F4D3F";
   if (color.startsWith("#")) return color;
-  return LEGACY_COLOR_MAP[color] || "#3b82f6";
+  return LEGACY_COLOR_MAP[color] || "#0F4D3F";
 };
 
 const getSectionStyles = (color) => {
@@ -434,7 +434,7 @@ const ReadingCard = ({ section, books, onAddBook, onUpdateBook, onDeleteBook, on
   );
 };
 
-const EMPTY_SECTION_FORM = { name: "", icon: "ListChecks", color: "#3b82f6" };
+const EMPTY_SECTION_FORM = { name: "", icon: "ListChecks", color: "#0F4D3F" };
 
 const PlannerPage = () => {
   const { t, i18n } = useTranslation();

@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
   },
   cardIncome: { borderLeftWidth: 4, borderLeftColor: "#22c55e" },
   cardExpense: { borderLeftWidth: 4, borderLeftColor: "#ef4444" },
-  cardBalance: { borderLeftWidth: 4, borderLeftColor: "#3b82f6" },
+  cardBalance: { borderLeftWidth: 4, borderLeftColor: "#0F4D3F" },
   villainContainer: {
     backgroundColor: "#fff1f2",
     padding: 15,

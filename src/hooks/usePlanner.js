@@ -15,7 +15,7 @@ import {
 import { format } from "date-fns";
 
 const DEFAULT_SECTIONS = [
-  { id: "routine",    name: "Rotina",     icon: "ListChecks",    color: "#3b82f6", order: 0 },
+  { id: "routine",    name: "Rotina",     icon: "ListChecks",    color: "#0F4D3F", order: 0 },
   { id: "devotional", name: "Devocional", icon: "Sunrise",       color: "#eab308", order: 1 },
   { id: "study",      name: "Estudos",    icon: "GraduationCap", color: "#a855f7", order: 2 },
   { id: "workout",    name: "Treinos",    icon: "Dumbbell",      color: "#22c55e", order: 3 },
