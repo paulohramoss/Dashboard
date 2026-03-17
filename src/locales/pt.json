@@ -1051,5 +1051,12 @@
       "workout": "Treinos",
       "reading": "Leitura"
     }
+  },
+  "spendingSimulator": {
+    "title": "Posso gastar isso?",
+    "placeholder": "Digite o valor...",
+    "hint": "Disponível no mês: {{available}}",
+    "canSpend": "Se gastar isso agora, você ainda terá {{amount}} até o fim do mês.",
+    "cannotSpend": "Se gastar isso, você ultrapassa seu limite mensal em {{amount}}."
   }
 }
