@@ -95,18 +95,14 @@ const Layout = ({ children }) => {
   // Function to determine greeting based on time of day
   const getGreeting = () => {
     const hour = new Date().getHours();
+    const name = user?.name?.split(" ")[0] || "Usuário";
 
-    // 05:00 - 11:59: Good morning
     if (hour >= 5 && hour < 12) {
-      return t("dashboard.goodMorning", { name: user?.name || "Usuário" });
-    }
-    // 12:00 - 17:59: Good afternoon
-    else if (hour >= 12 && hour < 18) {
-      return t("dashboard.goodAfternoon", { name: user?.name || "Usuário" });
-    }
-    // 18:00 - 04:59: Good night
-    else {
-      return t("dashboard.goodNight", { name: user?.name || "Usuário" });
+      return { text: t("dashboard.goodMorning", { name }), emoji: "☀️" };
+    } else if (hour >= 12 && hour < 18) {
+      return { text: t("dashboard.goodAfternoon", { name }), emoji: "👋" };
+    } else {
+      return { text: t("dashboard.goodNight", { name }), emoji: "🌙" };
     }
   };
 
@@ -173,7 +169,7 @@ const Layout = ({ children }) => {
           >
             {isExpanded || isSidebarOpen ? (
               <>
-                <h1 className="text-xl font-bold text-primary truncate">
+                <h1 className="text-xl font-bold bg-gradient-to-r from-primary to-emerald-500 bg-clip-text text-transparent truncate">
                   {t("app.title")}
                 </h1>
                 {/* Desktop Pin Button */}
@@ -299,9 +295,13 @@ const Layout = ({ children }) => {
               </Button>
               {/* Greeting */}
               <div className="flex-1 min-w-0">
-                <h1 className="text-base md:text-xl lg:text-2xl font-bold text-foreground truncate">
-                  {getGreeting()}
+                <h1 className="text-base md:text-xl lg:text-2xl font-bold text-foreground truncate flex items-center gap-2">
+                  <span>{getGreeting().emoji}</span>
+                  <span>{getGreeting().text}</span>
                 </h1>
+                <p className="text-xs text-muted-foreground hidden md:block mt-0.5">
+                  {t("dashboard.subtitle", "Aqui está o resumo das suas finanças")}
+                </p>
               </div>
             </div>
             <div className="flex items-center gap-2 md:gap-4 ml-auto">
@@ -322,12 +322,17 @@ const Layout = ({ children }) => {
               </Button>
               <LanguageToggle />
               <ThemeToggle />
-              <span className="text-sm font-medium hidden md:block">
-                {user?.name}
-              </span>
-              <Avatar className="h-8 w-8 md:h-9 md:w-9">
+              <div className="hidden md:flex flex-col items-end">
+                <span className="text-sm font-semibold text-foreground leading-tight">
+                  {user?.name?.split(" ")[0] || user?.name}
+                </span>
+                <span className="text-xs text-muted-foreground leading-tight">
+                  {user?.email?.split("@")[0]}
+                </span>
+              </div>
+              <Avatar className="h-9 w-9 md:h-10 md:w-10 ring-2 ring-primary/20">
                 <AvatarImage src={user?.photoURL} alt={user?.name} />
-                <AvatarFallback className="bg-primary/10 text-primary font-bold">
+                <AvatarFallback className="bg-gradient-to-br from-primary to-primary/70 text-primary-foreground font-bold text-sm">
                   {user?.name?.charAt(0).toUpperCase() || "U"}
                 </AvatarFallback>
               </Avatar>
