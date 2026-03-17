@@ -25,7 +25,7 @@ const SpendingSimulatorCard = ({ stats }) => {
   }, [amount, stats.income, stats.expense]);
 
   return (
-    <Card className="h-full shadow-lg hover:shadow-xl transition-all duration-200">
+    <Card className="h-full flex flex-col shadow-lg hover:shadow-xl transition-all duration-200">
       <CardHeader className="pb-3">
         <CardTitle className="text-base font-semibold text-foreground flex items-center gap-2">
           <Calculator className="h-4 w-4 text-primary" />
@@ -33,7 +33,7 @@ const SpendingSimulatorCard = ({ stats }) => {
         </CardTitle>
       </CardHeader>
 
-      <CardContent className="space-y-4">
+      <CardContent className="flex-1 flex flex-col justify-center space-y-4">
         <CurrencyInput
           value={amount}
           onChange={setAmount}
