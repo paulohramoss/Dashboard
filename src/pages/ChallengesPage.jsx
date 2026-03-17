@@ -335,7 +335,7 @@ const ChallengesPage = () => {
     targetAmount: "",
     days: 30,
     icon: "🎯",
-    color: "#3b82f6",
+    color: "#0F4D3F",
   });
 
   const categoriesWithExpense = useMemo(
@@ -410,7 +410,7 @@ const ChallengesPage = () => {
       targetAmount: "",
       days: 30,
       icon: "🎯",
-      color: "#3b82f6",
+      color: "#0F4D3F",
     });
   };
 

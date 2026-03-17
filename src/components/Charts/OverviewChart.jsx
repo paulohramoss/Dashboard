@@ -182,11 +182,11 @@ const OverviewChart = ({ transactions, forecastData = [], currentBalance }) => {
             <span>{t("charts.expense")}</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-[#3b82f6]" />
+            <div className="w-3 h-3 rounded-full bg-[#0F4D3F]" />
             <span>{t("charts.balance")}</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full border-2 border-[#3b82f6] border-dashed" />
+            <div className="w-3 h-3 rounded-full border-2 border-[#0F4D3F] border-dashed" />
             <span>{t("charts.projectedBalance") || "Forecast"}</span>
           </div>
         </div>
@@ -232,7 +232,7 @@ const OverviewChart = ({ transactions, forecastData = [], currentBalance }) => {
               <YAxis
                 yAxisId="right"
                 orientation="right"
-                stroke="#3b82f6"
+                stroke="#0F4D3F"
                 fontSize={12}
                 tickLine={false}
                 axisLine={false}
@@ -282,7 +282,7 @@ const OverviewChart = ({ transactions, forecastData = [], currentBalance }) => {
                 yAxisId="right"
                 type="monotone"
                 dataKey="historicalBalance"
-                stroke="#3b82f6"
+                stroke="#0F4D3F"
                 strokeWidth={3}
                 dot={false}
                 name={t("charts.balance")}
@@ -293,7 +293,7 @@ const OverviewChart = ({ transactions, forecastData = [], currentBalance }) => {
                 yAxisId="right"
                 type="monotone"
                 dataKey="projectedBalance"
-                stroke="#3b82f6"
+                stroke="#0F4D3F"
                 strokeWidth={3}
                 strokeDasharray="5 5"
                 dot={false}
