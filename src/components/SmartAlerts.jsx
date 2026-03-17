@@ -60,7 +60,7 @@ const SmartAlerts = ({ transactions }) => {
     );
 
     return alerts;
-  }, [transactions, t, formatCurrency]);
+  }, [transactions, t]);
 
   if (insights.length === 0) {
     return (
