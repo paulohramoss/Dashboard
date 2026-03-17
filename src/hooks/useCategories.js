@@ -183,6 +183,11 @@ export const useCategories = () => {
     try {
       const docRef = doc(db, "categories", id);
       await updateDoc(docRef, updates);
+      // Optimistically update local state so the UI reflects changes immediately
+      // without waiting for the Firestore snapshot listener to fire
+      setCategories((prev) =>
+        prev.map((cat) => (cat.id === id ? { ...cat, ...updates } : cat)),
+      );
     } catch (error) {
       console.error("Error updating category:", error);
     }
