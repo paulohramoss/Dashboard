@@ -22,7 +22,14 @@ import {
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
 import { db } from "@/lib/firebase";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  serverTimestamp,
+  query,
+  where,
+  getDocs,
+} from "firebase/firestore";
 
 const InvitePartner = () => {
   const { t } = useTranslation();
@@ -48,11 +55,24 @@ const InvitePartner = () => {
 
     setInviting(true);
     try {
-      // Create Invite Document
+      // Pre-fetch owner's document IDs so the joiner won't need to query
+      const collectionsToShare = ["categories", "accounts", "goals", "userRules", "transactions"];
+      const documentIds = {};
+      for (const colName of collectionsToShare) {
+        const q = query(
+          collection(db, colName),
+          where("userId", "==", user.id),
+        );
+        const snapshot = await getDocs(q);
+        documentIds[colName] = snapshot.docs.map((d) => d.id);
+      }
+
+      // Create Invite Document with document IDs embedded
       const docRef = await addDoc(collection(db, "invites"), {
         createdBy: user.id,
         ownerName: user.name || "Alguém",
         status: "pending",
+        documentIds,
         createdAt: serverTimestamp(),
       });
 
