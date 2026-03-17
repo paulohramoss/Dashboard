@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { db } from "@/lib/firebase";
-import { usePremium, FREE_LIMITS } from "@/hooks/usePremium";
 import {
   collection,
   addDoc,
@@ -27,7 +26,6 @@ const DEFAULT_CATEGORIES = [
 
 export const useCategories = () => {
   const { user } = useAuth();
-  const { isPremium } = usePremium();
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const initAttempted = useRef(false);
@@ -168,18 +166,6 @@ export const useCategories = () => {
   const addCategory = async (category) => {
     if (!user?.id) return;
     try {
-      if (!isPremium) {
-        const customCats = categories.filter(
-          (c) => c.userId === user.id && !c.isDefault,
-        );
-        if (customCats.length >= FREE_LIMITS.customCategories) {
-          const err = new Error("LIMIT_REACHED");
-          err.limitKey = "categories";
-          err.limit = FREE_LIMITS.customCategories;
-          throw err;
-        }
-      }
-
       await addDoc(collection(db, "categories"), {
         ...category,
         userId: user.id,

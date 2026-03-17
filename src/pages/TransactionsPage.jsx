@@ -6,7 +6,6 @@ import TransactionForm from "@/components/TransactionForm";
 import TransactionFilters from "@/components/TransactionFilters";
 import FileUploader from "@/components/FileUploader";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import ProGate from "@/components/ProGate";
 import {
   Dialog,
   DialogContent,
@@ -119,9 +118,7 @@ const TransactionsPage = () => {
         </div>
         <div className="lg:col-span-3 space-y-4 order-1 lg:order-2">
           <TransactionForm onAddTransaction={addTransaction} />
-          <ProGate>
-            <FileUploader onUpload={addTransactions} />
-          </ProGate>
+          <FileUploader onUpload={addTransactions} />
         </div>
       </div>
 

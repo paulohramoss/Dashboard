@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useFinancialChat } from "@/hooks/useFinancialChat";
-import ProGate from "@/components/ProGate";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -121,7 +120,6 @@ export default function FinancialAssistant() {
       {/* Chat Window */}
       {isOpen && (
         <div className="fixed bottom-24 right-6 z-50 w-96 max-w-[calc(100vw-3rem)] h-[600px] max-h-[calc(100vh-8rem)] bg-background border rounded-lg shadow-2xl flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-200">
-          <ProGate fullWidth className="h-full border-0">
             {/* Header */}
             <div className="flex flex-none items-center justify-between p-4 border-b bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-t-lg">
               <div className="flex items-center gap-2">
@@ -247,7 +245,6 @@ export default function FinancialAssistant() {
                 </Button>
               </div>
             </form>
-          </ProGate>
         </div>
       )}
 
