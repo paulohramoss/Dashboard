@@ -116,11 +116,7 @@ export const usePlanner = () => {
       async (snap) => {
         if (!isMounted) return;
         const docs = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
-        if (docs.length === 0 && !snap.metadata.fromCache) {
-          await initDefaultSections(user.id);
-        } else {
-          setSections([...docs].sort((a, b) => (a.order ?? 0) - (b.order ?? 0)));
-        }
+        setSections([...docs].sort((a, b) => (a.order ?? 0) - (b.order ?? 0)));
         sectionsDone = true;
         checkDone();
       },
@@ -156,6 +152,16 @@ export const usePlanner = () => {
       await deleteDoc(doc(db, "plannerHabits", id));
     } catch (error) {
       console.error("Error deleting habit:", error);
+      throw error;
+    }
+  };
+
+  const updateHabit = async (id, data) => {
+    if (!user?.id) return;
+    try {
+      await updateDoc(doc(db, "plannerHabits", id), data);
+    } catch (error) {
+      console.error("Error updating habit:", error);
       throw error;
     }
   };
@@ -278,6 +284,7 @@ export const usePlanner = () => {
     sections,
     loading,
     addHabit,
+    updateHabit,
     deleteHabit,
     toggleCompletion,
     addBook,

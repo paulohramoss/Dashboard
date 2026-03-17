@@ -100,6 +100,20 @@
     "forecastConfidenceLow": "Pouco histórico",
     "forecastMonths": "meses"
   },
+  "financialMonth": {
+    "title": "Seu mês financeiro",
+    "currentBalance": "Saldo atual",
+    "alreadySpent": "Você já gastou",
+    "canStillSpend": "Você ainda pode gastar",
+    "budgetExhausted": "Limite atingido",
+    "allCategories": "Todas as categorias",
+    "categoryBudget": "Orçamento da categoria",
+    "noBudget": "Sem orçamento definido"
+  },
+  "budgetOverview": {
+    "title": "Seus orçamentos",
+    "manage": "Gerenciar"
+  },
   "subscriptions": {
     "title": "Gestão de Assinaturas",
     "subtitle": "Gerencie suas despesas recorrentes e custos fixos.",
@@ -987,7 +1001,8 @@
     "accounts": "Limite de {{limit}} contas atingido. Faça upgrade para o Premium.",
     "goals": "Limite de {{limit}} objetivos atingido. Faça upgrade para o Premium.",
     "categories": "Limite de {{limit}} categorias customizadas atingido. Faça upgrade para o Premium.",
-    "recurring": "Limite de {{limit}} transações recorrentes atingido. Faça upgrade para o Premium."
+    "recurring": "Limite de {{limit}} transações recorrentes atingido. Faça upgrade para o Premium.",
+    "budgets": "Limite de {{limit}} orçamentos atingido. Faça upgrade para o Premium."
   },
   "planner": {
     "title": "Meu Planner",

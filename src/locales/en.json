@@ -100,6 +100,20 @@
     "forecastConfidenceLow": "Low history",
     "forecastMonths": "months"
   },
+  "financialMonth": {
+    "title": "Your Financial Month",
+    "currentBalance": "Current balance",
+    "alreadySpent": "You've already spent",
+    "canStillSpend": "You can still spend",
+    "budgetExhausted": "Budget exhausted",
+    "allCategories": "All categories",
+    "categoryBudget": "Category budget",
+    "noBudget": "No budget set"
+  },
+  "budgetOverview": {
+    "title": "Your budgets",
+    "manage": "Manage"
+  },
   "subscriptions": {
     "title": "Subscription Hub",
     "subtitle": "Manage your recurring expenses and fixed costs.",
@@ -987,7 +1001,8 @@
     "accounts": "Limit of {{limit}} accounts reached. Upgrade to Premium.",
     "goals": "Limit of {{limit}} goals reached. Upgrade to Premium.",
     "categories": "Limit of {{limit}} custom categories reached. Upgrade to Premium.",
-    "recurring": "Limit of {{limit}} recurring transactions reached. Upgrade to Premium."
+    "recurring": "Limit of {{limit}} recurring transactions reached. Upgrade to Premium.",
+    "budgets": "Limit of {{limit}} budgets reached. Upgrade to Premium."
   },
   "planner": {
     "title": "My Planner",

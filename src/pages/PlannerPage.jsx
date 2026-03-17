@@ -163,19 +163,19 @@ const CategoryCard = ({
   return (
     <Card className="border" style={styles.card}>
       <CardHeader className="pb-2">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="p-2 rounded-lg" style={styles.iconBg}>
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 min-w-0 overflow-hidden">
+            <div className="p-2 rounded-lg flex-shrink-0" style={styles.iconBg}>
               <Icon className="h-4 w-4" style={styles.icon} />
             </div>
-            <CardTitle className="text-base">{section.name}</CardTitle>
+            <CardTitle className="text-base truncate">{section.name}</CardTitle>
             {habits.length > 0 && (
-              <span className="text-xs text-muted-foreground">
+              <span className="text-xs text-muted-foreground flex-shrink-0">
                 {completed}/{habits.length}
               </span>
             )}
           </div>
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1 flex-shrink-0">
             <Button
               variant="ghost"
               size="icon"
@@ -361,17 +361,17 @@ const ReadingCard = ({ section, books, onAddBook, onUpdateBook, onDeleteBook, on
   return (
     <Card className="border" style={styles.card}>
       <CardHeader className="pb-2">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="p-2 rounded-lg" style={styles.iconBg}>
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 min-w-0 overflow-hidden">
+            <div className="p-2 rounded-lg flex-shrink-0" style={styles.iconBg}>
               <Icon className="h-4 w-4" style={styles.icon} />
             </div>
-            <CardTitle className="text-base">{section.name}</CardTitle>
-            <span className="text-xs text-muted-foreground">
+            <CardTitle className="text-base truncate">{section.name}</CardTitle>
+            <span className="text-xs text-muted-foreground flex-shrink-0">
               {books.length} {t("planner.books")}
             </span>
           </div>
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1 flex-shrink-0">
             <Button
               variant="ghost"
               size="icon"
@@ -444,6 +444,7 @@ const PlannerPage = () => {
     sections,
     loading,
     addHabit,
+    updateHabit,
     deleteHabit,
     toggleCompletion,
     addBook,
@@ -485,7 +486,7 @@ const PlannerPage = () => {
 
   const handleAddHabit = async (e) => {
     e.preventDefault();
-    if (!newHabitName.trim()) return;
+    if (!newHabitName.trim() || !selectedCategory) return;
     try {
       await addHabit({ category: selectedCategory, name: newHabitName.trim() });
       toast.success(t("planner.habitAdded"));
@@ -592,16 +593,7 @@ const PlannerPage = () => {
     e.preventDefault();
     if (!editHabitName.trim() || !editHabitDialog.habit) return;
     try {
-      // We use updateHabit via a direct firestore call — but usePlanner doesn't expose updateHabit
-      // We'll add the name update via a workaround: delete old + add new isn't ideal,
-      // so let's check if we have updateHabit... we don't. Let's import directly.
-      // For now call through the hook's updateSection pattern — actually we need updateHabit.
-      // Since usePlanner doesn't have it, we'll handle it in the page directly.
-      const { db } = await import("@/lib/firebase");
-      const { doc, updateDoc } = await import("firebase/firestore");
-      await updateDoc(doc(db, "plannerHabits", editHabitDialog.habit.id), {
-        name: editHabitName.trim(),
-      });
+      await updateHabit(editHabitDialog.habit.id, { name: editHabitName.trim() });
       toast.success(t("planner.habitUpdated"));
       setEditHabitDialog({ open: false, habit: null });
     } catch {
@@ -830,7 +822,7 @@ const PlannerPage = () => {
       {/* Add/Edit Section Dialog */}
       <Dialog
         open={sectionDialog.open}
-        onOpenChange={(open) => !open && setSectionDialog({ ...sectionDialog, open: false })}
+        onOpenChange={(open) => !open && setSectionDialog((prev) => ({ ...prev, open: false }))}
       >
         <DialogContent>
           <DialogHeader>

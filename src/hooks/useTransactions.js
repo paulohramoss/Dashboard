@@ -14,10 +14,11 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { getCurrentLocalDate } from "@/lib/utils";
+import { usePremium, FREE_LIMITS } from "@/hooks/usePremium";
 
 export const useTransactions = () => {
   const { user } = useAuth();
-  const partners = usePartners();
+  const { isPremium } = usePremium();
   // Derive initial state from user
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -145,6 +146,37 @@ export const useTransactions = () => {
     // Include partner IDs so shared transactions are visible to all partners
     const allowedUsers = [user.id, ...partners];
     try {
+      // Free plan limits
+      if (!isPremium) {
+        // Monthly transactions limit
+        const currentMonth = new Date().toISOString().slice(0, 7); // "YYYY-MM"
+        const thisMonthCount = transactions.filter(
+          (t) =>
+            !t.isShadow &&
+            t.userId === user.id &&
+            t.date?.slice(0, 7) === currentMonth,
+        ).length;
+        if (thisMonthCount >= FREE_LIMITS.transactionsPerMonth) {
+          const err = new Error("LIMIT_REACHED");
+          err.limitKey = "transactions";
+          err.limit = FREE_LIMITS.transactionsPerMonth;
+          throw err;
+        }
+
+        // Recurring transactions limit
+        if (transaction.isRecurring) {
+          const recurringCount = transactions.filter(
+            (t) => t.isRecurring && t.userId === user.id,
+          ).length;
+          if (recurringCount >= FREE_LIMITS.recurring) {
+            const err = new Error("LIMIT_REACHED");
+            err.limitKey = "recurring";
+            err.limit = FREE_LIMITS.recurring;
+            throw err;
+          }
+        }
+      }
+
       // Handle Installments
       if (transaction.isInstallment && transaction.installmentsCount > 1) {
         const batch = writeBatch(db);
