@@ -1,9 +1,8 @@
 import React, { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useTransactions } from "@/hooks/useTransactions";
-// import { useLayout } from "@/context/LayoutContext"; // Removed as it is not needed if PrivacyBlur handles it internally?
-// Wait, PrivacyBlur handles useLayout internally. So I should remove the hook usage from here.
 import PrivacyBlur from "@/components/ui/PrivacyBlur";
+import { detectSubscriptions } from "@/utils/subscriptionDetector";
 import {
   Card,
   CardHeader,
@@ -46,21 +45,26 @@ const SubscriptionsPage = () => {
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [isAddOpen, setIsAddOpen] = useState(false);
 
-  // Filter for active recurring expenses
+  // Filter for active recurring expenses using auto-detector + manual flags
   const subscriptions = useMemo(() => {
-    return transactions.filter((t) => t.isRecurring && t.type === "expense");
+    return detectSubscriptions(transactions);
   }, [transactions]);
 
-  // Calculate total monthly fixed cost
-  const totalMonthlyFixedCost = useMemo(() => {
-    return subscriptions.reduce((acc, curr) => {
+  // Calculate total monthly and annual fixed costs
+  const { totalMonthlyFixedCost, totalAnnualFixedCost } = useMemo(() => {
+    let monthly = 0;
+    subscriptions.forEach((curr) => {
       let amount = parseFloat(curr.amount);
-      // Normalize to monthly
-      if (curr.frequency === "weekly") amount *= 4;
-      if (curr.frequency === "daily") amount *= 30;
-      if (curr.frequency === "yearly") amount /= 12;
-      return acc + amount;
-    }, 0);
+      const freq = curr.frequency || "monthly"; // auto-detected default to monthly
+      if (freq === "weekly") amount *= 4;
+      if (freq === "daily") amount *= 30;
+      if (freq === "yearly") amount /= 12;
+      monthly += amount;
+    });
+    return {
+      totalMonthlyFixedCost: monthly,
+      totalAnnualFixedCost: monthly * 12,
+    };
   }, [subscriptions]);
 
   const handleDeleteClick = (id) => {
@@ -122,29 +126,53 @@ const SubscriptionsPage = () => {
         </Dialog>
       </div>
 
-      {/* Hero Metric Card */}
-      <Card className="bg-gradient-to-br from-red-500/10 to-orange-500/10 border-l-4 border-l-red-500 shadow-sm">
-        <CardContent className="pt-6">
-          <div className="flex items-center gap-4">
-            <div className="p-3 bg-red-100 dark:bg-red-900/30 rounded-full">
-              <AlertCircle className="h-8 w-8 text-red-600 dark:text-red-400" />
+      {/* Hero Metric Card and Alerts */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <Card className="md:col-span-2 bg-gradient-to-br from-indigo-500/10 to-purple-500/10 border-l-4 border-l-indigo-500 shadow-sm">
+          <CardContent className="pt-6">
+            <div className="flex flex-col gap-4">
+              <div className="flex items-center gap-2">
+                <AlertCircle className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
+                <span className="font-medium text-lg text-foreground">
+                  Você possui <span className="font-bold text-indigo-600 dark:text-indigo-400">{subscriptions.length}</span> assinaturas ativas.
+                </span>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
+                <div className="p-4 rounded-xl bg-background/50 border border-border/50">
+                  <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider mb-1">
+                    Custo Mensal
+                  </p>
+                  <h2 className="text-3xl font-extrabold text-foreground">
+                    <PrivacyBlur>{formatCurrency(totalMonthlyFixedCost)}</PrivacyBlur>
+                  </h2>
+                </div>
+                <div className="p-4 rounded-xl bg-background/50 border border-border/50">
+                  <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider mb-1">
+                    Custo Anual
+                  </p>
+                  <h2 className="text-3xl font-extrabold text-foreground">
+                    <PrivacyBlur>{formatCurrency(totalAnnualFixedCost)}</PrivacyBlur>
+                  </h2>
+                </div>
+              </div>
             </div>
-            <div>
-              <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
-                {t("subscriptions.fixedCostLabel")}
-              </p>
-              <h2 className="text-4xl font-extrabold text-foreground mt-1">
-                <PrivacyBlur>
-                  {formatCurrency(totalMonthlyFixedCost)}
-                </PrivacyBlur>
-              </h2>
-              <p className="text-sm text-muted-foreground mt-1">
-                {t("subscriptions.monthlyEstimate")}
+          </CardContent>
+        </Card>
+
+        <Card className="bg-amber-500/10 border border-amber-500/20 shadow-sm flex flex-col justify-center">
+          <CardContent className="pt-6">
+            <div className="flex flex-col items-center text-center gap-3">
+              <div className="h-12 w-12 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
+                <AlertCircle className="h-6 w-6 text-amber-600 dark:text-amber-400" />
+              </div>
+              <h3 className="font-semibold text-foreground">Oportunidade de Economia</h3>
+              <p className="text-sm text-muted-foreground">
+                Revise suas assinaturas ativas. Cancelar serviços que você não usa mais pode gerar uma grande economia no seu ano!
               </p>
             </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      </div>
 
       {/* Subscriptions List */}
       <Card>
@@ -188,11 +216,16 @@ const SubscriptionsPage = () => {
                       <TableCell className="font-medium">
                         {sub.description}
                       </TableCell>
-                      <TableCell>{sub.category}</TableCell>
                       <TableCell>
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300">
-                          {getFrequencyLabel(sub.frequency)}
+                        {t(`categories.${sub.category.toLowerCase()}`, sub.category)}
+                      </TableCell>
+                      <TableCell>
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-300">
+                          {getFrequencyLabel(sub.frequency || "monthly")}
                         </span>
+                        {sub.detectedBy === "keyword" && (
+                          <span className="ml-2 text-[10px] text-muted-foreground">(Auto-detectado)</span>
+                        )}
                       </TableCell>
                       <TableCell>
                         {/* Display Next Due Date if available, else Date */}
