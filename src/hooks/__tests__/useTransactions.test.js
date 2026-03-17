@@ -36,18 +36,6 @@ vi.mock("@/hooks/usePartners", () => ({
   usePartners: () => [],
 }));
 
-// Mock usePremium
-vi.mock("@/hooks/usePremium", () => ({
-  usePremium: () => ({ isPremium: true, loading: false }),
-  FREE_LIMITS: {
-    transactionsPerMonth: 50,
-    accounts: 2,
-    goals: 2,
-    customCategories: 5,
-    recurringTransactions: 2,
-  },
-}));
-
 describe("useTransactions Hook", () => {
   let mockUnsubscribe;
 

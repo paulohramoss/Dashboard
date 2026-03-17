@@ -1,10 +1,8 @@
 import React, { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
 import { useCategories } from "@/hooks/useCategories";
 import { useTransactions } from "@/hooks/useTransactions";
 import { useBudgetRollover } from "@/hooks/useBudgetRollover";
-import { usePremium, FREE_LIMITS } from "@/hooks/usePremium";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
@@ -21,10 +19,8 @@ import { motion as Motion } from "framer-motion";
 
 const BudgetsPage = () => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const { categories, updateCategory, loading } = useCategories();
   const { transactions } = useTransactions();
-  const { isPremium } = usePremium();
 
   // Run rollover logic
   useBudgetRollover(categories, transactions);
@@ -91,17 +87,6 @@ const BudgetsPage = () => {
   const handleAddBudget = async (e) => {
     e.preventDefault();
     if (!newBudget.categoryId || !newBudget.amount) return;
-
-    if (!isPremium && activeBudgets.length >= FREE_LIMITS.budgets) {
-      toast.error(t("limitReached.budgets", { limit: FREE_LIMITS.budgets }), {
-        action: {
-          label: t("premium.upgrade"),
-          onClick: () => navigate("/upgrade"),
-        },
-        duration: 6000,
-      });
-      return;
-    }
 
     const category = categories.find((c) => c.id === newBudget.categoryId);
     if (category) {

@@ -37,10 +37,16 @@ const calculateProgress = (categoryName, budget, category, transactions) => {
   };
 };
 
-const getBarColor = (percentage) => {
-  if (percentage < 75) return "bg-green-500";
-  if (percentage < 100) return "bg-yellow-500";
-  return "bg-destructive";
+const getBarGradient = (percentage) => {
+  if (percentage < 75) return "progress-gradient-green";
+  if (percentage < 100) return "progress-gradient-yellow";
+  return "progress-gradient-red";
+};
+
+const getTextColor = (percentage) => {
+  if (percentage < 75) return "text-emerald-600 dark:text-emerald-400";
+  if (percentage < 100) return "text-amber-600 dark:text-amber-400";
+  return "text-red-600 dark:text-red-400";
 };
 
 const BudgetOverviewCard = ({ categories, transactions }) => {
@@ -49,7 +55,6 @@ const BudgetOverviewCard = ({ categories, transactions }) => {
 
   const activeBudgets = useMemo(() => {
     const withBudget = categories.filter((c) => c.budget > 0);
-    // deduplicate by name
     return withBudget.filter(
       (c, idx, self) => idx === self.findIndex((b) => b.name === c.name),
     );
@@ -58,21 +63,21 @@ const BudgetOverviewCard = ({ categories, transactions }) => {
   if (activeBudgets.length === 0) return null;
 
   return (
-    <Card className="h-full shadow-lg hover:shadow-xl transition-all duration-200">
-      <CardHeader className="pb-3 flex flex-row items-center justify-between space-y-0">
+    <Card className="h-full shadow-sm hover:shadow-md transition-all duration-300">
+      <CardHeader className="pb-4 flex flex-row items-center justify-between space-y-0">
         <CardTitle className="text-base font-semibold text-foreground">
           {t("budgetOverview.title")}
         </CardTitle>
         <Link
           to="/budgets"
-          className="flex items-center gap-1 text-xs text-muted-foreground hover:text-primary transition-colors"
+          className="flex items-center gap-1 text-xs text-muted-foreground hover:text-primary transition-colors font-medium"
         >
           {t("budgetOverview.manage")}
           <ArrowRight className="h-3 w-3" />
         </Link>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-5">
           {activeBudgets.map((category) => {
             const { spent, percentage, effectiveBudget, isOver } =
               calculateProgress(
@@ -87,54 +92,52 @@ const BudgetOverviewCard = ({ categories, transactions }) => {
               : category.name;
 
             return (
-              <div key={category.id} className="space-y-1">
+              <div key={category.id} className="space-y-2">
                 {/* Name + percentage */}
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-1.5 min-w-0">
+                  <div className="flex items-center gap-2 min-w-0">
                     <span
-                      className="h-2 w-2 rounded-full shrink-0"
+                      className="h-2.5 w-2.5 rounded-full shrink-0"
                       style={{ backgroundColor: category.color || "#94a3b8" }}
                     />
-                    <span className="text-sm font-medium truncate">
+                    <span className="text-sm font-semibold truncate text-foreground">
                       {categoryLabel}
                     </span>
                   </div>
                   <span
                     className={cn(
-                      "text-xs font-semibold shrink-0 ml-2",
-                      percentage < 75
-                        ? "text-green-600"
-                        : percentage < 100
-                          ? "text-yellow-600"
-                          : "text-destructive",
+                      "text-xs font-bold shrink-0 ml-2",
+                      getTextColor(percentage),
                     )}
                   >
                     {Math.round(percentage)}%
                   </span>
                 </div>
 
-                {/* Progress bar */}
+                {/* Progress bar — thicker, gradient */}
                 <div
                   className={cn(
-                    "h-1.5 w-full bg-secondary rounded-full overflow-hidden",
-                    isOver && "bg-destructive/20",
+                    "h-2.5 w-full rounded-full overflow-hidden",
+                    isOver
+                      ? "bg-red-100 dark:bg-red-950/40"
+                      : "bg-muted dark:bg-muted/50",
                   )}
                 >
                   <Motion.div
-                    className={cn("h-full rounded-full", getBarColor(percentage))}
+                    className={cn("h-full rounded-full", getBarGradient(percentage))}
                     initial={{ width: 0 }}
                     animate={{ width: `${percentage}%` }}
-                    transition={{ duration: 0.8, ease: "easeOut" }}
+                    transition={{ duration: 0.9, ease: "easeOut" }}
                   />
                 </div>
 
                 {/* Spent / Budget */}
                 <div className="flex items-center justify-between text-xs text-muted-foreground">
-                  <PrivacyBlur>
-                    {formatCurrency(spent)}
+                  <PrivacyBlur className="font-medium">
+                    {formatCurrency(spent)} gastos
                   </PrivacyBlur>
                   <PrivacyBlur>
-                    {formatCurrency(effectiveBudget)}
+                    de {formatCurrency(effectiveBudget)}
                   </PrivacyBlur>
                 </div>
               </div>
