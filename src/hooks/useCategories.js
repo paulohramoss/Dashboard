@@ -59,7 +59,7 @@ export const useCategories = () => {
       return () => clearTimeout(timer);
     }
 
-    setLoading(true); // eslint-disable-line
+    setLoading(true);
 
     // Track if component is still mounted to prevent state updates after unmount
     let isMounted = true;
