@@ -12,7 +12,6 @@ import CurrencyInput from "@/components/ui/currency-input";
 import { CreditCard, Building2, Calculator, TrendingDown } from "lucide-react";
 import { motion as Motion } from "framer-motion";
 import PrivacyBlur from "@/components/ui/PrivacyBlur";
-import ProGate from "@/components/ProGate";
 
 const DebtSnowballPage = () => {
   const { t } = useTranslation();
@@ -95,13 +94,12 @@ const DebtSnowballPage = () => {
   };
 
   return (
-    <ProGate fullWidth>
-      <Motion.div
-        variants={container}
-        initial="hidden"
-        animate="show"
-        className="space-y-6"
-      >
+    <Motion.div
+      variants={container}
+      initial="hidden"
+      animate="show"
+      className="space-y-6"
+    >
         <div className="flex flex-col gap-2">
           <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
             <TrendingDown className="h-8 w-8 text-destructive" />
@@ -249,8 +247,7 @@ const DebtSnowballPage = () => {
             })}
           </div>
         )}
-      </Motion.div>
-    </ProGate>
+    </Motion.div>
   );
 };
 

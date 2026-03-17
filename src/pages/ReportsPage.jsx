@@ -12,7 +12,6 @@ import MonthComparison from "@/components/MonthComparison";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import PrivacyBlur from "@/components/ui/PrivacyBlur";
-import ProGate from "@/components/ProGate";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -197,71 +196,46 @@ const ReportsPage = () => {
         </div>
 
         <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
-          <ProGate
-            fallback={
+          <PDFDownloadLink
+            document={
+              <MonthlyReportPDF
+                periodStart={filterStartDate}
+                periodEnd={filterEndDate}
+                filterType={filterType}
+                filterCategory={filterCategory}
+                filterAccount={filterAccount}
+                income={income}
+                expense={expense}
+                balance={balance}
+                villainCategory={translatedVillain}
+                villainAmount={villainAmount}
+                transactions={filteredTransactions}
+              />
+            }
+            fileName={pdfFileName}
+          >
+            {({ loading: pdfLoading }) => (
               <Button
-                disabled
+                disabled={pdfLoading}
                 variant="outline"
-                className="w-full sm:w-auto opacity-50 relative group"
+                className="w-full sm:w-auto"
               >
                 <FileText className="mr-2 h-4 w-4" />
-                {t("reports.button", "Exportar PDF")}
+                {pdfLoading ? "Gerando..." : t("reports.button")}
               </Button>
-            }
-          >
-            <PDFDownloadLink
-              document={
-                <MonthlyReportPDF
-                  periodStart={filterStartDate}
-                  periodEnd={filterEndDate}
-                  filterType={filterType}
-                  filterCategory={filterCategory}
-                  filterAccount={filterAccount}
-                  income={income}
-                  expense={expense}
-                  balance={balance}
-                  villainCategory={translatedVillain}
-                  villainAmount={villainAmount}
-                  transactions={filteredTransactions}
-                />
-              }
-              fileName={pdfFileName}
-            >
-              {({ loading: pdfLoading }) => (
-                <Button
-                  disabled={pdfLoading}
-                  variant="outline"
-                  className="w-full sm:w-auto"
-                >
-                  <FileText className="mr-2 h-4 w-4" />
-                  {pdfLoading ? "Gerando..." : t("reports.button")}
-                </Button>
-              )}
-            </PDFDownloadLink>
-          </ProGate>
+            )}
+          </PDFDownloadLink>
 
-          <ProGate
-            fallback={
-              <Button
-                disabled
-                className="w-full sm:w-auto opacity-50 relative group"
-              >
-                <Mail className="mr-2 h-4 w-4" />
-                {t("reports.emailReport.button", "Enviar por Email")}
-              </Button>
-            }
+          <Button
+            onClick={handleSendEmailReport}
+            disabled={sendingEmail || loading}
+            className="w-full sm:w-auto"
           >
-            <Button
-              onClick={handleSendEmailReport}
-              disabled={sendingEmail || loading}
-              className="w-full sm:w-auto"
-            >
-              <Mail className="mr-2 h-4 w-4" />
-              {sendingEmail
-                ? t("reports.emailReport.sending")
-                : t("reports.emailReport.button")}
-            </Button>
-          </ProGate>
+            <Mail className="mr-2 h-4 w-4" />
+            {sendingEmail
+              ? t("reports.emailReport.sending")
+              : t("reports.emailReport.button")}
+          </Button>
         </div>
       </div>
 
@@ -392,12 +366,8 @@ const ReportsPage = () => {
             <CategoryChart transactions={transactions} />
 
             <div className="col-span-1 md:col-span-2 grid gap-4 md:grid-cols-2">
-              <ProGate className="h-full">
-                <FinancialFlowChart transactions={transactions} />
-              </ProGate>
-              <ProGate className="h-full">
-                <MonthlyEvolutionChart transactions={transactions} />
-              </ProGate>
+              <FinancialFlowChart transactions={transactions} />
+              <MonthlyEvolutionChart transactions={transactions} />
             </div>
           </>
         )}
@@ -431,9 +401,7 @@ const ReportsPage = () => {
         </CardContent>
       </Card>
 
-      <ProGate fullWidth>
-        <MonthComparison transactions={transactions} />
-      </ProGate>
+      <MonthComparison transactions={transactions} />
     </div>
   );
 };

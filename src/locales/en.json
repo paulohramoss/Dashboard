@@ -49,8 +49,7 @@
     "challenges": "Challenges",
     "planner": "Planner",
     "logout": "Logout",
-    "confirmLogout": "Confirm Logout?",
-    "upgrade": "Premium"
+    "confirmLogout": "Confirm Logout?"
   },
   "sidebar": {
     "pinned": "Sidebar Pinned",
@@ -817,7 +816,6 @@
       "description": "This action will remove all message history from this conversation. You will not be able to undo this action.",
       "confirm": "Clear Conversation"
     },
-    "premiumOnly": "AI Assistant — Premium"
   },
   "challenges": {
     "title": "Savings Challenges",
@@ -920,89 +918,6 @@
     "error": "Error processing image.",
     "buttonLabel": "Scan Receipt",
     "autoCreated": "Transaction created automatically! 📸"
-  },
-  "premium": {
-    "feature": "Premium Feature",
-    "description": "This feature is available on the Premium plan only. Upgrade to unlock it.",
-    "upgrade": "Upgrade",
-    "viewPlans": "View Plans",
-    "limitReached": "Free plan limit reached",
-    "upgradeToAdd": "Upgrade to Premium to add more.",
-    "badge": "Premium",
-    "nav": "Upgrade to Premium"
-  },
-  "upgrade": {
-    "badge": "FinanceDash Premium",
-    "title": "Choose the plan that's right for you",
-    "subtitle": "Unlock the full potential of FinanceDash with Premium and take complete control of your finances.",
-    "alreadyPremium": "You're already Premium! Enjoy all features.",
-    "recommended": "Most popular",
-    "currentPlan": "Current plan",
-    "choosePlan": "Subscribe now",
-    "month": "month",
-    "year": "year",
-    "perMonth": "~{{value}}/month",
-    "discount": "{{pct}}% discount",
-    "featuresTitle": "Everything Premium includes",
-    "faqTitle": "Frequently asked questions",
-    "plans": {
-      "free": "Free",
-      "premiumMonthly": "Premium Monthly",
-      "premiumYearly": "Premium Yearly"
-    },
-    "features": {
-      "transactions": "Up to {{count}} transactions/month",
-      "accounts": "Up to {{count}} accounts",
-      "goals": "Up to {{count}} goals",
-      "categories": "Up to {{count}} custom categories",
-      "basicReports": "Basic reports (monthly)",
-      "calendar": "Financial calendar",
-      "pwa": "Installable app (PWA)",
-      "ai": "AI Assistant (Gemini)",
-      "import": "Import CSV / Excel / OFX",
-      "export": "Export PDF / Excel",
-      "debt": "Debt calculator",
-      "challenges": "Spending challenges",
-      "sharedFinance": "Shared finances",
-      "emailReports": "Email reports",
-      "unlimitedAll": "Unlimited everything",
-      "unlimitedTransactions": "Unlimited transactions",
-      "unlimitedAccounts": "Unlimited accounts",
-      "unlimitedGoals": "Unlimited goals",
-      "unlimitedCategories": "Unlimited categories",
-      "advancedReports": "Advanced reports (Sankey, comparison)"
-    },
-    "highlight": {
-      "ai": "Financial AI",
-      "advancedReports": "Advanced Reports",
-      "import": "Import",
-      "export": "Export",
-      "unlimitedRecurring": "Unlimited Recurring",
-      "unlimitedGoals": "Unlimited Goals",
-      "debt": "Debt Calculator",
-      "challenges": "Challenges",
-      "sharedFinance": "Shared Finances",
-      "autoCateg": "Auto-categorization",
-      "emailReports": "Email Reports",
-      "ocr": "Receipt Scanner",
-      "forecast": "Balance Forecast"
-    },
-    "faq": {
-      "q1": "Can I cancel at any time?",
-      "a1": "Yes! You can cancel your subscription at any time and will retain Premium access until the end of the paid period.",
-      "q2": "Are my data safe on the free plan?",
-      "a2": "Absolutely. Your data is always yours, regardless of plan. On Free, only some features are disabled.",
-      "q3": "How does the upgrade work?",
-      "a3": "Just click 'Subscribe now' and you'll be redirected to complete payment securely. Premium access is activated immediately."
-    }
-  },
-  "limitReached": {
-    "transactions": "Limit of {{limit}} transactions/month reached. Upgrade to Premium.",
-    "accounts": "Limit of {{limit}} accounts reached. Upgrade to Premium.",
-    "goals": "Limit of {{limit}} goals reached. Upgrade to Premium.",
-    "categories": "Limit of {{limit}} custom categories reached. Upgrade to Premium.",
-    "recurring": "Limit of {{limit}} recurring transactions reached. Upgrade to Premium.",
-    "budgets": "Limit of {{limit}} budgets reached. Upgrade to Premium."
   },
   "planner": {
     "title": "My Planner",

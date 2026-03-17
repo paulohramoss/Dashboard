@@ -49,8 +49,7 @@
     "challenges": "Desafios",
     "planner": "Planner",
     "logout": "Sair",
-    "confirmLogout": "Confirmar Saída?",
-    "upgrade": "Premium"
+    "confirmLogout": "Confirmar Saída?"
   },
   "sidebar": {
     "pinned": "Menu Fixado",
@@ -817,7 +816,6 @@
       "description": "Esta ação removerá todo o histórico de mensagens desta conversa. Você não poderá desfazer esta ação.",
       "confirm": "Limpar Conversa"
     },
-    "premiumOnly": "Assistente de IA — Premium"
   },
   "challenges": {
     "title": "Desafios de Economia",
@@ -920,89 +918,6 @@
     "error": "Erro ao processar imagem.",
     "buttonLabel": "Escanear Recibo",
     "autoCreated": "Transação criada automaticamente! 📸"
-  },
-  "premium": {
-    "feature": "Recurso Premium",
-    "description": "Este recurso está disponível apenas no plano Premium. Faça upgrade para desbloquear.",
-    "upgrade": "Fazer Upgrade",
-    "viewPlans": "Ver Planos",
-    "limitReached": "Limite do plano gratuito atingido",
-    "upgradeToAdd": "Faça upgrade para o Premium para adicionar mais.",
-    "badge": "Premium",
-    "nav": "Upgrade para Premium"
-  },
-  "upgrade": {
-    "badge": "FinanceDash Premium",
-    "title": "Escolha o plano ideal para você",
-    "subtitle": "Desbloqueie todo o potencial do FinanceDash com o plano Premium e tome o controle total das suas finanças.",
-    "alreadyPremium": "Você já é Premium! Aproveite todos os recursos.",
-    "recommended": "Mais popular",
-    "currentPlan": "Plano atual",
-    "choosePlan": "Assinar agora",
-    "month": "mês",
-    "year": "ano",
-    "perMonth": "~{{value}}/mês",
-    "discount": "{{pct}}% de desconto",
-    "featuresTitle": "Tudo que o Premium inclui",
-    "faqTitle": "Perguntas frequentes",
-    "plans": {
-      "free": "Gratuito",
-      "premiumMonthly": "Premium Mensal",
-      "premiumYearly": "Premium Anual"
-    },
-    "features": {
-      "transactions": "Até {{count}} transações/mês",
-      "accounts": "Até {{count}} contas",
-      "goals": "Até {{count}} objetivos",
-      "categories": "Até {{count}} categorias customizadas",
-      "basicReports": "Relatórios básicos (mensal)",
-      "calendar": "Calendário financeiro",
-      "pwa": "App instalável (PWA)",
-      "ai": "Assistente de IA (Gemini)",
-      "import": "Importar CSV / Excel / OFX",
-      "export": "Exportar PDF / Excel",
-      "debt": "Calculadora de dívidas",
-      "challenges": "Desafios de gastos",
-      "sharedFinance": "Finanças compartilhadas",
-      "emailReports": "Relatórios por e-mail",
-      "unlimitedAll": "Limites ilimitados",
-      "unlimitedTransactions": "Transações ilimitadas",
-      "unlimitedAccounts": "Contas ilimitadas",
-      "unlimitedGoals": "Objetivos ilimitados",
-      "unlimitedCategories": "Categorias ilimitadas",
-      "advancedReports": "Relatórios avançados (Sankey, comparativo)"
-    },
-    "highlight": {
-      "ai": "IA Financeira",
-      "advancedReports": "Relatórios Avançados",
-      "import": "Importação",
-      "export": "Exportação",
-      "unlimitedRecurring": "Recorrências Ilimitadas",
-      "unlimitedGoals": "Objetivos Ilimitados",
-      "debt": "Calculadora de Dívidas",
-      "challenges": "Desafios",
-      "sharedFinance": "Finanças Compartilhadas",
-      "autoCateg": "Auto-categorização",
-      "emailReports": "Relatórios por E-mail",
-      "ocr": "Scan de Recibos",
-      "forecast": "Previsão de Saldo"
-    },
-    "faq": {
-      "q1": "Posso cancelar a qualquer momento?",
-      "a1": "Sim! Você pode cancelar sua assinatura a qualquer momento e continuará com acesso Premium até o fim do período pago.",
-      "q2": "Meus dados ficam seguros no plano gratuito?",
-      "a2": "Absolutamente. Seus dados são sempre seus, independente do plano. No free, apenas alguns recursos ficam desabilitados.",
-      "q3": "Como funciona o upgrade?",
-      "a3": "Basta clicar em 'Assinar agora' e você será redirecionado para finalizar o pagamento de forma segura. O acesso Premium é ativado imediatamente."
-    }
-  },
-  "limitReached": {
-    "transactions": "Limite de {{limit}} transações/mês atingido. Faça upgrade para o Premium.",
-    "accounts": "Limite de {{limit}} contas atingido. Faça upgrade para o Premium.",
-    "goals": "Limite de {{limit}} objetivos atingido. Faça upgrade para o Premium.",
-    "categories": "Limite de {{limit}} categorias customizadas atingido. Faça upgrade para o Premium.",
-    "recurring": "Limite de {{limit}} transações recorrentes atingido. Faça upgrade para o Premium.",
-    "budgets": "Limite de {{limit}} orçamentos atingido. Faça upgrade para o Premium."
   },
   "planner": {
     "title": "Meu Planner",
