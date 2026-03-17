@@ -20,7 +20,6 @@ import FinScoreCard from "@/components/FinScoreCard";
 import FinancialMonthCard from "@/components/FinancialMonthCard";
 import BudgetOverviewCard from "@/components/BudgetOverviewCard";
 import SmartAlerts from "@/components/SmartAlerts";
-import SpendingSimulatorCard from "@/components/SpendingSimulatorCard";
 import { calculatePredictiveForecast } from "@/utils/forecast";
 import { endOfMonth, differenceInDays, startOfDay } from "date-fns";
 import { Button } from "@/components/ui/button";
@@ -151,13 +150,7 @@ const Dashboard = () => {
         ) : (
           <ExpenseCard amount={stats.expense} />
         );
-      case "spendingsimulator":
-        return loading ? (
-          <Skeleton className="w-full h-full" />
-        ) : (
-          <SpendingSimulatorCard stats={stats} />
-        );
-      case "insights":
+case "insights":
         return loading ? (
           <Skeleton className="w-full h-full" />
         ) : (
@@ -235,7 +228,6 @@ const Dashboard = () => {
   const mobileOrder = [
     "financialmonth",
     ...(activeBudgets.length > 0 ? ["budgetoverview"] : []),
-    "spendingsimulator",
     "balance",
     "forecast",
     "insights",
@@ -273,7 +265,6 @@ const Dashboard = () => {
           lg: [
             { i: "financialmonth", x: 0, y: 0, w: 12, h: 2, minH: 2 },
             { i: "budgetoverview", x: 0, y: 2, w: 8, h: 2, minH: 2 },
-            { i: "spendingsimulator", x: 8, y: 2, w: 4, h: 2, minH: 2 },
             { i: "balance", x: 0, y: 4, w: 6, h: 2, minH: 2 },
             { i: "forecast", x: 6, y: 4, w: 3, h: 2, minH: 2 },
             { i: "finscore", x: 9, y: 4, w: 3, h: 2, minH: 2 },
@@ -288,7 +279,6 @@ const Dashboard = () => {
           md: [
             { i: "financialmonth", x: 0, y: 0, w: 12, h: 2 },
             { i: "budgetoverview", x: 0, y: 2, w: 8, h: 2 },
-            { i: "spendingsimulator", x: 8, y: 2, w: 4, h: 2 },
             { i: "balance", x: 0, y: 4, w: 6, h: 2 },
             { i: "forecast", x: 6, y: 4, w: 3, h: 2 },
             { i: "finscore", x: 9, y: 4, w: 3, h: 2 },
@@ -303,8 +293,7 @@ const Dashboard = () => {
           sm: [
             { i: "financialmonth", x: 0, y: 0, w: 12, h: 2 },
             { i: "budgetoverview", x: 0, y: 2, w: 12, h: 2 },
-            { i: "spendingsimulator", x: 0, y: 4, w: 12, h: 2 },
-            { i: "balance", x: 0, y: 6, w: 12, h: 2 },
+            { i: "balance", x: 0, y: 4, w: 12, h: 2 },
             { i: "forecast", x: 0, y: 8, w: 12, h: 2 },
             { i: "finscore", x: 0, y: 10, w: 12, h: 2 },
             { i: "income", x: 0, y: 12, w: 12, h: 2 },
@@ -318,8 +307,7 @@ const Dashboard = () => {
           xs: [
             { i: "financialmonth", x: 0, y: 0, w: 12, h: 2 },
             { i: "budgetoverview", x: 0, y: 2, w: 12, h: 2 },
-            { i: "spendingsimulator", x: 0, y: 4, w: 12, h: 2 },
-            { i: "balance", x: 0, y: 6, w: 12, h: 2 },
+            { i: "balance", x: 0, y: 4, w: 12, h: 2 },
             { i: "forecast", x: 0, y: 8, w: 12, h: 2 },
             { i: "finscore", x: 0, y: 10, w: 12, h: 2 },
             { i: "income", x: 0, y: 12, w: 12, h: 2 },
@@ -333,8 +321,7 @@ const Dashboard = () => {
           xxs: [
             { i: "financialmonth", x: 0, y: 0, w: 12, h: 2 },
             { i: "budgetoverview", x: 0, y: 2, w: 12, h: 2 },
-            { i: "spendingsimulator", x: 0, y: 4, w: 12, h: 2 },
-            { i: "balance", x: 0, y: 6, w: 12, h: 2 },
+            { i: "balance", x: 0, y: 4, w: 12, h: 2 },
             { i: "forecast", x: 0, y: 8, w: 12, h: 2 },
             { i: "finscore", x: 0, y: 10, w: 12, h: 2 },
             { i: "income", x: 0, y: 12, w: 12, h: 2 },
@@ -673,7 +660,6 @@ const Dashboard = () => {
           {[
             "financialmonth",
             ...(activeBudgets.length > 0 ? ["budgetoverview"] : []),
-            "spendingsimulator",
             "balance",
             "forecast",
             "finscore",
