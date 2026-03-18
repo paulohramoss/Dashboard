@@ -38,6 +38,7 @@ const JoinPage = lazy(() => import("@/pages/JoinPage")); // New Route
 const ChallengesPage = lazy(() => import("@/pages/ChallengesPage"));
 const FAQPage = lazy(() => import("@/pages/FAQPage"));
 const PlannerPage = lazy(() => import("@/pages/PlannerPage"));
+const UserProfilePage = lazy(() => import("@/pages/UserProfilePage"));
 const ProtectedRoute = ({ children }) => {
   const { user } = useAuth();
   if (!user) {
@@ -103,6 +104,7 @@ const App = () => {
                           />
                           <Route path="/faq" element={<FAQPage />} />
                           <Route path="/planner" element={<PlannerPage />} />
+                          <Route path="/profile" element={<UserProfilePage />} />
                         </Routes>
                       </Suspense>
                     </Layout>

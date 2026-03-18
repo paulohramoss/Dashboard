@@ -1007,5 +1007,27 @@
     "hint": "Monthly available: {{available}}",
     "canSpend": "If you spend this now, you'll still have {{amount}} left this month.",
     "cannotSpend": "If you spend this, you'll exceed your monthly budget by {{amount}}."
+  },
+  "userMenu": {
+    "myProfile": "My profile",
+    "accountSettings": "Account settings"
+  },
+  "profile": {
+    "title": "My Profile",
+    "subtitle": "Manage your personal information and account security",
+    "photoSection": "Profile Photo",
+    "photoDesc": "Add a photo to personalize your account",
+    "choosePhoto": "Choose photo",
+    "savePhoto": "Save photo",
+    "removePhoto": "Remove photo",
+    "preview": "preview",
+    "photoUpdated": "Profile photo updated!",
+    "photoUpdateError": "Error updating photo",
+    "photoRemoved": "Profile photo removed",
+    "personalInfo": "Personal Information",
+    "emailReadOnly": "Email cannot be changed here.",
+    "nameRequired": "Name cannot be empty",
+    "changePassword": "Change Password",
+    "backToDashboard": "Back to dashboard"
   }
 }
