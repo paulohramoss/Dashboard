@@ -594,6 +594,40 @@
         "report": "Visualize seu relatório mensal"
       }
     },
+    "onboarding": {
+      "title": "Configuração da Conta",
+      "subtitle": "Siga estas etapas para aproveitar ao máximo o FinanceDash",
+      "progress": "{{pct}}% concluído",
+      "stepOf": "Passo {{step}} de {{total}}",
+      "current": "Atual",
+      "complete": "Marcar como concluído",
+      "markIncomplete": "Marcar como incompleto",
+      "completed": "Concluído",
+      "allDone": "Configuração concluída! Bem-vindo ao FinanceDash! 🚀",
+      "goTo": "Ir para",
+      "steps": {
+        "profile": {
+          "title": "Criar Perfil",
+          "description": "Configure suas informações de perfil e preferências iniciais nas Configurações."
+        },
+        "accounts": {
+          "title": "Conectar Contas",
+          "description": "Adicione suas contas bancárias, cartões de crédito e outras fontes financeiras para o FinanceDash calcular seu saldo automaticamente."
+        },
+        "goals": {
+          "title": "Definir Metas ou Orçamento",
+          "description": "Crie um orçamento mensal para uma categoria de gastos ou defina uma meta de poupança com valor alvo e prazo."
+        },
+        "transaction": {
+          "title": "Registrar Primeira Transação",
+          "description": "Adicione sua primeira receita ou despesa para começar a monitorar suas finanças em tempo real."
+        },
+        "finish": {
+          "title": "Concluir Configuração",
+          "description": "Explore o painel e descubra tudo que o FinanceDash pode fazer por você — relatórios, insights de IA, finanças compartilhadas e muito mais."
+        }
+      }
+    },
     "tips": {
       "title": "💡 Você sabia?",
       "items": {
