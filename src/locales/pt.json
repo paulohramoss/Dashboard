@@ -43,6 +43,7 @@
     "budgets": "Orçamentos",
     "goals": "Objetivos",
     "debt": "Dívidas",
+    "notificationPreferences": "Notificações",
     "settings": "Configurações",
     "tutorial": "Manual do Usuário",
     "faq": "FAQ",
@@ -1011,6 +1012,50 @@
   "userMenu": {
     "myProfile": "Meu perfil",
     "accountSettings": "Configurações da conta"
+  },
+  "notificationPreferences": {
+    "title": "Preferências de Notificações",
+    "subtitle": "Escolha quais notificações deseja receber e por quais canais.",
+    "channels": "Canais disponíveis",
+    "channelsDesc": "Você pode ativar cada tipo de notificação por um ou mais canais.",
+    "preferences": "Tipos de notificação",
+    "preferencesDesc": "Ative ou desative cada notificação individualmente por canal.",
+    "notificationType": "Tipo",
+    "enabled": "Notificação ativada",
+    "disabled": "Notificação desativada",
+    "pushDenied": "Permissão de push negada",
+    "pushDeniedDesc": "Para ativar notificações push, permita o acesso nas configurações do seu navegador.",
+    "channel": {
+      "inApp": "No App",
+      "email": "E-mail",
+      "push": "Push"
+    },
+    "type": {
+      "lowBalance": {
+        "label": "Alerta de saldo baixo",
+        "desc": "Receba um aviso quando seu saldo estiver abaixo do limite definido."
+      },
+      "expenseReminder": {
+        "label": "Lembrete de registrar gastos",
+        "desc": "Lembrete periódico para manter suas transações atualizadas."
+      },
+      "financialGoals": {
+        "label": "Metas financeiras",
+        "desc": "Atualizações sobre o progresso das suas metas de economia."
+      },
+      "weeklySummary": {
+        "label": "Resumo semanal de gastos",
+        "desc": "Relatório com um resumo dos seus gastos da semana."
+      },
+      "financialInsights": {
+        "label": "Insights financeiros",
+        "desc": "Dicas e análises personalizadas sobre seus hábitos financeiros."
+      },
+      "recurringSubscriptions": {
+        "label": "Assinaturas recorrentes",
+        "desc": "Avisos sobre cobranças de assinaturas e renovações próximas."
+      }
+    }
   },
   "profile": {
     "title": "Meu Perfil",

@@ -131,6 +131,7 @@ const Layout = ({ children }) => {
     { icon: CalendarCheck, label: t("nav.planner"), path: "/planner" },
     { icon: BookOpen, label: t("nav.tutorial"), path: "/tutorial" },
     { icon: HelpCircle, label: t("nav.faq"), path: "/faq" },
+    { icon: Bell, label: t("nav.notificationPreferences"), path: "/notification-preferences" },
     { icon: Settings, label: t("nav.settings"), path: "/settings" },
   ];
 
