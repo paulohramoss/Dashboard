@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
   LayoutDashboard,
@@ -22,6 +22,11 @@ import {
   Swords,
   HelpCircle,
   CalendarCheck,
+  User,
+  ChevronDown,
+  Bell,
+  CreditCard,
+  RefreshCw,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -29,6 +34,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageToggle } from "@/components/LanguageToggle";
+import { CustomDropdown, DropdownItem } from "@/components/ui/custom-dropdown";
 import { Analytics } from "@vercel/analytics/react";
 
 import { toast } from "sonner";
@@ -72,6 +78,7 @@ const Layout = ({ children }) => {
   };
 
   const location = useLocation();
+  const navigate = useNavigate();
   const { user, logout } = useAuth();
   const { t } = useTranslation();
 
@@ -322,20 +329,55 @@ const Layout = ({ children }) => {
               </Button>
               <LanguageToggle />
               <ThemeToggle />
-              <div className="hidden md:flex flex-col items-end">
-                <span className="text-sm font-semibold text-foreground leading-tight">
-                  {user?.name?.split(" ")[0] || user?.name}
-                </span>
-                <span className="text-xs text-muted-foreground leading-tight">
-                  {user?.email?.split("@")[0]}
-                </span>
-              </div>
-              <Avatar className="h-9 w-9 md:h-10 md:w-10 ring-2 ring-primary/20">
-                <AvatarImage src={user?.photoURL} alt={user?.name} />
-                <AvatarFallback className="bg-gradient-to-br from-primary to-primary/70 text-primary-foreground font-bold text-sm">
-                  {user?.name?.charAt(0).toUpperCase() || "U"}
-                </AvatarFallback>
-              </Avatar>
+              <CustomDropdown
+                align="end"
+                trigger={
+                  <button className="flex items-center gap-2 rounded-lg px-2 py-1.5 hover:bg-accent transition-colors cursor-pointer">
+                    <div className="hidden md:flex flex-col items-end">
+                      <span className="text-sm font-semibold text-foreground leading-tight">
+                        {user?.name?.split(" ")[0] || user?.name}
+                      </span>
+                      <span className="text-xs text-muted-foreground leading-tight">
+                        {user?.email?.split("@")[0]}
+                      </span>
+                    </div>
+                    <Avatar className="h-9 w-9 md:h-10 md:w-10 ring-2 ring-primary/20">
+                      <AvatarImage src={user?.photoURL} alt={user?.name} />
+                      <AvatarFallback className="bg-gradient-to-br from-primary to-primary/70 text-primary-foreground font-bold text-sm">
+                        {user?.name?.charAt(0).toUpperCase() || "U"}
+                      </AvatarFallback>
+                    </Avatar>
+                    <ChevronDown className="h-3.5 w-3.5 text-muted-foreground hidden md:block" />
+                  </button>
+                }
+              >
+                {/* User info header */}
+                <div className="px-2 py-2 border-b border-border mb-1">
+                  <p className="text-sm font-semibold text-foreground truncate">
+                    {user?.name}
+                  </p>
+                  <p className="text-xs text-muted-foreground truncate">
+                    {user?.email}
+                  </p>
+                </div>
+
+                <DropdownItem onClick={() => navigate("/profile")}>
+                  <User className="h-4 w-4 mr-2 text-muted-foreground" />
+                  {t("userMenu.myProfile", "Meu perfil")}
+                </DropdownItem>
+
+                <DropdownItem onClick={() => navigate("/settings")}>
+                  <Settings className="h-4 w-4 mr-2 text-muted-foreground" />
+                  {t("userMenu.accountSettings", "Configurações da conta")}
+                </DropdownItem>
+
+                <div className="border-t border-border my-1" />
+
+                <DropdownItem onClick={logout} destructive>
+                  <LogOut className="h-4 w-4 mr-2" />
+                  {t("nav.logout")}
+                </DropdownItem>
+              </CustomDropdown>
             </div>
           </header>
 

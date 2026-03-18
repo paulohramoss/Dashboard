@@ -1007,5 +1007,27 @@
     "hint": "Disponível no mês: {{available}}",
     "canSpend": "Se gastar isso agora, você ainda terá {{amount}} até o fim do mês.",
     "cannotSpend": "Se gastar isso, você ultrapassa seu limite mensal em {{amount}}."
+  },
+  "userMenu": {
+    "myProfile": "Meu perfil",
+    "accountSettings": "Configurações da conta"
+  },
+  "profile": {
+    "title": "Meu Perfil",
+    "subtitle": "Gerencie suas informações pessoais e segurança da conta",
+    "photoSection": "Foto de Perfil",
+    "photoDesc": "Adicione uma foto para personalizar sua conta",
+    "choosePhoto": "Escolher foto",
+    "savePhoto": "Salvar foto",
+    "removePhoto": "Remover foto",
+    "preview": "prévia",
+    "photoUpdated": "Foto de perfil atualizada!",
+    "photoUpdateError": "Erro ao atualizar foto",
+    "photoRemoved": "Foto de perfil removida",
+    "personalInfo": "Informações Pessoais",
+    "emailReadOnly": "O e-mail não pode ser alterado por aqui.",
+    "nameRequired": "O nome não pode estar vazio",
+    "changePassword": "Alterar Senha",
+    "backToDashboard": "Voltar ao painel"
   }
 }
