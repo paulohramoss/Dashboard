@@ -97,7 +97,7 @@ const FinancialMonthCard = ({ stats, categories, transactions }) => {
 
   return (
     <Card className="h-full shadow-sm hover:shadow-md transition-all duration-300">
-      <CardHeader className="pb-3 flex flex-row items-center justify-between space-y-0 gap-4">
+      <CardHeader className="pb-4 pt-5 px-5 flex flex-row items-center justify-between space-y-0 gap-4">
         <CardTitle className="text-base font-semibold text-foreground shrink-0">
           {t("financialMonth.title")}
         </CardTitle>
@@ -117,7 +117,7 @@ const FinancialMonthCard = ({ stats, categories, transactions }) => {
         </Select>
       </CardHeader>
 
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-5 px-5 pb-5">
         {/* Monthly spending progress bar */}
         {isAll && stats.income > 0 && (
           <div className="space-y-1.5">
@@ -142,7 +142,7 @@ const FinancialMonthCard = ({ stats, categories, transactions }) => {
 
         {isAll ? (
           /* ── Global view ── */
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             {/* Saldo atual */}
             <div className="flex items-start gap-3">
               <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
