@@ -40,6 +40,9 @@ import {
   Repeat,
   ScanLine,
   Brain,
+  User,
+  Rocket,
+  BadgeCheck,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -57,6 +60,25 @@ const CHECKLIST_KEYS = [
 
 const STORAGE_KEY = "fd_tutorial_checklist";
 const VISITED_KEY = "fd_tutorial_visited";
+
+// ─── Onboarding Steps ────────────────────────────────────────────────────────
+const ONBOARDING_STEPS_KEY = "fd_onboarding_steps_v1";
+
+const ONBOARDING_STEP_DEFS = [
+  { id: "profile",     icon: User,       path: "/settings",     palette: "violet"  },
+  { id: "accounts",    icon: CreditCard, path: "/accounts",     palette: "blue"    },
+  { id: "goals",       icon: Target,     path: "/goals",        palette: "amber"   },
+  { id: "transaction", icon: Wallet,     path: "/transactions", palette: "emerald" },
+  { id: "finish",      icon: Rocket,     path: "/",             palette: "fuchsia" },
+];
+
+const STEP_PALETTE = {
+  violet:  { bg: "bg-violet-500",  text: "text-violet-500",  light: "bg-violet-500/10",  border: "border-violet-500/30",  bar: "bg-violet-500"  },
+  blue:    { bg: "bg-blue-500",    text: "text-blue-500",    light: "bg-blue-500/10",    border: "border-blue-500/30",    bar: "bg-blue-500"    },
+  amber:   { bg: "bg-amber-500",   text: "text-amber-500",   light: "bg-amber-500/10",   border: "border-amber-500/30",   bar: "bg-amber-500"   },
+  emerald: { bg: "bg-emerald-500", text: "text-emerald-500", light: "bg-emerald-500/10", border: "border-emerald-500/30", bar: "bg-emerald-500" },
+  fuchsia: { bg: "bg-fuchsia-500", text: "text-fuchsia-500", light: "bg-fuchsia-500/10", border: "border-fuchsia-500/30", bar: "bg-fuchsia-500" },
+};
 
 // ─── Section Configuration ────────────────────────────────────────────────────
 const SECTION_COLORS = {
@@ -421,6 +443,251 @@ const TipsCarousel = () => {
         </div>
       </div>
     </div>
+  );
+};
+
+// ─── OnboardingStepsPanel ────────────────────────────────────────────────────
+const OnboardingStepsPanel = () => {
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+  const [completed, setCompleted] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem(ONBOARDING_STEPS_KEY) || "{}");
+    } catch {
+      return {};
+    }
+  });
+  const [expandedStep, setExpandedStep] = useState(null);
+
+  const toggle = (id) => {
+    const next = { ...completed, [id]: !completed[id] };
+    setCompleted(next);
+    localStorage.setItem(ONBOARDING_STEPS_KEY, JSON.stringify(next));
+  };
+
+  const doneCount = ONBOARDING_STEP_DEFS.filter((s) => completed[s.id]).length;
+  const total = ONBOARDING_STEP_DEFS.length;
+  const pct = Math.round((doneCount / total) * 100);
+  const allDone = doneCount === total;
+  const currentIdx = allDone
+    ? total - 1
+    : ONBOARDING_STEP_DEFS.findIndex((s) => !completed[s.id]);
+
+  // Auto-expand the current step on first render
+  useEffect(() => {
+    const currentStep = ONBOARDING_STEP_DEFS[currentIdx];
+    if (currentStep && expandedStep === null && !allDone) {
+      setExpandedStep(currentStep.id);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return (
+    <Card className="border-2 border-primary/20 overflow-hidden shadow-md">
+      {/* Header */}
+      <CardHeader className="pb-4 bg-gradient-to-r from-primary/8 via-primary/4 to-transparent">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
+          <div>
+            <CardTitle className="text-lg flex items-center gap-2">
+              <Sparkles className="h-5 w-5 text-primary" />
+              {t("tutorialPage.onboarding.title")}
+            </CardTitle>
+            <CardDescription className="mt-1">
+              {t("tutorialPage.onboarding.subtitle")}
+            </CardDescription>
+          </div>
+          <span className="text-sm font-semibold text-muted-foreground tabular-nums shrink-0 bg-muted/60 px-3 py-1 rounded-full border self-start sm:self-center">
+            {t("tutorialPage.onboarding.stepOf", {
+              step: Math.min(doneCount + 1, total),
+              total,
+            })}
+          </span>
+        </div>
+
+        {/* Block Progress Bar */}
+        <div className="mt-4 space-y-2">
+          <div className="flex items-center gap-1.5">
+            {ONBOARDING_STEP_DEFS.map((step, i) => {
+              const isDone = completed[step.id];
+              const isCurrent = !allDone && i === currentIdx;
+              const pal = STEP_PALETTE[step.palette];
+              return (
+                <div
+                  key={step.id}
+                  title={t(`tutorialPage.onboarding.steps.${step.id}.title`)}
+                  className={`h-3 flex-1 rounded-sm transition-all duration-500 cursor-pointer ${
+                    isDone
+                      ? "bg-primary"
+                      : isCurrent
+                      ? `${pal.bar} opacity-50`
+                      : "bg-muted"
+                  }`}
+                  onClick={() =>
+                    setExpandedStep(expandedStep === step.id ? null : step.id)
+                  }
+                />
+              );
+            })}
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-xs text-muted-foreground font-medium">
+              {t("tutorialPage.onboarding.progress", { pct })}
+            </span>
+            {allDone && (
+              <span className="text-xs text-primary font-semibold animate-in fade-in flex items-center gap-1">
+                <BadgeCheck className="h-3.5 w-3.5" />
+                {t("tutorialPage.onboarding.allDone")}
+              </span>
+            )}
+          </div>
+        </div>
+      </CardHeader>
+
+      <CardContent className="p-4 pt-2">
+        <div className="relative">
+          {/* Vertical connector line */}
+          <div className="absolute left-[19px] top-4 bottom-4 w-px bg-border/60 pointer-events-none" />
+
+          <div className="space-y-2">
+            {ONBOARDING_STEP_DEFS.map((step, idx) => {
+              const isDone = completed[step.id];
+              const isCurrent = !allDone && idx === currentIdx;
+              const isExpanded = expandedStep === step.id;
+              const pal = STEP_PALETTE[step.palette];
+              const Icon = step.icon;
+
+              return (
+                <div
+                  key={step.id}
+                  className={`relative rounded-xl border transition-all duration-300 overflow-hidden ${
+                    isDone
+                      ? "border-primary/20 bg-primary/5"
+                      : isCurrent
+                      ? `${pal.border} ${pal.light}`
+                      : "border-border/40 bg-muted/10"
+                  }`}
+                >
+                  <button
+                    onClick={() =>
+                      setExpandedStep(isExpanded ? null : step.id)
+                    }
+                    className="w-full flex items-center gap-3 p-3 text-left group"
+                  >
+                    {/* Step badge */}
+                    <div
+                      className={`relative z-10 shrink-0 w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-300 shadow-sm ${
+                        isDone
+                          ? "bg-primary text-primary-foreground"
+                          : isCurrent
+                          ? `${pal.bg} text-white`
+                          : "bg-muted text-muted-foreground"
+                      }`}
+                    >
+                      {isDone ? (
+                        <CheckCircle2 className="h-4 w-4" />
+                      ) : (
+                        idx + 1
+                      )}
+                    </div>
+
+                    {/* Icon */}
+                    <div
+                      className={`shrink-0 p-1.5 rounded-lg transition-colors ${
+                        isDone
+                          ? "bg-primary/10 text-primary"
+                          : isCurrent
+                          ? `${pal.light} ${pal.text}`
+                          : "bg-muted/60 text-muted-foreground"
+                      }`}
+                    >
+                      <Icon className="h-4 w-4" />
+                    </div>
+
+                    {/* Title */}
+                    <div className="flex-1 min-w-0 flex items-center gap-2 flex-wrap">
+                      <span
+                        className={`text-sm font-semibold leading-snug ${
+                          isDone
+                            ? "line-through text-muted-foreground"
+                            : isCurrent
+                            ? pal.text
+                            : "text-foreground"
+                        }`}
+                      >
+                        {t(
+                          `tutorialPage.onboarding.steps.${step.id}.title`
+                        )}
+                      </span>
+                      {isCurrent && (
+                        <span
+                          className={`text-[10px] px-1.5 py-0.5 rounded-full font-semibold ${pal.bg} text-white leading-tight`}
+                        >
+                          {t("tutorialPage.onboarding.current")}
+                        </span>
+                      )}
+                      {isDone && (
+                        <span className="text-[10px] px-1.5 py-0.5 rounded-full font-semibold bg-primary/15 text-primary leading-tight">
+                          {t("tutorialPage.onboarding.completed")}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Expand chevron */}
+                    {isExpanded ? (
+                      <ChevronUp className="h-4 w-4 text-muted-foreground shrink-0" />
+                    ) : (
+                      <ChevronDown className="h-4 w-4 text-muted-foreground shrink-0 group-hover:text-foreground transition-colors" />
+                    )}
+                  </button>
+
+                  {/* Expanded panel */}
+                  {isExpanded && (
+                    <div className="px-4 pb-4 pt-0 animate-in fade-in slide-in-from-top-1 duration-200">
+                      <div className="ml-[60px] space-y-3">
+                        <p className="text-sm text-muted-foreground leading-relaxed">
+                          {t(
+                            `tutorialPage.onboarding.steps.${step.id}.description`
+                          )}
+                        </p>
+                        <div className="flex flex-wrap gap-2">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => navigate(step.path)}
+                            className="gap-1.5 h-8 text-xs"
+                          >
+                            <ArrowRight className="h-3.5 w-3.5" />
+                            {t("tutorialPage.onboarding.goTo")}
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant={isDone ? "ghost" : "default"}
+                            onClick={() => toggle(step.id)}
+                            className="gap-1.5 h-8 text-xs"
+                          >
+                            {isDone ? (
+                              <>
+                                <Circle className="h-3.5 w-3.5" />
+                                {t("tutorialPage.onboarding.markIncomplete")}
+                              </>
+                            ) : (
+                              <>
+                                <CheckCircle2 className="h-3.5 w-3.5" />
+                                {t("tutorialPage.onboarding.complete")}
+                              </>
+                            )}
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </CardContent>
+    </Card>
   );
 };
 
@@ -889,6 +1156,9 @@ const TutorialPage = () => {
           </div>
         </div>
       </div>
+
+      {/* Step-by-Step Onboarding */}
+      <OnboardingStepsPanel />
 
       {/* Onboarding Tour */}
       <OnboardingTour />
