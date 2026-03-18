@@ -43,6 +43,7 @@
     "budgets": "Budgets",
     "goals": "Goals",
     "debt": "Debts",
+    "notificationPreferences": "Notifications",
     "settings": "Settings",
     "tutorial": "User Guide",
     "faq": "FAQ",
@@ -594,6 +595,40 @@
         "report": "View your monthly report"
       }
     },
+    "onboarding": {
+      "title": "Account Setup",
+      "subtitle": "Follow these steps to get the most out of FinanceDash",
+      "progress": "{{pct}}% complete",
+      "stepOf": "Step {{step}} of {{total}}",
+      "current": "Current",
+      "complete": "Mark as done",
+      "markIncomplete": "Mark as incomplete",
+      "completed": "Done",
+      "allDone": "Setup complete! Welcome to FinanceDash! 🚀",
+      "goTo": "Go there",
+      "steps": {
+        "profile": {
+          "title": "Create Profile",
+          "description": "Set up your profile information and initial preferences in Settings."
+        },
+        "accounts": {
+          "title": "Connect Accounts",
+          "description": "Add your bank accounts, credit cards, and other financial sources so FinanceDash can track your balance automatically."
+        },
+        "goals": {
+          "title": "Set Goals or Budget",
+          "description": "Create a monthly budget for a spending category or set a savings goal with a target amount and deadline."
+        },
+        "transaction": {
+          "title": "Record First Transaction",
+          "description": "Add your first income or expense transaction to start monitoring your finances in real time."
+        },
+        "finish": {
+          "title": "Complete Setup",
+          "description": "Explore the dashboard and discover everything FinanceDash can do for you — reports, AI insights, shared finances, and more."
+        }
+      }
+    },
     "tips": {
       "title": "💡 Did you know?",
       "items": {
@@ -973,5 +1008,71 @@
     "hint": "Monthly available: {{available}}",
     "canSpend": "If you spend this now, you'll still have {{amount}} left this month.",
     "cannotSpend": "If you spend this, you'll exceed your monthly budget by {{amount}}."
+  },
+  "userMenu": {
+    "myProfile": "My profile",
+    "accountSettings": "Account settings"
+  },
+  "notificationPreferences": {
+    "title": "Notification Preferences",
+    "subtitle": "Choose which notifications you want to receive and through which channels.",
+    "channels": "Available channels",
+    "channelsDesc": "You can enable each notification type through one or more channels.",
+    "preferences": "Notification types",
+    "preferencesDesc": "Toggle each notification individually per channel.",
+    "notificationType": "Type",
+    "enabled": "Notification enabled",
+    "disabled": "Notification disabled",
+    "pushDenied": "Push permission denied",
+    "pushDeniedDesc": "To enable push notifications, allow access in your browser settings.",
+    "channel": {
+      "inApp": "In-App",
+      "email": "Email",
+      "push": "Push"
+    },
+    "type": {
+      "lowBalance": {
+        "label": "Low balance alert",
+        "desc": "Get notified when your balance falls below a set threshold."
+      },
+      "expenseReminder": {
+        "label": "Expense log reminder",
+        "desc": "Periodic reminder to keep your transactions up to date."
+      },
+      "financialGoals": {
+        "label": "Financial goals",
+        "desc": "Updates on your savings goals progress."
+      },
+      "weeklySummary": {
+        "label": "Weekly spending summary",
+        "desc": "A weekly report summarizing your spending."
+      },
+      "financialInsights": {
+        "label": "Financial insights",
+        "desc": "Personalized tips and analysis about your financial habits."
+      },
+      "recurringSubscriptions": {
+        "label": "Recurring subscriptions",
+        "desc": "Alerts about subscription charges and upcoming renewals."
+      }
+    }
+  },
+  "profile": {
+    "title": "My Profile",
+    "subtitle": "Manage your personal information and account security",
+    "photoSection": "Profile Photo",
+    "photoDesc": "Add a photo to personalize your account",
+    "choosePhoto": "Choose photo",
+    "savePhoto": "Save photo",
+    "removePhoto": "Remove photo",
+    "preview": "preview",
+    "photoUpdated": "Profile photo updated!",
+    "photoUpdateError": "Error updating photo",
+    "photoRemoved": "Profile photo removed",
+    "personalInfo": "Personal Information",
+    "emailReadOnly": "Email cannot be changed here.",
+    "nameRequired": "Name cannot be empty",
+    "changePassword": "Change Password",
+    "backToDashboard": "Back to dashboard"
   }
 }

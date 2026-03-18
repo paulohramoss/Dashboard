@@ -18,7 +18,6 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
 import {
-  Bell,
   Shield,
   User,
   Save,
@@ -50,10 +49,8 @@ import {
 import { auth } from "@/lib/firebase";
 import ConfirmDialog from "@/components/ui/confirm-dialog";
 
-import { useNotifications } from "@/hooks/useNotifications";
 import emailjs from "@emailjs/browser";
 import { useRules } from "@/hooks/useRules";
-import { useUpdatePreferences } from "@/hooks/useUpdatePreferences";
 import InvitePartner from "@/components/InvitePartner";
 
 const SettingsPage = () => {
@@ -62,18 +59,10 @@ const SettingsPage = () => {
     useAuth();
   const { categories, addCategory, deleteCategory, updateCategory } =
     useCategories();
-  const { enabled: notificationsEnabled, toggleNotifications } =
-    useNotifications();
   const { rules, addRule, deleteRule } = useRules();
-  const { frequency, autoUpdateWhenIdle, updatePreferences } =
-    useUpdatePreferences();
 
   const [name, setName] = useState(user?.name || "");
   const [email, setEmail] = useState(user?.email || "");
-  const [notifications, setNotifications] = useState({
-    email: true,
-  });
-
   // Password Update State
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -406,15 +395,6 @@ const SettingsPage = () => {
             <span className="hidden sm:inline">{t("settings.categories")}</span>
           </TabsTrigger>
           <TabsTrigger
-            value="notifications"
-            className="flex items-center gap-2 flex-shrink-0"
-          >
-            <Bell className="h-4 w-4" />
-            <span className="hidden sm:inline">
-              {t("settings.notifications")}
-            </span>
-          </TabsTrigger>
-          <TabsTrigger
             value="security"
             className="flex items-center gap-2 flex-shrink-0"
           >
@@ -706,125 +686,6 @@ const SettingsPage = () => {
                   ? t("settings.recalculating")
                   : t("settings.recalculateRollover")}
               </Button>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="notifications">
-          <Card>
-            <CardHeader>
-              <CardTitle>{t("settings.notifications")}</CardTitle>
-              <CardDescription>
-                {t("settings.notificationsDesc")}
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center justify-between space-x-2">
-                <Label
-                  htmlFor="email-notifs"
-                  className="flex flex-col space-y-1"
-                >
-                  <span>{t("settings.emailNotifs")}</span>
-                  <span className="font-normal text-sm text-muted-foreground">
-                    {t("settings.emailNotifsDesc")}
-                  </span>
-                </Label>
-                <Switch
-                  id="email-notifs"
-                  checked={notifications.email}
-                  onCheckedChange={(checked) =>
-                    setNotifications((prev) => ({ ...prev, email: checked }))
-                  }
-                />
-              </div>
-              <div className="flex items-center justify-between space-x-2">
-                <Label
-                  htmlFor="push-notifs"
-                  className="flex flex-col space-y-1"
-                >
-                  <span>{t("settings.pushNotifs")}</span>
-                  <span className="font-normal text-sm text-muted-foreground">
-                    {t("settings.pushNotifsDesc")}
-                  </span>
-                </Label>
-                <Switch
-                  id="push-notifs"
-                  checked={notificationsEnabled}
-                  onCheckedChange={toggleNotifications}
-                />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="mt-6">
-            <CardHeader>
-              <CardTitle>
-                {t("pwa.settings.title", "Atualizações do App")}
-              </CardTitle>
-              <CardDescription>
-                {t(
-                  "pwa.settings.description",
-                  "Configure como e quando você deseja ser notificado sobre atualizações",
-                )}
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="update-frequency">
-                  {t("pwa.updateFrequency", "Frequência de Notificações")}
-                </Label>
-                <select
-                  id="update-frequency"
-                  className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-mute foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                  value={frequency}
-                  onChange={(e) =>
-                    updatePreferences({ frequency: e.target.value })
-                  }
-                >
-                  <option value="immediate">
-                    {t("pwa.immediate", "Imediato")}
-                  </option>
-                  <option value="daily">
-                    {t("pwa.daily", "Diário (máx. 1x/dia)")}
-                  </option>
-                  <option value="weekly">
-                    {t("pwa.weekly", "Semanal (máx. 1x/semana)")}
-                  </option>
-                </select>
-                <p className="text-xs text-muted-foreground">
-                  {t(
-                    "pwa.settings.frequencyDesc",
-                    "Controle com que frequência você quer ver notificações de atualização",
-                  )}
-                </p>
-              </div>
-
-              <div className="flex items-center justify-between space-x-2">
-                <Label
-                  htmlFor="auto-update-idle"
-                  className="flex flex-col space-y-1"
-                >
-                  <span>
-                    {t(
-                      "pwa.autoUpdateIdle",
-                      "Atualizar automaticamente quando inativo",
-                    )}
-                  </span>
-                  <span className="font-normal text-sm text-muted-foreground">
-                    {t(
-                      "pwa.settings.autoUpdateDesc",
-                      "O app será atualizado automaticamente após 5 minutos de inatividade",
-                    )}
-                  </span>
-                </Label>
-                <Switch
-                  id="auto-update-idle"
-                  checked={autoUpdateWhenIdle}
-                  onCheckedChange={(checked) =>
-                    updatePreferences({ autoUpdateWhenIdle: checked })
-                  }
-                />
-              </div>
             </CardContent>
           </Card>
         </TabsContent>
