@@ -181,16 +181,16 @@ const NotificationPreferencesPage = () => {
                   </div>
 
                   {/* Channel toggles */}
-                  <div className="flex sm:contents gap-4 pl-12 sm:pl-0">
+                  <div className="flex sm:contents justify-around sm:pl-0">
                     {CHANNELS.map(({ key: channelKey, icon: ChannelIcon }) => (
                       <div
                         key={channelKey}
-                        className="flex sm:justify-center items-center gap-1.5 sm:gap-0"
+                        className="flex flex-col sm:flex-row sm:justify-center items-center gap-1 sm:gap-0"
                       >
                         {/* Mobile label */}
                         <Label
                           htmlFor={`${key}-${channelKey}`}
-                          className="sm:hidden text-xs text-muted-foreground flex items-center gap-1 cursor-pointer"
+                          className="sm:hidden text-[10px] text-muted-foreground flex items-center gap-0.5 cursor-pointer"
                         >
                           <ChannelIcon className="h-3 w-3" />
                           {t(`notificationPreferences.channel.${channelKey}`)}
