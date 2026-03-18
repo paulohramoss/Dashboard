@@ -43,6 +43,7 @@
     "budgets": "Budgets",
     "goals": "Goals",
     "debt": "Debts",
+    "notificationPreferences": "Notifications",
     "settings": "Settings",
     "tutorial": "User Guide",
     "faq": "FAQ",
@@ -1011,6 +1012,50 @@
   "userMenu": {
     "myProfile": "My profile",
     "accountSettings": "Account settings"
+  },
+  "notificationPreferences": {
+    "title": "Notification Preferences",
+    "subtitle": "Choose which notifications you want to receive and through which channels.",
+    "channels": "Available channels",
+    "channelsDesc": "You can enable each notification type through one or more channels.",
+    "preferences": "Notification types",
+    "preferencesDesc": "Toggle each notification individually per channel.",
+    "notificationType": "Type",
+    "enabled": "Notification enabled",
+    "disabled": "Notification disabled",
+    "pushDenied": "Push permission denied",
+    "pushDeniedDesc": "To enable push notifications, allow access in your browser settings.",
+    "channel": {
+      "inApp": "In-App",
+      "email": "Email",
+      "push": "Push"
+    },
+    "type": {
+      "lowBalance": {
+        "label": "Low balance alert",
+        "desc": "Get notified when your balance falls below a set threshold."
+      },
+      "expenseReminder": {
+        "label": "Expense log reminder",
+        "desc": "Periodic reminder to keep your transactions up to date."
+      },
+      "financialGoals": {
+        "label": "Financial goals",
+        "desc": "Updates on your savings goals progress."
+      },
+      "weeklySummary": {
+        "label": "Weekly spending summary",
+        "desc": "A weekly report summarizing your spending."
+      },
+      "financialInsights": {
+        "label": "Financial insights",
+        "desc": "Personalized tips and analysis about your financial habits."
+      },
+      "recurringSubscriptions": {
+        "label": "Recurring subscriptions",
+        "desc": "Alerts about subscription charges and upcoming renewals."
+      }
+    }
   },
   "profile": {
     "title": "My Profile",

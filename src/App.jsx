@@ -39,6 +39,7 @@ const ChallengesPage = lazy(() => import("@/pages/ChallengesPage"));
 const FAQPage = lazy(() => import("@/pages/FAQPage"));
 const PlannerPage = lazy(() => import("@/pages/PlannerPage"));
 const UserProfilePage = lazy(() => import("@/pages/UserProfilePage"));
+const NotificationPreferencesPage = lazy(() => import("@/pages/NotificationPreferencesPage"));
 const ProtectedRoute = ({ children }) => {
   const { user } = useAuth();
   if (!user) {
@@ -105,6 +106,7 @@ const App = () => {
                           <Route path="/faq" element={<FAQPage />} />
                           <Route path="/planner" element={<PlannerPage />} />
                           <Route path="/profile" element={<UserProfilePage />} />
+                          <Route path="/notification-preferences" element={<NotificationPreferencesPage />} />
                         </Routes>
                       </Suspense>
                     </Layout>
