@@ -10,7 +10,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select } from "@/components/ui/select";
 import PrivacyBlur from "@/components/ui/PrivacyBlur";
-import { useCurrency } from "@/hooks/useCurrency";
+import { useCurrency, formatCompactAmount } from "@/hooks/useCurrency";
 import { cn } from "@/lib/utils";
 import { motion as Motion } from "framer-motion";
 
@@ -152,8 +152,11 @@ const FinancialMonthCard = ({ stats, categories, transactions }) => {
                 <p className="text-xs text-muted-foreground font-medium">
                   {t("financialMonth.currentBalance")}
                 </p>
-                <PrivacyBlur className="text-xl font-bold text-foreground tracking-tight">
-                  {formatCurrency(stats.balance)}
+                <PrivacyBlur
+                  className="text-xl font-bold text-foreground tracking-tight"
+                  title={formatCurrency(stats.balance)}
+                >
+                  {formatCompactAmount(stats.balance)}
                 </PrivacyBlur>
               </div>
             </div>
@@ -167,8 +170,11 @@ const FinancialMonthCard = ({ stats, categories, transactions }) => {
                 <p className="text-xs text-muted-foreground font-medium">
                   {t("financialMonth.alreadySpent")}
                 </p>
-                <PrivacyBlur className="text-xl font-bold text-rose-600 dark:text-rose-400 tracking-tight">
-                  {formatCurrency(stats.expense)}
+                <PrivacyBlur
+                  className="text-xl font-bold text-rose-600 dark:text-rose-400 tracking-tight"
+                  title={formatCurrency(stats.expense)}
+                >
+                  {formatCompactAmount(stats.expense)}
                 </PrivacyBlur>
               </div>
             </div>
@@ -200,9 +206,14 @@ const FinancialMonthCard = ({ stats, categories, transactions }) => {
                       ? "text-emerald-600 dark:text-emerald-400"
                       : "text-orange-600 dark:text-orange-400",
                   )}
+                  title={
+                    stats.income - stats.expense >= 0
+                      ? formatCurrency(stats.income - stats.expense)
+                      : undefined
+                  }
                 >
                   {stats.income - stats.expense >= 0
-                    ? formatCurrency(stats.income - stats.expense)
+                    ? formatCompactAmount(stats.income - stats.expense)
                     : t("financialMonth.budgetExhausted")}
                 </PrivacyBlur>
               </div>
@@ -226,9 +237,12 @@ const FinancialMonthCard = ({ stats, categories, transactions }) => {
                 <p className="text-xs text-muted-foreground font-medium">
                   {t("financialMonth.alreadySpent")} na categoria
                 </p>
-                <PrivacyBlur className="text-xl font-bold tracking-tight">
+                <PrivacyBlur
+                  className="text-xl font-bold tracking-tight"
+                  title={formatCurrency(categoryData?.spent || 0)}
+                >
                   <span style={{ color: categoryData?.color || "#94a3b8" }}>
-                    {formatCurrency(categoryData?.spent || 0)}
+                    {formatCompactAmount(categoryData?.spent || 0)}
                   </span>
                 </PrivacyBlur>
               </div>
