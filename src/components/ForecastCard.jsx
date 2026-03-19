@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 // import { useLayout } from "@/context/LayoutContext"; // Removed
 import PrivacyBlur from "@/components/ui/PrivacyBlur";
 import { cn } from "@/lib/utils";
-import { useCurrency } from "@/hooks/useCurrency";
+import { useCurrency, formatCompactAmount } from "@/hooks/useCurrency";
 import {
   Area,
   AreaChart,
@@ -56,14 +56,8 @@ const ForecastCard = ({ forecast, amount, confidence, monthsAnalyzed }) => {
     return negativeDay ? negativeDay.date : null;
   }, [forecast]);
 
-  const formattedAmount = formatCurrency(amount);
-
-  // Dynamic font size for large numbers
-  const getFontSize = (text) => {
-    if (text.length > 20) return "text-lg";
-    if (text.length > 15) return "text-xl";
-    return "text-2xl";
-  };
+  const formattedAmount = formatCompactAmount(amount);
+  const fullAmount = formatCurrency(amount);
 
   return (
     <Card className="hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 h-full overflow-hidden relative flex flex-col justify-between">
@@ -105,12 +99,12 @@ const ForecastCard = ({ forecast, amount, confidence, monthsAnalyzed }) => {
       <CardContent className="relative z-10 flex-1 flex flex-col justify-center">
         <PrivacyBlur
           className={cn(
-            "font-bold flex items-center gap-2 tracking-tight",
-            getFontSize(formattedAmount),
+            "block truncate font-bold tracking-tight text-2xl",
             isPositive
               ? "text-emerald-700 dark:text-emerald-300"
               : "text-rose-700 dark:text-rose-300",
           )}
+          title={fullAmount}
         >
           {formattedAmount}
         </PrivacyBlur>
