@@ -144,16 +144,16 @@ const FinancialMonthCard = ({ stats, categories, transactions }) => {
           /* ── Global view ── */
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             {/* Saldo atual */}
-            <div className="flex items-start gap-3">
+            <div className="flex items-start gap-3 min-w-0">
               <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
                 <Wallet className="h-5 w-5 text-primary" />
               </div>
-              <div>
+              <div className="min-w-0 overflow-hidden">
                 <p className="text-xs text-muted-foreground font-medium">
                   {t("financialMonth.currentBalance")}
                 </p>
                 <PrivacyBlur
-                  className="text-xl font-bold text-foreground tracking-tight"
+                  className="block truncate text-xl font-bold text-foreground tracking-tight"
                   title={formatCurrency(stats.balance)}
                 >
                   {formatCompactAmount(stats.balance)}
@@ -162,16 +162,16 @@ const FinancialMonthCard = ({ stats, categories, transactions }) => {
             </div>
 
             {/* Você já gastou */}
-            <div className="flex items-start gap-3">
+            <div className="flex items-start gap-3 min-w-0">
               <div className="h-10 w-10 rounded-xl bg-rose-100 dark:bg-rose-950/40 flex items-center justify-center shrink-0">
                 <TrendingDown className="h-5 w-5 text-rose-600 dark:text-rose-400" />
               </div>
-              <div>
+              <div className="min-w-0 overflow-hidden">
                 <p className="text-xs text-muted-foreground font-medium">
                   {t("financialMonth.alreadySpent")}
                 </p>
                 <PrivacyBlur
-                  className="text-xl font-bold text-rose-600 dark:text-rose-400 tracking-tight"
+                  className="block truncate text-xl font-bold text-rose-600 dark:text-rose-400 tracking-tight"
                   title={formatCurrency(stats.expense)}
                 >
                   {formatCompactAmount(stats.expense)}
@@ -180,7 +180,7 @@ const FinancialMonthCard = ({ stats, categories, transactions }) => {
             </div>
 
             {/* Ainda pode gastar */}
-            <div className="flex items-start gap-3">
+            <div className="flex items-start gap-3 min-w-0">
               <div
                 className={cn(
                   "h-10 w-10 rounded-xl flex items-center justify-center shrink-0",
@@ -195,13 +195,13 @@ const FinancialMonthCard = ({ stats, categories, transactions }) => {
                   <AlertCircle className="h-5 w-5 text-orange-600 dark:text-orange-400" />
                 )}
               </div>
-              <div>
+              <div className="min-w-0 overflow-hidden">
                 <p className="text-xs text-muted-foreground font-medium">
                   {t("financialMonth.canStillSpend")}
                 </p>
                 <PrivacyBlur
                   className={cn(
-                    "text-xl font-bold tracking-tight",
+                    "block truncate text-xl font-bold tracking-tight",
                     stats.income - stats.expense >= 0
                       ? "text-emerald-600 dark:text-emerald-400"
                       : "text-orange-600 dark:text-orange-400",
@@ -223,7 +223,7 @@ const FinancialMonthCard = ({ stats, categories, transactions }) => {
           /* ── Category view ── */
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {/* Você já gastou (categoria) */}
-            <div className="flex items-start gap-3">
+            <div className="flex items-start gap-3 min-w-0">
               <div
                 className="h-10 w-10 rounded-xl flex items-center justify-center shrink-0"
                 style={{ backgroundColor: `${categoryData?.color || "#94a3b8"}22` }}
@@ -233,12 +233,12 @@ const FinancialMonthCard = ({ stats, categories, transactions }) => {
                   style={{ color: categoryData?.color || "#94a3b8" }}
                 />
               </div>
-              <div>
+              <div className="min-w-0 overflow-hidden">
                 <p className="text-xs text-muted-foreground font-medium">
                   {t("financialMonth.alreadySpent")} na categoria
                 </p>
                 <PrivacyBlur
-                  className="text-xl font-bold tracking-tight"
+                  className="block truncate text-xl font-bold tracking-tight"
                   title={formatCurrency(categoryData?.spent || 0)}
                 >
                   <span style={{ color: categoryData?.color || "#94a3b8" }}>

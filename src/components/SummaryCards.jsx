@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import PrivacyBlur from "@/components/ui/PrivacyBlur";
-import { useCurrency } from "@/hooks/useCurrency";
+import { useCurrency, formatCompactAmount } from "@/hooks/useCurrency";
 
 export const BalanceCard = ({ amount }) => {
   const { t } = useTranslation();
@@ -32,9 +32,12 @@ export const BalanceCard = ({ amount }) => {
           </div>
         </div>
       </CardHeader>
-      <CardContent className="relative z-10 pt-0">
-        <PrivacyBlur className="text-4xl font-bold text-white tracking-tight leading-none">
-          {formatCurrency(amount)}
+      <CardContent className="relative z-10 pt-0 overflow-hidden">
+        <PrivacyBlur
+          className="block truncate text-4xl font-bold text-white tracking-tight leading-none"
+          title={formatCurrency(amount)}
+        >
+          {formatCompactAmount(amount)}
         </PrivacyBlur>
         <p className="text-primary-foreground/50 text-xs mt-2 font-medium">
           {t("dashboard.totalBalance")}
@@ -62,9 +65,12 @@ export const IncomeCard = ({ amount }) => {
           </div>
         </div>
       </CardHeader>
-      <CardContent className="relative z-10 pt-0">
-        <PrivacyBlur className="text-3xl font-bold text-emerald-800 dark:text-emerald-100 tracking-tight">
-          {formatCurrency(amount)}
+      <CardContent className="relative z-10 pt-0 overflow-hidden">
+        <PrivacyBlur
+          className="block truncate text-3xl font-bold text-emerald-800 dark:text-emerald-100 tracking-tight"
+          title={formatCurrency(amount)}
+        >
+          {formatCompactAmount(amount)}
         </PrivacyBlur>
         <div className="flex items-center gap-1 mt-1.5">
           <ArrowUpRight className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
@@ -95,9 +101,12 @@ export const ExpenseCard = ({ amount }) => {
           </div>
         </div>
       </CardHeader>
-      <CardContent className="relative z-10 pt-0">
-        <PrivacyBlur className="text-3xl font-bold text-rose-800 dark:text-rose-100 tracking-tight">
-          {formatCurrency(amount)}
+      <CardContent className="relative z-10 pt-0 overflow-hidden">
+        <PrivacyBlur
+          className="block truncate text-3xl font-bold text-rose-800 dark:text-rose-100 tracking-tight"
+          title={formatCurrency(amount)}
+        >
+          {formatCompactAmount(amount)}
         </PrivacyBlur>
         <div className="flex items-center gap-1 mt-1.5">
           <ArrowDownRight className="h-3.5 w-3.5 text-rose-600 dark:text-rose-400" />
