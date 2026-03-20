@@ -38,9 +38,14 @@ export const CustomDropdown = ({
   }, []);
 
   const variants = {
-    hidden: { opacity: 0, scale: 0.95, y: -10 },
+    hidden: { opacity: 0, scale: 0.96, y: -6 },
     visible: { opacity: 1, scale: 1, y: 0 },
-    exit: { opacity: 0, scale: 0.95, y: -10 },
+    exit:   { opacity: 0, scale: 0.96, y: -6 },
+  };
+
+  const transition = {
+    duration: 0.18,
+    ease: [0.4, 0, 0.2, 1],
   };
 
   return (
@@ -56,7 +61,8 @@ export const CustomDropdown = ({
             animate="visible"
             exit="exit"
             variants={variants}
-            transition={{ duration: 0.2 }}
+            transition={transition}
+            style={{ transformOrigin: "top right" }}
             className={cn(
               "absolute z-50 mt-2 w-56 rounded-md border bg-popover p-1 shadow-md text-popover-foreground",
               align === "end"
@@ -89,7 +95,10 @@ export const DropdownItem = ({
     <button
       onClick={onClick}
       className={cn(
-        "relative flex w-full cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+        "relative flex w-full cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none",
+        "transition-all duration-150 ease-out",
+        "hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+        "active:scale-[0.98]",
         destructive &&
           "text-destructive hover:text-destructive focus:text-destructive",
         className

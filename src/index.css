@@ -89,6 +89,8 @@
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    transition: background-color 0.3s ease, color 0.2s ease;
+    scroll-behavior: smooth;
   }
 }
 
@@ -97,12 +99,26 @@
   from { width: 0; }
 }
 
+/* Spinner animation */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Page transition fade */
+@keyframes page-enter {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
 /* Smooth card lift */
 .card-hover {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
 }
 .card-hover:hover {
-  transform: translateY(-2px);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px -4px rgba(0,0,0,0.12);
 }
 
 /* Gradient progress bars */
@@ -133,12 +149,20 @@
 /* Privacy Mode Blur */
 .privacy-blur {
   filter: blur(6px);
-  transition: filter 0.3s ease;
+  transition: filter 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   user-select: none;
 }
 
 .privacy-blur:hover {
   filter: blur(0);
+}
+
+/* GPU-accelerated animated elements */
+.animate-spin,
+.card-hover,
+[data-state="open"],
+[data-state="closed"] {
+  will-change: transform;
 }
 
 /* Touch-Friendly Utilities */
