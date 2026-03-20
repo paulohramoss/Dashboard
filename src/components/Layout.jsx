@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { motion as Motion, AnimatePresence } from "framer-motion";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
@@ -149,19 +150,27 @@ const Layout = ({ children }) => {
         <Analytics />
         <IOSInstallPrompt />
         {/* Mobile Sidebar Overlay */}
-        {isSidebarOpen && (
-          <div
-            className="fixed inset-0 bg-black/50 z-40 lg:hidden"
-            onClick={() => setIsSidebarOpen(false)}
-          />
-        )}
+        <AnimatePresence>
+          {isSidebarOpen && (
+            <Motion.div
+              key="sidebar-overlay"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+              className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+              onClick={() => setIsSidebarOpen(false)}
+            />
+          )}
+        </AnimatePresence>
 
         {/* Sidebar */}
         <aside
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
           className={cn(
-            "fixed inset-y-0 left-0 z-50 bg-card border-r transition-all duration-300 ease-in-out flex flex-col",
+            "fixed inset-y-0 left-0 z-50 bg-card border-r flex flex-col",
+            "transition-[width,transform] duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]",
             // Mobile: transform based on state, fixed width
             "w-64 transform lg:transform-none",
             isSidebarOpen ? "translate-x-0" : "-translate-x-full",
@@ -228,7 +237,7 @@ const Layout = ({ children }) => {
                       : undefined
                   }
                   className={cn(
-                    "flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-md transition-all duration-200 overflow-hidden",
+                    "flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-md overflow-hidden transition-all duration-200 ease-out",
                     location.pathname === item.path
                       ? "bg-primary text-primary-foreground"
                       : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
@@ -238,8 +247,10 @@ const Layout = ({ children }) => {
                   <item.icon className={cn("h-5 w-5 flex-shrink-0")} />
                   <span
                     className={cn(
-                      "flex-1 transition-all duration-300 opacity-100",
-                      !isExpanded && "lg:opacity-0 lg:w-0 lg:hidden",
+                      "flex-1 overflow-hidden whitespace-nowrap transition-all duration-300 ease-in-out",
+                      isExpanded || isSidebarOpen
+                        ? "max-w-full opacity-100"
+                        : "lg:max-w-0 lg:opacity-0",
                     )}
                   >
                     {item.label}
@@ -272,8 +283,10 @@ const Layout = ({ children }) => {
               />
               <span
                 className={cn(
-                  "transition-all duration-300 opacity-100",
-                  !isExpanded && "lg:opacity-0 lg:w-0 lg:hidden",
+                  "overflow-hidden whitespace-nowrap transition-all duration-300 ease-in-out",
+                  isExpanded || isSidebarOpen
+                    ? "max-w-full opacity-100"
+                    : "lg:max-w-0 lg:opacity-0",
                 )}
               >
                 {isConfirmingLogout ? t("nav.confirmLogout") : t("nav.logout")}
@@ -285,7 +298,7 @@ const Layout = ({ children }) => {
         {/* Main Content */}
         <main
           className={cn(
-            "flex-1 flex flex-col min-h-screen overflow-hidden transition-all duration-300 ease-in-out",
+            "flex-1 flex flex-col min-h-screen overflow-hidden transition-[margin] duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]",
             // Adjust margin based on expanded state (pinned OR hovered)
             isExpanded ? "lg:ml-64" : "lg:ml-20",
           )}
