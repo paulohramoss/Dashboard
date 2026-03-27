@@ -30,10 +30,10 @@ export const formatCompactAmount = (value, currency = "BRL") => {
     return `${sign}${symbol}\u00a0${formatted}${suffix}`;
   };
 
-  if (abs >= 1e12) return fmt(value / 1e12, " tri");
-  if (abs >= 1e9)  return fmt(value / 1e9,  " bi");
-  if (abs >= 1e6)  return fmt(value / 1e6,  " mi");
-  if (abs >= 1e3)  return fmt(value / 1e3,  " mil");
+  if (abs >= 1e12) return fmt(abs / 1e12, " tri");
+  if (abs >= 1e9)  return fmt(abs / 1e9,  " bi");
+  if (abs >= 1e6)  return fmt(abs / 1e6,  " mi");
+  if (abs >= 1e3)  return fmt(abs / 1e3,  " mil");
 
   return new Intl.NumberFormat(locale, { style: "currency", currency }).format(value);
 };

@@ -70,6 +70,7 @@ const Dashboard = () => {
     clearTransactions,
     updateTransaction,
     stats,
+    monthlyStats,
     loading,
     isShadowMode,
     toggleShadowMode,
@@ -106,7 +107,7 @@ const Dashboard = () => {
         return loading ? (
           <Skeleton className="w-full h-full" />
         ) : (
-          <MoneyIndicatorCard stats={stats} />
+          <MoneyIndicatorCard stats={monthlyStats} />
         );
       case "financialmonth":
         return loading ? (
@@ -122,7 +123,7 @@ const Dashboard = () => {
         return loading ? (
           <Skeleton className="w-full h-full" />
         ) : (
-          <BalanceCard amount={stats.balance} />
+          <BalanceCard amount={monthlyStats.balance} />
         );
       case "forecast":
         return loading ? (
@@ -152,7 +153,7 @@ case "simulator":
         return loading ? (
           <Skeleton className="w-full h-full" />
         ) : (
-          <SpendingSimulatorCard stats={stats} />
+          <SpendingSimulatorCard stats={monthlyStats} />
         );
       case "insights":
         return loading ? (
