@@ -141,13 +141,13 @@ const Dashboard = () => {
         return loading ? (
           <Skeleton className="w-full h-full" />
         ) : (
-          <IncomeCard amount={stats.income} />
+          <IncomeCard amount={monthlyStats.income} />
         );
       case "expense":
         return loading ? (
           <Skeleton className="w-full h-full" />
         ) : (
-          <ExpenseCard amount={stats.expense} />
+          <ExpenseCard amount={monthlyStats.expense} />
         );
 case "simulator":
         return loading ? (
@@ -173,17 +173,23 @@ case "simulator":
         ) : (
           <CategoryChart transactions={transactions} />
         );
-      case "history":
+      case "history": {
+        const now = new Date();
+        const monthlyTransactions = transactions.filter((t) => {
+          const d = new Date(t.date);
+          return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+        });
         return loading ? (
           <Skeleton className="w-full h-full" />
         ) : (
           <TransactionHistory
-            transactions={transactions}
+            transactions={monthlyTransactions}
             onDelete={deleteTransaction}
             onEdit={handleEdit}
             limit={10}
           />
         );
+      }
       case "accounts":
         return loading ? (
           <div className="grid gap-4">

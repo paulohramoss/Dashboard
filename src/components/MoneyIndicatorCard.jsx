@@ -12,6 +12,8 @@ const MoneyIndicatorCard = ({ stats }) => {
   const spendingRatio =
     stats.income > 0
       ? Math.min((stats.expense / stats.income) * 100, 100)
+      : stats.expense > 0
+      ? 100
       : 0;
 
   const size = 180;
@@ -71,21 +73,26 @@ const MoneyIndicatorCard = ({ stats }) => {
           {/* Center text (rotated back to normal) */}
           <div className="absolute flex flex-col items-center gap-0.5 text-center px-2">
             {isOver ? (
-              <span className="text-[#f87171] font-bold text-lg leading-tight">
-                Estourado
-              </span>
+              <>
+                <span className="text-[#f87171] font-bold text-lg leading-tight">
+                  Estourado
+                </span>
+                <span className="text-[11px] font-medium text-[#f87171]">
+                  0% livre
+                </span>
+              </>
             ) : (
-              <PrivacyBlur className="text-white font-extrabold text-[1.6rem] leading-tight tracking-tight">
-                {formatCurrency(canSpend)}
-              </PrivacyBlur>
-            )}
-            {!isOver && (
-              <span
-                className="text-[11px] font-medium"
-                style={{ color: ringColor }}
-              >
-                {Math.round(100 - spendingRatio)}% livre
-              </span>
+              <>
+                <PrivacyBlur className="text-white font-extrabold text-[1.6rem] leading-tight tracking-tight">
+                  {formatCurrency(canSpend)}
+                </PrivacyBlur>
+                <span
+                  className="text-[11px] font-medium"
+                  style={{ color: ringColor }}
+                >
+                  {Math.round(100 - spendingRatio)}% livre
+                </span>
+              </>
             )}
           </div>
         </div>
