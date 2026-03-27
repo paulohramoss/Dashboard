@@ -166,6 +166,16 @@ export const useCategories = () => {
 
   const addCategory = async (category) => {
     if (!user?.id) return;
+    const tempId = `temp-${Date.now()}`;
+    const newCategory = {
+      ...category,
+      id: tempId,
+      userId: user.id,
+      allowedUsers: [user.id],
+      createdAt: new Date().toISOString(),
+      budget: parseFloat(category.budget) || 0,
+    };
+    setCategories((prev) => [...prev, newCategory]);
     try {
       await addDoc(collection(db, "categories"), {
         ...category,
@@ -176,19 +186,17 @@ export const useCategories = () => {
       });
     } catch (error) {
       console.error("Error adding category:", error);
+      setCategories((prev) => prev.filter((c) => c.id !== tempId));
     }
   };
 
   const updateCategory = async (id, updates) => {
     if (!user?.id) return;
+    setCategories((prev) =>
+      prev.map((cat) => (cat.id === id ? { ...cat, ...updates } : cat)),
+    );
     try {
-      const docRef = doc(db, "categories", id);
-      await updateDoc(docRef, updates);
-      // Optimistically update local state so the UI reflects changes immediately
-      // without waiting for the Firestore snapshot listener to fire
-      setCategories((prev) =>
-        prev.map((cat) => (cat.id === id ? { ...cat, ...updates } : cat)),
-      );
+      await updateDoc(doc(db, "categories", id), updates);
     } catch (error) {
       console.error("Error updating category:", error);
     }
@@ -196,6 +204,7 @@ export const useCategories = () => {
 
   const deleteCategory = async (id) => {
     if (!user?.id) return;
+    setCategories((prev) => prev.filter((c) => c.id !== id));
     try {
       await deleteDoc(doc(db, "categories", id));
     } catch (error) {

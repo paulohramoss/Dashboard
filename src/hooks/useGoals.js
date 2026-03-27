@@ -77,6 +77,16 @@ export const useGoals = () => {
 
   const addGoal = async (goal) => {
     if (!user?.id) return;
+    const tempId = `temp-${Date.now()}`;
+    const newGoal = {
+      ...goal,
+      id: tempId,
+      userId: user.id,
+      allowedUsers: [user.id],
+      currentAmount: 0,
+      createdAt: new Date().toISOString(),
+    };
+    setGoals((prev) => [...prev, newGoal]);
     try {
       await addDoc(collection(db, "goals"), {
         ...goal,
@@ -87,12 +97,16 @@ export const useGoals = () => {
       });
     } catch (error) {
       console.error("Error adding goal:", error);
+      setGoals((prev) => prev.filter((g) => g.id !== tempId));
       throw error;
     }
   };
 
   const updateGoal = async (id, data) => {
     if (!user?.id) return;
+    setGoals((prev) =>
+      prev.map((g) => (g.id === id ? { ...g, ...data } : g)),
+    );
     try {
       await updateDoc(doc(db, "goals", id), data);
     } catch (error) {
@@ -103,6 +117,7 @@ export const useGoals = () => {
 
   const deleteGoal = async (id) => {
     if (!user?.id) return;
+    setGoals((prev) => prev.filter((g) => g.id !== id));
     try {
       await deleteDoc(doc(db, "goals", id));
     } catch (error) {
@@ -116,32 +131,33 @@ export const useGoals = () => {
       console.error("User ID missing in allocateFunds");
       return;
     }
-
+    setGoals((prev) =>
+      prev.map((g) =>
+        g.id === goalId
+          ? { ...g, currentAmount: (g.currentAmount || 0) + parseFloat(amount) }
+          : g,
+      ),
+    );
     try {
       const batch = writeBatch(db);
 
-      // 1. Update Goal Amount
       const goalRef = doc(db, "goals", goalId);
-      batch.update(goalRef, {
-        currentAmount: increment(amount),
-      });
+      batch.update(goalRef, { currentAmount: increment(amount) });
 
-      // 2. Create Expense Transaction
       const transactionRef = doc(collection(db, "transactions"));
       batch.set(transactionRef, {
         userId: user.id,
-        allowedUsers: [user.id], // Required for Firestore security rules
+        allowedUsers: [user.id],
         description: `Transfer to Goal: ${goalName}`,
         amount: parseFloat(amount),
         type: "expense",
-        category: "Savings", // Or a specific category for goals
+        category: "Savings",
         accountId: accountId,
         date: new Date().toISOString(),
         createdAt: new Date().toISOString(),
-        isSystem: true, // Flag to identify system generated transactions
+        isSystem: true,
       });
 
-      // 3. Commit the batch
       await batch.commit();
     } catch (error) {
       console.error("Error allocation funds:", error);

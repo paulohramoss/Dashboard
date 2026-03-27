@@ -3,11 +3,15 @@ import { useTranslation } from "react-i18next";
 import { useAccounts } from "@/hooks/useAccounts";
 import { useTransactions } from "@/hooks/useTransactions";
 import { useCurrency } from "@/hooks/useCurrency";
+import { useCategories } from "@/hooks/useCategories";
+import { db } from "@/lib/firebase";
+import { doc, writeBatch } from "firebase/firestore";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
+  CardDescription,
   CardFooter,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -23,6 +27,7 @@ import {
   TrendingUp,
   Building2,
   Edit,
+  RefreshCw,
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -113,6 +118,34 @@ const AccountsPage = () => {
   // Reordering Logic
   const [isReordering, setIsReordering] = useState(false);
   const [orderedAccounts, setOrderedAccounts] = useState([]);
+
+  const { categories } = useCategories();
+  const [recalculating, setRecalculating] = useState(false);
+  const [recalculateDialogOpen, setRecalculateDialogOpen] = useState(false);
+
+  const handleRecalculateRollovers = async () => {
+    try {
+      setRecalculating(true);
+      const batch = writeBatch(db);
+      categories.forEach((cat) => {
+        if (cat.rollover) {
+          const ref = doc(db, "categories", cat.id);
+          batch.update(ref, {
+            lastRolloverCheck: null,
+            accumulatedRollover: 0,
+          });
+        }
+      });
+      await batch.commit();
+      toast.success(t("settings.recalculateSuccess"));
+    } catch (error) {
+      console.error("Error recalculating rollovers:", error);
+      toast.error(t("common.error"));
+    } finally {
+      setRecalculating(false);
+      setRecalculateDialogOpen(false);
+    }
+  };
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -685,6 +718,29 @@ const AccountsPage = () => {
         </DialogContent>
       </Dialog>
 
+      <Card className="mt-6">
+        <CardHeader>
+          <CardTitle>{t("settings.recalculateRollover")}</CardTitle>
+          <CardDescription>
+            {t("settings.recalculateRolloverDesc")}
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Button
+            variant="outline"
+            onClick={() => setRecalculateDialogOpen(true)}
+            disabled={recalculating}
+          >
+            <RefreshCw
+              className={`mr-2 h-4 w-4 ${recalculating ? "animate-spin" : ""}`}
+            />
+            {recalculating
+              ? t("settings.recalculating")
+              : t("settings.recalculateRollover")}
+          </Button>
+        </CardContent>
+      </Card>
+
       <ConfirmDialog
         isOpen={deleteDialogOpen}
         onClose={() => setDeleteDialogOpen(false)}
@@ -694,6 +750,16 @@ const AccountsPage = () => {
         confirmText={t("common.delete")}
         cancelText={t("common.cancel")}
         variant="destructive"
+      />
+
+      <ConfirmDialog
+        isOpen={recalculateDialogOpen}
+        onClose={() => setRecalculateDialogOpen(false)}
+        onConfirm={handleRecalculateRollovers}
+        title={t("settings.recalculateRollover")}
+        description={t("settings.recalculateConfirm")}
+        confirmText={t("common.yes")}
+        cancelText={t("common.cancel")}
       />
     </div>
   );

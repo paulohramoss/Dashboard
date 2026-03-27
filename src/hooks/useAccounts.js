@@ -112,24 +112,39 @@ export const useAccounts = () => {
 
   const addAccount = async (account) => {
     if (!user?.id) return;
+    const tempId = `temp-${Date.now()}`;
+    const newAccount = {
+      ...account,
+      id: tempId,
+      userId: user.id,
+      allowedUsers: [user.id],
+      order: accounts.length,
+      createdAt: new Date().toISOString(),
+    };
+    setAccounts((prev) =>
+      [...prev, newAccount].sort((a, b) => (a.order || 0) - (b.order || 0)),
+    );
     try {
       await addDoc(collection(db, "accounts"), {
         ...account,
         userId: user.id,
         allowedUsers: [user.id],
-        order: accounts.length, // Add at the end
+        order: accounts.length,
         createdAt: new Date().toISOString(),
       });
     } catch (error) {
       console.error("Error adding account:", error);
+      setAccounts((prev) => prev.filter((a) => a.id !== tempId));
     }
   };
 
   const updateAccount = async (id, updates) => {
     if (!user?.id) return;
+    setAccounts((prev) =>
+      prev.map((a) => (a.id === id ? { ...a, ...updates } : a)),
+    );
     try {
-      const docRef = doc(db, "accounts", id);
-      await updateDoc(docRef, updates);
+      await updateDoc(doc(db, "accounts", id), updates);
     } catch (error) {
       console.error("Error updating account:", error);
     }
@@ -137,14 +152,11 @@ export const useAccounts = () => {
 
   const reorderAccounts = async (newOrderAccounts) => {
     if (!user?.id) return;
+    setAccounts(newOrderAccounts.map((a, i) => ({ ...a, order: i })));
     try {
-      // Create a batch update or individual updates
-      // Since Firestore doesn't support batch update for different docs easily without writeBatch
-      // We will loop and update. For a small number of accounts, this is fine.
-      const updatePromises = newOrderAccounts.map((account, index) => {
-        const docRef = doc(db, "accounts", account.id);
-        return updateDoc(docRef, { order: index });
-      });
+      const updatePromises = newOrderAccounts.map((account, index) =>
+        updateDoc(doc(db, "accounts", account.id), { order: index }),
+      );
       await Promise.all(updatePromises);
     } catch (error) {
       console.error("Error reordering accounts:", error);
@@ -153,6 +165,7 @@ export const useAccounts = () => {
 
   const deleteAccount = async (id) => {
     if (!user?.id) return;
+    setAccounts((prev) => prev.filter((a) => a.id !== id));
     try {
       await deleteDoc(doc(db, "accounts", id));
     } catch (error) {

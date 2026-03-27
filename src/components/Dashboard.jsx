@@ -517,26 +517,6 @@ case "simulator":
                 </Button>
               )}
 
-              <Button
-                variant="default"
-                size="sm"
-                onClick={() => setIsSimulateOpen(true)}
-                className="hidden md:flex h-10 touch-target"
-              >
-                <TrendingUp className="mr-2 h-4 w-4" />
-                {t("dashboard.simulate", "Simular")}
-              </Button>
-              {/* Mobile simulate icon only */}
-              <Button
-                variant="default"
-                size="icon"
-                onClick={() => setIsSimulateOpen(true)}
-                className="md:hidden h-10 w-10 touch-target"
-                aria-label={t("dashboard.simulate", "Simular")}
-              >
-                <TrendingUp className="h-4 w-4" />
-              </Button>
-
               <CustomDropdown
                 align="start"
                 trigger={

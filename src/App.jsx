@@ -114,7 +114,7 @@ const AnimatedRoutes = () => {
             <Route path="/tutorial" element={<TutorialPage />} />
             <Route path="/challenges" element={<ChallengesPage />} />
             <Route path="/faq" element={<FAQPage />} />
-            <Route path="/planner" element={<PlannerPage />} />
+            {/* <Route path="/planner" element={<PlannerPage />} /> */}
             <Route path="/profile" element={<UserProfilePage />} />
             <Route path="/notification-preferences" element={<NotificationPreferencesPage />} />
           </Routes>
