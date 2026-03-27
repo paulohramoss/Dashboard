@@ -26,7 +26,7 @@ export const formatCompactAmount = (value, currency = "BRL") => {
     const formatted = new Intl.NumberFormat(locale, {
       minimumFractionDigits: 0,
       maximumFractionDigits: 1,
-    }).format(v);
+    }).format(Math.abs(v));
     return `${sign}${symbol}\u00a0${formatted}${suffix}`;
   };
 
@@ -35,7 +35,11 @@ export const formatCompactAmount = (value, currency = "BRL") => {
   if (abs >= 1e6)  return fmt(abs / 1e6,  " mi");
   if (abs >= 1e3)  return fmt(abs / 1e3,  " mil");
 
-  return new Intl.NumberFormat(locale, { style: "currency", currency }).format(value);
+  const smallFormatted = new Intl.NumberFormat(locale, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(abs);
+  return `${sign}${symbol}\u00a0${smallFormatted}`;
 };
 
 /**
