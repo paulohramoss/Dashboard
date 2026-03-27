@@ -79,12 +79,14 @@ const MoneyIndicatorCard = ({ stats }) => {
                 {formatCurrency(canSpend)}
               </PrivacyBlur>
             )}
-            <span
-              className="text-[11px] font-medium"
-              style={{ color: ringColor }}
-            >
-              {Math.round(100 - spendingRatio)}% livre
-            </span>
+            {!isOver && (
+              <span
+                className="text-[11px] font-medium"
+                style={{ color: ringColor }}
+              >
+                {Math.round(100 - spendingRatio)}% livre
+              </span>
+            )}
           </div>
         </div>
 

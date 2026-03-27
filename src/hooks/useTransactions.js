@@ -326,6 +326,32 @@ export const useTransactions = () => {
     { income: 0, expense: 0, balance: 0 },
   );
 
+  const now = new Date();
+  const currentMonth = now.getMonth();
+  const currentYear = now.getFullYear();
+
+  const monthlyStats = allTransactions
+    .filter((t) => {
+      const d = new Date(t.date);
+      return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
+    })
+    .reduce(
+      (acc, curr) => {
+        const amount = parseFloat(curr.amount);
+        const outputAmount = isNaN(amount) ? 0 : amount;
+
+        if (curr.type === "income") {
+          acc.income += outputAmount;
+          acc.balance += outputAmount;
+        } else if (curr.type === "expense") {
+          acc.expense += outputAmount;
+          acc.balance -= outputAmount;
+        }
+        return acc;
+      },
+      { income: 0, expense: 0, balance: 0 },
+    );
+
   return {
     transactions: allTransactions, // Return merged transactions
     realTransactions: transactions, // Access to real only if needed
@@ -335,6 +361,7 @@ export const useTransactions = () => {
     deleteTransaction,
     clearTransactions,
     stats,
+    monthlyStats,
     loading,
     isShadowMode,
     toggleShadowMode,
