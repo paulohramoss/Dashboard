@@ -114,7 +114,7 @@ const Dashboard = () => {
           <Skeleton className="w-full h-full" />
         ) : (
           <FinancialMonthCard
-            stats={stats}
+            stats={monthlyStats}
             categories={categories}
             transactions={transactions}
           />
@@ -565,10 +565,6 @@ case "simulator":
                       : t("dashboard.editLayout", "Editar Layout")}
                   </DropdownItem>
                 )}
-                <DropdownItem onClick={toggleShadowMode}>
-                  <Ghost className="mr-2 h-4 w-4" />
-                  {isShadowMode ? t("shadowMode.exit") : t("shadowMode.enter")}
-                </DropdownItem>
                 <div className="my-1 h-px bg-muted" />
                 <DropdownItem
                   onClick={clearTransactions}
