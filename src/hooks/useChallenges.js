@@ -94,23 +94,50 @@ export const useChallenges = () => {
 
   const addChallenge = async (challenge) => {
     if (!user?.id) return;
-    await addDoc(collection(db, "challenges"), {
+    const tempId = `temp-${Date.now()}`;
+    const newChallenge = {
       ...challenge,
+      id: tempId,
       userId: user.id,
       allowedUsers: [user.id],
       status: "active",
       createdAt: new Date().toISOString(),
-    });
+    };
+    setChallenges((prev) => [...prev, newChallenge]);
+    try {
+      await addDoc(collection(db, "challenges"), {
+        ...challenge,
+        userId: user.id,
+        allowedUsers: [user.id],
+        status: "active",
+        createdAt: new Date().toISOString(),
+      });
+    } catch (error) {
+      console.error("Error adding challenge:", error);
+      setChallenges((prev) => prev.filter((c) => c.id !== tempId));
+    }
   };
 
   const updateChallenge = async (id, data) => {
     if (!user?.id) return;
-    await updateDoc(doc(db, "challenges", id), data);
+    setChallenges((prev) =>
+      prev.map((c) => (c.id === id ? { ...c, ...data } : c)),
+    );
+    try {
+      await updateDoc(doc(db, "challenges", id), data);
+    } catch (error) {
+      console.error("Error updating challenge:", error);
+    }
   };
 
   const deleteChallenge = async (id) => {
     if (!user?.id) return;
-    await deleteDoc(doc(db, "challenges", id));
+    setChallenges((prev) => prev.filter((c) => c.id !== id));
+    try {
+      await deleteDoc(doc(db, "challenges", id));
+    } catch (error) {
+      console.error("Error deleting challenge:", error);
+    }
   };
 
   return {

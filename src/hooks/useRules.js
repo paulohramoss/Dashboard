@@ -82,18 +82,28 @@ export const useRules = () => {
   }, [user?.id]);
 
   const addRule = async (rule) => {
+    if (!user?.id) return;
+
+    const exists = rules.some(
+      (r) => r.keyword.toLowerCase() === rule.keyword.toLowerCase(),
+    );
+    if (exists) {
+      toast.error(t("rules.exists"));
+      return;
+    }
+
+    const tempId = `temp-${Date.now()}`;
+    const newRule = {
+      id: tempId,
+      userId: user.id,
+      allowedUsers: [user.id],
+      keyword: rule.keyword.toLowerCase().trim(),
+      category: rule.category,
+      type: rule.type,
+      createdAt: new Date().toISOString(),
+    };
+    setRules((prev) => [...prev, newRule]);
     try {
-      if (!user?.id) return;
-
-      // Check for duplicates
-      const exists = rules.some(
-        (r) => r.keyword.toLowerCase() === rule.keyword.toLowerCase(),
-      );
-      if (exists) {
-        toast.error(t("rules.exists"));
-        return;
-      }
-
       await addDoc(collection(db, "userRules"), {
         userId: user.id,
         allowedUsers: [user.id],
@@ -105,14 +115,15 @@ export const useRules = () => {
       toast.success(t("rules.success"));
     } catch (error) {
       console.error("Error adding rule:", error);
+      setRules((prev) => prev.filter((r) => r.id !== tempId));
       toast.error(t("rules.error"));
     }
   };
 
   const deleteRule = async (ruleId) => {
+    setRules((prev) => prev.filter((r) => r.id !== ruleId));
     try {
       await deleteDoc(doc(db, "userRules", ruleId));
-
       toast.success(t("rules.deleteSuccess"));
     } catch (error) {
       console.error("Error deleting rule:", error);

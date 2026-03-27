@@ -10,16 +10,12 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
 import {
-  Shield,
-  User,
   Save,
   Tag,
   Trash2,
@@ -27,53 +23,25 @@ import {
   Pencil,
   X,
   MessageSquare,
-  Mail,
-  Eye,
-  EyeOff,
   RefreshCw,
   Loader2,
   Upload,
-  Users,
   Download,
   HardDriveDownload,
 } from "lucide-react";
 import { toast } from "sonner";
 import { db } from "@/lib/firebase";
-import { collection, addDoc, doc, writeBatch } from "firebase/firestore";
-import {
-  updatePassword,
-  reauthenticateWithCredential,
-  EmailAuthProvider,
-  deleteUser,
-} from "firebase/auth";
-import { auth } from "@/lib/firebase";
-import ConfirmDialog from "@/components/ui/confirm-dialog";
+import { collection, addDoc } from "firebase/firestore";
 
 import emailjs from "@emailjs/browser";
 import { useRules } from "@/hooks/useRules";
-import InvitePartner from "@/components/InvitePartner";
 
 const SettingsPage = () => {
   const { t } = useTranslation();
-  const { user, updateUser, uploadProfilePicture, removeProfilePicture } =
-    useAuth();
+  const { user } = useAuth();
   const { categories, addCategory, deleteCategory, updateCategory } =
     useCategories();
   const { rules, addRule, deleteRule } = useRules();
-
-  const [name, setName] = useState(user?.name || "");
-  const [email, setEmail] = useState(user?.email || "");
-  // Password Update State
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [updatingPassword, setUpdatingPassword] = useState(false);
-  const [uploadingImage, setUploadingImage] = useState(false);
-
-  // Password Visibility State
-  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
-  const [showNewPassword, setShowNewPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const [newCategory, setNewCategory] = useState({
     name: "",
@@ -81,39 +49,6 @@ const SettingsPage = () => {
     color: "#000000",
   });
   const [editingId, setEditingId] = useState(null);
-
-  const handleProfileUpdate = async (e) => {
-    e.preventDefault();
-    try {
-      await updateUser({ name });
-      toast.success(t("settings.profileUpdated"));
-    } catch {
-      toast.error(t("settings.profileUpdateError"));
-    }
-  };
-
-  const handleImageUpload = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    if (file.size > 5 * 1024 * 1024) {
-      toast.error(
-        t("settings.imageSizeError", "A imagem deve ter no máximo 5MB"),
-      );
-      return;
-    }
-
-    setUploadingImage(true);
-    try {
-      await uploadProfilePicture(file);
-      toast.success(t("settings.avatarUpdated", "Foto de perfil atualizada"));
-    } catch (error) {
-      console.error(error);
-      toast.error(t("settings.avatarUpdateError", "Erro ao atualizar foto"));
-    } finally {
-      setUploadingImage(false);
-    }
-  };
 
   const handleSaveCategory = async (e) => {
     e.preventDefault();
@@ -155,52 +90,10 @@ const SettingsPage = () => {
     message: "",
   });
   const [sendingFeedback, setSendingFeedback] = useState(false);
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [recalculating, setRecalculating] = useState(false);
-  const [recalculateDialogOpen, setRecalculateDialogOpen] = useState(false);
 
   const { exportData, importData } = useBackup();
   const [exporting, setExporting] = useState(false);
   const [importing, setImporting] = useState(false);
-
-  const handleRecalculateRollovers = async () => {
-    try {
-      setRecalculating(true);
-      const batch = writeBatch(db);
-      categories.forEach((cat) => {
-        if (cat.rollover) {
-          const ref = doc(db, "categories", cat.id);
-          batch.update(ref, {
-            lastRolloverCheck: null,
-            accumulatedRollover: 0,
-          });
-        }
-      });
-      await batch.commit();
-      toast.success(t("settings.recalculateSuccess"));
-    } catch (error) {
-      console.error("Error recalculating rollovers:", error);
-      toast.error(t("common.error"));
-    } finally {
-      setRecalculating(false);
-      setRecalculateDialogOpen(false);
-    }
-  };
-
-  const handleDeleteAccount = async () => {
-    try {
-      await deleteUser(auth.currentUser);
-      toast.success(t("settings.accountDeleted"));
-      // AuthContext will handle the redirect to login
-    } catch (error) {
-      console.error("Error deleting account:", error);
-      if (error.code === "auth/requires-recent-login") {
-        toast.error(t("settings.deleteAccountError"));
-      } else {
-        toast.error(t("common.error"));
-      }
-    }
-  };
 
   const handleSendFeedback = async (e) => {
     e.preventDefault();
@@ -262,44 +155,6 @@ const SettingsPage = () => {
       toast.error(t("settings.feedbackError"));
     } finally {
       setSendingFeedback(false);
-    }
-  };
-
-  const handlePasswordUpdate = async (e) => {
-    e.preventDefault();
-    if (newPassword !== confirmPassword) {
-      toast.error(t("auth.passwordMismatch"));
-      return;
-    }
-    if (newPassword.length < 6) {
-      toast.error(t("auth.passwordLength"));
-      return;
-    }
-
-    setUpdatingPassword(true);
-    try {
-      const credential = EmailAuthProvider.credential(
-        user.email,
-        currentPassword,
-      );
-      await reauthenticateWithCredential(auth.currentUser, credential);
-      await updatePassword(auth.currentUser, newPassword);
-      toast.success(t("settings.passwordUpdated"));
-      setCurrentPassword("");
-      setNewPassword("");
-      setConfirmPassword("");
-    } catch (error) {
-      console.error("Error updating password:", error);
-      if (
-        error.code === "auth/invalid-credential" ||
-        error.code === "auth/wrong-password"
-      ) {
-        toast.error(t("auth.invalidCredentials"));
-      } else {
-        toast.error(t("settings.passwordUpdateError"));
-      }
-    } finally {
-      setUpdatingPassword(false);
     }
   };
 
@@ -378,28 +233,14 @@ const SettingsPage = () => {
         <p className="text-muted-foreground">{t("settings.subtitle")}</p>
       </div>
 
-      <Tabs defaultValue="profile" className="space-y-4">
+      <Tabs defaultValue="categories" className="space-y-4">
         <TabsList className="w-full justify-start overflow-x-auto flex-nowrap">
-          <TabsTrigger
-            value="profile"
-            className="flex items-center gap-2 flex-shrink-0"
-          >
-            <User className="h-4 w-4" />
-            <span className="hidden sm:inline">{t("settings.profile")}</span>
-          </TabsTrigger>
           <TabsTrigger
             value="categories"
             className="flex items-center gap-2 flex-shrink-0"
           >
             <Tag className="h-4 w-4" />
             <span className="hidden sm:inline">{t("settings.categories")}</span>
-          </TabsTrigger>
-          <TabsTrigger
-            value="security"
-            className="flex items-center gap-2 flex-shrink-0"
-          >
-            <Shield className="h-4 w-4" />
-            <span className="hidden sm:inline">{t("settings.security")}</span>
           </TabsTrigger>
           <TabsTrigger
             value="rules"
@@ -416,15 +257,6 @@ const SettingsPage = () => {
             <span className="hidden sm:inline">{t("settings.feedback")}</span>
           </TabsTrigger>
           <TabsTrigger
-            value="sharing"
-            className="flex items-center gap-2 flex-shrink-0"
-          >
-            <Users className="h-4 w-4" />
-            <span className="hidden sm:inline">
-              {t("settings.sharing", "Partilha")}
-            </span>
-          </TabsTrigger>
-          <TabsTrigger
             value="backup"
             className="flex items-center gap-2 flex-shrink-0"
           >
@@ -434,117 +266,6 @@ const SettingsPage = () => {
             </span>
           </TabsTrigger>
         </TabsList>
-
-        <TabsContent value="profile">
-          <Card>
-            <CardHeader>
-              <CardTitle>{t("settings.profile")}</CardTitle>
-              <CardDescription>{t("settings.profileDesc")}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-start mb-6">
-                <Avatar className="w-24 h-24">
-                  <AvatarImage src={user?.photoURL} />
-                  <AvatarFallback className="text-2xl">
-                    {user?.name?.charAt(0).toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="flex flex-col gap-2">
-                  <Label className="text-lg font-semibold">
-                    {t("settings.profilePicture", "Foto de Perfil")}
-                  </Label>
-                  <div className="flex flex-wrap gap-2">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      className="relative"
-                      disabled={uploadingImage}
-                    >
-                      {uploadingImage ? (
-                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      ) : (
-                        <Upload className="w-4 h-4 mr-2" />
-                      )}
-                      {uploadingImage
-                        ? t("common.uploading", "Enviando...")
-                        : t("settings.changePhoto", "Alterar Foto")}
-                      <input
-                        type="file"
-                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed"
-                        onChange={handleImageUpload}
-                        accept="image/*"
-                        disabled={uploadingImage}
-                      />
-                    </Button>
-                    {user?.photoURL && (
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        className="text-destructive hover:text-destructive hover:bg-destructive/10"
-                        onClick={async () => {
-                          if (
-                            confirm(
-                              t(
-                                "settings.confirmRemovePhoto",
-                                "Remover foto de perfil?",
-                              ),
-                            )
-                          ) {
-                            try {
-                              await removeProfilePicture();
-                              toast.success(
-                                t("settings.photoRemoved", "Foto removida"),
-                              );
-                            } catch (error) {
-                              console.error(error);
-                              toast.error(t("common.error", "Erro ao remover"));
-                            }
-                          }
-                        }}
-                      >
-                        <Trash2 className="w-4 h-4 mr-2" />
-                        {t("settings.removePhoto", "Remover")}
-                      </Button>
-                    )}
-                  </div>
-                  <p className="text-xs text-muted-foreground">
-                    {t(
-                      "settings.photoRequirements",
-                      "JPG, GIF ou PNG. Max 5MB.",
-                    )}
-                  </p>
-                </div>
-              </div>
-
-              <form onSubmit={handleProfileUpdate} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="name">{t("settings.name")}</Label>
-                  <Input
-                    id="name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="email">{t("settings.email")}</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    disabled
-                  />
-                </div>
-                <Button type="submit">
-                  <Save className="mr-2 h-4 w-4" />
-                  {t("settings.save")}
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
-        </TabsContent>
 
         <TabsContent value="categories">
           <Card>
@@ -664,161 +385,8 @@ const SettingsPage = () => {
             </CardContent>
           </Card>
 
-          <Card className="mt-6">
-            <CardHeader>
-              <CardTitle>{t("settings.recalculateRollover")}</CardTitle>
-              <CardDescription>
-                {t("settings.recalculateRolloverDesc")}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button
-                variant="outline"
-                onClick={() => setRecalculateDialogOpen(true)}
-                disabled={recalculating}
-              >
-                <RefreshCw
-                  className={`mr-2 h-4 w-4 ${
-                    recalculating ? "animate-spin" : ""
-                  }`}
-                />
-                {recalculating
-                  ? t("settings.recalculating")
-                  : t("settings.recalculateRollover")}
-              </Button>
-            </CardContent>
-          </Card>
         </TabsContent>
 
-        <TabsContent value="security">
-          <Card>
-            <CardHeader>
-              <CardTitle>{t("settings.security")}</CardTitle>
-              <CardDescription>{t("settings.securityDesc")}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handlePasswordUpdate} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="current-password">
-                    {t("settings.currentPassword")}
-                  </Label>
-                  <div className="relative">
-                    <Input
-                      id="current-password"
-                      type={showCurrentPassword ? "text" : "password"}
-                      value={currentPassword}
-                      onChange={(e) => setCurrentPassword(e.target.value)}
-                      required
-                      className="pr-10"
-                    />
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      className="absolute right-0 top-0 h-10 w-10 text-muted-foreground hover:text-foreground"
-                      onClick={() =>
-                        setShowCurrentPassword(!showCurrentPassword)
-                      }
-                    >
-                      {showCurrentPassword ? (
-                        <EyeOff className="h-4 w-4" />
-                      ) : (
-                        <Eye className="h-4 w-4" />
-                      )}
-                    </Button>
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="new-password">
-                    {t("settings.newPassword")}
-                  </Label>
-                  <div className="relative">
-                    <Input
-                      id="new-password"
-                      type={showNewPassword ? "text" : "password"}
-                      value={newPassword}
-                      onChange={(e) => setNewPassword(e.target.value)}
-                      required
-                      className="pr-10"
-                    />
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      className="absolute right-0 top-0 h-10 w-10 text-muted-foreground hover:text-foreground"
-                      onClick={() => setShowNewPassword(!showNewPassword)}
-                    >
-                      {showNewPassword ? (
-                        <EyeOff className="h-4 w-4" />
-                      ) : (
-                        <Eye className="h-4 w-4" />
-                      )}
-                    </Button>
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="confirm-password">
-                    {t("settings.confirmPassword")}
-                  </Label>
-                  <div className="relative">
-                    <Input
-                      id="confirm-password"
-                      type={showConfirmPassword ? "text" : "password"}
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      required
-                      className="pr-10"
-                    />
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      className="absolute right-0 top-0 h-10 w-10 text-muted-foreground hover:text-foreground"
-                      onClick={() =>
-                        setShowConfirmPassword(!showConfirmPassword)
-                      }
-                    >
-                      {showConfirmPassword ? (
-                        <EyeOff className="h-4 w-4" />
-                      ) : (
-                        <Eye className="h-4 w-4" />
-                      )}
-                    </Button>
-                  </div>
-                </div>
-                <Button type="submit" disabled={updatingPassword}>
-                  {updatingPassword
-                    ? t("common.loading")
-                    : t("settings.updatePassword")}
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
-
-          <Card className="mt-6 border-destructive/50">
-            <CardHeader>
-              <CardTitle className="text-destructive">
-                {t("settings.dangerZone")}
-              </CardTitle>
-              <CardDescription>
-                {t("settings.deleteAccountDesc")}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button
-                variant="destructive"
-                onClick={() => setDeleteDialogOpen(true)}
-              >
-                <Trash2 className="mr-2 h-4 w-4" />
-                {t("settings.deleteAccountButton")}
-              </Button>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="sharing">
-          <InvitePartner />
-        </TabsContent>
 
         <TabsContent value="rules">
           <Card>
@@ -1088,26 +656,6 @@ const SettingsPage = () => {
         </TabsContent>
       </Tabs>
 
-      <ConfirmDialog
-        isOpen={deleteDialogOpen}
-        onClose={() => setDeleteDialogOpen(false)}
-        onConfirm={handleDeleteAccount}
-        title={t("settings.deleteAccountConfirmTitle")}
-        description={t("settings.deleteAccountConfirmDesc")}
-        confirmText={t("settings.deleteAccountButton")}
-        cancelText={t("common.cancel")}
-        variant="destructive"
-      />
-
-      <ConfirmDialog
-        isOpen={recalculateDialogOpen}
-        onClose={() => setRecalculateDialogOpen(false)}
-        onConfirm={handleRecalculateRollovers}
-        title={t("settings.recalculateRollover")}
-        description={t("settings.recalculateConfirm")}
-        confirmText={t("common.yes")}
-        cancelText={t("common.cancel")}
-      />
     </div>
   );
 };

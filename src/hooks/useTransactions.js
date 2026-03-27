@@ -265,15 +265,22 @@ export const useTransactions = () => {
 
   const clearTransactions = async () => {
     if (!user?.id) return;
+    const ids = transactions.map((t) => t.id);
+    ids.forEach((id) => deletedIdsRef.current.add(id));
+    setTransactions([]);
     try {
-      const batch = writeBatch(db);
-      transactions.forEach((t) => {
-        const docRef = doc(db, "transactions", t.id);
-        batch.delete(docRef);
-      });
-      await batch.commit();
+      const BATCH_LIMIT = 499;
+      for (let i = 0; i < ids.length; i += BATCH_LIMIT) {
+        const chunk = ids.slice(i, i + BATCH_LIMIT);
+        const batch = writeBatch(db);
+        chunk.forEach((id) => {
+          batch.delete(doc(db, "transactions", id));
+        });
+        await batch.commit();
+      }
     } catch (error) {
       console.error("Error clearing transactions:", error);
+      deletedIdsRef.current.clear();
     }
   };
 
