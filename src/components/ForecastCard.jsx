@@ -110,7 +110,7 @@ const ForecastCard = ({ forecast, amount, confidence, monthsAnalyzed }) => {
         </PrivacyBlur>
         <div className="flex flex-col">
           <p className="text-xs text-muted-foreground mt-1">
-            {t("dashboard.forecastDesc", "Saldo estimado")}
+            {t("dashboard.forecastDesc", "Resultado mensal estimado")}
           </p>
           {confidence &&
             confidence !== "none" &&

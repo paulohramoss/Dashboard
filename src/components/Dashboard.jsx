@@ -129,7 +129,7 @@ const Dashboard = () => {
         return loading ? (
           <Skeleton className="w-full h-full" />
         ) : (
-          <ForecastCard forecast={forecastData} amount={projectedBalance} confidence={forecastConfidence} monthsAnalyzed={forecastMonths} />
+          <ForecastCard forecast={forecastData} amount={monthlyProjected} confidence={forecastConfidence} monthsAnalyzed={forecastMonths} />
         );
       case "finscore":
         return loading ? (
@@ -477,18 +477,23 @@ case "simulator":
     },
   };
 
-  const { forecast: forecastData, projectedBalance, confidence: forecastConfidence, monthsAnalyzed: forecastMonths } = useMemo(() => {
+  const { forecast: forecastData, projectedBalance, monthlyProjected, confidence: forecastConfidence, monthsAnalyzed: forecastMonths } = useMemo(() => {
     const today = startOfDay(new Date());
     const endOfMonthDate = endOfMonth(today);
     const daysRemaining = differenceInDays(endOfMonthDate, today);
     const daysToProject = Math.max(daysRemaining, 1);
 
-    return calculatePredictiveForecast(
+    const result = calculatePredictiveForecast(
       stats.balance,
       transactions,
       daysToProject,
     );
-  }, [stats.balance, transactions]);
+
+    return {
+      ...result,
+      monthlyProjected: result.projectedBalance - stats.balance + monthlyStats.balance,
+    };
+  }, [stats.balance, monthlyStats.balance, transactions]);
 
   const item = {
     hidden: { opacity: 0, y: 20 },

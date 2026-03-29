@@ -90,7 +90,7 @@
     "editLayout": "Editar Layout",
     "simulationAdded": "Simulação adicionada ao Modo Sombra",
     "forecast": "Previsão (Fim do Mês)",
-    "forecastDesc": "Saldo estimado",
+    "forecastDesc": "Resultado mensal estimado",
     "forecastWarning": "Cuidado: Risco de saldo negativo em {{date}}",
     "goodMorning": "Bom dia, {{name}}!",
     "goodAfternoon": "Boa tarde, {{name}}!",
