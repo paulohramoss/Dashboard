@@ -477,7 +477,7 @@ case "simulator":
     },
   };
 
-  const { forecast: forecastData, projectedBalance, monthlyProjected, confidence: forecastConfidence, monthsAnalyzed: forecastMonths } = useMemo(() => {
+  const { forecast: forecastData, monthlyProjected, confidence: forecastConfidence, monthsAnalyzed: forecastMonths } = useMemo(() => {
     const today = startOfDay(new Date());
     const endOfMonthDate = endOfMonth(today);
     const daysRemaining = differenceInDays(endOfMonthDate, today);

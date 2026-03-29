@@ -120,7 +120,8 @@ const Layout = ({ children }) => {
 
   // Close popover on route change
   useEffect(() => {
-    setOpenGroup(null);
+    const timer = setTimeout(() => setOpenGroup(null), 0);
+    return () => clearTimeout(timer);
   }, [location.pathname]);
 
   const navGroups = [
@@ -200,7 +201,7 @@ const Layout = ({ children }) => {
 
   const sidebarWidth = isExpanded || isSidebarOpen ? 264 : 88;
 
-  const activeGroup = navGroups.find(
+  const _activeGroup = navGroups.find(
     (g) => g.children && g.children.some((c) => c.path === location.pathname)
   );
 
