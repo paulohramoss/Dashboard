@@ -41,7 +41,9 @@ const ChallengesPage = lazy(() => import("@/pages/ChallengesPage"));
 const FAQPage = lazy(() => import("@/pages/FAQPage"));
 const PlannerPage = lazy(() => import("@/pages/PlannerPage"));
 const UserProfilePage = lazy(() => import("@/pages/UserProfilePage"));
-const NotificationPreferencesPage = lazy(() => import("@/pages/NotificationPreferencesPage"));
+const NotificationPreferencesPage = lazy(
+  () => import("@/pages/NotificationPreferencesPage"),
+);
 
 const ProtectedRoute = ({ children }) => {
   const { user } = useAuth();
@@ -76,7 +78,7 @@ const PageLoader = () => (
 const pageVariants = {
   initial: { opacity: 0, y: 12 },
   animate: { opacity: 1, y: 0 },
-  exit:    { opacity: 0, y: -8 },
+  exit: { opacity: 0, y: -8 },
 };
 
 const pageTransition = {
@@ -116,7 +118,10 @@ const AnimatedRoutes = () => {
             <Route path="/faq" element={<FAQPage />} />
             {/* <Route path="/planner" element={<PlannerPage />} /> */}
             <Route path="/profile" element={<UserProfilePage />} />
-            <Route path="/notification-preferences" element={<NotificationPreferencesPage />} />
+            <Route
+              path="/notification-preferences"
+              element={<NotificationPreferencesPage />}
+            />
           </Routes>
         </Suspense>
       </Motion.div>
@@ -130,7 +135,7 @@ const App = () => {
       <AuthProvider>
         <VersionChecker />
         <UpdatePrompt />
-        <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+        <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
           <OfflineBanner />
           <Suspense fallback={<PageLoader />}>
             <Routes>
