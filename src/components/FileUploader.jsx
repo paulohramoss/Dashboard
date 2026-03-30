@@ -68,7 +68,7 @@ const FileUploader = ({ onUpload }) => {
 
   const parseCSV = (file) => {
     Papa.parse(file, {
-      header: true,
+      header: false,
       skipEmptyLines: true,
       complete: (results) => {
         if (results.errors.length > 0) {
@@ -76,13 +76,178 @@ const FileUploader = ({ onUpload }) => {
           setMessage(t("transactions.import.csvError"));
           return;
         }
-        normalizeData(results.data);
+
+        const isSicoob = results.data.slice(0, 5).some((row) => {
+          const cell = Array.isArray(row) ? row[0] : row;
+          return (
+            typeof cell === "string" &&
+            (cell.includes("SICOOB") || cell.includes("SISBR"))
+          );
+        });
+
+        if (isSicoob) {
+          const txs = parseSicoobCSV(results.data);
+          if (!txs || txs.length === 0) {
+            setStatus("error");
+            setMessage(t("transactions.import.noTransactions"));
+            return;
+          }
+          onUpload(txs);
+          setStatus("success");
+          setMessage(
+            t("transactions.import.success", { count: txs.length })
+          );
+          setTimeout(() => {
+            setStatus("idle");
+            setMessage("");
+            if (fileInputRef.current) fileInputRef.current.value = "";
+          }, 3000);
+        } else {
+          // Re-parse with headers for standard CSV format
+          Papa.parse(file, {
+            header: true,
+            skipEmptyLines: true,
+            complete: (results2) => {
+              normalizeData(results2.data);
+            },
+            error: (error) => {
+              setStatus("error");
+              setMessage(error.message);
+            },
+          });
+        }
       },
       error: (error) => {
         setStatus("error");
         setMessage(error.message);
       },
     });
+  };
+
+  const parseSicoobCSV = (rawRows) => {
+    const today = new Date().toISOString().split("T")[0];
+
+    const lines = rawRows
+      .map((row) => (Array.isArray(row) ? row[0] : row) || "")
+      .map((l) => (typeof l === "string" ? l.trim() : String(l).trim()))
+      .filter((l) => l.length > 0);
+
+    // Extract statement year from header line (e.g. "27/03/2026  EXTRATO...")
+    let statementYear = new Date().getFullYear();
+    for (const line of lines.slice(0, 15)) {
+      const yearMatch = line.match(/\d{2}\/\d{2}\/(\d{4})/);
+      if (yearMatch) {
+        statementYear = parseInt(yearMatch[1]);
+        break;
+      }
+    }
+
+    const transactions = [];
+    let inSection = false;
+    let pendingDate = null;
+    let pendingDesc = null;
+
+    // Amount at end: optional sign, digits/dots (thousands sep), comma, 2 decimals
+    const amountAtEnd = /(-?[\d.]+,\d{2})\s*$/;
+    // Date at start: DD/MM followed by at least one space
+    const dateAtStart = /^(\d{2})\/(\d{2})\s+/;
+    // Just a bare date: "04/03"
+    const justDateOnly = /^(\d{2})\/(\d{2})\s*$/;
+    // Exchange rate line: "R$ X,XX U$ Y,YY V.DOL Z.ZZZZ    BRL_AMOUNT"
+    const exchangeLine =
+      /^R\$\s+[\d.,]+\s+U\$\s+[\d.,]+\s+V\.DOL\s+[\d.,]+\s+([\d.,]+,\d{2})\s*$/;
+
+    const parseAmt = (amtStr) =>
+      parseFloat(amtStr.replace(/\./g, "").replace(",", "."));
+
+    const formatDate = (day, month) =>
+      `${statementYear}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+
+    // Short lines with no asterisk and no embedded date are likely city names
+    const isCityOrJunk = (line) =>
+      !line.includes("*") && !/\d{2}\/\d{2}/.test(line) && line.length < 20;
+
+    const pushTx = (date, description, amtStr) => {
+      const amount = parseAmt(amtStr);
+      if (isNaN(amount) || amount === 0) return;
+      const desc = (description || "").trim();
+      if (desc.toUpperCase().includes("SALDO ANTERIOR")) return;
+
+      transactions.push({
+        description: desc || t("transactions.import.defaultDescription"),
+        amount: Math.abs(amount),
+        type: amount < 0 ? "income" : "expense",
+        category: "General",
+        date: date || today,
+      });
+      pendingDate = null;
+      pendingDesc = null;
+    };
+
+    for (const line of lines) {
+      // Detect start of transaction sections
+      if (line === "MOVIMENTOS" || /^GASTOS DE /i.test(line)) {
+        inSection = true;
+        pendingDate = null;
+        pendingDesc = null;
+        continue;
+      }
+      // Detect end of transaction sections
+      if (
+        /^TOTAL\s/.test(line) ||
+        line.startsWith("DEMONSTRATIVO") ||
+        line.startsWith("LIMITES") ||
+        line === "RESUMO" ||
+        line.startsWith("PERFIL")
+      ) {
+        inSection = false;
+        continue;
+      }
+
+      if (!inSection) continue;
+
+      // Skip lines using "-" as empty date placeholder (e.g. SALDO ANTERIOR)
+      if (line.startsWith("-")) continue;
+
+      const amountMatch = line.match(amountAtEnd);
+      const dateMatch = line.match(dateAtStart);
+      const justDate = line.match(justDateOnly);
+      const exchangeMatch = line.match(exchangeLine);
+
+      if (exchangeMatch) {
+        // "R$ 110,00 U$ 21,30 V.DOL 5,1635    110,00"
+        pushTx(pendingDate || today, pendingDesc, exchangeMatch[1]);
+      } else if (justDate) {
+        // Bare date only: "04/03" — save for next line
+        const [, day, month] = justDate;
+        pendingDate = formatDate(day, month);
+      } else if (amountMatch && dateMatch) {
+        // Line has both date and amount: "DD/MM  DESCRIPTION  AMOUNT"
+        const [, day, month] = line.match(/^(\d{2})\/(\d{2})/);
+        const date = formatDate(day, month);
+        const descStart = dateMatch[0].length;
+        const descEnd = line.lastIndexOf(amountMatch[1]);
+        let desc = line.slice(descStart, descEnd).trim();
+        // Multi-line case: amount line has no inline description
+        if (!desc) desc = pendingDesc;
+        pushTx(date, desc, amountMatch[1]);
+      } else if (dateMatch && !amountMatch) {
+        // Date at start but no amount: "24/02  CLAUDE.AI SUBSCRIPTI SAN FRANCISCO"
+        const [, day, month] = line.match(/^(\d{2})\/(\d{2})/);
+        pendingDate = formatDate(day, month);
+        const desc = line.slice(dateMatch[0].length).trim();
+        if (desc) pendingDesc = desc;
+      } else if (!dateMatch && !amountMatch && !exchangeMatch) {
+        // Text-only line — merchant name or city
+        if (!isCityOrJunk(line)) {
+          // Looks like a merchant name; append in case it's split across lines
+          pendingDesc = pendingDesc ? pendingDesc + " " + line : line;
+        }
+        // Short city names (CAJAMAR, TIJUCAS, PAULO…) are silently ignored
+      }
+    }
+
+    return transactions;
   };
 
   const parseExcel = (file) => {
