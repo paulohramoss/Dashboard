@@ -49,66 +49,91 @@ O projeto foi construído utilizando as seguintes tecnologias e bibliotecas:
 
 ## ⚙️ Pré-requisitos
 
-Antes de começar, você precisará ter instalado em sua máquina:
+Antes de começar, certifique-se de ter instalado:
 
-- [Node.js](https://nodejs.org/) (versão 18 ou superior recomendada)
-- [npm](https://www.npmjs.com/) ou [yarn](https://yarnpkg.com/)
+- [Node.js](https://nodejs.org/) **v18 ou superior** — verifique com `node -v`
+- [npm](https://www.npmjs.com/) (já vem com o Node.js) — verifique com `npm -v`
+- Uma conta no [Firebase](https://firebase.google.com/) (gratuita)
+- [Git](https://git-scm.com/) para clonar o repositório
 
-## 📦 Instalação
+## 🖥️ Rodando Localmente
 
-1.  **Clone o repositório:**
+Siga os passos abaixo para ter o projeto funcionando na sua máquina em poucos minutos.
 
-    ```bash
-    git clone https://github.com/seu-usuario/financial-dashboard.git
-    cd financial-dashboard
-    ```
+### 1. Clone o repositório
 
-2.  **Instale as dependências:**
+```bash
+git clone https://github.com/seu-usuario/financial-dashboard.git
+cd financial-dashboard
+```
 
-    ```bash
-    npm install
-    ```
+### 2. Instale as dependências
 
-3.  **Configure o Firebase:**
-    - Crie um projeto no [Console do Firebase](https://console.firebase.google.com/).
-    - Habilite o **Authentication** (Email/Password) e o **Firestore Database**.
-    - Habilite o **Storage** para upload de arquivos.
-    - No painel do Firebase, acesse **Configurações do Projeto** e copie suas credenciais.
+```bash
+npm install
+```
 
-4.  **Configure as variáveis de ambiente:**
+> Isso pode levar alguns minutos na primeira vez, pois instala todas as bibliotecas do projeto.
 
-    > ⚠️ **IMPORTANTE:** NUNCA commite o arquivo `.env` com suas credenciais reais ao Git. Este arquivo já está protegido pelo `.gitignore`.
+### 3. Configure o Firebase
 
-    - Copie o arquivo de exemplo:
-      ```bash
-      cp .env.example .env
-      ```
-    
-    - Edite o arquivo `.env` e substitua os valores pelas suas credenciais do Firebase:
+O projeto usa o Firebase como backend. Você precisa criar seu próprio projeto:
 
-      ```env
-      VITE_FIREBASE_API_KEY=sua_api_key
-      VITE_FIREBASE_AUTH_DOMAIN=seu_projeto.firebaseapp.com
-      VITE_FIREBASE_PROJECT_ID=seu_project_id
-      VITE_FIREBASE_STORAGE_BUCKET=seu_projeto.firebasestorage.app
-      VITE_FIREBASE_MESSAGING_SENDER_ID=seu_sender_id
-      VITE_FIREBASE_APP_ID=seu_app_id
-      VITE_FIREBASE_MEASUREMENT_ID=seu_measurement_id
-      ```
+1. Acesse o [Console do Firebase](https://console.firebase.google.com/) e clique em **"Adicionar projeto"**.
+2. Após criar o projeto, vá em **Criação > Authentication** e habilite o provedor **E-mail/senha**.
+3. Vá em **Criação > Firestore Database** e crie um banco no modo de **produção** (as regras estão no arquivo `firestore.rules`).
+4. Vá em **Criação > Storage** e ative o armazenamento de arquivos.
+5. Na engrenagem ⚙️ ao lado de "Visão geral do projeto", acesse **Configurações do projeto > Seus apps** e registre um app Web (`</>`).
+6. Copie as credenciais exibidas — você vai usá-las no próximo passo.
 
-    - **Para produção/deploy:** Configure as mesmas variáveis de ambiente no painel da sua plataforma de hospedagem (Vercel, Netlify, etc.).
+### 4. Configure as variáveis de ambiente
 
-5.  **Execute o projeto:**
-    ```bash
-    npm run dev
-    ```
+> ⚠️ **NUNCA** commite o arquivo `.env` com credenciais reais. Ele já está protegido pelo `.gitignore`.
+
+Crie o arquivo `.env` a partir do exemplo incluído no projeto:
+
+```bash
+cp .env.example .env
+```
+
+Abra o arquivo `.env` e preencha com as credenciais copiadas do Firebase:
+
+```env
+VITE_FIREBASE_API_KEY=sua_api_key
+VITE_FIREBASE_AUTH_DOMAIN=seu_projeto.firebaseapp.com
+VITE_FIREBASE_PROJECT_ID=seu_project_id
+VITE_FIREBASE_STORAGE_BUCKET=seu_projeto.firebasestorage.app
+VITE_FIREBASE_MESSAGING_SENDER_ID=seu_sender_id
+VITE_FIREBASE_APP_ID=seu_app_id
+VITE_FIREBASE_MEASUREMENT_ID=seu_measurement_id
+```
+
+### 5. Inicie o servidor de desenvolvimento
+
+```bash
+npm run dev
+```
+
+O terminal exibirá um endereço local — geralmente **http://localhost:5173**. Abra-o no navegador e o projeto estará rodando.
+
+---
+
+> **Dica:** Na primeira vez que acessar, crie uma conta pelo formulário de cadastro da própria aplicação. O Firebase cuidará da autenticação.
+
+---
 
 ## 📜 Scripts Disponíveis
 
-- `npm run dev`: Inicia o servidor de desenvolvimento.
-- `npm run build`: Compila o projeto para produção.
-- `npm run preview`: Visualiza a versão de produção localmente.
-- `npm run lint`: Executa a verificação de código com ESLint.
+| Comando | Descrição |
+|---|---|
+| `npm run dev` | Inicia o servidor de desenvolvimento com hot-reload |
+| `npm run build` | Compila o projeto otimizado para produção |
+| `npm run preview` | Visualiza o build de produção localmente |
+| `npm run lint` | Verifica o código com ESLint |
+| `npm run test` | Executa os testes com Vitest |
+| `npm run test:ui` | Abre a interface visual do Vitest para os testes |
+
+> **Para deploy em produção:** Configure as mesmas variáveis de ambiente `VITE_FIREBASE_*` no painel da sua plataforma de hospedagem (Vercel, Netlify, etc.) antes de fazer o build.
 
 ## 🤖 Firebase AI Logic (Gemini)
 
