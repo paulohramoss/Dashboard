@@ -514,9 +514,9 @@ const AccountsPage = () => {
                           <p className="text-xs text-muted-foreground capitalize">
                             {account.type === "credit"
                               ? t(
-                                  "accounts.availableLimit",
-                                  "Limite Disponível",
-                                )
+                                "accounts.availableLimit",
+                                "Limite Disponível",
+                              )
                               : t(`accounts.${account.type}`)}
                           </p>
                           {account.type === "credit" && (
@@ -655,9 +655,6 @@ const AccountsPage = () => {
                   <option value="credit">{t("accounts.credit")}</option>
                   <option value="cash">{t("accounts.cash")}</option>
                   <option value="investment">{t("accounts.investment")}</option>
-                  <option value="loan">
-                    {t("accounts.loan", "Empréstimo")}
-                  </option>
                   <option value="loan">
                     {t("accounts.loan", "Empréstimo")}
                   </option>
