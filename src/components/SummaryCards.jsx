@@ -16,34 +16,89 @@ export const BalanceCard = ({ amount }) => {
   const formatCurrency = useCurrency();
 
   return (
-    <Card className="relative overflow-hidden h-full border-0 shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 bg-gradient-to-br from-primary via-primary to-[hsl(167,60%,14%)]">
-      {/* Decorative circles */}
-      <div className="absolute -top-8 -right-8 h-32 w-32 rounded-full bg-white/10 pointer-events-none" />
-      <div className="absolute top-6 -right-4 h-16 w-16 rounded-full bg-white/5 pointer-events-none" />
-      <div className="absolute -bottom-6 -right-2 h-24 w-24 rounded-full bg-white/5 pointer-events-none" />
+    <div
+      className="relative rounded-[20px] overflow-hidden flex flex-col justify-end h-full min-h-[210px] hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300"
+      style={{ background: "#1a35f0" }}
+    >
+      {/* Hand watermark — right side */}
+      <svg
+        className="absolute right-0 top-0 bottom-0 h-full pointer-events-none"
+        style={{ width: "55%", opacity: 0.09 }}
+        viewBox="0 0 200 210"
+        preserveAspectRatio="xMaxYMid meet"
+        fill="none"
+        stroke="#fff"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M100,200 C80,200 60,185 55,165 L40,95 C38,82 46,72 58,74 C62,74 66,77 68,82" strokeWidth="8"/>
+        <path d="M68,82 L62,38 C60,25 70,17 80,21 C88,24 90,34 90,43 L90,85" strokeWidth="8"/>
+        <path d="M90,85 L88,30 C87,17 98,10 107,15 C115,19 116,30 116,39 L116,87" strokeWidth="8"/>
+        <path d="M116,87 L116,27 C116,14 128,8 137,13 C145,18 146,29 145,38 L142,95" strokeWidth="8"/>
+        <path d="M128,100 L130,33 C131,20 143,15 151,21 C158,26 158,37 157,46 L153,100" strokeWidth="8"/>
+        <circle cx="129" cy="72" r="11" strokeWidth="6"/>
+        <path d="M137,13 L141,8" strokeWidth="5"/>
+        <path d="M148,17 L154,13" strokeWidth="5"/>
+        <path d="M152,26 L160,22" strokeWidth="4"/>
+        <path d="M55,165 C55,182 68,200 88,200 L115,200 C130,200 142,188 142,175 L142,155" strokeWidth="8"/>
+      </svg>
 
-      <CardHeader className="relative z-10 pb-2">
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-xs font-semibold text-primary-foreground/70 uppercase tracking-widest">
-            {t("dashboard.totalBalance")}
-          </CardTitle>
-          <div className="h-9 w-9 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
+      {/* Top block: lime left + icon right */}
+      <div className="absolute top-0 left-0 right-0 flex items-stretch" style={{ height: 110 }}>
+        {/* Lime block */}
+        <div
+          className="relative overflow-hidden flex flex-col justify-end p-3"
+          style={{ width: "42%", background: "#c8f000" }}
+        >
+          <div
+            className="relative z-10 font-black text-[#111] uppercase leading-[0.92]"
+            style={{ fontSize: 26, letterSpacing: "-0.03em" }}
+          >
+            SEU<br />SALDO.
+          </div>
+          {/* Dot grid */}
+          <svg className="absolute bottom-0 right-0 pointer-events-none" style={{ width: 72, height: 72, opacity: 0.18 }} viewBox="0 0 80 80">
+            <g fill="#111">
+              {[10,25,40,55,70].flatMap((x) =>
+                [10,25,40,55,70].map((y) => (
+                  <circle key={`${x}-${y}`} cx={x} cy={y} r="2.5" />
+                ))
+              )}
+            </g>
+          </svg>
+        </div>
+
+        {/* Blue right — icon */}
+        <div className="flex-1 flex items-start justify-end p-4">
+          <div
+            className="w-9 h-9 rounded-[10px] flex items-center justify-center"
+            style={{ background: "rgba(255,255,255,0.14)" }}
+          >
             <Wallet className="h-4 w-4 text-white" />
           </div>
         </div>
-      </CardHeader>
-      <CardContent className="relative z-10 pt-0 overflow-hidden">
+      </div>
+
+      {/* Bottom: label + value + sub */}
+      <div className="relative z-10 px-5 pb-5 pt-4">
+        <p
+          className="text-[10px] font-bold uppercase mb-1"
+          style={{ letterSpacing: "0.12em", color: "rgba(255,255,255,0.5)" }}
+        >
+          {t("dashboard.totalBalance")}
+        </p>
         <PrivacyBlur
-          className="block truncate text-4xl font-bold text-white tracking-tight leading-none"
+          className="block font-black text-white leading-none tracking-tight truncate"
+          style={{ fontSize: 38, letterSpacing: "-0.03em" }}
           title={formatCurrency(amount)}
         >
           {formatCompactAmount(amount)}
         </PrivacyBlur>
-        <p className="text-primary-foreground/50 text-xs mt-2 font-medium">
-          {t("dashboard.totalBalance")}
+        <p className="text-xs mt-1.5" style={{ color: "rgba(255,255,255,0.35)" }}>
+          Atualizado agora
         </p>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 };
 
