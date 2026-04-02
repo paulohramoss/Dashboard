@@ -257,7 +257,7 @@ const Layout = ({ children }) => {
                 <img
                   src="/logo.png"
                   alt="eazy"
-                  className="h-9 w-auto object-contain"
+                  className="h-20 w-50 object-contain"
                   onError={(e) => {
                     e.currentTarget.style.display = "none";
                     e.currentTarget.nextElementSibling.style.display = "block";
@@ -291,7 +291,7 @@ const Layout = ({ children }) => {
                 <img
                   src="/logo.png"
                   alt="eazy"
-                  className="h-8 w-8 object-contain rounded-lg"
+                  className="h-20 w-50 object-contain rounded-lg"
                   onError={(e) => {
                     e.currentTarget.style.display = "none";
                     e.currentTarget.nextElementSibling.style.display = "inline";
