@@ -42,6 +42,7 @@ import { LayoutContext } from "@/context/LayoutContext";
 import IOSInstallPrompt from "@/components/IOSInstallPrompt";
 
 import versionData from "@/version.json";
+import snapIcon from "@/assets/IMG_4310.PNG";
 
 const Layout = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -248,7 +249,7 @@ const Layout = ({ children }) => {
         >
           <div
             className={cn(
-              "min-h-16 h-auto py-4 flex items-center border-b transition-all duration-300",
+              "min-h-16 h-auto flex items-center border-b transition-all duration-300",
               isExpanded ? "px-6 justify-between" : "px-0 justify-center",
             )}
           >
@@ -257,18 +258,12 @@ const Layout = ({ children }) => {
                 <img
                   src="/logo.png"
                   alt="eazy"
-                  className="h-20 w-50 object-contain"
+                  className="h-20 w-38 object-contain"
                   onError={(e) => {
                     e.currentTarget.style.display = "none";
                     e.currentTarget.nextElementSibling.style.display = "block";
                   }}
                 />
-                <h1
-                  className="text-2xl font-black text-primary uppercase tracking-tight truncate hidden"
-                  style={{ letterSpacing: "-0.01em" }}
-                >
-                  eazy
-                </h1>
                 <Button
                   variant="ghost"
                   size="icon"
@@ -287,18 +282,11 @@ const Layout = ({ children }) => {
                 </Button>
               </>
             ) : (
-              <>
-                <img
-                  src="/logo.png"
-                  alt="eazy"
-                  className="h-20 w-50 object-contain rounded-lg"
-                  onError={(e) => {
-                    e.currentTarget.style.display = "none";
-                    e.currentTarget.nextElementSibling.style.display = "inline";
-                  }}
-                />
-                <span className="font-black text-primary text-xl uppercase tracking-tight hidden">E</span>
-              </>
+              <img
+                src={snapIcon}
+                alt="eazy"
+                className="h-14 w-14 object-contain"
+              />
             )}
 
             <Button
