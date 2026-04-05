@@ -12,7 +12,8 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { Lock, ShieldCheck, Eye, EyeOff } from "lucide-react";
+import { ShieldCheck, Eye, EyeOff } from "lucide-react";
+import logoImg from "@/assets/IMG_4310.PNG";
 import CookieConsent from "@/components/CookieConsent";
 
 const GoogleIcon = () => (
@@ -81,8 +82,8 @@ const LoginPage = () => {
         <Card className="w-full shadow-2xl border-t-4 border-t-primary">
           <CardHeader className="space-y-1">
             <div className="flex justify-center mb-4">
-              <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center text-primary ring-4 ring-background shadow-lg">
-                <Lock className="h-8 w-8" />
+              <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center text-primary ring-4 ring-background shadow-lg overflow-hidden">
+                <img src={logoImg} alt="FinanceDash Logo" className="h-full w-full object-cover" />
               </div>
             </div>
             <CardTitle className="text-2xl font-bold text-center">
