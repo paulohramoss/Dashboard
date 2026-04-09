@@ -238,14 +238,14 @@ const formatDate = (dateVal) => {
 const MonthlyReportPDF = ({
   periodStart,
   periodEnd,
-  filterType,
-  filterCategory,
-  filterAccount,
+  filterType: _filterType,
+  filterCategory: _filterCategory,
+  filterAccount: _filterAccount,
   income,
   expense,
   balance,
-  villainCategory,
-  villainAmount,
+  villainCategory: _villainCategory,
+  villainAmount: _villainAmount,
   transactions,
 }) => {
   const formatCurrency = (val) =>

@@ -9,6 +9,18 @@ import { defineConfig, globalIgnores } from "eslint/config";
 export default defineConfig([
   globalIgnores(["dist", "dev-dist"]),
   {
+    files: ["api/**/*.js"],
+    extends: [js.configs.recommended],
+    languageOptions: {
+      ecmaVersion: 2020,
+      globals: globals.node,
+      parserOptions: {
+        ecmaVersion: "latest",
+        sourceType: "module",
+      },
+    },
+  },
+  {
     files: ["**/*.{js,jsx}"],
     plugins: {
       react: reactPlugin,
@@ -29,7 +41,7 @@ export default defineConfig([
     },
     rules: {
       "react/jsx-uses-vars": "error",
-      "no-unused-vars": ["error", { varsIgnorePattern: "^[A-Z_]" }],
+      "no-unused-vars": ["error", { varsIgnorePattern: "^[A-Z_]", argsIgnorePattern: "^_", caughtErrorsIgnorePattern: "^_" }],
     },
   },
   {
