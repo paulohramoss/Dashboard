@@ -25,8 +25,8 @@ import { calculatePredictiveForecast } from "@/utils/forecast";
 import { endOfMonth, differenceInDays, startOfDay } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
+import { pdf } from "@react-pdf/renderer";
+import MonthlyReportPDF from "@/components/MonthlyReportPDF";
 // import { cn } from "@/lib/utils"; // Removed as unused
 import PrivacyBlur from "@/components/ui/PrivacyBlur";
 import {
@@ -399,54 +399,36 @@ case "simulator":
     XLSX.writeFile(wb, "transacoes.xlsx");
   };
 
-  const exportToPDF = () => {
-    const doc = new jsPDF();
-    doc.text(t("export.title"), 14, 22);
+  const exportToPDF = async () => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth();
+    const periodStart = `${year}-${String(month + 1).padStart(2, "0")}-01`;
+    const lastDay = new Date(year, month + 1, 0).getDate();
+    const periodEnd = `${year}-${String(month + 1).padStart(2, "0")}-${String(lastDay).padStart(2, "0")}`;
 
-    const tableData = transactions.map((transaction) => {
-      // Safe Date Parsing
-      let dateStr = transaction.date;
-      try {
-        if (!dateStr) throw new Error("No date");
-        const [year, month, day] = dateStr.split("-");
-        const dateObj = new Date(year, month - 1, day);
-        if (isNaN(dateObj.getTime())) throw new Error("Invalid Date");
-        dateStr = dateObj.toLocaleDateString("pt-BR");
-      } catch {
-        dateStr = transaction.date || "N/A";
-      }
-
-      // Localized Category
-      const categoryKey = `categories.${transaction.category.toLowerCase()}`;
-      const translatedCategory =
-        t(categoryKey) !== categoryKey ? t(categoryKey) : transaction.category;
-
-      return [
-        dateStr,
-        transaction.description,
-        translatedCategory,
-        transaction.type === "income"
-          ? t("export.income")
-          : t("export.expense"),
-        formatCurrency(transaction.amount),
-      ];
+    const monthlyTransactions = transactions.filter((tx) => {
+      const d = new Date(tx.date);
+      return d.getMonth() === month && d.getFullYear() === year;
     });
 
-    autoTable(doc, {
-      head: [
-        [
-          t("export.date"),
-          t("export.description"),
-          t("export.category"),
-          t("export.type"),
-          t("export.value"),
-        ],
-      ],
-      body: tableData,
-      startY: 30,
-    });
+    const blob = await pdf(
+      <MonthlyReportPDF
+        periodStart={periodStart}
+        periodEnd={periodEnd}
+        income={monthlyStats.income}
+        expense={monthlyStats.expense}
+        balance={monthlyStats.balance}
+        transactions={monthlyTransactions}
+      />
+    ).toBlob();
 
-    doc.save("relatorio.pdf");
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `painel-${periodStart}.pdf`;
+    a.click();
+    URL.revokeObjectURL(url);
   };
 
   // Accounts with balance calculation

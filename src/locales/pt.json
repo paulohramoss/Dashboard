@@ -1,6 +1,6 @@
 {
   "app": {
-    "title": "FinanceDash"
+    "title": "eazy"
   },
   "auth": {
     "welcome": "Bem-vindo de volta",
@@ -222,7 +222,7 @@
       "sent": "Relatório enviado para o seu e-mail!",
       "error": "Falha ao enviar o relatório. Tente novamente.",
       "subject": "Relatório Financeiro — {{month}} {{year}}",
-      "body": "Relatório Financeiro — {{month}} {{year}}\n\nReceitas: {{income}}\nDespesas: {{expense}}\nSaldo: {{balance}}\n\nCategoria com maior gasto: {{villain}} ({{villainAmount}})\nTotal de transações: {{total}}\n\nGerado pelo FinanceDash."
+      "body": "Relatório Financeiro — {{month}} {{year}}\n\nReceitas: {{income}}\nDespesas: {{expense}}\nSaldo: {{balance}}\n\nCategoria com maior gasto: {{villain}} ({{villainAmount}})\nTotal de transações: {{total}}\n\nGerado pelo Eazy."
     },
     "filters": {
       "title": "Filtros do Relatório",
@@ -474,7 +474,7 @@
     "confirm": "Confirmar"
   },
   "tour": {
-    "welcomeTitle": "Bem-vindo ao FinanceDash!",
+    "welcomeTitle": "Bem-vindo ao Eazy!",
     "welcomeDesc": "Este é o seu novo painel financeiro. Vamos fazer um tour rápido?",
     "summaryTitle": "Resumo Financeiro",
     "summaryDesc": "Aqui você vê seu saldo total, receitas e despesas do mês num piscar de olhos.",
@@ -513,17 +513,17 @@
   "legal": {
     "terms": "Termos de Uso",
     "privacy": "Política de Privacidade",
-    "copyright": "© 2025 FinanceDash. Todos os direitos reservados.",
+    "copyright": "© 2025 Eazy. Todos os direitos reservados.",
     "lastUpdated": "Última atualização: 01 de Dezembro de 2025",
     "termsContent": {
       "introTitle": "1. Introdução",
-      "introText": "Bem-vindo ao FinanceDash. Ao acessar ou usar nosso site e serviços, você concorda em ficar vinculado a estes Termos de Uso e a todas as leis e regulamentos aplicáveis.",
+      "introText": "Bem-vindo ao Eazy. Ao acessar ou usar nosso site e serviços, você concorda em ficar vinculado a estes Termos de Uso e a todas as leis e regulamentos aplicáveis.",
       "licenseTitle": "2. Licença de Uso",
-      "licenseText": "É concedida permissão para baixar temporariamente uma cópia dos materiais (informações ou software) no site do FinanceDash apenas para visualização transitória pessoal e não comercial.",
+      "licenseText": "É concedida permissão para baixar temporariamente uma cópia dos materiais (informações ou software) no site do Eazy apenas para visualização transitória pessoal e não comercial.",
       "disclaimerTitle": "3. Isenção de Responsabilidade",
-      "disclaimerText": "Os materiais no site do FinanceDash são fornecidos 'como estão'. O FinanceDash não oferece garantias, expressas ou implícitas, e, por este meio, isenta e nega todas as outras garantias, incluindo, sem limitação, garantias implícitas ou condições de comercialização, adequação a um fim específico ou não violação de propriedade intelectual ou outra violação de direitos.",
+      "disclaimerText": "Os materiais no site do Eazy são fornecidos 'como estão'. O Eazy não oferece garantias, expressas ou implícitas, e, por este meio, isenta e nega todas as outras garantias, incluindo, sem limitação, garantias implícitas ou condições de comercialização, adequação a um fim específico ou não violação de propriedade intelectual ou outra violação de direitos.",
       "limitationsTitle": "4. Limitações",
-      "limitationsText": "Em nenhum caso o FinanceDash ou seus fornecedores serão responsáveis por quaisquer danos (incluindo, sem limitação, danos por perda de dados ou lucro ou devido a interrupção dos negócios) decorrentes do uso ou da incapacidade de usar os materiais no site do FinanceDash."
+      "limitationsText": "Em nenhum caso o Eazy ou seus fornecedores serão responsáveis por quaisquer danos (incluindo, sem limitação, danos por perda de dados ou lucro ou devido a interrupção dos negócios) decorrentes do uso ou da incapacidade de usar os materiais no site do Eazy."
     },
     "privacyContent": {
       "collectTitle": "1. Informações que Coletamos",
@@ -582,9 +582,9 @@
     "sectionsRead": "{{count}} de {{total}} seções visitadas",
     "checklist": {
       "title": "Primeiros Passos",
-      "subtitle": "Complete estas etapas para aproveitar tudo que o FinanceDash tem a oferecer.",
+      "subtitle": "Complete estas etapas para aproveitar tudo que o Eazy tem a oferecer.",
       "progress": "{{done}} de {{total}} concluídos",
-      "completed": "Tudo pronto! Você é um pro do FinanceDash. 🎉",
+      "completed": "Tudo pronto! Você é um pro do Eazy. 🎉",
       "items": {
         "account": "Adicione sua primeira conta (corrente, poupança ou cartão de crédito)",
         "transaction": "Registre sua primeira transação",
@@ -597,14 +597,14 @@
     },
     "onboarding": {
       "title": "Configuração da Conta",
-      "subtitle": "Siga estas etapas para aproveitar ao máximo o FinanceDash",
+      "subtitle": "Siga estas etapas para aproveitar ao máximo o Eazy",
       "progress": "{{pct}}% concluído",
       "stepOf": "Passo {{step}} de {{total}}",
       "current": "Atual",
       "complete": "Marcar como concluído",
       "markIncomplete": "Marcar como incompleto",
       "completed": "Concluído",
-      "allDone": "Configuração concluída! Bem-vindo ao FinanceDash! 🚀",
+      "allDone": "Configuração concluída! Bem-vindo ao Eazy! 🚀",
       "goTo": "Ir para",
       "steps": {
         "profile": {
@@ -613,7 +613,7 @@
         },
         "accounts": {
           "title": "Conectar Contas",
-          "description": "Adicione suas contas bancárias, cartões de crédito e outras fontes financeiras para o FinanceDash calcular seu saldo automaticamente."
+          "description": "Adicione suas contas bancárias, cartões de crédito e outras fontes financeiras para o Eazy calcular seu saldo automaticamente."
         },
         "goals": {
           "title": "Definir Metas ou Orçamento",
@@ -625,7 +625,7 @@
         },
         "finish": {
           "title": "Concluir Configuração",
-          "description": "Explore o painel e descubra tudo que o FinanceDash pode fazer por você — relatórios, insights de IA, finanças compartilhadas e muito mais."
+          "description": "Explore o painel e descubra tudo que o Eazy pode fazer por você — relatórios, insights de IA, finanças compartilhadas e muito mais."
         }
       }
     },
@@ -645,7 +645,7 @@
     "sections": {
       "intro": {
         "title": "Introdução",
-        "content": "Bem-vindo ao FinanceDash! Este guia cobre tudo que você precisa para ter controle total das suas finanças. Navegue pelas abas para descobrir cada recurso — desde registrar transações até automação avançada com Regras Inteligentes.",
+        "content": "Bem-vindo ao Eazy! Este guia cobre tudo que você precisa para ter controle total das suas finanças. Navegue pelas abas para descobrir cada recurso — desde registrar transações até automação avançada com Regras Inteligentes.",
         "tip": "Dica: Comece adicionando suas contas bancárias e registrando sua primeira transação!"
       },
       "dashboard": {
@@ -702,7 +702,7 @@
       "accounts": {
         "title": "Contas",
         "description": "Gerencie todas as suas fontes financeiras em um só lugar.",
-        "content": "Cadastre suas contas correntes, poupanças, cartões de crédito, dinheiro em espécie e investimentos. O FinanceDash calcula os saldos automaticamente com base nas transações.",
+        "content": "Cadastre suas contas correntes, poupanças, cartões de crédito, dinheiro em espécie e investimentos. O Eazy calcula os saldos automaticamente com base nas transações.",
         "points": {
           "1": "Múltiplas Contas: Corrente, poupança, cartão de crédito, dinheiro, investimento ou empréstimo.",
           "2": "Saldo Automático: Calculado em tempo real com base em todas as transações.",
@@ -721,7 +721,7 @@
           "2": "Progresso: Barra visual mostrando o percentual atingido e o valor restante.",
           "3": "Alocação: Reserve valores específicos das suas contas diretamente para o objetivo.",
           "4": "Automático: Cada alocação é registrada como uma transação no histórico.",
-          "5": "Celebre: Ao atingir 100%, o FinanceDash comemora com você! 🎉"
+          "5": "Celebre: Ao atingir 100%, o Eazy comemora com você! 🎉"
         },
         "tip": "Crie uma conta poupança separada exclusivamente para os objetivos para facilitar o acompanhamento.",
         "example": "Exemplo: Reserve R$ 300/mês para a meta Viagem Japão de R$ 3.600 e tenha um plano de 12 meses."
@@ -743,13 +743,13 @@
       "rules": {
         "title": "Regras Inteligentes",
         "description": "Automatize sua organização financeira e economize tempo.",
-        "content": "Crie regras de categorização automática com base em palavras-chave. Toda vez que a descrição de uma transação corresponder a uma palavra-chave, o FinanceDash categoriza automaticamente.",
+        "content": "Crie regras de categorização automática com base em palavras-chave. Toda vez que a descrição de uma transação corresponder a uma palavra-chave, o Eazy categoriza automaticamente.",
         "points": {
           "1": "Criar Regra: Defina uma palavra-chave (ex: 'Uber') e sua categoria (Transporte).",
           "2": "Auto-categorizar: Aplicada automaticamente ao adicionar ou importar transações.",
           "3": "Prioridade: Regras personalizadas têm preferência sobre o mapa de palavras-chave embutido.",
           "4": "Poder de Importação: Importe 200 transações do banco — todas categorizadas instantaneamente.",
-          "5": "Sugestão IA: O FinanceDash sugere salvar uma regra quando você categoriza a mesma descrição repetidamente."
+          "5": "Sugestão IA: O Eazy sugere salvar uma regra quando você categoriza a mesma descrição repetidamente."
         },
         "tip": "Após importar seu primeiro extrato bancário, crie regras para os estabelecimentos mais frequentes.",
         "example": "Exemplo: Regra 'ifood' → Alimentação. Regra 'Nubank' → Cartão. Agora cada importação é automática!"
@@ -760,7 +760,7 @@
         "points": {
           "1": "Escolha um Modelo: 'Sem delivery por 7 dias', 'Sem roupas por 30 dias', e muito mais.",
           "2": "Criar Personalizado: Defina sua própria categoria, meta e duração.",
-          "3": "Acompanhamento Automático: O FinanceDash monitora suas transações e alerta sobre violações.",
+          "3": "Acompanhamento Automático: O Eazy monitora suas transações e alerta sobre violações.",
           "4": "Resultados: Veja quanto gastou vs. quanto economizou durante o desafio.",
           "5": "Motivação: Desafios concluídos ficam no seu histórico de disciplina financeira."
         },
@@ -776,7 +776,7 @@
         "a1": "Verifique se você adicionou todas as transações e se o saldo inicial ao criar a conta está correto. Use 'Recalcular Saldos' nas Configurações, se necessário.",
         "q2": "Como excluir uma transação recorrente?",
         "a2": "Vá em Transações, encontre a transação recorrente e clique em excluir. Você pode escolher excluir apenas aquela ocorrência ou todas as futuras.",
-        "q3": "Posso usar o FinanceDash no celular?",
+        "q3": "Posso usar o Eazy no celular?",
         "a3": "Sim! Instale o app diretamente pelo navegador — clique no ícone de instalação na barra de endereço ou use a opção 'Instalar Aplicativo'.",
         "q4": "Como importar com categorização automática?",
         "a4": "Primeiro crie suas Regras Inteligentes em Configurações → Regras Inteligentes. Depois importe o arquivo em Transações → Enviar Arquivo. Todas as regras são aplicadas automaticamente.",
@@ -787,7 +787,7 @@
         "q7": "O que é o Modo Sombra?",
         "a7": "O Modo Sombra permite adicionar transações simuladas para ver como elas afetariam seu saldo — sem que essas despesas apareçam no seu histórico real.",
         "q8": "Posso usar o app sem internet?",
-        "a8": "Sim! Após o primeiro carregamento, o FinanceDash funciona offline. As alterações são sincronizadas automaticamente quando a conexão for restaurada."
+        "a8": "Sim! Após o primeiro carregamento, o Eazy funciona offline. As alterações são sincronizadas automaticamente quando a conexão for restaurada."
       }
     }
   },
@@ -938,7 +938,7 @@
     "importButton": "Selecionar Arquivo de Backup",
     "importing": "Importando...",
     "importSuccess": "Dados importados! Recarregue a página para ver todas as alterações.",
-    "importError": "Falha ao importar. Verifique se o arquivo é um backup válido do FinanceDash.",
+    "importError": "Falha ao importar. Verifique se o arquivo é um backup válido do Eazy.",
     "importInvalidFormat": "Formato inválido. O arquivo pode estar corrompido ou ser de uma versão incompatível."
   },
   "offline": {

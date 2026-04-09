@@ -7,7 +7,6 @@ import {
   signOut,
   onAuthStateChanged,
   updateProfile,
-  sendPasswordResetEmail,
   GoogleAuthProvider,
   signInWithRedirect,
   getRedirectResult,
@@ -68,6 +67,12 @@ export const AuthProvider = ({ children }) => {
         name: name,
         photoURL: userCredential.user.photoURL,
       });
+      // Send welcome email (fire-and-forget, doesn't block registration)
+      fetch("/api/send-welcome-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email }),
+      }).catch((err) => console.warn("Welcome email failed:", err));
       return true;
     } catch (error) {
       console.error("Registration error:", error);
@@ -97,7 +102,12 @@ export const AuthProvider = ({ children }) => {
 
   const resetPassword = async (email) => {
     try {
-      await sendPasswordResetEmail(auth, email);
+      const response = await fetch("/api/send-reset-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      if (!response.ok) throw new Error("Failed to send reset email");
       return true;
     } catch (error) {
       console.error("Reset password error:", error);

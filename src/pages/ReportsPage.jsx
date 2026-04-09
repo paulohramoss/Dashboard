@@ -169,7 +169,7 @@ const ReportsPage = () => {
           feedback_type: `Relatório Financeiro — ${period}`,
           message,
           to_email: user?.email,
-          from_name: "FinanceDash",
+          from_name: "Eazy",
           reply_to: user?.email,
         },
         "lMkgyQ1ZogoJ0ZqwC",

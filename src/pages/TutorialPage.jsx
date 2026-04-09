@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -65,17 +65,17 @@ const VISITED_KEY = "fd_tutorial_visited";
 const ONBOARDING_STEPS_KEY = "fd_onboarding_steps_v1";
 
 const ONBOARDING_STEP_DEFS = [
-  { id: "profile",     icon: User,       path: "/settings",     palette: "violet"  },
-  { id: "accounts",    icon: CreditCard, path: "/accounts",     palette: "blue"    },
-  { id: "goals",       icon: Target,     path: "/goals",        palette: "amber"   },
-  { id: "transaction", icon: Wallet,     path: "/transactions", palette: "emerald" },
-  { id: "finish",      icon: Rocket,     path: "/",             palette: "fuchsia" },
+  { id: "profile", icon: User, path: "/settings", palette: "violet" },
+  { id: "accounts", icon: CreditCard, path: "/accounts", palette: "blue" },
+  { id: "goals", icon: Target, path: "/goals", palette: "amber" },
+  { id: "transaction", icon: Wallet, path: "/transactions", palette: "emerald" },
+  { id: "finish", icon: Rocket, path: "/", palette: "fuchsia" },
 ];
 
 const STEP_PALETTE = {
-  violet:  { bg: "bg-violet-500",  text: "text-violet-500",  light: "bg-violet-500/10",  border: "border-violet-500/30",  bar: "bg-violet-500"  },
-  blue:    { bg: "bg-blue-500",    text: "text-blue-500",    light: "bg-blue-500/10",    border: "border-blue-500/30",    bar: "bg-blue-500"    },
-  amber:   { bg: "bg-amber-500",   text: "text-amber-500",   light: "bg-amber-500/10",   border: "border-amber-500/30",   bar: "bg-amber-500"   },
+  violet: { bg: "bg-violet-500", text: "text-violet-500", light: "bg-violet-500/10", border: "border-violet-500/30", bar: "bg-violet-500" },
+  blue: { bg: "bg-blue-500", text: "text-blue-500", light: "bg-blue-500/10", border: "border-blue-500/30", bar: "bg-blue-500" },
+  amber: { bg: "bg-amber-500", text: "text-amber-500", light: "bg-amber-500/10", border: "border-amber-500/30", bar: "bg-amber-500" },
   emerald: { bg: "bg-emerald-500", text: "text-emerald-500", light: "bg-emerald-500/10", border: "border-emerald-500/30", bar: "bg-emerald-500" },
   fuchsia: { bg: "bg-fuchsia-500", text: "text-fuchsia-500", light: "bg-fuchsia-500/10", border: "border-fuchsia-500/30", bar: "bg-fuchsia-500" },
 };
@@ -337,9 +337,8 @@ const OnboardingTour = () => {
               <button
                 key={i}
                 onClick={() => go(i)}
-                className={`h-1.5 rounded-full transition-all duration-300 ${
-                  i === current ? "w-8 bg-primary" : "w-1.5 bg-primary/30"
-                }`}
+                className={`h-1.5 rounded-full transition-all duration-300 ${i === current ? "w-8 bg-primary" : "w-1.5 bg-primary/30"
+                  }`}
               />
             ))}
           </div>
@@ -417,9 +416,8 @@ const TipsCarousel = () => {
             <button
               key={i}
               onClick={() => setCurrent(i)}
-              className={`h-1.5 rounded-full transition-all duration-300 ${
-                i === current ? "w-6 bg-primary" : "w-1.5 bg-primary/30"
-              }`}
+              className={`h-1.5 rounded-full transition-all duration-300 ${i === current ? "w-6 bg-primary" : "w-1.5 bg-primary/30"
+                }`}
             />
           ))}
         </div>
@@ -479,7 +477,7 @@ const OnboardingStepsPanel = () => {
     if (currentStep && expandedStep === null && !allDone) {
       setExpandedStep(currentStep.id);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -515,13 +513,12 @@ const OnboardingStepsPanel = () => {
                 <div
                   key={step.id}
                   title={t(`tutorialPage.onboarding.steps.${step.id}.title`)}
-                  className={`h-3 flex-1 rounded-sm transition-all duration-500 cursor-pointer ${
-                    isDone
-                      ? "bg-primary"
-                      : isCurrent
+                  className={`h-3 flex-1 rounded-sm transition-all duration-500 cursor-pointer ${isDone
+                    ? "bg-primary"
+                    : isCurrent
                       ? `${pal.bar} opacity-50`
                       : "bg-muted"
-                  }`}
+                    }`}
                   onClick={() =>
                     setExpandedStep(expandedStep === step.id ? null : step.id)
                   }
@@ -559,13 +556,12 @@ const OnboardingStepsPanel = () => {
               return (
                 <div
                   key={step.id}
-                  className={`relative rounded-xl border transition-all duration-300 overflow-hidden ${
-                    isDone
-                      ? "border-primary/20 bg-primary/5"
-                      : isCurrent
+                  className={`relative rounded-xl border transition-all duration-300 overflow-hidden ${isDone
+                    ? "border-primary/20 bg-primary/5"
+                    : isCurrent
                       ? `${pal.border} ${pal.light}`
                       : "border-border/40 bg-muted/10"
-                  }`}
+                    }`}
                 >
                   <button
                     onClick={() =>
@@ -575,13 +571,12 @@ const OnboardingStepsPanel = () => {
                   >
                     {/* Step badge */}
                     <div
-                      className={`relative z-10 shrink-0 w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-300 shadow-sm ${
-                        isDone
-                          ? "bg-primary text-primary-foreground"
-                          : isCurrent
+                      className={`relative z-10 shrink-0 w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-300 shadow-sm ${isDone
+                        ? "bg-primary text-primary-foreground"
+                        : isCurrent
                           ? `${pal.bg} text-white`
                           : "bg-muted text-muted-foreground"
-                      }`}
+                        }`}
                     >
                       {isDone ? (
                         <CheckCircle2 className="h-4 w-4" />
@@ -592,13 +587,12 @@ const OnboardingStepsPanel = () => {
 
                     {/* Icon */}
                     <div
-                      className={`shrink-0 p-1.5 rounded-lg transition-colors ${
-                        isDone
-                          ? "bg-primary/10 text-primary"
-                          : isCurrent
+                      className={`shrink-0 p-1.5 rounded-lg transition-colors ${isDone
+                        ? "bg-primary/10 text-primary"
+                        : isCurrent
                           ? `${pal.light} ${pal.text}`
                           : "bg-muted/60 text-muted-foreground"
-                      }`}
+                        }`}
                     >
                       <Icon className="h-4 w-4" />
                     </div>
@@ -606,13 +600,12 @@ const OnboardingStepsPanel = () => {
                     {/* Title */}
                     <div className="flex-1 min-w-0 flex items-center gap-2 flex-wrap">
                       <span
-                        className={`text-sm font-semibold leading-snug ${
-                          isDone
-                            ? "line-through text-muted-foreground"
-                            : isCurrent
+                        className={`text-sm font-semibold leading-snug ${isDone
+                          ? "line-through text-muted-foreground"
+                          : isCurrent
                             ? pal.text
                             : "text-foreground"
-                        }`}
+                          }`}
                       >
                         {t(
                           `tutorialPage.onboarding.steps.${step.id}.title`
@@ -727,11 +720,10 @@ const ChecklistPanel = () => {
             </CardDescription>
           </div>
           <span
-            className={`text-sm px-3 py-1 rounded-full font-medium ${
-              allDone
-                ? "bg-primary text-primary-foreground"
-                : "bg-muted text-muted-foreground"
-            }`}
+            className={`text-sm px-3 py-1 rounded-full font-medium ${allDone
+              ? "bg-primary text-primary-foreground"
+              : "bg-muted text-muted-foreground"
+              }`}
           >
             {t("tutorialPage.checklist.progress", { done, total })}
           </span>
@@ -760,10 +752,9 @@ const ChecklistPanel = () => {
                 <button
                   onClick={() => toggle(key)}
                   className={`w-full flex items-start gap-3 p-3 rounded-xl border text-left transition-all duration-200 group
-                    ${
-                      done
-                        ? "bg-primary/10 border-primary/30 text-foreground"
-                        : "bg-muted/40 border-transparent hover:border-primary/20 hover:bg-muted/60"
+                    ${done
+                      ? "bg-primary/10 border-primary/30 text-foreground"
+                      : "bg-muted/40 border-transparent hover:border-primary/20 hover:bg-muted/60"
                     }`}
                 >
                   {done ? (
@@ -772,9 +763,8 @@ const ChecklistPanel = () => {
                     <Circle className="h-5 w-5 text-muted-foreground shrink-0 mt-0.5 group-hover:text-primary/50 transition-colors" />
                   )}
                   <span
-                    className={`text-sm leading-snug ${
-                      done ? "line-through text-muted-foreground" : ""
-                    }`}
+                    className={`text-sm leading-snug ${done ? "line-through text-muted-foreground" : ""
+                      }`}
                   >
                     {t(`tutorialPage.checklist.items.${key}`)}
                   </span>
@@ -795,11 +785,10 @@ const FAQItem = ({ qKey, aKey, index, openIndex, setOpenIndex }) => {
 
   return (
     <div
-      className={`border rounded-xl overflow-hidden transition-all duration-200 ${
-        isOpen
-          ? "border-primary/30 shadow-sm"
-          : "border-border hover:border-primary/20"
-      }`}
+      className={`border rounded-xl overflow-hidden transition-all duration-200 ${isOpen
+        ? "border-primary/30 shadow-sm"
+        : "border-border hover:border-primary/20"
+        }`}
     >
       <button
         onClick={() => setOpenIndex(isOpen ? null : index)}
@@ -966,28 +955,14 @@ const TutorialPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const [activeTab, setActiveTab] = useState("intro");
-  const [visited, setVisited] = useState(() => {
+
+  const visited = (() => {
     try {
       return JSON.parse(localStorage.getItem(VISITED_KEY) || '["intro"]');
     } catch {
       return ["intro"];
     }
-  });
-
-  const markVisited = useCallback((id) => {
-    setVisited((prev) => {
-      if (prev.includes(id)) return prev;
-      const next = [...prev, id];
-      localStorage.setItem(VISITED_KEY, JSON.stringify(next));
-      return next;
-    });
-  }, []);
-
-  const handleTabChange = (val) => {
-    setActiveTab(val);
-    markVisited(val);
-  };
+  })();
 
   const sections = [
     {
@@ -1157,52 +1132,11 @@ const TutorialPage = () => {
         </div>
       </div>
 
-      {/* Step-by-Step Onboarding */}
-      <OnboardingStepsPanel />
-
       {/* Onboarding Tour */}
       <OnboardingTour />
 
-      {/* Tips Carousel */}
-      <TipsCarousel />
-
-      {/* Checklist */}
-      <ChecklistPanel />
-
-      {/* Main Tabs */}
-      <Tabs
-        value={activeTab}
-        onValueChange={handleTabChange}
-        className="w-full"
-      >
-        <TabsList className="w-full h-auto flex-wrap justify-start p-2 gap-1.5 bg-muted/50">
-          {sections.map((section) => {
-            const colors = SECTION_COLORS[section.id] || SECTION_COLORS.intro;
-            const isVisited = visited.includes(section.id);
-            return (
-              <TabsTrigger
-                key={section.id}
-                value={section.id}
-                className="flex items-center gap-2 px-3 py-2 relative"
-              >
-                <section.icon
-                  className={`h-4 w-4 ${isVisited ? colors.icon : ""}`}
-                />
-                <span className="hidden md:inline">{section.title}</span>
-                {isVisited && (
-                  <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-primary" />
-                )}
-              </TabsTrigger>
-            );
-          })}
-        </TabsList>
-
-        {sections.map((section) => (
-          <TabsContent key={section.id} value={section.id} className="mt-6">
-            <SectionCard section={section} navigate={navigate} />
-          </TabsContent>
-        ))}
-      </Tabs>
+      {/* Step-by-Step Onboarding */}
+      <OnboardingStepsPanel />
 
       {/* FAQ CTA — now a dedicated page */}
       <div className="flex flex-col sm:flex-row items-center gap-4 rounded-2xl border border-primary/20 bg-gradient-to-r from-primary/5 to-transparent p-5">

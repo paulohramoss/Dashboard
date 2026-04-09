@@ -168,20 +168,17 @@ const FinScoreCard = () => {
           </CardTitle>
         </div>
       </CardHeader>
-      <CardContent className="flex-1 flex flex-col items-center justify-center min-h-[160px] relative">
-        <div
-          className="w-full h-full absolute inset-0 flex items-center justify-center"
-          style={{ minHeight: 160 }}
-        >
-          <ResponsiveContainer width="100%" height="100%" minHeight={160}>
+      <CardContent className="flex-1 p-0 relative min-h-[160px]">
+        <div className="absolute inset-0">
+          <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
                 data={data}
                 cx="50%"
-                cy="70%"
+                cy="75%"
                 startAngle={180}
                 endAngle={0}
-                innerRadius="60%"
+                innerRadius="75%"
                 outerRadius="90%"
                 paddingAngle={0}
                 dataKey="value"
@@ -194,19 +191,19 @@ const FinScoreCard = () => {
           </ResponsiveContainer>
         </div>
 
-        <div className="text-center mt-16 z-10">
+        <div className="absolute top-[75%] left-1/2 -translate-x-1/2 -translate-y-[80%] text-center pointer-events-none w-full px-4">
           <PrivacyBlur
-            className="text-4xl font-bold"
+            className="text-3xl sm:text-4xl font-extrabold tracking-tight leading-none"
             style={{ color: scoreColor }}
           >
             {scoreData.score}
           </PrivacyBlur>
-          <p className="text-sm text-muted-foreground font-medium">
+          <p className="text-xs sm:text-sm text-muted-foreground font-medium mt-1">
             {scoreData.score >= 800
               ? t("finscore.excellent", "Excelente")
               : scoreData.score >= 500
-              ? t("finscore.good", "Bom")
-              : t("finscore.needsWork", "Atenção")}
+                ? t("finscore.good", "Bom")
+                : t("finscore.needsWork", "Atenção")}
           </p>
         </div>
 

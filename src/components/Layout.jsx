@@ -42,6 +42,7 @@ import { LayoutContext } from "@/context/LayoutContext";
 import IOSInstallPrompt from "@/components/IOSInstallPrompt";
 
 import versionData from "@/version.json";
+import snapIcon from "@/assets/IMG_4310.PNG";
 
 const Layout = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -239,7 +240,7 @@ const Layout = ({ children }) => {
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => { setIsHovered(false); }}
           className={cn(
-            "fixed inset-y-0 left-0 z-50 bg-card border-r flex flex-col",
+            "fixed inset-y-0 left-0 z-50 bg-card border-r border-border flex flex-col",
             "transition-[width,transform] duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]",
             "w-64 transform lg:transform-none",
             isSidebarOpen ? "translate-x-0" : "-translate-x-full",
@@ -248,15 +249,21 @@ const Layout = ({ children }) => {
         >
           <div
             className={cn(
-              "min-h-16 h-auto py-4 flex items-center border-b transition-all duration-300",
+              "min-h-16 h-auto flex items-center border-b transition-all duration-300",
               isExpanded ? "px-6 justify-between" : "px-0 justify-center",
             )}
           >
             {isExpanded || isSidebarOpen ? (
               <>
-                <h1 className="text-xl font-bold bg-gradient-to-r from-primary to-emerald-500 bg-clip-text text-transparent truncate">
-                  {t("app.title")}
-                </h1>
+                <img
+                  src="/logo.png"
+                  alt="eazy"
+                  className="h-20 w-38 object-contain"
+                  onError={(e) => {
+                    e.currentTarget.style.display = "none";
+                    e.currentTarget.nextElementSibling.style.display = "block";
+                  }}
+                />
                 <Button
                   variant="ghost"
                   size="icon"
@@ -275,7 +282,11 @@ const Layout = ({ children }) => {
                 </Button>
               </>
             ) : (
-              <span className="font-bold text-primary text-xl">FD</span>
+              <img
+                src={snapIcon}
+                alt="eazy"
+                className="h-14 w-14 object-contain"
+              />
             )}
 
             <Button
@@ -473,9 +484,6 @@ const Layout = ({ children }) => {
                   <span>{getGreeting().emoji}</span>
                   <span>{getGreeting().text}</span>
                 </h1>
-                <p className="text-xs text-muted-foreground hidden md:block mt-0.5">
-                  {t("dashboard.subtitle", "Aqui está o resumo das suas finanças")}
-                </p>
               </div>
             </div>
             <div className="flex items-center gap-2 md:gap-4 ml-auto">
@@ -555,8 +563,8 @@ const Layout = ({ children }) => {
           <footer className="border-t bg-card/50 py-4 md:py-6 px-4 md:px-6 lg:px-8 mt-auto">
             <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
               <div className="flex items-center gap-2">
-                <span className="font-semibold text-foreground/80">
-                  FinanceDash
+                <span className="font-black text-primary uppercase tracking-tight" style={{ letterSpacing: '-0.01em' }}>
+                  eazy
                 </span>
                 <span>&copy; {new Date().getFullYear()}</span>
                 <span className="hidden md:inline text-muted-foreground/30">

@@ -25,11 +25,13 @@ const SpendingSimulatorCard = ({ stats }) => {
   }, [amount, stats.income, stats.expense]);
 
   return (
-    <Card className="h-full flex flex-col shadow-lg hover:shadow-xl transition-all duration-200">
+    <Card className="h-full flex flex-col rounded-[20px] border shadow-sm hover:shadow-md transition-all duration-200">
       <CardHeader className="pb-3">
-        <CardTitle className="text-base font-semibold text-foreground flex items-center gap-2">
-          <Calculator className="h-4 w-4 text-primary" />
-          {t("spendingSimulator.title")}
+        <CardTitle
+          className="text-lg font-black text-foreground flex items-center gap-2 uppercase"
+          style={{ letterSpacing: "-0.01em" }}
+        >
+          <span>💳</span> Posso gastar isso?
         </CardTitle>
       </CardHeader>
 
@@ -38,13 +40,20 @@ const SpendingSimulatorCard = ({ stats }) => {
           value={amount}
           onChange={setAmount}
           placeholder={t("spendingSimulator.placeholder")}
-          className="text-base"
+          className="text-base bg-muted border-border rounded-xl"
         />
+
+        <p className="text-sm text-muted-foreground">
+          Disponível no mês:{" "}
+          <strong className="text-foreground font-bold">
+            {formatCurrency(Math.max(stats.income - stats.expense, 0))}
+          </strong>
+        </p>
 
         {result && (
           <div
             className={cn(
-              "flex items-start gap-3 rounded-lg p-3 transition-all",
+              "flex items-start gap-3 rounded-xl p-3 transition-all",
               result.canSpend
                 ? "bg-green-50 dark:bg-green-950/30"
                 : "bg-red-50 dark:bg-red-950/30",
@@ -77,14 +86,6 @@ const SpendingSimulatorCard = ({ stats }) => {
                   })}
             </p>
           </div>
-        )}
-
-        {!result && (
-          <p className="text-xs text-muted-foreground">
-            {t("spendingSimulator.hint", {
-              available: formatCurrency(Math.max(stats.income - stats.expense, 0)),
-            })}
-          </p>
         )}
       </CardContent>
     </Card>

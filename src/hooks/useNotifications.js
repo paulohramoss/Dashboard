@@ -94,7 +94,7 @@ export const useNotifications = () => {
 
     if (perm === "granted") {
       await dispatchNotification(
-        "FinanceDash",
+        "Eazy",
         i18n.t(
           "notifications.enabledSuccess",
           "Notifications enabled successfully!",

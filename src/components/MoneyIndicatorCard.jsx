@@ -1,6 +1,4 @@
 import React from "react";
-import { motion as Motion } from "framer-motion";
-import { Card, CardContent } from "@/components/ui/card";
 import PrivacyBlur from "@/components/ui/PrivacyBlur";
 import { useCurrency } from "@/hooks/useCurrency";
 
@@ -15,126 +13,86 @@ const MoneyIndicatorCard = ({ stats }) => {
       : stats.expense > 0
       ? 100
       : 0;
-
-  const size = 180;
-  const strokeWidth = 13;
-  const radius = (size - strokeWidth) / 2;
-  const circumference = 2 * Math.PI * radius;
-  const offset = circumference - (spendingRatio / 100) * circumference;
-
-  const ringColor =
-    spendingRatio < 70 ? "#4ade80" : spendingRatio < 90 ? "#fbbf24" : "#f87171";
+  const freePercent = Math.round(100 - spendingRatio);
 
   return (
-    <Card className="h-full overflow-hidden border-0 shadow-lg bg-gradient-to-br from-primary via-primary to-[hsl(167,60%,14%)] relative">
-      {/* Decorative blobs */}
-      <div className="absolute -top-14 -right-14 h-52 w-52 rounded-full bg-white/5 pointer-events-none" />
-      <div className="absolute -bottom-10 -left-10 h-40 w-40 rounded-full bg-white/5 pointer-events-none" />
+    <div
+      className="rounded-[20px] overflow-hidden flex flex-col h-full min-h-[210px] hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300"
+      style={{ background: "#0c0c0c" }}
+    >
+      {/* Blue top stripe */}
+      <div className="w-full" style={{ height: 7, background: "#1a35f0" }} />
 
-      <CardContent className="relative z-10 h-full flex flex-col items-center justify-center gap-5 py-6 px-4">
+      {/* Body */}
+      <div className="relative flex-1 flex flex-col items-center justify-center px-5 pb-6 pt-4 gap-1">
+        {/* "EAZY" ghost text */}
+        <svg
+          className="absolute inset-0 w-full h-full pointer-events-none"
+          viewBox="0 0 460 170"
+          preserveAspectRatio="xMidYMid meet"
+        >
+          <text
+            x="230"
+            y="155"
+            textAnchor="middle"
+            fontFamily="'Inter','Arial',sans-serif"
+            fontWeight="900"
+            fontSize="160"
+            fill="#c8f000"
+            opacity="0.055"
+            letterSpacing="-4"
+          >
+            EAZY
+          </text>
+        </svg>
+
+        {/* Dot grid — corner */}
+        <svg
+          className="absolute bottom-2 right-2 pointer-events-none"
+          style={{ width: 56, height: 56, opacity: 0.08 }}
+          viewBox="0 0 60 60"
+        >
+          <g fill="#c8f000">
+            {[8, 20, 32, 44].flatMap((x) =>
+              [8, 20, 32, 44].map((y) => (
+                <circle key={`${x}-${y}`} cx={x} cy={y} r="2.2" />
+              ))
+            )}
+          </g>
+        </svg>
+
         {/* Label */}
-        <p className="text-primary-foreground/55 text-xs font-semibold uppercase tracking-widest text-center">
+        <p
+          className="relative z-10 text-[11px] font-bold uppercase text-center"
+          style={{ letterSpacing: "0.14em", color: "rgba(255,255,255,0.35)" }}
+        >
           Você ainda pode gastar
         </p>
 
-        {/* Circular ring + center value */}
-        <div className="relative flex items-center justify-center">
-          <svg
-            width={size}
-            height={size}
-            className="-rotate-90"
-            style={{ filter: "drop-shadow(0 0 12px rgba(74,222,128,0.25))" }}
-          >
-            {/* Track */}
-            <circle
-              cx={size / 2}
-              cy={size / 2}
-              r={radius}
-              fill="none"
-              stroke="rgba(255,255,255,0.08)"
-              strokeWidth={strokeWidth}
-            />
-            {/* Progress */}
-            <Motion.circle
-              cx={size / 2}
-              cy={size / 2}
-              r={radius}
-              fill="none"
-              stroke={ringColor}
-              strokeWidth={strokeWidth}
-              strokeLinecap="round"
-              strokeDasharray={circumference}
-              initial={{ strokeDashoffset: circumference }}
-              animate={{ strokeDashoffset: offset }}
-              transition={{ duration: 1.3, ease: "easeOut" }}
-            />
-          </svg>
+        {/* Value */}
+        <PrivacyBlur
+          className="relative z-10 font-black leading-none text-center"
+          style={{
+            fontSize: 46,
+            letterSpacing: "-0.03em",
+            color: isOver ? "#f87171" : "#1a35f0",
+            textShadow: isOver
+              ? "none"
+              : "0 0 40px rgba(26,53,240,0.35)",
+          }}
+        >
+          {isOver ? "Estourado" : formatCurrency(canSpend)}
+        </PrivacyBlur>
 
-          {/* Center text (rotated back to normal) */}
-          <div className="absolute flex flex-col items-center gap-0.5 text-center px-2">
-            {isOver ? (
-              <>
-                <span className="text-[#f87171] font-bold text-lg leading-tight">
-                  Estourado
-                </span>
-                <span className="text-[11px] font-medium text-[#f87171]">
-                  0% livre
-                </span>
-              </>
-            ) : (
-              <>
-                <PrivacyBlur className="text-white font-extrabold text-[1.6rem] leading-tight tracking-tight">
-                  {formatCurrency(canSpend)}
-                </PrivacyBlur>
-                <span
-                  className="text-[11px] font-medium"
-                  style={{ color: ringColor }}
-                >
-                  {Math.round(100 - spendingRatio)}% livre
-                </span>
-              </>
-            )}
-          </div>
+        {/* Lime pill */}
+        <div
+          className="relative z-10 mt-1 px-4 py-1 rounded-full font-bold text-[11px]"
+          style={{ background: "#c8f000", color: "#111" }}
+        >
+          {isOver ? "0% livre" : `${freePercent}% livre`}
         </div>
-
-        {/* Mini stats row */}
-        <div className="flex items-center gap-6 text-center">
-          <div className="flex flex-col gap-0.5">
-            <p className="text-primary-foreground/40 text-[10px] font-semibold uppercase tracking-wider">
-              Receita
-            </p>
-            <PrivacyBlur className="text-white/80 font-semibold text-xs">
-              {formatCurrency(stats.income)}
-            </PrivacyBlur>
-          </div>
-
-          <div className="w-px h-8 bg-white/10" />
-
-          <div className="flex flex-col gap-0.5">
-            <p className="text-primary-foreground/40 text-[10px] font-semibold uppercase tracking-wider">
-              Gasto
-            </p>
-            <PrivacyBlur className="text-white/80 font-semibold text-xs">
-              {formatCurrency(stats.expense)}
-            </PrivacyBlur>
-          </div>
-
-          <div className="w-px h-8 bg-white/10" />
-
-          <div className="flex flex-col gap-0.5">
-            <p className="text-primary-foreground/40 text-[10px] font-semibold uppercase tracking-wider">
-              Usado
-            </p>
-            <span
-              className="font-bold text-xs"
-              style={{ color: ringColor }}
-            >
-              {Math.round(spendingRatio)}%
-            </span>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 };
 
