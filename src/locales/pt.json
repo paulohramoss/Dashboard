@@ -784,10 +784,8 @@
         "a5": "Sim. Seus dados são armazenados exclusivamente na sua conta Firebase, com criptografia total. Nunca acessamos suas informações financeiras.",
         "q6": "Como funciona o gerenciamento do cartão de crédito?",
         "a6": "Crie uma conta do tipo 'Cartão de Crédito'. A fatura atual é calculada automaticamente a partir das suas despesas. Você pode fazer uma transferência para pagar a fatura.",
-        "q7": "O que é o Modo Sombra?",
-        "a7": "O Modo Sombra permite adicionar transações simuladas para ver como elas afetariam seu saldo — sem que essas despesas apareçam no seu histórico real.",
-        "q8": "Posso usar o app sem internet?",
-        "a8": "Sim! Após o primeiro carregamento, o Eazy funciona offline. As alterações são sincronizadas automaticamente quando a conexão for restaurada."
+        "q7": "Posso usar o app sem internet?",
+        "a7": "Sim! Após o primeiro carregamento, o Eazy funciona offline. As alterações são sincronizadas automaticamente quando a conexão for restaurada."
       }
     }
   },
