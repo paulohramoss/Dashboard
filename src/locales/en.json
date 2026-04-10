@@ -784,10 +784,8 @@
         "a5": "Yes. Your data is stored exclusively in your Firebase account, fully encrypted. We never access your financial information.",
         "q6": "How does credit card management work?",
         "a6": "Create an account of type 'Credit Card'. The current invoice is automatically calculated from your expenses. You can transfer to pay the bill.",
-        "q7": "What is Shadow Mode?",
-        "a7": "Shadow Mode lets you add simulated transactions to see how they would affect your balance — without those expenses appearing in your real history.",
-        "q8": "Can I use the app without internet?",
-        "a8": "Yes! After the first load, Eazy works offline. Changes are synced automatically when the connection is restored."
+        "q7": "Can I use the app without internet?",
+        "a7": "Yes! After the first load, Eazy works offline. Changes are synced automatically when the connection is restored."
       }
     }
   },
