@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router-dom";
 
 // ─── FAQ Data ─────────────────────────────────────────────────────────────────
-const FAQ_KEYS = ["1", "2", "3", "4", "5", "6", "7", "8"];
+const FAQ_KEYS = ["1", "2", "3", "4", "5", "6", "7"];
 
 const CATEGORY_MAP = {
   1: "balance",
@@ -21,8 +21,7 @@ const CATEGORY_MAP = {
   4: "import",
   5: "security",
   6: "cards",
-  7: "shadow",
-  8: "offline",
+  7: "offline",
 };
 
 const CATEGORY_COLORS = {
@@ -106,11 +105,10 @@ const FAQItem = ({ id, openIndex, setOpenIndex, searchQuery }) => {
 
   return (
     <div
-      className={`border rounded-2xl overflow-hidden transition-all duration-200 ${
-        isOpen
-          ? `${colors.border} shadow-md`
-          : "border-border hover:border-primary/20"
-      }`}
+      className={`border rounded-2xl overflow-hidden transition-all duration-200 ${isOpen
+        ? `${colors.border} shadow-md`
+        : "border-border hover:border-primary/20"
+        }`}
     >
       <button
         onClick={() => setOpenIndex(isOpen ? null : id)}
@@ -201,8 +199,8 @@ const FAQPage = () => {
             {visibleCount === 0
               ? t("faq.noResults", "Nenhum resultado encontrado.")
               : t("faq.resultsCount", "{{count}} resultado(s) encontrado(s).", {
-                  count: visibleCount,
-                })}
+                count: visibleCount,
+              })}
           </p>
         )}
       </div>
